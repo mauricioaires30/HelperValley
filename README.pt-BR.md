@@ -1,25 +1,26 @@
 # HelperValley
 
-[English](README.md) · **Português**
+[English](README.md) · **Português (Brasil)**
 
-Um ajudante não oficial de Stardew Valley que lê **os saves do seu computador** direto no
-navegador para acompanhar o progresso rumo aos 100% de Perfeição, o Centro Comunitário, o Museu,
-os relacionamentos, a sua fazenda e muito mais. Nada é enviado para a internet: os saves são
-lidos inteiramente na sua máquina.
+Ajudante de Stardew Valley que lê os seus próprios saves no navegador. Sem conta, sem envio de arquivos, sem rastreamento.
 
-- **Site:** https://mauricioaires30.github.io/HelperValley/
-- **Autor:** Maurício Aires · [Portfólio](https://mauricioaires30.github.io)
+**Acesse:** [mauricioaires30.github.io/HelperValley](https://mauricioaires30.github.io/HelperValley/)
 
-## Como usar
-
-1. Abra o site no Chrome ou no Edge.
-2. Clique em **Abrir pasta Saves** e escolha `%AppData%\StardewValley\Saves`.
-3. Jogue normalmente: toda vez que o jogo salvar (quando você dorme), a página se atualiza sozinha.
-
-Saves multiplayer são suportados: escolha qual jogador ver no topo da página.
-Outros navegadores também conseguem selecionar a pasta, mas é preciso selecioná-la de novo para atualizar.
+## Recursos
+- **Saves locais:** escolha a pasta `%AppData%\StardewValley\Saves` uma vez. No Chrome ou no Edge, marque "Permitir em todas as visitas" e o site fica sempre de olho nela.
+- **Atualização ao vivo:** toda vez que o jogo salva (quando você dorme), a página mostra o novo dia sozinha.
+- **Lembra da sua fazenda:** o último save fica guardado no navegador e abre na hora na próxima visita.
+- **Multiplayer:** alterne entre o anfitrião e cada ajudante.
+- **Hoje:** sorte do dia, clima de amanhã, próximos aniversários e festivais, e o que dá para fazer agora.
+- **Calendário:** festivais e aniversários de todas as estações.
+- **Relacionamentos:** corações, presentes restantes na semana, próximo evento de coração e presentes favoritos que você já tem.
+- **Centro Comunitário:** itens que faltam, o que já está nos seus baús e a rota da Joja.
+- **Museu:** itens doados, prontos para doar e faltando, com onde encontrar cada um.
+- **Conquistas:** progresso de cada uma, como "Grande Pesca 99/100".
+- **Artes e nomes do próprio jogo**, em português e inglês.
 
 ## Aviso
+Projeto de fã não oficial, sem afiliação nem endosso da ConcernedApe. Stardew Valley e todas as artes e dados do jogo são © ConcernedApe LLC.
 
-O HelperValley é um projeto de fã e não tem afiliação nem endosso da ConcernedApe.
-Stardew Valley e todas as artes e dados do jogo são © ConcernedApe LLC.
+## Portfólio
+[mauricioaires30.github.io](https://mauricioaires30.github.io/)
