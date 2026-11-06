@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SaveGame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <player>
+    <name>Host</name>
+    <farmName>Test</farmName>
+    <UniqueMultiplayerID>111</UniqueMultiplayerID>
+    <money>1234</money>
+    <farmingLevel>10</farmingLevel>
+    <fishingLevel>3</fishingLevel>
+    <professions><int>1</int><int>4</int></professions>
+    <experiencePoints><int>15000</int><int>200</int><int>0</int><int>0</int><int>0</int><int>0</int></experiencePoints>
+    <items>
+      <Item xsi:type="MeleeWeapon"><name>Galaxy Sword</name><itemId>4</itemId><stack>1</stack><quality>0</quality></Item>
+      <Item xsi:nil="true" />
+      <Item xsi:type="Object"><name>Parsnip</name><itemId>24</itemId><stack>12</stack><quality>2</quality></Item>
+    </items>
+    <achievements><int>0</int><int>5</int></achievements>
+    <mailReceived><string>ccPantry</string></mailReceived>
+    <basicShipped><item><key><string>24</string></key><value><int>40</int></value></item></basicShipped>
+    <fishCaught><item><key><string>(O)145</string></key><value><ArrayOfInt><int>3</int><int>12</int></ArrayOfInt></value></item></fishCaught>
+    <friendshipData>
+      <item><key><string>Abigail</string></key><value><Friendship><Points>1500</Points><GiftsThisWeek>1</GiftsThisWeek><GiftsToday>0</GiftsToday><TalkedToToday>true</TalkedToToday><Status>Dating</Status></Friendship></value></item>
+    </friendshipData>
+    <stats>
+      <specificMonstersKilled><item><key><string>Green Slime</string></key><value><int>7</int></value></item></specificMonstersKilled>
+      <Values><item><key><string>daysPlayed</string></key><value><unsignedInt>30</unsignedInt></value></item></Values>
+    </stats>
+  </player>
+  <farmhands>
+    <Farmer><name>Guest</name><UniqueMultiplayerID>222</UniqueMultiplayerID><money>10</money></Farmer>
+  </farmhands>
+  <locations>
+    <GameLocation xsi:type="Farm">
+      <name>Farm</name>
+      <objects>
+        <item>
+          <key><Vector2><X>10</X><Y>5</Y></Vector2></key>
+          <value><Object xsi:type="Chest"><name>Chest</name><playerChest>true</playerChest>
+            <Items><Item xsi:type="Object"><name>Keg</name><itemId>12</itemId><bigCraftable>true</bigCraftable><stack>2</stack><quality>0</quality></Item></Items>
+          </Object></value>
+        </item>
+      </objects>
+      <buildings>
+        <Building xsi:type="Building"><buildingType>Shed</buildingType>
+          <indoors xsi:type="Shed"><name>Shed</name><uniqueName>Shed1</uniqueName>
+            <objects><item><key><Vector2><X>1</X><Y>1</Y></Vector2></key>
+              <value><Object xsi:type="Chest"><name>Chest</name><playerChest>true</playerChest>
+                <Items><Item xsi:type="Hat"><name>Cowboy Hat</name><itemId>0</itemId><stack>1</stack></Item></Items>
+              </Object></value></item></objects>
+          </indoors>
+        </Building>
+      </buildings>
+    </GameLocation>
+    <GameLocation xsi:type="CommunityCenter">
+      <name>CommunityCenter</name>
+      <bundles><item><key><int>0</int></key><value><ArrayOfBoolean><boolean>true</boolean><boolean>false</boolean></ArrayOfBoolean></value></item></bundles>
+      <bundleRewards><item><key><int>0</int></key><value><boolean>true</boolean></value></item></bundleRewards>
+      <areasComplete><boolean>true</boolean><boolean>false</boolean></areasComplete>
+    </GameLocation>
+    <GameLocation xsi:type="LibraryMuseum">
+      <name>ArchaeologyHouse</name>
+      <museumPieces><item><key><Vector2><X>42</X><Y>16</Y></Vector2></key><value><string>96</string></value></item></museumPieces>
+    </GameLocation>
+  </locations>
+  <currentSeason>fall</currentSeason>
+  <dayOfMonth>9</dayOfMonth>
+  <year>2</year>
+  <dailyLuck>0.05</dailyLuck>
+  <uniqueIDForThisGame>999</uniqueIDForThisGame>
+  <weatherForTomorrow>Rain</weatherForTomorrow>
+  <goldenWalnutsFound>12</goldenWalnutsFound>
+  <bundleData><item><key><string>Pantry/0</string></key><value><string>Spring Crops/O 465 20/24 1 0/0///Spring Crops</string></value></item></bundleData>
+  <globalInventories><item><key><string>JunimoChests</string></key><value><ArrayOfItem><Item xsi:type="Object"><name>Wood</name><itemId>388</itemId><stack>999</stack></Item></ArrayOfItem></value></item></globalInventories>
+  <gameVersion>1.6.15</gameVersion>
+</SaveGame>
