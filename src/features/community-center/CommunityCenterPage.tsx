@@ -24,11 +24,11 @@ function Slot({ slot }: { slot: BundleSlot }) {
   }
   const have = totalCount(slot.owned);
   return (
-    <span className={`cc-slot${slot.done ? ' cc-slot--done' : have >= slot.count ? ' cc-slot--ready' : ''}`}>
+    <span className={`slot-state${slot.done ? ' slot-state--done' : have >= slot.count ? ' slot-state--ready' : ''}`}>
       <SlotTooltip slot={slot}>
         <ItemIcon id={slot.id} slot quality={slot.quality} count={slot.count} faded={!slot.done && have === 0} tooltip={false} />
       </SlotTooltip>
-      {!slot.done && have >= slot.count && <span className="cc-slot__badge">{t('cc.have')}</span>}
+      {!slot.done && have >= slot.count && <span className="slot-badge">{t('cc.have')}</span>}
     </span>
   );
 }
@@ -50,7 +50,7 @@ function BundleCard({ bundle }: { bundle: Bundle }) {
       </header>
       <Progress value={bundle.doneCount} max={bundle.required} />
       {bundle.required < bundle.slots.length && <p className="cc-bundle__pick">{t('cc.pick', { count: bundle.required, total: bundle.slots.length })}</p>}
-      <div className="cc-bundle__slots">
+      <div className="slot-grid">
         {bundle.slots.map((slot, i) => (
           <Slot key={i} slot={slot} />
         ))}
@@ -97,7 +97,7 @@ function MissingSummary({ rooms }: { rooms: Room[] }) {
         <>
           <h3>{t('cc.readyTitle', { count: ready.length })}</h3>
           <p className="cc-summary__hint">{t('cc.readyHint')}</p>
-          <div className="cc-bundle__slots">
+          <div className="slot-grid">
             {ready.map((s) => (
               <Slot key={s.id + s.quality} slot={s} />
             ))}
@@ -107,7 +107,7 @@ function MissingSummary({ rooms }: { rooms: Room[] }) {
       {needed.length > 0 && (
         <>
           <h3>{t('cc.neededTitle', { count: needed.length })}</h3>
-          <div className="cc-bundle__slots">
+          <div className="slot-grid">
             {needed.map((s) => (
               <Slot key={s.id + s.quality} slot={s} />
             ))}

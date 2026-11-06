@@ -103,41 +103,6 @@
   color: var(--text-soft);
 }
 
-.cc-bundle__slots {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.cc-slot {
-  position: relative;
-}
-
-.cc-slot--done::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgb(90 180 60 / 0.25);
-  pointer-events: none;
-}
-
-.cc-slot--ready .slot {
-  filter: drop-shadow(0 0 calc(2 * var(--px)) #ffe066);
-}
-
-.cc-slot__badge {
-  position: absolute;
-  top: calc(-3 * var(--px));
-  right: calc(-2 * var(--px));
-  padding: 0 3px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #fff;
-  background: var(--accent);
-  border: var(--px) solid #1e5b12;
-  pointer-events: none;
-}
-
 .cc-money {
   font-weight: 600;
 }
