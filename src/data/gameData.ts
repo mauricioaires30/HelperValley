@@ -65,6 +65,23 @@ export interface AchievementGoals {
   monoculture: string[];
 }
 
+export interface Festival {
+  id: string;
+  season: Season;
+  start: number;
+  end: number;
+  /** Null for passive festivals without a display name in data (translated by id). */
+  n: LocalizedName | null;
+  passive?: boolean;
+}
+
+export interface HeartEvent {
+  id: string;
+  npc: string;
+  hearts: number;
+  location: string;
+}
+
 export interface MuseumData {
   artifacts: string[];
   minerals: string[];
@@ -84,9 +101,11 @@ export interface GameData {
   achievements: Record<string, AchievementData>;
   achievementGoals: AchievementGoals;
   museum: MuseumData;
+  calendar: { festivals: Festival[] };
+  heartEvents: { events: HeartEvent[]; places: Record<string, LocalizedName> };
 }
 
-const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum'] as const;
+const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents'] as const;
 
 export const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 export const spriteUrl = (sheet: string) => assetUrl(`sprites/${sheet}.png`);
