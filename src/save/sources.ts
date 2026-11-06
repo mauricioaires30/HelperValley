@@ -1,0 +1,142 @@
+import { get, set, del } from 'idb-keyval';
+import { normalizeSummary } from './normalize';
+import type { SaveSummary } from './model';
+
+const HANDLE_KEY = 'savesDirectory';
+
+/** Where saves are read from: a live folder (auto-reload) or a one-off file selection. */
+export interface SaveSource {
+  readonly live: boolean;
+  listSaves(): Promise<SaveSummary[]>;
+  /** Main save file contents and its lastModified. */
+  readSave(folder: string): Promise<{ xml: string; modified: number }>;
+  /** lastModified of the main save file, used to detect in-game saves. */
+  modified(folder: string): Promise<number>;
+}
+
+export const supportsDirectoryAccess = () => typeof window !== 'undefined' && 'showDirectoryPicker' in window;
+
+/** A save folder holds "SaveGameInfo" plus a main file named after the folder. */
+const isSaveFolder = (names: Set<string>, folder: string) => names.has('SaveGameInfo') && names.has(folder);
+
+async function childNames(dir: FileSystemDirectoryHandle): Promise<Set<string>> {
+  const names = new Set<string>();
+  for await (const name of dir.keys()) names.add(name);
+  return names;
+}
+
+class DirectorySource implements SaveSource {
+  readonly live = true;
+  private folders = new Map<string, FileSystemDirectoryHandle>();
+
+  constructor(private root: FileSystemDirectoryHandle) {}
+
+  /** Accepts the StardewValley folder, its Saves folder, or a single save folder. */
+  async listSaves(): Promise<SaveSummary[]> {
+    this.folders.clear();
+    let root = this.root;
+    const names = await childNames(root);
+    if (isSaveFolder(names, root.name)) {
+      this.folders.set(root.name, root);
+    } else {
+      if (names.has('Saves')) root = await root.getDirectoryHandle('Saves');
+      for await (const entry of root.values()) {
+        if (entry.kind !== 'directory') continue;
+        const dir = entry as FileSystemDirectoryHandle;
+        if (isSaveFolder(await childNames(dir), dir.name)) this.folders.set(dir.name, dir);
+      }
+    }
+
+    const summaries = await Promise.all(
+      [...this.folders].map(async ([folder, dir]) => {
+        const info = await (await dir.getFileHandle('SaveGameInfo')).getFile();
+        return normalizeSummary(await info.text(), folder, await this.modified(folder));
+      }),
+    );
+    return summaries.sort((a, b) => b.modified - a.modified);
+  }
+
+  private async mainFile(folder: string): Promise<File> {
+    const dir = this.folders.get(folder);
+    if (!dir) throw new Error(`Save not found: ${folder}`);
+    return (await dir.getFileHandle(folder)).getFile();
+  }
+
+  async readSave(folder: string) {
+    const file = await this.mainFile(folder);
+    return { xml: await file.text(), modified: file.lastModified };
+  }
+
+  async modified(folder: string) {
+    return (await this.mainFile(folder)).lastModified;
+  }
+}
+
+/** Files picked through <input webkitdirectory> (browsers without directory access). */
+class FileListSource implements SaveSource {
+  readonly live = false;
+  private folders = new Map<string, Map<string, File>>();
+
+  constructor(files: File[]) {
+    for (const file of files) {
+      const parts = (file.webkitRelativePath || file.name).split('/');
+      const folder = parts.at(-2) ?? '';
+      if (!this.folders.has(folder)) this.folders.set(folder, new Map());
+      this.folders.get(folder)!.set(file.name, file);
+    }
+    for (const [folder, files] of this.folders) {
+      if (!isSaveFolder(new Set(files.keys()), folder)) this.folders.delete(folder);
+    }
+  }
+
+  async listSaves() {
+    const summaries = await Promise.all(
+      [...this.folders].map(async ([folder, files]) =>
+        normalizeSummary(await files.get('SaveGameInfo')!.text(), folder, files.get(folder)!.lastModified),
+      ),
+    );
+    return summaries.sort((a, b) => b.modified - a.modified);
+  }
+
+  async readSave(folder: string) {
+    const file = this.folders.get(folder)?.get(folder);
+    if (!file) throw new Error(`Save not found: ${folder}`);
+    return { xml: await file.text(), modified: file.lastModified };
+  }
+
+  async modified(folder: string) {
+    return this.folders.get(folder)?.get(folder)?.lastModified ?? 0;
+  }
+}
+
+/** Asks the user for their saves folder and remembers it for next visits. */
+export async function pickDirectory(): Promise<SaveSource> {
+  const handle = await window.showDirectoryPicker!({ id: 'stardew-saves', mode: 'read' });
+  await set(HANDLE_KEY, handle);
+  return new DirectorySource(handle);
+}
+
+export type RestoreResult = { source: SaveSource } | { needsPermission: FileSystemDirectoryHandle } | null;
+
+/** Restores the remembered folder. Browsers require a click before re-granting access. */
+export async function restoreDirectory(): Promise<RestoreResult> {
+  if (!supportsDirectoryAccess()) return null;
+  const handle = await get<FileSystemDirectoryHandle>(HANDLE_KEY).catch(() => undefined);
+  if (!handle) return null;
+  const permission = await handle.queryPermission({ mode: 'read' });
+  if (permission === 'granted') return { source: new DirectorySource(handle) };
+  return { needsPermission: handle };
+}
+
+export async function grantDirectory(handle: FileSystemDirectoryHandle): Promise<SaveSource | null> {
+  const permission = await handle.requestPermission({ mode: 'read' });
+  return permission === 'granted' ? new DirectorySource(handle) : null;
+}
+
+export async function forgetDirectory() {
+  await del(HANDLE_KEY);
+}
+
+export function fromFiles(files: FileList | File[]): SaveSource {
+  return new FileListSource([...files]);
+}
