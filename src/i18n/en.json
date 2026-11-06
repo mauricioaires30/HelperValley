@@ -58,7 +58,8 @@
     "host": "Host",
     "farmhand": "Farmhand",
     "error": "Couldn't read this save: {{message}}",
-    "required": "Open your saves folder to see this page."
+    "required": "Open your saves folder to see this page.",
+    "updated": "The game saved! Showing the new day"
   },
   "locations": {
     "Farm": "Farm",

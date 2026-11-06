@@ -58,7 +58,8 @@
     "host": "Anfitrião",
     "farmhand": "Ajudante",
     "error": "Não foi possível ler este save: {{message}}",
-    "required": "Abra a pasta de saves para ver esta página."
+    "required": "Abra a pasta de saves para ver esta página.",
+    "updated": "O jogo salvou! Mostrando o novo dia"
   },
   "locations": {
     "Farm": "Fazenda",
