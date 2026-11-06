@@ -35,14 +35,35 @@ export interface NpcData {
   region: string;
 }
 
+export interface BundleStrings {
+  /** English bundle name → [en, pt] display name. */
+  names: Record<string, LocalizedName>;
+  /** "{0} Bundle" per language. */
+  format: LocalizedName;
+  /** Community Center areas in areasComplete order. */
+  areas: Array<{ id: string; n: LocalizedName }>;
+}
+
+export interface AchievementData {
+  n: LocalizedName;
+  d: LocalizedName;
+  /** Visible in the collections tab before being earned. */
+  shown: boolean;
+  /** Prerequisite achievement id, or -1. */
+  pre: number;
+}
+
 export interface GameData {
   items: Record<string, ItemData>;
   npcs: Record<string, NpcData>;
   universalGifts: Record<GiftTaste, string[]>;
   sheets: Record<string, [number, number]>;
+  bundles: BundleStrings;
+  achievements: Record<string, AchievementData>;
+  museum: { artifacts: string[]; minerals: string[] };
 }
 
-const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets'] as const;
+const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'museum'] as const;
 
 export const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 export const spriteUrl = (sheet: string) => assetUrl(`sprites/${sheet}.png`);
