@@ -1,0 +1,204 @@
+/* ---------- Frames ---------- */
+
+/* Classic orange menu box (MenuTiles 0,256,60,60). */
+.panel {
+  border-style: solid;
+  border-width: calc(16 * var(--px));
+  border-image: url('/sprites/ui/menu-box.png') 16 fill / calc(16 * var(--px)) stretch;
+  padding: calc(2 * var(--px)) calc(4 * var(--px));
+  margin: calc(-4 * var(--px));
+}
+
+/* Small brown-framed box used for buttons, tooltips and inner cards (Cursors 384,373,18,18). */
+.box {
+  border-style: solid;
+  border-width: calc(6 * var(--px));
+  border-image: url('/sprites/ui/dialog-box.png') 6 fill / calc(6 * var(--px)) stretch;
+  padding: calc(2 * var(--px)) calc(4 * var(--px));
+}
+
+/* Recessed light area for lists and text. */
+.inset {
+  border-style: solid;
+  border-width: calc(3 * var(--px));
+  border-image: url('/sprites/ui/inset-box.png') 3 fill / calc(3 * var(--px)) stretch;
+  padding: calc(3 * var(--px)) calc(4 * var(--px));
+}
+
+/* ---------- Buttons ---------- */
+
+.button {
+  font: inherit;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  border-style: solid;
+  border-width: calc(6 * var(--px));
+  border-image: url('/sprites/ui/dialog-box.png') 6 fill / calc(6 * var(--px)) stretch;
+  padding: 0 calc(4 * var(--px));
+  background: none;
+  min-height: calc(22 * var(--px));
+  display: inline-flex;
+  align-items: center;
+  gap: calc(3 * var(--px));
+  text-decoration: none;
+  transition: transform 80ms steps(2);
+}
+
+.button:hover:not(:disabled) {
+  transform: scale(1.04);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(var(--px));
+}
+
+.button:disabled {
+  cursor: default;
+  filter: grayscale(0.8) brightness(0.9);
+}
+
+.button--primary {
+  color: #fff;
+  text-shadow: var(--px) var(--px) 0 #1e5b12;
+  filter: hue-rotate(60deg) saturate(1.3);
+}
+
+/* ---------- Tabs ---------- */
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(2 * var(--px));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tab {
+  font: inherit;
+  color: var(--text);
+  text-decoration: none;
+  border-style: solid;
+  border-width: calc(4 * var(--px)) calc(4 * var(--px)) calc(2 * var(--px));
+  border-image: url('/sprites/ui/tab.png') 4 4 2 fill / calc(4 * var(--px)) calc(4 * var(--px)) calc(2 * var(--px)) stretch;
+  padding: calc(1 * var(--px)) calc(3 * var(--px)) 0;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(3 * var(--px));
+  transform: translateY(calc(4 * var(--px)));
+  transition: transform 80ms steps(2);
+}
+
+.tab:hover,
+.tab[aria-current='page'] {
+  transform: translateY(0);
+}
+
+.tab[aria-current='page'] {
+  font-weight: 600;
+}
+
+/* ---------- Sprites & icons ---------- */
+
+.sprite {
+  display: inline-block;
+  background-repeat: no-repeat;
+  flex: none;
+}
+
+.slot {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: calc(24 * var(--px));
+  height: calc(24 * var(--px));
+  background: url('/sprites/ui/item-slot.png') 0 0 / 100% 100%;
+}
+
+.slot--faded > .sprite {
+  opacity: 0.35;
+  filter: grayscale(1);
+}
+
+.slot__quality {
+  position: absolute;
+  left: calc(2 * var(--px));
+  bottom: calc(2 * var(--px));
+}
+
+.slot__count {
+  position: absolute;
+  right: calc(2 * var(--px));
+  bottom: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  text-shadow:
+    var(--px) 0 0 #000,
+    calc(-1 * var(--px)) 0 0 #000,
+    0 var(--px) 0 #000,
+    0 calc(-1 * var(--px)) 0 #000;
+}
+
+.hearts {
+  display: inline-flex;
+  gap: var(--px);
+  align-items: center;
+}
+
+/* ---------- Progress ---------- */
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: calc(4 * var(--px));
+}
+
+.progress__track {
+  flex: 1;
+  height: calc(8 * var(--px));
+  background: var(--wood-dark);
+  border: var(--px) solid var(--wood-dark);
+  box-shadow: inset 0 var(--px) 0 #2e1208;
+}
+
+.progress__fill {
+  height: 100%;
+  background: linear-gradient(#7ad85b 0 50%, #3fa53a 50%);
+  transition: width 300ms steps(10);
+}
+
+.progress--done .progress__fill {
+  background: linear-gradient(#ffe066 0 50%, #e8a91f 50%);
+}
+
+.progress__label {
+  min-width: 5ch;
+  text-align: right;
+  font-weight: 600;
+}
+
+/* ---------- Tooltip ---------- */
+
+.tooltip {
+  position: relative;
+  display: inline-flex;
+}
+
+.tooltip__bubble {
+  position: absolute;
+  z-index: 20;
+  bottom: calc(100% + 2 * var(--px));
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 80ms steps(2);
+}
+
+.tooltip:hover .tooltip__bubble,
+.tooltip:focus-within .tooltip__bubble {
+  opacity: 1;
+}

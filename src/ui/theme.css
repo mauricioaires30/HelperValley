@@ -1,0 +1,90 @@
+@import '@fontsource/pixelify-sans/400.css';
+@import '@fontsource/pixelify-sans/600.css';
+
+/*
+ * Visual language follows the game's menus: everything is drawn from game sprites at an integer
+ * scale (2x) with nearest-neighbour filtering. Colors are sampled from the game's UI.
+ */
+:root {
+  --px: 2px; /* one game pixel */
+  --font: 'Pixelify Sans', ui-monospace, monospace;
+
+  --text: #561608; /* Game1.textColor */
+  --text-soft: #8a4b1e;
+  --text-shadow: #dd9454; /* Game1.textShadowColor */
+  --paper: #ffd284;
+  --paper-light: #fde8b3;
+  --wood-dark: #5b2b15;
+  --accent: #2a8a2a;
+  --danger: #b3261e;
+  --sky-top: #6fb7f0;
+  --sky-bottom: #bfe4ff;
+
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--text);
+  background-color: #6b3d1f;
+  background-image: url('/sprites/ui/wood-planks.png');
+  background-size: calc(64 * var(--px));
+  image-rendering: pixelated;
+  min-height: 100vh;
+}
+
+img,
+.sprite {
+  image-rendering: pixelated;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0 0 0.4em;
+  font-weight: 600;
+  line-height: 1.1;
+  text-shadow: var(--px) var(--px) 0 var(--text-shadow);
+}
+
+h1 {
+  font-size: 34px;
+}
+
+h2 {
+  font-size: 26px;
+}
+
+h3 {
+  font-size: 21px;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: var(--px) dashed var(--text);
+  outline-offset: var(--px);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
