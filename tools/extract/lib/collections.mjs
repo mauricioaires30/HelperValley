@@ -27,6 +27,25 @@ export function buildBundles() {
   };
 }
 
+/**
+ * Inputs for achievement progress: recipe totals, the fish collection and the crops that
+ * count for Polyculture/Monoculture.
+ */
+export function buildAchievementGoals() {
+  const objects = readRaw('Data/Objects');
+  const crops = Object.values(readRaw('Data/Crops'));
+  return {
+    cooking: Object.keys(readRaw('Data/CookingRecipes')),
+    // The Wedding Ring recipe doesn't count toward Craft Master.
+    crafting: Object.keys(readRaw('Data/CraftingRecipes')).filter((name) => name !== 'Wedding Ring'),
+    fish: Object.entries(objects)
+      .filter(([, o]) => o.Category === -4 && !o.ExcludeFromFishingCollection)
+      .map(([id]) => `(O)${id}`),
+    polyculture: crops.filter((c) => c.CountForPolyculture).map((c) => c.HarvestItemId),
+    monoculture: crops.filter((c) => c.CountForMonoculture).map((c) => c.HarvestItemId),
+  };
+}
+
 /** Achievements: [en, pt] names and descriptions, prerequisite and visibility. */
 export function buildAchievements() {
   const out = {};

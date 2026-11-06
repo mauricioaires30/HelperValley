@@ -14,7 +14,7 @@ import path from 'node:path';
 import { CACHE_DIR, DATA_OUT, DEFAULT_GAME_DIR, ROOT, SPRITES_OUT } from './lib/paths.mjs';
 import { buildItems } from './lib/items.mjs';
 import { buildNpcs } from './lib/npcs.mjs';
-import { buildAchievements, buildBundles, buildMuseum } from './lib/collections.mjs';
+import { buildAchievementGoals, buildAchievements, buildBundles, buildMuseum } from './lib/collections.mjs';
 import { exportTextures, UI_TEXTURES } from './lib/textures.mjs';
 import { exportUiCrops } from './lib/ui.mjs';
 
@@ -46,6 +46,7 @@ const datasets = {
   ...buildNpcs(textures),
   bundles: buildBundles(),
   achievements: buildAchievements(),
+  achievementGoals: buildAchievementGoals(),
   museum: buildMuseum(),
 };
 
