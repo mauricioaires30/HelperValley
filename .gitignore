@@ -7,3 +7,4 @@ tools/extract/.cache/
 tools/extract/dumper/bin/
 tools/extract/dumper/obj/
 public/__dev/
+*.tsbuildinfo
