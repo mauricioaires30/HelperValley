@@ -15,6 +15,7 @@ import { CACHE_DIR, DATA_OUT, DEFAULT_GAME_DIR, ROOT, SPRITES_OUT } from './lib/
 import { buildItems } from './lib/items.mjs';
 import { buildNpcs } from './lib/npcs.mjs';
 import { exportTextures, UI_TEXTURES } from './lib/textures.mjs';
+import { exportUiCrops } from './lib/ui.mjs';
 
 const args = process.argv.slice(2);
 const flag = (name) => args.includes(name);
@@ -57,4 +58,6 @@ console.log(`Wrote ${Object.keys(datasets).length} datasets to public/data`);
 
 await rm(SPRITES_OUT, { recursive: true, force: true });
 const { written, missing } = await exportTextures(gameDir, textures);
-console.log(`Wrote ${written} sprite sheets to public/sprites` + (missing.length ? ` (${missing.length} missing: ${missing.join(', ')})` : ''));
+console.log(`Wrote ${written} sprite sheets to public/sprites`);
+if (missing.length) console.log(`  (not in this game version, skipped: ${missing.join(', ')})`);
+console.log(`Wrote ${exportUiCrops()} UI crops to public/sprites/ui`);
