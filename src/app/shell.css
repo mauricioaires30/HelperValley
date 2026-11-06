@@ -42,12 +42,6 @@
   cursor: pointer;
 }
 
-.shell__nav {
-  margin-top: 12px;
-  position: relative;
-  z-index: 1;
-}
-
 .shell__main {
   min-height: 60vh;
 }
@@ -72,4 +66,84 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
+}
+
+/* ---------- Side tabs ---------- */
+
+.shell__body {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  margin-top: 16px;
+}
+
+.shell__nav {
+  position: sticky;
+  top: 12px;
+  z-index: 1;
+  /* Tabs tuck under the panel's frame, like the game's menu tabs. */
+  margin-right: calc(-4 * var(--px));
+  padding-top: 24px;
+}
+
+.side-tabs {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.side-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 190px;
+  padding: 2px 10px 2px 6px;
+  color: var(--text);
+  text-decoration: none;
+  border-style: solid;
+  border-width: calc(6 * var(--px));
+  border-image: url('/sprites/ui/dialog-box.png') 6 fill / calc(6 * var(--px)) stretch;
+  transform: translateX(calc(-4 * var(--px)));
+  transition: transform 80ms steps(2);
+}
+
+.side-tab:hover {
+  transform: translateX(calc(-2 * var(--px)));
+}
+
+.side-tab[aria-current='page'] {
+  font-weight: 600;
+  transform: translateX(0);
+  filter: brightness(1.08);
+}
+
+@media (max-width: 900px) {
+  .shell__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .shell__nav {
+    position: static;
+    margin: 0 0 calc(-2 * var(--px));
+    padding-top: 0;
+  }
+
+  .side-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+  }
+
+  .side-tab {
+    min-width: 0;
+    padding: 0 6px 0 2px;
+    transform: none;
+  }
+
+  .side-tab:hover,
+  .side-tab[aria-current='page'] {
+    transform: none;
+  }
 }

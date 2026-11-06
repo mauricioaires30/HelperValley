@@ -15,7 +15,6 @@ const NAV = [
   { to: '/cc', key: 'cc', icon: '(O)24' },
   { to: '/museum', key: 'museum', icon: '(O)96' },
   { to: '/achievements', key: 'achievements', icon: '(O)74' },
-  { to: '/kit', key: 'kit', icon: '(O)872' },
 ];
 
 export function AppShell() {
@@ -47,22 +46,25 @@ export function AppShell() {
       </header>
 
       <CachedBanner />
-      <nav className="shell__nav" aria-label="Main">
-        <ul className="tabs">
-          {NAV.map((item) => (
-            <li key={item.to}>
-              <NavLink to={item.to} end className="tab">
-                <ItemIcon id={item.icon} scale={2} tooltip={false} />
-                {t(`nav.${item.key}`)}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <div className="shell__body">
+        {/* Side tabs like the game's menus; they move to the top on narrow screens. */}
+        <nav className="shell__nav" aria-label="Main">
+          <ul className="side-tabs">
+            {NAV.map((item) => (
+              <li key={item.to}>
+                <NavLink to={item.to} end className="side-tab">
+                  <ItemIcon id={item.icon} scale={2} tooltip={false} />
+                  <span>{t(`nav.${item.key}`)}</span>
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-      <main className="shell__main panel">
-        <Outlet />
-      </main>
+        <main className="shell__main panel">
+          <Outlet />
+        </main>
+      </div>
 
       <footer className="shell__footer">{t('app.disclaimer')}</footer>
       <SaveUpdatedToast />
