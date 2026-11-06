@@ -1,0 +1,6 @@
+node_modules/
+dist/
+*.local
+.DS_Store
+# Raw unpacked game files used by the extractor (never committed)
+tools/extract/.cache/
