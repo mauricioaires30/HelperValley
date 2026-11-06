@@ -66,3 +66,10 @@
     align-items: flex-start;
   }
 }
+
+.shell__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}

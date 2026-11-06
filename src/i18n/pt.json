@@ -22,6 +22,38 @@
       "summer": "Verão",
       "fall": "Outono",
       "winter": "Inverno"
+    },
+    "skills": {
+      "farming": "Cultivo",
+      "fishing": "Pesca",
+      "foraging": "Coleta",
+      "mining": "Mineração",
+      "combat": "Combate"
     }
+  },
+  "saves": {
+    "intro": "O HelperValley lê os saves direto do seu computador. Nada é enviado para a internet.",
+    "where": "Seus saves ficam em:",
+    "copy": "Copiar caminho",
+    "copied": "Copiado!",
+    "open": "Abrir pasta Saves",
+    "openHint": "Escolha a pasta Saves (ou a pasta StardewValley). O site recarrega sozinho sempre que o jogo salvar.",
+    "fallback": "Selecionar pasta Saves",
+    "fallbackHint": "Seu navegador não consegue manter a pasta aberta, então selecione de novo depois de jogar. Para recarga automática, use Chrome ou Edge.",
+    "reconnect": "Reconectar aos saves",
+    "reconnectHint": "O navegador precisa de um clique para liberar a leitura da pasta de novo.",
+    "change": "Trocar pasta",
+    "none": "Nenhum save encontrado nessa pasta.",
+    "list": "Suas fazendas",
+    "live": "Ao vivo: atualiza quando o jogo salva",
+    "snapshot": "Cópia: selecione a pasta de novo para atualizar",
+    "loading": "Lendo o save...",
+    "player": "Jogador",
+    "day": "Dia {{day}} de {{season}}, Ano {{year}}",
+    "playtime": "{{hours}}h jogadas",
+    "version": "v{{version}}",
+    "host": "Anfitrião",
+    "farmhand": "Ajudante",
+    "error": "Não foi possível ler este save: {{message}}"
   }
 }

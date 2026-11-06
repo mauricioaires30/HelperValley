@@ -1,0 +1,113 @@
+.saves__connect {
+  max-width: 640px;
+  margin: 24px auto;
+  text-align: center;
+}
+
+.saves__path {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.saves__path code {
+  font-family: var(--font);
+  user-select: all;
+}
+
+.saves__hint {
+  color: var(--text-soft);
+  font-size: 16px;
+}
+
+.saves__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.saves__header h2 {
+  margin: 0;
+}
+
+.saves__mode {
+  flex: 1;
+  color: var(--text-soft);
+  font-size: 16px;
+}
+
+.saves__mode--live::before {
+  content: '';
+  display: inline-block;
+  width: calc(4 * var(--px));
+  height: calc(4 * var(--px));
+  margin-right: 6px;
+  background: var(--accent);
+  animation: blink 1.6s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.saves__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.save-card {
+  display: grid;
+  gap: 4px;
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+  background: none;
+  cursor: pointer;
+  transition: transform 80ms steps(2);
+}
+
+.save-card:hover {
+  transform: translateY(calc(-1 * var(--px)));
+}
+
+.save-card--selected {
+  filter: drop-shadow(0 0 0 var(--accent)) drop-shadow(calc(2 * var(--px)) calc(2 * var(--px)) 0 rgb(0 0 0 / 0.35));
+  transform: translateY(calc(-2 * var(--px)));
+}
+
+.save-card__title {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.save-card__date,
+.save-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+}
+
+.save-card__meta {
+  font-size: 15px;
+  color: var(--text-soft);
+}
+
+.player-switcher {
+  font-weight: 600;
+}
+
+.player-switcher select {
+  font: inherit;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}

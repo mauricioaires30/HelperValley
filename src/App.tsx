@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { loadGameData } from '@/data/gameData';
+import { useSaveStore } from '@/store/saveStore';
 import { AppShell } from '@/app/AppShell';
 import { HomePage } from '@/features/home/HomePage';
 import { KitPage } from '@/features/kit/KitPage';
@@ -13,7 +14,11 @@ export function App() {
 
   useEffect(() => {
     loadGameData().then(
-      () => setReady(true),
+      () => {
+        setReady(true);
+        // Reopen the remembered saves folder, if any.
+        void useSaveStore.getState().init();
+      },
       (e: unknown) => setError(String(e)),
     );
   }, []);

@@ -22,6 +22,38 @@
       "summer": "Summer",
       "fall": "Fall",
       "winter": "Winter"
+    },
+    "skills": {
+      "farming": "Farming",
+      "fishing": "Fishing",
+      "foraging": "Foraging",
+      "mining": "Mining",
+      "combat": "Combat"
     }
+  },
+  "saves": {
+    "intro": "HelperValley reads your save files directly from your computer. Nothing is uploaded.",
+    "where": "Your saves are in:",
+    "copy": "Copy path",
+    "copied": "Copied!",
+    "open": "Open Saves folder",
+    "openHint": "Pick the Saves folder (or the StardewValley folder). The site reloads automatically every time the game saves.",
+    "fallback": "Select Saves folder",
+    "fallbackHint": "Your browser can't keep a folder open, so select it again after playing. For auto-reload, use Chrome or Edge.",
+    "reconnect": "Reconnect to your saves",
+    "reconnectHint": "Your browser needs one click to allow reading the saves folder again.",
+    "change": "Change folder",
+    "none": "No saves were found in that folder.",
+    "list": "Your farms",
+    "live": "Live: updates when the game saves",
+    "snapshot": "Snapshot: select the folder again to update",
+    "loading": "Reading save...",
+    "player": "Player",
+    "day": "Day {{day}} of {{season}}, Year {{year}}",
+    "playtime": "{{hours}}h played",
+    "version": "v{{version}}",
+    "host": "Host",
+    "farmhand": "Farmhand",
+    "error": "Couldn't read this save: {{message}}"
   }
 }

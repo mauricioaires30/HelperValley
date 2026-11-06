@@ -2,6 +2,7 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGES } from '@/i18n';
 import { ItemIcon } from '@/ui';
+import { PlayerSwitcher } from '@/features/saves/PlayerSwitcher';
 import './shell.css';
 
 const NAV = [
@@ -21,6 +22,8 @@ export function AppShell() {
             <p className="shell__tagline">{t('app.tagline')}</p>
           </div>
         </div>
+        <div className="shell__controls">
+        <PlayerSwitcher />
         <label className="shell__lang box">
           <span className="visually-hidden">{t('common.language')}</span>
           <select value={i18n.language} onChange={(e) => void i18n.changeLanguage(e.target.value)}>
@@ -31,6 +34,7 @@ export function AppShell() {
             ))}
           </select>
         </label>
+        </div>
       </header>
 
       <nav className="shell__nav" aria-label="Main">
