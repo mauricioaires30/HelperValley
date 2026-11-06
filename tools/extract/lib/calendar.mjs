@@ -45,7 +45,8 @@ export function buildHeartEvents() {
     const location = file.replace(/\.json$/, '');
     for (const key of Object.keys(readRaw(`Data/Events/${location}`) ?? {})) {
       const match = key.match(/(?:^|\/)f ([A-Za-z]+) (\d+)/);
-      if (!match) continue;
+      // Below one heart these are introductions, not heart events.
+      if (!match || Number(match[2]) < 250) continue;
       events.push({ id: key.split('/')[0], npc: match[1], hearts: Math.round(Number(match[2]) / 250), location });
     }
   }
