@@ -1,5 +1,6 @@
 import { readRaw } from './raw.mjs';
 import { LANGUAGES } from './paths.mjs';
+import { localize } from './strings.mjs';
 
 const perLanguage = (asset, key) => LANGUAGES.map(([, suffix]) => (readRaw(asset + suffix) ?? readRaw(asset))?.[key] ?? key);
 
@@ -41,12 +42,55 @@ export function buildAchievements() {
   return out;
 }
 
-/** Items that can be donated to the museum (artifacts and minerals), in collection order. */
+/** Geode-like containers whose drop tables list museum items. */
+const GEODES = ['(O)535', '(O)536', '(O)537', '(O)749', '(O)275', '(O)791'];
+/** Omni geodes also roll the regular, frozen and magma geode tables. */
+const OMNI_INCLUDES = ['(O)535', '(O)536', '(O)537'];
+
+/**
+ * Items that can be donated to the museum (artifacts and minerals), in collection order,
+ * with where to find them: geodes that drop them and locations where they can be dug up.
+ */
 export function buildMuseum() {
   const objects = readRaw('Data/Objects');
   const ids = (type) =>
     Object.entries(objects)
       .filter(([, o]) => o.Type === type)
       .map(([id]) => `(O)${id}`);
-  return { artifacts: ids('Arch'), minerals: ids('Minerals') };
+  const artifacts = ids('Arch');
+  const minerals = ids('Minerals');
+  const museumItems = new Set([...artifacts, ...minerals]);
+
+  const sources = {};
+  const addSource = (item, kind, value) => {
+    if (!museumItems.has(item)) return;
+    sources[item] ??= { geodes: [], dig: [] };
+    if (!sources[item][kind].includes(value)) sources[item][kind].push(value);
+  };
+
+  const geodeDrops = (geode) =>
+    (objects[geode.slice(3)]?.GeodeDrops ?? []).flatMap((d) => [d.ItemId, ...(d.RandomItemId ?? [])]).filter(Boolean);
+  for (const geode of GEODES) {
+    const drops = new Set(geodeDrops(geode));
+    if (geode === '(O)749') OMNI_INCLUDES.forEach((g) => geodeDrops(g).forEach((d) => drops.add(d)));
+    drops.forEach((item) => addSource(item, 'geodes', geode));
+  }
+
+  for (const [key, location] of Object.entries(readRaw('Data/Locations'))) {
+    // Farm types and island areas collapse into one entry each.
+    const where = key.startsWith('Farm_') ? 'Farm' : key.startsWith('Island') ? 'Island' : key;
+    for (const spot of location.ArtifactSpots ?? []) {
+      for (const item of [spot.ItemId, ...(spot.RandomItemId ?? [])]) if (item) addSource(item, 'dig', where);
+    }
+  }
+
+  const descriptions = {};
+  for (const id of museumItems) descriptions[id] = localize(objects[id.slice(3)].Description);
+
+  const places = {};
+  for (const key of ['Town', 'Beach', 'Mountain', 'Forest', 'BusStop', 'Desert', 'Woods', 'Railroad', 'Backwoods']) {
+    places[key] = localize(readRaw('Data/Locations')[key].DisplayName, key);
+  }
+
+  return { artifacts, minerals, sources, descriptions, places };
 }
