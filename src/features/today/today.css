@@ -1,0 +1,42 @@
+.today__hero {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.today__hero p {
+  margin: 2px 0;
+}
+
+.today__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+@media (max-width: 420px) {
+  .today__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.today__list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.today__list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.today__birthday {
+  font-weight: 600;
+  color: #c2457a;
+}

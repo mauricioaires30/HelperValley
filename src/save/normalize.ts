@@ -26,6 +26,14 @@ function season(value: XmlValue): Season {
   return SEASONS[num(value)] ?? 'spring';
 }
 
+/** Pre-1.6 saves stored weather as an index; 1.6 uses ids like "Sun" or "Rain". */
+const LEGACY_WEATHER = ['Sun', 'Rain', 'Wind', 'Storm', 'Festival', 'Snow', 'Wedding'];
+
+function weather(value: XmlValue): string {
+  const t = text(value) ?? '';
+  return /^\d+$/.test(t) ? (LEGACY_WEATHER[Number(t)] ?? '') : t;
+}
+
 /** Rebuilds the qualified id ("(O)24") that 1.6 items carry at runtime but don't serialize. */
 export function qualifiedId(item: XmlNode): string {
   const id = text(item.itemId) ?? text(item.parentSheetIndex) ?? '';
@@ -231,7 +239,7 @@ export function normalizeSave(xml: string, folder: string): SaveData {
     farmType: num(save.whichFarm),
     date: { season: season(save.currentSeason), day: num(save.dayOfMonth, 1), year: num(save.year, 1) },
     dailyLuck: num(save.dailyLuck),
-    weatherTomorrow: text(save.weatherForTomorrow) ?? '',
+    weatherTomorrow: weather(save.weatherForTomorrow),
     isRaining: bool(save.isRaining),
     goldenWalnuts: num(save.goldenWalnuts),
     goldenWalnutsFound: num(save.goldenWalnutsFound),
