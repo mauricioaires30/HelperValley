@@ -1,0 +1,68 @@
+.shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px 24px;
+}
+
+.shell__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 -16px;
+  padding: 20px 24px 28px;
+  background: linear-gradient(var(--sky-top), var(--sky-bottom));
+  border-bottom: calc(2 * var(--px)) solid var(--wood-dark);
+}
+
+.shell__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.shell__brand h1 {
+  margin: 0;
+  color: #fff;
+  text-shadow:
+    var(--px) var(--px) 0 var(--wood-dark),
+    calc(2 * var(--px)) calc(2 * var(--px)) 0 var(--text-shadow);
+}
+
+.shell__tagline {
+  margin: 0;
+  color: var(--wood-dark);
+}
+
+.shell__lang select {
+  font: inherit;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.shell__nav {
+  margin-top: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.shell__main {
+  min-height: 60vh;
+}
+
+.shell__footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 15px;
+  color: var(--paper-light);
+  text-shadow: var(--px) var(--px) 0 #2e1208;
+}
+
+@media (max-width: 640px) {
+  .shell__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

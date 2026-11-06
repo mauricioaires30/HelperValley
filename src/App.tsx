@@ -1,3 +1,34 @@
+import { useEffect, useState } from 'react';
+import { HashRouter, Route, Routes } from 'react-router-dom';
+import { loadGameData } from '@/data/gameData';
+import { AppShell } from '@/app/AppShell';
+import { HomePage } from '@/features/home/HomePage';
+import { KitPage } from '@/features/kit/KitPage';
+import '@/i18n';
+import '@/ui';
+
 export function App() {
-  return <main>HelperValley</main>;
+  const [ready, setReady] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadGameData().then(
+      () => setReady(true),
+      (e: unknown) => setError(String(e)),
+    );
+  }, []);
+
+  if (error) return <p role="alert">{error}</p>;
+  if (!ready) return null;
+
+  return (
+    <HashRouter>
+      <Routes>
+        <Route element={<AppShell />}>
+          <Route index element={<HomePage />} />
+          <Route path="kit" element={<KitPage />} />
+        </Route>
+      </Routes>
+    </HashRouter>
+  );
 }
