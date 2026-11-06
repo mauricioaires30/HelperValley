@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { gameData } from '@/data/gameData';
 import { useGameName } from '@/i18n';
 import type { Player, SaveData } from '@/save/model';
+import { useCurrentSave } from '@/store/saveStore';
 import { totalCount } from '@/save/inventory';
-import { RequireSave } from '@/features/saves/RequireSave';
 import { daysUntil, DAYS_IN_SEASON, SEASONS } from '@/features/calendar/calendar';
-import { useFestivalName } from '@/features/calendar/CalendarPage';
+import { FestivalIcon, useFestivalName } from '@/features/calendar/CalendarPage';
 import { buildRelationships } from '@/features/relationships/relationships';
 import { bestOwnedGifts, ownedObjectIds } from '@/features/relationships/gifts';
 import { buildRooms } from '@/features/community-center/bundles';
@@ -93,7 +93,10 @@ function Today({ save, player }: { save: SaveData; player: Player }) {
           <ul className="today__list">
             {soon.festivals.map(({ f, in: d }) => (
               <li key={f.id}>
-                <strong>{festivalName(f)}</strong> · {when(d)}
+                <FestivalIcon festival={f} />
+                <span>
+                  <strong>{festivalName(f)}</strong> · {when(d)}
+                </span>
               </li>
             ))}
             {soon.birthdays.map(({ npc, in: d }) => {
@@ -141,6 +144,8 @@ function Today({ save, player }: { save: SaveData; player: Player }) {
   );
 }
 
-export function TodayPage() {
-  return <RequireSave>{(save, player) => <Today save={save} player={player} />}</RequireSave>;
+/** Today's summary, shown at the top of the calendar when a save is loaded. */
+export function TodayPanel() {
+  const { save, player } = useCurrentSave();
+  return save && player ? <Today save={save} player={player} /> : null;
 }

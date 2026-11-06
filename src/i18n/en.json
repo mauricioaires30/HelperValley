@@ -169,7 +169,11 @@
       "fri": "Friday",
       "sat": "Saturday",
       "sun": "Sunday"
-    }
+    },
+    "seasonYear": "{{season}}, Year {{year}}",
+    "previous": "Previous season",
+    "next": "Next season",
+    "backToToday": "Back to today"
   },
   "rel": {
     "title": "{{name}}'s relationships",
