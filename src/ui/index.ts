@@ -9,3 +9,4 @@ export { Tooltip } from './Tooltip';
 export { Progress } from './Progress';
 export { Portrait, NpcSprite, NpcHead } from './Portrait';
 export { SeasonIcon } from './SeasonIcon';
+export { Popover } from './Popover';

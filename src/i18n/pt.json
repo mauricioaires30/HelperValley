@@ -203,7 +203,55 @@
       "Roommate": "Colega de quarto",
       "Divorced": "Divorciados"
     },
-    "eventReadyAt": "Evento de {{hearts}} corações disponível ({{place}})"
+    "eventReadyAt": "Evento de {{hearts}} corações disponível ({{place}})",
+    "taste": {
+      "love": "Ama",
+      "like": "Gosta",
+      "neutral": "Neutro",
+      "dislike": "Não gosta",
+      "hate": "Odeia"
+    },
+    "tasteTitle": {
+      "love": "Presentes que ama",
+      "like": "Presentes que gosta",
+      "neutral": "Presentes neutros",
+      "dislike": "Presentes que não gosta",
+      "hate": "Presentes que odeia"
+    },
+    "tasteOwned": "Os itens brilhando estão nos seus baús ou mochilas.",
+    "group": {
+      "-2": "Gemas",
+      "-4": "Peixes",
+      "-5": "Ovos",
+      "-6": "Leites",
+      "-7": "Pratos cozinhados",
+      "-8": "Itens fabricados",
+      "-12": "Minerais",
+      "-15": "Metais",
+      "-16": "Materiais de construção",
+      "-19": "Fertilizantes",
+      "-20": "Lixo",
+      "-21": "Iscas",
+      "-22": "Apetrechos de pesca",
+      "-24": "Decoração",
+      "-25": "Ingredientes de cozinha",
+      "-26": "Produtos artesanais",
+      "-27": "Produtos de torneira",
+      "-28": "Restos de monstros",
+      "-74": "Sementes",
+      "-75": "Vegetais",
+      "-79": "Frutas",
+      "-80": "Flores",
+      "-81": "Coletáveis",
+      "-260": "Bombas",
+      "book_item": "Livros",
+      "edible_mushroom": "Cogumelos comestíveis",
+      "ancient_item": "Itens antigos",
+      "doll_item": "Bonecas",
+      "toy_item": "Brinquedos",
+      "forage_item_beach": "Coletáveis da praia",
+      "category_trinket": "Bugigangas"
+    }
   },
   "today": {
     "luck": {

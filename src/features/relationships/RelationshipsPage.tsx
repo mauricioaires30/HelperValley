@@ -4,8 +4,8 @@ import { gameData } from '@/data/gameData';
 import { useGameName } from '@/i18n';
 import type { Player, SaveData } from '@/save/model';
 import { RequireSave } from '@/features/saves/RequireSave';
-import { Hearts, ItemIcon, Portrait } from '@/ui';
-import { bestOwnedGifts, ownedObjectIds } from './gifts';
+import { Hearts, ItemIcon, Popover, Portrait } from '@/ui';
+import { bestOwnedGifts, ownedObjectIds, TASTES, tasteGroups } from './gifts';
 import { buildRelationships, POINTS_PER_HEART, type Relationship } from './relationships';
 import './relationships.css';
 
@@ -57,8 +57,48 @@ function RelationshipCard({ rel, owned }: { rel: Relationship; owned: string[] }
             </div>
           </div>
         )}
+        <TasteButtons npc={rel.npc} owned={owned} />
       </div>
     </article>
+  );
+}
+
+/** One button per taste; hovering shows every item and group in it, owned ones glowing. */
+function TasteButtons({ npc, owned }: { npc: string; owned: string[] }) {
+  const { t } = useTranslation();
+  const groups = useMemo(() => tasteGroups(npc), [npc]);
+  const ownedSet = useMemo(() => new Set(owned), [owned]);
+  return (
+    <div className="rel__tastes">
+      {TASTES.map((taste) => {
+        const { items, groups: categories } = groups[taste];
+        if (!items.length && !categories.length) return null;
+        return (
+          <Popover key={taste} className={`taste taste--${taste}`} label={`${t(`rel.taste.${taste}`)} ${items.length + categories.length}`}>
+            <strong>{t(`rel.tasteTitle.${taste}`)}</strong>
+            {categories.length > 0 && (
+              <span className="taste__groups">
+                {categories.map((g) => (
+                  <span key={g} className="taste__group inset">
+                    {t(`rel.group.${g}`, { defaultValue: g })}
+                  </span>
+                ))}
+              </span>
+            )}
+            {items.length > 0 && (
+              <span className="slot-grid">
+                {items.map((id) => (
+                  <span key={id} className={ownedSet.has(id) ? 'slot-state slot-state--ready' : 'slot-state'}>
+                    <ItemIcon id={id} slot faded={!ownedSet.has(id)} />
+                  </span>
+                ))}
+              </span>
+            )}
+            {items.some((id) => ownedSet.has(id)) && <span className="cc-summary__hint">{t('rel.tasteOwned')}</span>}
+          </Popover>
+        );
+      })}
+    </div>
   );
 }
 

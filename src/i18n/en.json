@@ -203,7 +203,55 @@
       "Roommate": "Roommate",
       "Divorced": "Divorced"
     },
-    "eventReadyAt": "{{hearts}}-heart event available ({{place}})"
+    "eventReadyAt": "{{hearts}}-heart event available ({{place}})",
+    "taste": {
+      "love": "Loves",
+      "like": "Likes",
+      "neutral": "Neutral",
+      "dislike": "Dislikes",
+      "hate": "Hates"
+    },
+    "tasteTitle": {
+      "love": "Loved gifts",
+      "like": "Liked gifts",
+      "neutral": "Neutral gifts",
+      "dislike": "Disliked gifts",
+      "hate": "Hated gifts"
+    },
+    "tasteOwned": "Glowing items are in your chests or backpacks.",
+    "group": {
+      "-2": "Gems",
+      "-4": "Fish",
+      "-5": "Eggs",
+      "-6": "Milk",
+      "-7": "Cooked dishes",
+      "-8": "Crafted items",
+      "-12": "Minerals",
+      "-15": "Metal resources",
+      "-16": "Building resources",
+      "-19": "Fertilizers",
+      "-20": "Trash",
+      "-21": "Bait",
+      "-22": "Fishing tackle",
+      "-24": "Decor",
+      "-25": "Cooking ingredients",
+      "-26": "Artisan goods",
+      "-27": "Tapper products",
+      "-28": "Monster loot",
+      "-74": "Seeds",
+      "-75": "Vegetables",
+      "-79": "Fruits",
+      "-80": "Flowers",
+      "-81": "Forage",
+      "-260": "Bombs",
+      "book_item": "Books",
+      "edible_mushroom": "Edible mushrooms",
+      "ancient_item": "Ancient items",
+      "doll_item": "Dolls",
+      "toy_item": "Toys",
+      "forage_item_beach": "Beach forage",
+      "category_trinket": "Trinkets"
+    }
   },
   "today": {
     "luck": {
