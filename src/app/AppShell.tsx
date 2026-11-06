@@ -8,6 +8,7 @@ import './shell.css';
 const NAV = [
   { to: '/', key: 'home', icon: '(O)392' },
   { to: '/cc', key: 'cc', icon: '(O)24' },
+  { to: '/museum', key: 'museum', icon: '(O)96' },
   { to: '/kit', key: 'kit', icon: '(O)872' },
 ];
 

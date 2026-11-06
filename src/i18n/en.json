@@ -104,5 +104,27 @@
       "greenhouse": "Greenhouse",
       "bus": "Bus to the desert"
     }
+  },
+  "museum": {
+    "title": "Museum",
+    "artifacts": "Artifacts",
+    "minerals": "Minerals",
+    "donate": "Donate",
+    "readyTitle": "Ready to donate ({{count}})",
+    "milestone": "Treasure Trove: {{left}} more to {{count}} donations",
+    "milestoneDone": "Treasure Trove: {{count}} donations reached",
+    "from": "Found in:",
+    "dig": "Dig up at: {{places}}",
+    "status": {
+      "donated": "Donated",
+      "owned": "In your chests: donate it!",
+      "found": "Found before, but not in your chests",
+      "missing": "Not found yet"
+    },
+    "place": {
+      "Farm": "Your farm",
+      "Island": "Ginger Island"
+    },
+    "legend": "Green: donated · Glowing: you own it · Faded: never found. Gems not listed in geodes come from mine rocks and ore nodes."
   }
 }

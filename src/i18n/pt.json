@@ -104,5 +104,27 @@
       "greenhouse": "Estufa",
       "bus": "Ônibus para o deserto"
     }
+  },
+  "museum": {
+    "title": "Museu",
+    "artifacts": "Artefatos",
+    "minerals": "Minerais",
+    "donate": "Doar",
+    "readyTitle": "Prontos para doar ({{count}})",
+    "milestone": "Tesouro Escondido: faltam {{left}} para {{count}} doações",
+    "milestoneDone": "Tesouro Escondido: {{count}} doações alcançadas",
+    "from": "Vem de:",
+    "dig": "Escave em: {{places}}",
+    "status": {
+      "donated": "Doado",
+      "owned": "Está nos seus baús: doe!",
+      "found": "Já encontrado, mas não está nos baús",
+      "missing": "Ainda não encontrado"
+    },
+    "place": {
+      "Farm": "Sua fazenda",
+      "Island": "Ilha Gengibre"
+    },
+    "legend": "Verde: doado · Brilhando: você tem · Apagado: nunca encontrado. Gemas que não aparecem em geodos vêm de pedras e minérios nas minas."
   }
 }

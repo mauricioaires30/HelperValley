@@ -53,6 +53,16 @@ export interface AchievementData {
   pre: number;
 }
 
+export interface MuseumData {
+  artifacts: string[];
+  minerals: string[];
+  /** Item → geodes that can contain it and places it can be dug up. */
+  sources: Record<string, { geodes: string[]; dig: string[] }>;
+  descriptions: Record<string, LocalizedName>;
+  /** Dig spot location key → display name. "Farm" and "Island" are translated by the site. */
+  places: Record<string, LocalizedName>;
+}
+
 export interface GameData {
   items: Record<string, ItemData>;
   npcs: Record<string, NpcData>;
@@ -60,7 +70,7 @@ export interface GameData {
   sheets: Record<string, [number, number]>;
   bundles: BundleStrings;
   achievements: Record<string, AchievementData>;
-  museum: { artifacts: string[]; minerals: string[] };
+  museum: MuseumData;
 }
 
 const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'museum'] as const;
