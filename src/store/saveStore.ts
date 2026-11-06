@@ -69,20 +69,45 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
     setState({ status: 'error', error: e instanceof Error ? e.message : String(e) });
   };
 
-  const stopPolling = () => window.clearInterval(pollTimer);
+  const stopPolling = () => {
+    window.clearInterval(pollTimer);
+    document.removeEventListener('visibilitychange', checkNow);
+  };
+
+  async function check() {
+    const { source, folder } = getState();
+    if (!source?.live || !folder) return;
+    try {
+      const modified = await source.modified(folder);
+      if (modified > lastModified) await load(folder, true);
+    } catch {
+      // Folder temporarily unavailable (the game may be writing); try again next tick.
+    }
+  }
+
+  // Background tabs poll slowly, so check as soon as the tab is visible again.
+  function checkNow() {
+    if (document.visibilityState === 'visible') void check();
+  }
 
   const startPolling = () => {
     stopPolling();
     const { source, folder } = getState();
     if (!source?.live || !folder) return;
-    pollTimer = window.setInterval(async () => {
-      try {
-        const modified = await source.modified(folder);
-        if (modified > lastModified) await load(folder, true);
-      } catch {
-        // Folder temporarily unavailable (the game may be writing); try again next tick.
-      }
-    }, POLL_MS);
+    pollTimer = window.setInterval(() => void check(), POLL_MS);
+    document.addEventListener('visibilitychange', checkNow);
+  };
+
+  /**
+   * Browsers only re-grant folder access after a user gesture, so the first click anywhere
+   * on the page asks for it. In Chrome/Edge, "Allow on every visit" makes this permanent.
+   */
+  const reconnectOnFirstClick = () => {
+    const handler = () => {
+      document.removeEventListener('pointerdown', handler, true);
+      if (getState().pendingHandle) void getState().reconnect();
+    };
+    document.addEventListener('pointerdown', handler, true);
   };
 
   async function load(folder: string, background = false) {
@@ -151,7 +176,10 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
         const restored = await restoreDirectory();
         if (!restored) return;
         if ('source' in restored) await useSource(restored.source);
-        else setState({ pendingHandle: restored.needsPermission, status: cached ? 'ready' : 'needs-permission' });
+        else {
+          setState({ pendingHandle: restored.needsPermission, status: cached ? 'ready' : 'needs-permission' });
+          reconnectOnFirstClick();
+        }
       } catch (e) {
         fail(e);
       }
