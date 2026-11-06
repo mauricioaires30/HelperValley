@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { LANGUAGES } from '@/i18n';
 import { ItemIcon } from '@/ui';
 import { PlayerSwitcher } from '@/features/saves/PlayerSwitcher';
+import { SaveDateChip, SaveUpdatedToast } from '@/features/saves/LiveStatus';
 import './shell.css';
 
 const NAV = [
@@ -23,6 +24,7 @@ export function AppShell() {
           </div>
         </div>
         <div className="shell__controls">
+        <SaveDateChip />
         <PlayerSwitcher />
         <label className="shell__lang box">
           <span className="visually-hidden">{t('common.language')}</span>
@@ -55,6 +57,7 @@ export function AppShell() {
       </main>
 
       <footer className="shell__footer">{t('app.disclaimer')}</footer>
+      <SaveUpdatedToast />
     </div>
   );
 }
