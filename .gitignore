@@ -4,3 +4,5 @@ dist/
 .DS_Store
 # Raw unpacked game files used by the extractor (never committed)
 tools/extract/.cache/
+tools/extract/dumper/bin/
+tools/extract/dumper/obj/
