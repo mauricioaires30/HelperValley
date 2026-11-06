@@ -39,7 +39,7 @@ describe('normalizeSave', () => {
   it('collects chests from locations, building interiors and global inventories', () => {
     expect(save.containers.map((c) => [c.location, c.kind, c.items[0].id])).toEqual([
       ['Farm', 'chest', '(BC)12'],
-      ['Shed1', 'chest', '(H)0'],
+      ['Shed', 'chest', '(H)0'],
       ['JunimoChests', 'global', '(O)388'],
     ]);
   });

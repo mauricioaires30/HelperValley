@@ -28,6 +28,8 @@ export interface ItemStack {
 export interface Container {
   /** Location name, e.g. "Farm", "FarmHouse", "Barn7". */
   location: string;
+  /** Unique id when several buildings share a name. */
+  locationId: string;
   kind: 'chest' | 'fridge' | 'grabber' | 'global' | 'other';
   tile?: [number, number];
   /** Player-chosen chest color index, when set. */
