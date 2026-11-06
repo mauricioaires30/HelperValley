@@ -5,6 +5,7 @@ import { useSaveStore } from '@/store/saveStore';
 import { AppShell } from '@/app/AppShell';
 import { HomePage } from '@/features/home/HomePage';
 import { KitPage } from '@/features/kit/KitPage';
+import { RelationshipsPage } from '@/features/relationships/RelationshipsPage';
 import { CalendarPage } from '@/features/calendar/CalendarPage';
 import { AchievementsPage } from '@/features/achievements/AchievementsPage';
 import { MuseumPage } from '@/features/museum/MuseumPage';
@@ -36,6 +37,7 @@ export function App() {
         <Route element={<AppShell />}>
           <Route index element={<HomePage />} />
           <Route path="calendar" element={<CalendarPage />} />
+          <Route path="relationships" element={<RelationshipsPage />} />
           <Route path="cc" element={<CommunityCenterPage />} />
           <Route path="museum" element={<MuseumPage />} />
           <Route path="achievements" element={<AchievementsPage />} />

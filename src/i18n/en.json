@@ -160,5 +160,35 @@
       "TroutDerby": "Trout Derby",
       "SquidFest": "SquidFest"
     }
+  },
+  "rel": {
+    "title": "{{name}}'s relationships",
+    "sort": "Sort by",
+    "sortHearts": "Hearts",
+    "sortBirthday": "Next birthday",
+    "sortName": "Name",
+    "hint": "Gift suggestions only use items you have right now in chests or backpacks.",
+    "toNext": "{{points}} points to the next heart",
+    "bouquet": "Max for now: give a bouquet to date",
+    "giftsLeft_one": "1 gift left this week",
+    "giftsLeft_other": "{{count}} gifts left this week",
+    "giftedToday": "Already gifted today",
+    "birthdayToday": "Birthday today! Gifts count 8×",
+    "birthdayIn_one": "Birthday tomorrow",
+    "birthdayIn_other": "Birthday in {{count}} days",
+    "eventReady": "{{hearts}}-heart event available",
+    "eventAt": "Next event at {{hearts}} hearts",
+    "gifts": {
+      "love": "Loves, and you have:",
+      "like": "Likes, and you have:"
+    },
+    "status": {
+      "Dating": "Dating",
+      "Engaged": "Engaged",
+      "Married": "Married",
+      "Roommate": "Roommate",
+      "Divorced": "Divorced"
+    },
+    "eventReadyAt": "{{hearts}}-heart event available ({{place}})"
   }
 }

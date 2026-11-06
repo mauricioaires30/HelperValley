@@ -1,0 +1,83 @@
+.rel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 10px;
+}
+
+@media (max-width: 420px) {
+  .rel-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rel {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.rel > .sprite {
+  border: calc(2 * var(--px)) solid var(--wood-dark);
+}
+
+.rel__body {
+  display: grid;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.rel__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rel__header h3 {
+  margin: 0;
+}
+
+.rel__status {
+  padding: 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: #c2457a;
+}
+
+.rel__facts {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 15px;
+}
+
+.rel__muted {
+  color: var(--text-soft);
+}
+
+.rel__birthday {
+  font-weight: 600;
+  color: #c2457a;
+}
+
+.rel__event {
+  color: var(--text-soft);
+}
+
+.rel__event--ready {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.rel__gifts {
+  display: grid;
+  gap: 2px;
+  font-size: 14px;
+}
+
+.cc__filter select {
+  font: inherit;
+  color: var(--text);
+  background: transparent;
+}

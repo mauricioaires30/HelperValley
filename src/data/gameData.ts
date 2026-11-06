@@ -141,3 +141,8 @@ export function qualifyItemId(id: string): string {
 export function getItem(id: string): ItemData | undefined {
   return gameData().items[qualifyItemId(id)];
 }
+
+/** Injects datasets directly (unit tests read the JSON files from disk). */
+export function setGameData(value: GameData) {
+  data = value;
+}

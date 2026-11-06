@@ -160,5 +160,35 @@
       "TroutDerby": "Derby da Truta",
       "SquidFest": "Festival da Lula"
     }
+  },
+  "rel": {
+    "title": "Relacionamentos de {{name}}",
+    "sort": "Ordenar por",
+    "sortHearts": "Corações",
+    "sortBirthday": "Próximo aniversário",
+    "sortName": "Nome",
+    "hint": "As sugestões de presente usam só itens que você tem agora nos baús ou mochilas.",
+    "toNext": "Faltam {{points}} pontos para o próximo coração",
+    "bouquet": "Máximo por enquanto: dê um buquê para namorar",
+    "giftsLeft_one": "Resta 1 presente nesta semana",
+    "giftsLeft_other": "Restam {{count}} presentes nesta semana",
+    "giftedToday": "Já recebeu presente hoje",
+    "birthdayToday": "Aniversário hoje! Presentes valem 8×",
+    "birthdayIn_one": "Aniversário amanhã",
+    "birthdayIn_other": "Aniversário em {{count}} dias",
+    "eventReady": "Evento de {{hearts}} corações disponível",
+    "eventAt": "Próximo evento com {{hearts}} corações",
+    "gifts": {
+      "love": "Ama, e você tem:",
+      "like": "Gosta, e você tem:"
+    },
+    "status": {
+      "Dating": "Namorando",
+      "Engaged": "Noivos",
+      "Married": "Casados",
+      "Roommate": "Colega de quarto",
+      "Divorced": "Divorciados"
+    },
+    "eventReadyAt": "Evento de {{hearts}} corações disponível ({{place}})"
   }
 }

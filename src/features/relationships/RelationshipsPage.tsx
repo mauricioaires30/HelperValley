@@ -1,0 +1,103 @@
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { gameData } from '@/data/gameData';
+import { useGameName } from '@/i18n';
+import type { Player, SaveData } from '@/save/model';
+import { RequireSave } from '@/features/saves/RequireSave';
+import { Hearts, ItemIcon, Portrait } from '@/ui';
+import { bestOwnedGifts, ownedObjectIds } from './gifts';
+import { buildRelationships, POINTS_PER_HEART, type Relationship } from './relationships';
+import './relationships.css';
+
+type Sort = 'hearts' | 'birthday' | 'name';
+
+function RelationshipCard({ rel, owned }: { rel: Relationship; owned: string[] }) {
+  const { t } = useTranslation();
+  const name = useGameName();
+  const { npcs, heartEvents } = gameData();
+  const gifts = useMemo(() => bestOwnedGifts(rel.npc, owned), [rel.npc, owned]);
+  const toNext = rel.hearts < rel.maxHearts ? POINTS_PER_HEART - (rel.points % POINTS_PER_HEART) : 0;
+  const giftsLeft = Math.max(0, 2 - rel.giftsThisWeek);
+
+  return (
+    <article className="rel box">
+      <Portrait npc={rel.npc} />
+      <div className="rel__body">
+        <header className="rel__header">
+          <h3>{name(npcs[rel.npc].n)}</h3>
+          {rel.status !== 'Friendly' && <span className="rel__status">{t(`rel.status.${rel.status}`, { defaultValue: rel.status })}</span>}
+        </header>
+        <Hearts value={rel.hearts} max={Math.max(10, rel.maxHearts)} />
+        <ul className="rel__facts">
+          {toNext > 0 && <li>{t('rel.toNext', { points: toNext })}</li>}
+          {rel.hearts >= rel.maxHearts && rel.maxHearts === 8 && <li>{t('rel.bouquet')}</li>}
+          <li className={giftsLeft === 0 ? 'rel__muted' : undefined}>
+            {rel.giftsToday > 0 ? t('rel.giftedToday') : t('rel.giftsLeft', { count: giftsLeft })}
+          </li>
+          {rel.birthdayIn !== null && rel.birthdayIn <= 7 && (
+            <li className="rel__birthday">{rel.birthdayIn === 0 ? t('rel.birthdayToday') : t('rel.birthdayIn', { count: rel.birthdayIn })}</li>
+          )}
+          {rel.nextEvent && (
+            <li className={rel.nextEvent.unlocked ? 'rel__event rel__event--ready' : 'rel__event'}>
+              {rel.nextEvent.unlocked
+                ? heartEvents.places[rel.nextEvent.location]
+                  ? t('rel.eventReadyAt', { hearts: rel.nextEvent.hearts, place: name(heartEvents.places[rel.nextEvent.location]) })
+                  : t('rel.eventReady', { hearts: rel.nextEvent.hearts })
+                : t('rel.eventAt', { hearts: rel.nextEvent.hearts })}
+            </li>
+          )}
+        </ul>
+        {gifts.ids.length > 0 && (
+          <div className="rel__gifts">
+            <span>{t(`rel.gifts.${gifts.taste}`)}</span>
+            <div className="slot-grid">
+              {gifts.ids.map((id) => (
+                <ItemIcon key={id} id={id} />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </article>
+  );
+}
+
+function Relationships({ save, player }: { save: SaveData; player: Player }) {
+  const { t } = useTranslation();
+  const name = useGameName();
+  const [sort, setSort] = useState<Sort>('hearts');
+  const relationships = useMemo(() => buildRelationships(save, player), [save, player]);
+  const owned = useMemo(() => ownedObjectIds(save), [save]);
+
+  const sorted = [...relationships].sort((a, b) => {
+    if (sort === 'birthday') return (a.birthdayIn ?? 999) - (b.birthdayIn ?? 999);
+    if (sort === 'name') return name(gameData().npcs[a.npc].n).localeCompare(name(gameData().npcs[b.npc].n));
+    return b.points - a.points;
+  });
+
+  return (
+    <div>
+      <header className="cc__header">
+        <h2>{t('rel.title', { name: player.name })}</h2>
+        <label className="cc__filter">
+          {t('rel.sort')}
+          <select className="box" value={sort} onChange={(e) => setSort(e.target.value as Sort)}>
+            <option value="hearts">{t('rel.sortHearts')}</option>
+            <option value="birthday">{t('rel.sortBirthday')}</option>
+            <option value="name">{t('rel.sortName')}</option>
+          </select>
+        </label>
+      </header>
+      <p className="cc-summary__hint">{t('rel.hint')}</p>
+      <div className="rel-grid">
+        {sorted.map((rel) => (
+          <RelationshipCard key={rel.npc} rel={rel} owned={owned} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function RelationshipsPage() {
+  return <RequireSave>{(save, player) => <Relationships save={save} player={player} />}</RequireSave>;
+}
