@@ -3,7 +3,7 @@ import type { SaveData, SaveSummary } from './model';
 
 const CACHE_KEY = 'lastSave';
 /** Bump when SaveData's shape changes so stale caches are ignored. */
-const CACHE_VERSION = 1;
+const CACHE_VERSION = 2;
 
 export interface CachedSave {
   version: number;

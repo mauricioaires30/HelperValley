@@ -1,0 +1,84 @@
+.calendar__seasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.calendar__weekday {
+  text-align: center;
+  font-weight: 600;
+}
+
+.calendar__day {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 96px;
+  font-size: 14px;
+}
+
+.calendar__number {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.calendar__day--past {
+  opacity: 0.55;
+}
+
+.calendar__day--festival {
+  background: linear-gradient(rgb(255 224 102 / 0.35), transparent);
+}
+
+.calendar__day--today {
+  outline: calc(2 * var(--px)) solid var(--accent);
+  outline-offset: calc(-1 * var(--px));
+}
+
+.calendar__today {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  padding: 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+}
+
+.calendar__festival {
+  font-weight: 600;
+  color: #9a4a00;
+}
+
+.calendar__festival--passive {
+  font-weight: 400;
+  color: var(--text-soft);
+}
+
+.calendar__birthdays {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin-top: auto;
+}
+
+@media (max-width: 640px) {
+  .calendar__day {
+    min-height: 64px;
+    font-size: 11px;
+    padding: 2px;
+  }
+
+  .calendar__festival {
+    overflow-wrap: anywhere;
+  }
+}

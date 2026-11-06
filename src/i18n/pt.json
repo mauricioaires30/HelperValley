@@ -10,7 +10,10 @@
     "kit": "Kit de UI",
     "cc": "Centro Comunitário",
     "museum": "Museu",
-    "achievements": "Conquistas"
+    "achievements": "Conquistas",
+    "calendar": "Calendário",
+    "relationships": "Relacionamentos",
+    "today": "Hoje"
   },
   "common": {
     "language": "Idioma",
@@ -139,5 +142,99 @@
     "close": "Quase lá!",
     "hideEarned": "Esconder conquistadas",
     "perPlayer": "Conquistas são por jogador: troque o jogador no topo. Conquistas exclusivas da Steam/console não são acompanhadas."
+  },
+  "calendar": {
+    "title": "Calendário",
+    "today": "Hoje",
+    "birthday": "Aniversário de {{name}}",
+    "weekdays": {
+      "mon": "Seg",
+      "tue": "Ter",
+      "wed": "Qua",
+      "thu": "Qui",
+      "fri": "Sex",
+      "sat": "Sáb",
+      "sun": "Dom"
+    },
+    "festival": {
+      "TroutDerby": "Derby da Truta",
+      "SquidFest": "Festival da Lula"
+    },
+    "weekdaysLong": {
+      "mon": "Segunda",
+      "tue": "Terça",
+      "wed": "Quarta",
+      "thu": "Quinta",
+      "fri": "Sexta",
+      "sat": "Sábado",
+      "sun": "Domingo"
+    }
+  },
+  "rel": {
+    "title": "Relacionamentos de {{name}}",
+    "sort": "Ordenar por",
+    "sortHearts": "Corações",
+    "sortBirthday": "Próximo aniversário",
+    "sortName": "Nome",
+    "hint": "As sugestões de presente usam só itens que você tem agora nos baús ou mochilas.",
+    "toNext": "Faltam {{points}} pontos para o próximo coração",
+    "bouquet": "Máximo por enquanto: dê um buquê para namorar",
+    "giftsLeft_one": "Resta 1 presente nesta semana",
+    "giftsLeft_other": "Restam {{count}} presentes nesta semana",
+    "giftedToday": "Já recebeu presente hoje",
+    "birthdayToday": "Aniversário hoje! Presentes valem 8×",
+    "birthdayIn_one": "Aniversário amanhã",
+    "birthdayIn_other": "Aniversário em {{count}} dias",
+    "eventReady": "Evento de {{hearts}} corações disponível",
+    "eventAt": "Próximo evento com {{hearts}} corações",
+    "gifts": {
+      "love": "Ama, e você tem:",
+      "like": "Gosta, e você tem:"
+    },
+    "status": {
+      "Dating": "Namorando",
+      "Engaged": "Noivos",
+      "Married": "Casados",
+      "Roommate": "Colega de quarto",
+      "Divorced": "Divorciados"
+    },
+    "eventReadyAt": "Evento de {{hearts}} corações disponível ({{place}})"
+  },
+  "today": {
+    "luck": {
+      "great": "Os espíritos estão muito felizes hoje. Ótimo dia para minas e pesca!",
+      "good": "Os espíritos estão de bom humor hoje.",
+      "neutral": "Os espíritos estão completamente neutros hoje.",
+      "mixed": "Os espíritos estão com humor variado hoje.",
+      "bad": "Os espíritos estão um pouco irritados hoje.",
+      "awful": "Os espíritos estão muito descontentes hoje. Talvez seja melhor ficar na fazenda."
+    },
+    "tomorrow": "Amanhã: {{weather}}",
+    "weather": {
+      "Sun": "sol",
+      "Rain": "chuva (não precisa regar)",
+      "Wind": "vento",
+      "Storm": "tempestade (para-raios carregam)",
+      "Snow": "neve",
+      "Festival": "dia de festival",
+      "GreenRain": "chuva verde",
+      "Wedding": "casamento"
+    },
+    "daysLeft_one": "Falta 1 dia para o {{season}}",
+    "daysLeft_other": "Faltam {{count}} dias para o {{season}}",
+    "lastDay": "Último dia da estação! As plantações morrem amanhã, a não ser que cresçam no {{season}}.",
+    "soon": "Próximos 7 dias",
+    "todayLabel": "hoje",
+    "inDays_one": "amanhã",
+    "inDays_other": "em {{count}} dias",
+    "nothingSoon": "Nada especial nesta semana.",
+    "todo": "Coisas para fazer",
+    "ccReady_one": "1 item do Centro Comunitário pronto para entregar",
+    "ccReady_other": "{{count}} itens do Centro Comunitário prontos para entregar",
+    "museumReady_one": "1 item pronto para doar ao museu",
+    "museumReady_other": "{{count}} itens prontos para doar ao museu",
+    "eventReady": "Evento de {{hearts}} corações de {{name}} disponível",
+    "giftable_one": "1 morador ainda pode ganhar presente nesta semana",
+    "giftable_other": "{{count}} moradores ainda podem ganhar presente nesta semana"
   }
 }

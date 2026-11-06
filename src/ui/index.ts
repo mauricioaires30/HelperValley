@@ -7,5 +7,5 @@ export { QualityStar, type Quality } from './QualityStar';
 export { Hearts } from './Hearts';
 export { Tooltip } from './Tooltip';
 export { Progress } from './Progress';
-export { Portrait, NpcSprite } from './Portrait';
+export { Portrait, NpcSprite, NpcHead } from './Portrait';
 export { SeasonIcon } from './SeasonIcon';

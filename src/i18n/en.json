@@ -10,7 +10,10 @@
     "kit": "UI kit",
     "cc": "Community Center",
     "museum": "Museum",
-    "achievements": "Achievements"
+    "achievements": "Achievements",
+    "calendar": "Calendar",
+    "relationships": "Relationships",
+    "today": "Today"
   },
   "common": {
     "language": "Language",
@@ -139,5 +142,99 @@
     "close": "Almost there!",
     "hideEarned": "Hide earned",
     "perPlayer": "Achievements are per player: switch players in the header. Steam/console-only achievements are not tracked."
+  },
+  "calendar": {
+    "title": "Calendar",
+    "today": "Today",
+    "birthday": "{{name}}'s birthday",
+    "weekdays": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    },
+    "festival": {
+      "TroutDerby": "Trout Derby",
+      "SquidFest": "SquidFest"
+    },
+    "weekdaysLong": {
+      "mon": "Monday",
+      "tue": "Tuesday",
+      "wed": "Wednesday",
+      "thu": "Thursday",
+      "fri": "Friday",
+      "sat": "Saturday",
+      "sun": "Sunday"
+    }
+  },
+  "rel": {
+    "title": "{{name}}'s relationships",
+    "sort": "Sort by",
+    "sortHearts": "Hearts",
+    "sortBirthday": "Next birthday",
+    "sortName": "Name",
+    "hint": "Gift suggestions only use items you have right now in chests or backpacks.",
+    "toNext": "{{points}} points to the next heart",
+    "bouquet": "Max for now: give a bouquet to date",
+    "giftsLeft_one": "1 gift left this week",
+    "giftsLeft_other": "{{count}} gifts left this week",
+    "giftedToday": "Already gifted today",
+    "birthdayToday": "Birthday today! Gifts count 8×",
+    "birthdayIn_one": "Birthday tomorrow",
+    "birthdayIn_other": "Birthday in {{count}} days",
+    "eventReady": "{{hearts}}-heart event available",
+    "eventAt": "Next event at {{hearts}} hearts",
+    "gifts": {
+      "love": "Loves, and you have:",
+      "like": "Likes, and you have:"
+    },
+    "status": {
+      "Dating": "Dating",
+      "Engaged": "Engaged",
+      "Married": "Married",
+      "Roommate": "Roommate",
+      "Divorced": "Divorced"
+    },
+    "eventReadyAt": "{{hearts}}-heart event available ({{place}})"
+  },
+  "today": {
+    "luck": {
+      "great": "The spirits are very happy today. Great day for the mines and fishing!",
+      "good": "The spirits are in good humor today.",
+      "neutral": "The spirits feel absolutely neutral today.",
+      "mixed": "The spirits are in a mixed mood today.",
+      "bad": "The spirits are somewhat annoyed today.",
+      "awful": "The spirits are very displeased today. Maybe stay on the farm."
+    },
+    "tomorrow": "Tomorrow: {{weather}}",
+    "weather": {
+      "Sun": "sunny",
+      "Rain": "rain (no need to water)",
+      "Wind": "windy",
+      "Storm": "storm (lightning rods charge)",
+      "Snow": "snow",
+      "Festival": "festival day",
+      "GreenRain": "green rain",
+      "Wedding": "wedding"
+    },
+    "daysLeft_one": "1 day left before {{season}}",
+    "daysLeft_other": "{{count}} days left before {{season}}",
+    "lastDay": "Last day of the season! Crops die tomorrow unless they grow in {{season}}.",
+    "soon": "Next 7 days",
+    "todayLabel": "today",
+    "inDays_one": "tomorrow",
+    "inDays_other": "in {{count}} days",
+    "nothingSoon": "Nothing special this week.",
+    "todo": "Things to do",
+    "ccReady_one": "1 Community Center item ready to deliver",
+    "ccReady_other": "{{count}} Community Center items ready to deliver",
+    "museumReady_one": "1 item ready to donate to the museum",
+    "museumReady_other": "{{count}} items ready to donate to the museum",
+    "eventReady": "{{name}}'s {{hearts}}-heart event is available",
+    "giftable_one": "1 villager can still get a gift this week",
+    "giftable_other": "{{count}} villagers can still get a gift this week"
   }
 }
