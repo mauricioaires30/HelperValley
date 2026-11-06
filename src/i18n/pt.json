@@ -44,7 +44,7 @@
     "fallback": "Selecionar pasta Saves",
     "fallbackHint": "Seu navegador não consegue manter a pasta aberta, então selecione de novo depois de jogar. Para recarga automática, use Chrome ou Edge.",
     "reconnect": "Reconectar aos saves",
-    "reconnectHint": "O navegador precisa de um clique para liberar a leitura da pasta de novo.",
+    "reconnectHint": "O navegador precisa de um clique para ler a pasta de saves de novo. Dica: no Chrome/Edge escolha \"Permitir em todas as visitas\" e esse passo some.",
     "change": "Trocar pasta",
     "none": "Nenhum save encontrado nessa pasta.",
     "list": "Suas fazendas",
@@ -59,7 +59,10 @@
     "farmhand": "Ajudante",
     "error": "Não foi possível ler este save: {{message}}",
     "required": "Abra a pasta de saves para ver esta página.",
-    "updated": "O jogo salvou! Mostrando o novo dia"
+    "updated": "O jogo salvou! Mostrando o novo dia",
+    "cached": "Mostrando a cópia salva no navegador (lida {{time}}).",
+    "cachedLive": "Reconectar para atualizar ao vivo",
+    "cachedOpen": "Abrir a pasta para atualizar"
   },
   "locations": {
     "Farm": "Fazenda",

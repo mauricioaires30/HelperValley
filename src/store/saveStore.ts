@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { Player, SaveData, SaveSummary } from '@/save/model';
 import { parseSave } from '@/save/parse';
+import { clearCache, readCache, writeCache } from '@/save/cache';
 import {
   forgetDirectory,
   fromFiles,
@@ -44,6 +45,8 @@ interface SaveState {
   save: SaveData | null;
   playerId: string | null;
   loadedAt: number | null;
+  /** Set while showing the save cached in the browser instead of one read from disk. */
+  cachedAt: number | null;
   /** Set when a live folder reloads because the game wrote the save. */
   lastUpdate: { at: number; date: SaveData['date'] } | null;
 
@@ -92,16 +95,19 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
     const remembered = storage.get(playerKey(save.uniqueId));
     const playerId = save.players.some((p) => p.id === remembered) ? remembered : save.players[0]?.id ?? null;
     storage.set(SELECTED_KEY, folder);
-    setState({ save, folder, playerId, status: 'ready', loadedAt: Date.now() });
+    const loadedAt = Date.now();
+    setState({ save, folder, playerId, status: 'ready', loadedAt, cachedAt: null });
     if (background) {
       // Lets the UI announce that the game just saved (usually a new day).
-      setState({ lastUpdate: { at: Date.now(), date: save.date }, summaries: await source.listSaves() });
+      setState({ lastUpdate: { at: loadedAt, date: save.date }, summaries: await source.listSaves() });
     }
+    void writeCache(save, getState().summaries, loadedAt);
   }
 
   async function useSource(source: SaveSource) {
     stopPolling();
-    setState({ source, pendingHandle: null, status: 'listing', error: null, save: null });
+    // Keep showing the cached save (if any) until the fresh one is parsed.
+    setState({ source, pendingHandle: null, status: 'listing', error: null });
     const summaries = await source.listSaves();
     setState({ summaries, status: 'idle' });
     const remembered = storage.get(SELECTED_KEY);
@@ -122,14 +128,30 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
     save: null,
     playerId: null,
     loadedAt: null,
+    cachedAt: null,
     lastUpdate: null,
 
     async init() {
       try {
+        // Show the last save right away; the folder (if still allowed) refreshes it below.
+        const cached = await readCache();
+        if (cached) {
+          const remembered = storage.get(playerKey(cached.save.uniqueId));
+          const playerId = cached.save.players.some((p) => p.id === remembered) ? remembered : cached.save.players[0]?.id ?? null;
+          setState({
+            save: cached.save,
+            summaries: cached.summaries,
+            folder: cached.save.folder,
+            playerId,
+            loadedAt: cached.loadedAt,
+            cachedAt: cached.loadedAt,
+            status: 'ready',
+          });
+        }
         const restored = await restoreDirectory();
         if (!restored) return;
         if ('source' in restored) await useSource(restored.source);
-        else setState({ status: 'needs-permission', pendingHandle: restored.needsPermission });
+        else setState({ pendingHandle: restored.needsPermission, status: cached ? 'ready' : 'needs-permission' });
       } catch (e) {
         fail(e);
       }
@@ -179,8 +201,8 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
 
     async disconnect() {
       stopPolling();
-      await forgetDirectory();
-      setState({ source: null, summaries: [], folder: null, save: null, playerId: null, status: 'idle', pendingHandle: null });
+      await Promise.all([forgetDirectory(), clearCache()]);
+      setState({ source: null, summaries: [], folder: null, save: null, playerId: null, status: 'idle', pendingHandle: null, cachedAt: null });
     },
   };
 });

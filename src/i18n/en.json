@@ -44,7 +44,7 @@
     "fallback": "Select Saves folder",
     "fallbackHint": "Your browser can't keep a folder open, so select it again after playing. For auto-reload, use Chrome or Edge.",
     "reconnect": "Reconnect to your saves",
-    "reconnectHint": "Your browser needs one click to allow reading the saves folder again.",
+    "reconnectHint": "Your browser needs one click to read the saves folder again. Tip: in Chrome/Edge choose \"Allow on every visit\" and this step goes away.",
     "change": "Change folder",
     "none": "No saves were found in that folder.",
     "list": "Your farms",
@@ -59,7 +59,10 @@
     "farmhand": "Farmhand",
     "error": "Couldn't read this save: {{message}}",
     "required": "Open your saves folder to see this page.",
-    "updated": "The game saved! Showing the new day"
+    "updated": "The game saved! Showing the new day",
+    "cached": "Showing the copy saved in your browser (read {{time}}).",
+    "cachedLive": "Reconnect to update live",
+    "cachedOpen": "Open the folder to update"
   },
   "locations": {
     "Farm": "Farm",

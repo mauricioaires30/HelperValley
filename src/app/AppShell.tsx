@@ -4,6 +4,7 @@ import { LANGUAGES } from '@/i18n';
 import { ItemIcon } from '@/ui';
 import { PlayerSwitcher } from '@/features/saves/PlayerSwitcher';
 import { SaveDateChip, SaveUpdatedToast } from '@/features/saves/LiveStatus';
+import { CachedBanner } from '@/features/saves/CachedBanner';
 import './shell.css';
 
 const NAV = [
@@ -42,6 +43,7 @@ export function AppShell() {
         </div>
       </header>
 
+      <CachedBanner />
       <nav className="shell__nav" aria-label="Main">
         <ul className="tabs">
           {NAV.map((item) => (
