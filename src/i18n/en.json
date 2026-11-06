@@ -1,0 +1,27 @@
+{
+  "app": {
+    "title": "HelperValley",
+    "tagline": "Your Stardew Valley companion, powered by your own save files.",
+    "disclaimer": "Unofficial fan project. Stardew Valley and its art are © ConcernedApe.",
+    "loading": "Loading..."
+  },
+  "nav": {
+    "home": "Saves",
+    "kit": "UI kit"
+  },
+  "common": {
+    "language": "Language",
+    "quality": {
+      "silver": "Silver quality",
+      "gold": "Gold quality",
+      "iridium": "Iridium quality"
+    },
+    "hearts": "{{count}} hearts",
+    "seasons": {
+      "spring": "Spring",
+      "summer": "Summer",
+      "fall": "Fall",
+      "winter": "Winter"
+    }
+  }
+}

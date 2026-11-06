@@ -1,0 +1,27 @@
+{
+  "app": {
+    "title": "HelperValley",
+    "tagline": "Seu ajudante de Stardew Valley, usando os seus próprios saves.",
+    "disclaimer": "Projeto de fã não oficial. Stardew Valley e suas artes são © ConcernedApe.",
+    "loading": "Carregando..."
+  },
+  "nav": {
+    "home": "Saves",
+    "kit": "Kit de UI"
+  },
+  "common": {
+    "language": "Idioma",
+    "quality": {
+      "silver": "Qualidade prata",
+      "gold": "Qualidade ouro",
+      "iridium": "Qualidade irídio"
+    },
+    "hearts": "{{count}} corações",
+    "seasons": {
+      "spring": "Primavera",
+      "summer": "Verão",
+      "fall": "Outono",
+      "winter": "Inverno"
+    }
+  }
+}
