@@ -65,7 +65,8 @@
     "updated": "The game saved! Showing the new day",
     "cached": "Showing the copy saved in your browser (read {{time}}). Click anywhere to go live.",
     "cachedLive": "Reconnect to update live",
-    "cachedOpen": "Open the folder to update"
+    "cachedOpen": "Open the folder to update",
+    "cachedMode": "Saved in this browser: reconnect to update live"
   },
   "locations": {
     "Farm": "Farm",

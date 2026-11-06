@@ -8,7 +8,7 @@ export function HomePage() {
   const source = useSaveStore((s) => s.source);
   const status = useSaveStore((s) => s.status);
   const error = useSaveStore((s) => s.error);
-  const cachedAt = useSaveStore((s) => s.cachedAt);
+  const summaries = useSaveStore((s) => s.summaries);
 
   return (
     <div className="home">
@@ -17,8 +17,7 @@ export function HomePage() {
           {t('saves.error', { message: error })}
         </p>
       )}
-      {/* With a cached save, the banner above the tabs offers to reconnect instead. */}
-      {source ? <SaveList /> : cachedAt ? null : <ConnectPanel />}
+      {source || summaries.length > 0 ? <SaveList /> : <ConnectPanel />}
       {status === 'loading' && <p>{t('saves.loading')}</p>}
       <SaveOverview />
     </div>

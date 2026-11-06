@@ -122,3 +122,8 @@
   position: relative;
   z-index: 2;
 }
+
+.save-card:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
