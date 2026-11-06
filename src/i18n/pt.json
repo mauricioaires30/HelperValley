@@ -7,7 +7,10 @@
   },
   "nav": {
     "home": "Saves",
-    "kit": "Kit de UI"
+    "kit": "Kit de UI",
+    "cc": "Centro Comunitário",
+    "museum": "Museu",
+    "achievements": "Conquistas"
   },
   "common": {
     "language": "Idioma",
@@ -37,11 +40,11 @@
     "copy": "Copiar caminho",
     "copied": "Copiado!",
     "open": "Abrir pasta Saves",
-    "openHint": "Escolha a pasta Saves (ou a pasta StardewValley). O site recarrega sozinho sempre que o jogo salvar.",
+    "openHint": "Escolha a pasta Saves (ou a pasta StardewValley). O site fica de olho nela e atualiza toda vez que o jogo salvar.",
     "fallback": "Selecionar pasta Saves",
     "fallbackHint": "Seu navegador não consegue manter a pasta aberta, então selecione de novo depois de jogar. Para recarga automática, use Chrome ou Edge.",
     "reconnect": "Reconectar aos saves",
-    "reconnectHint": "O navegador precisa de um clique para liberar a leitura da pasta de novo.",
+    "reconnectHint": "Clique em qualquer lugar e permita o acesso à pasta de saves. Escolha \"Permitir em todas as visitas\" para o site sempre acompanhar a pasta sem perguntar de novo.",
     "change": "Trocar pasta",
     "none": "Nenhum save encontrado nessa pasta.",
     "list": "Suas fazendas",
@@ -55,6 +58,86 @@
     "host": "Anfitrião",
     "farmhand": "Ajudante",
     "error": "Não foi possível ler este save: {{message}}",
-    "updated": "O jogo salvou! Mostrando o novo dia"
+    "required": "Abra a pasta de saves para ver esta página.",
+    "updated": "O jogo salvou! Mostrando o novo dia",
+    "cached": "Mostrando a cópia salva no navegador (lida {{time}}). Clique em qualquer lugar para ficar ao vivo.",
+    "cachedLive": "Reconectar para atualizar ao vivo",
+    "cachedOpen": "Abrir a pasta para atualizar"
+  },
+  "locations": {
+    "Farm": "Fazenda",
+    "FarmHouse": "Casa",
+    "Cellar": "Adega",
+    "Shed": "Galpão",
+    "Big Shed": "Galpão Grande",
+    "Barn": "Celeiro",
+    "Big Barn": "Celeiro Grande",
+    "Deluxe Barn": "Celeiro Luxuoso",
+    "Coop": "Galinheiro",
+    "Big Coop": "Galinheiro Grande",
+    "Deluxe Coop": "Galinheiro Luxuoso",
+    "Greenhouse": "Estufa",
+    "Cabin": "Cabana",
+    "IslandWest": "Fazenda da Ilha",
+    "IslandFarmHouse": "Casa da Ilha",
+    "SlimeHutch": "Viveiro de Slimes",
+    "JunimoChests": "Baús Junimo",
+    "inventory": "Mochila de {{name}}"
+  },
+  "cc": {
+    "title": "Centro Comunitário",
+    "onlyMissing": "Mostrar só o que falta",
+    "rooms": "Salas",
+    "bundles": "Pacotes",
+    "roomDone": "Restaurada!",
+    "reward": "Recompensa",
+    "pick": "Quaisquer {{count}} de {{total}}",
+    "have": "Tem",
+    "readyTitle": "Pronto para entregar ({{count}})",
+    "readyHint": "Você já tem estes itens: pegue nos baús e leve ao Centro Comunitário.",
+    "neededTitle": "Ainda faltam ({{count}})",
+    "minQuality": "{{quality}} ou melhor",
+    "noneOwned": "Ainda não está em nenhum baú",
+    "jojaTitle": "Desenvolvimento Comunitário Joja",
+    "purchased": "Comprado",
+    "notPurchased": "Não comprado",
+    "joja": {
+      "minecarts": "Carrinhos de mina",
+      "bridge": "Ponte para a pedreira",
+      "panning": "Bateia",
+      "greenhouse": "Estufa",
+      "bus": "Ônibus para o deserto"
+    }
+  },
+  "museum": {
+    "title": "Museu",
+    "artifacts": "Artefatos",
+    "minerals": "Minerais",
+    "donate": "Doar",
+    "readyTitle": "Prontos para doar ({{count}})",
+    "milestone": "Tesouro Escondido: faltam {{left}} para {{count}} doações",
+    "milestoneDone": "Tesouro Escondido: {{count}} doações alcançadas",
+    "from": "Vem de:",
+    "dig": "Escave em: {{places}}",
+    "status": {
+      "donated": "Doado",
+      "owned": "Está nos seus baús: doe!",
+      "found": "Já encontrado, mas não está nos baús",
+      "missing": "Ainda não encontrado"
+    },
+    "place": {
+      "Farm": "Sua fazenda",
+      "Island": "Ilha Gengibre"
+    },
+    "legend": "Verde: doado · Brilhando: você tem · Apagado: nunca encontrado. Gemas que não aparecem em geodos vêm de pedras e minérios nas minas."
+  },
+  "ach": {
+    "title": "Conquistas de {{name}}",
+    "earned": "Conquistada",
+    "locked": "Ainda não conquistada",
+    "secret": "Oculta",
+    "close": "Quase lá!",
+    "hideEarned": "Esconder conquistadas",
+    "perPlayer": "Conquistas são por jogador: troque o jogador no topo. Conquistas exclusivas da Steam/console não são acompanhadas."
   }
 }

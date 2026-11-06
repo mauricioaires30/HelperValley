@@ -4,11 +4,15 @@ import { LANGUAGES } from '@/i18n';
 import { ItemIcon } from '@/ui';
 import { PlayerSwitcher } from '@/features/saves/PlayerSwitcher';
 import { SaveDateChip, SaveUpdatedToast } from '@/features/saves/LiveStatus';
+import { CachedBanner } from '@/features/saves/CachedBanner';
 import './shell.css';
 
 const NAV = [
   { to: '/', key: 'home', icon: '(O)392' },
-  { to: '/kit', key: 'kit', icon: '(O)74' },
+  { to: '/cc', key: 'cc', icon: '(O)24' },
+  { to: '/museum', key: 'museum', icon: '(O)96' },
+  { to: '/achievements', key: 'achievements', icon: '(O)74' },
+  { to: '/kit', key: 'kit', icon: '(O)872' },
 ];
 
 export function AppShell() {
@@ -39,6 +43,7 @@ export function AppShell() {
         </div>
       </header>
 
+      <CachedBanner />
       <nav className="shell__nav" aria-label="Main">
         <ul className="tabs">
           {NAV.map((item) => (

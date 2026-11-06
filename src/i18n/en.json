@@ -7,7 +7,10 @@
   },
   "nav": {
     "home": "Saves",
-    "kit": "UI kit"
+    "kit": "UI kit",
+    "cc": "Community Center",
+    "museum": "Museum",
+    "achievements": "Achievements"
   },
   "common": {
     "language": "Language",
@@ -37,11 +40,11 @@
     "copy": "Copy path",
     "copied": "Copied!",
     "open": "Open Saves folder",
-    "openHint": "Pick the Saves folder (or the StardewValley folder). The site reloads automatically every time the game saves.",
+    "openHint": "Pick the Saves folder (or the StardewValley folder). The site watches it and updates every time the game saves.",
     "fallback": "Select Saves folder",
     "fallbackHint": "Your browser can't keep a folder open, so select it again after playing. For auto-reload, use Chrome or Edge.",
     "reconnect": "Reconnect to your saves",
-    "reconnectHint": "Your browser needs one click to allow reading the saves folder again.",
+    "reconnectHint": "Click anywhere and allow access to the saves folder. Choose \"Allow on every visit\" so the site always watches the folder without asking again.",
     "change": "Change folder",
     "none": "No saves were found in that folder.",
     "list": "Your farms",
@@ -55,6 +58,86 @@
     "host": "Host",
     "farmhand": "Farmhand",
     "error": "Couldn't read this save: {{message}}",
-    "updated": "The game saved! Showing the new day"
+    "required": "Open your saves folder to see this page.",
+    "updated": "The game saved! Showing the new day",
+    "cached": "Showing the copy saved in your browser (read {{time}}). Click anywhere to go live.",
+    "cachedLive": "Reconnect to update live",
+    "cachedOpen": "Open the folder to update"
+  },
+  "locations": {
+    "Farm": "Farm",
+    "FarmHouse": "Farmhouse",
+    "Cellar": "Cellar",
+    "Shed": "Shed",
+    "Big Shed": "Big Shed",
+    "Barn": "Barn",
+    "Big Barn": "Big Barn",
+    "Deluxe Barn": "Deluxe Barn",
+    "Coop": "Coop",
+    "Big Coop": "Big Coop",
+    "Deluxe Coop": "Deluxe Coop",
+    "Greenhouse": "Greenhouse",
+    "Cabin": "Cabin",
+    "IslandWest": "Island Farm",
+    "IslandFarmHouse": "Island Farmhouse",
+    "SlimeHutch": "Slime Hutch",
+    "JunimoChests": "Junimo Chests",
+    "inventory": "{{name}}'s backpack"
+  },
+  "cc": {
+    "title": "Community Center",
+    "onlyMissing": "Only show what is missing",
+    "rooms": "Rooms",
+    "bundles": "Bundles",
+    "roomDone": "Restored!",
+    "reward": "Reward",
+    "pick": "Any {{count}} of {{total}}",
+    "have": "Have",
+    "readyTitle": "Ready to deliver ({{count}})",
+    "readyHint": "You already own these: grab them from your chests and head to the Community Center.",
+    "neededTitle": "Still needed ({{count}})",
+    "minQuality": "{{quality}} or better",
+    "noneOwned": "Not in any chest yet",
+    "jojaTitle": "Joja Community Development",
+    "purchased": "Purchased",
+    "notPurchased": "Not purchased",
+    "joja": {
+      "minecarts": "Minecarts",
+      "bridge": "Bridge to the quarry",
+      "panning": "Panning",
+      "greenhouse": "Greenhouse",
+      "bus": "Bus to the desert"
+    }
+  },
+  "museum": {
+    "title": "Museum",
+    "artifacts": "Artifacts",
+    "minerals": "Minerals",
+    "donate": "Donate",
+    "readyTitle": "Ready to donate ({{count}})",
+    "milestone": "Treasure Trove: {{left}} more to {{count}} donations",
+    "milestoneDone": "Treasure Trove: {{count}} donations reached",
+    "from": "Found in:",
+    "dig": "Dig up at: {{places}}",
+    "status": {
+      "donated": "Donated",
+      "owned": "In your chests: donate it!",
+      "found": "Found before, but not in your chests",
+      "missing": "Not found yet"
+    },
+    "place": {
+      "Farm": "Your farm",
+      "Island": "Ginger Island"
+    },
+    "legend": "Green: donated · Glowing: you own it · Faded: never found. Gems not listed in geodes come from mine rocks and ore nodes."
+  },
+  "ach": {
+    "title": "{{name}}'s achievements",
+    "earned": "Earned",
+    "locked": "Not earned yet",
+    "secret": "Hidden",
+    "close": "Almost there!",
+    "hideEarned": "Hide earned",
+    "perPlayer": "Achievements are per player: switch players in the header. Steam/console-only achievements are not tracked."
   }
 }

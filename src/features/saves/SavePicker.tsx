@@ -27,7 +27,7 @@ function CopyPath() {
 }
 
 /** Folder picker for browsers without the File System Access API. */
-function FolderInput({ label, primary }: { label: string; primary?: boolean }) {
+export function FolderInput({ label, primary }: { label: string; primary?: boolean }) {
   const useFiles = useSaveStore((s) => s.useFiles);
   const input = useRef<HTMLInputElement>(null);
   return (
@@ -51,11 +51,11 @@ function FolderInput({ label, primary }: { label: string; primary?: boolean }) {
 /** Shown until a saves folder is connected. */
 export function ConnectPanel() {
   const { t } = useTranslation();
-  const status = useSaveStore((s) => s.status);
+  const pendingHandle = useSaveStore((s) => s.pendingHandle);
   const connectDirectory = useSaveStore((s) => s.connectDirectory);
   const reconnect = useSaveStore((s) => s.reconnect);
 
-  if (status === 'needs-permission') {
+  if (pendingHandle) {
     return (
       <div className="saves__connect">
         <p>{t('saves.reconnectHint')}</p>

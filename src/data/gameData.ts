@@ -35,14 +35,58 @@ export interface NpcData {
   region: string;
 }
 
+export interface BundleStrings {
+  /** English bundle name → [en, pt] display name. */
+  names: Record<string, LocalizedName>;
+  /** "{0} Bundle" per language. */
+  format: LocalizedName;
+  /** Community Center areas in areasComplete order. */
+  areas: Array<{ id: string; n: LocalizedName }>;
+}
+
+export interface AchievementData {
+  n: LocalizedName;
+  d: LocalizedName;
+  /** Visible in the collections tab before being earned. */
+  shown: boolean;
+  /** Prerequisite achievement id, or -1. */
+  pre: number;
+}
+
+export interface AchievementGoals {
+  /** Cooking recipe names. */
+  cooking: string[];
+  /** Crafting recipe names that count for Craft Master. */
+  crafting: string[];
+  /** Qualified ids of fish in the collection. */
+  fish: string[];
+  /** Harvest item ids counting for Polyculture / Monoculture. */
+  polyculture: string[];
+  monoculture: string[];
+}
+
+export interface MuseumData {
+  artifacts: string[];
+  minerals: string[];
+  /** Item → geodes that can contain it and places it can be dug up. */
+  sources: Record<string, { geodes: string[]; dig: string[] }>;
+  descriptions: Record<string, LocalizedName>;
+  /** Dig spot location key → display name. "Farm" and "Island" are translated by the site. */
+  places: Record<string, LocalizedName>;
+}
+
 export interface GameData {
   items: Record<string, ItemData>;
   npcs: Record<string, NpcData>;
   universalGifts: Record<GiftTaste, string[]>;
   sheets: Record<string, [number, number]>;
+  bundles: BundleStrings;
+  achievements: Record<string, AchievementData>;
+  achievementGoals: AchievementGoals;
+  museum: MuseumData;
 }
 
-const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets'] as const;
+const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum'] as const;
 
 export const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 export const spriteUrl = (sheet: string) => assetUrl(`sprites/${sheet}.png`);

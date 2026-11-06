@@ -1,0 +1,46 @@
+.museum__progress {
+  max-width: 520px;
+  margin: 8px 0 16px;
+}
+
+.museum__section {
+  margin-top: 18px;
+}
+
+.museum__section h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.museum-tip {
+  display: grid;
+  gap: 2px;
+  max-width: 320px;
+  white-space: normal;
+  font-size: 15px;
+}
+
+.museum-tip em {
+  font-style: normal;
+  color: var(--text-soft);
+}
+
+.museum-tip__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 4px;
+}
+
+.museum-tip__desc {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--text-soft);
+}
+
+/* Wide tooltips need a width to wrap within. */
+.museum .tooltip__bubble {
+  width: max-content;
+  max-width: 340px;
+}

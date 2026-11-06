@@ -3,6 +3,10 @@
   "datasets": [
     "items",
     "npcs",
-    "universalGifts"
+    "universalGifts",
+    "bundles",
+    "achievements",
+    "achievementGoals",
+    "museum"
   ]
 }

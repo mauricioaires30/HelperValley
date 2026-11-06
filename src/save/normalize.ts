@@ -147,7 +147,9 @@ function* walkLocations(locations: XmlValue[]): Generator<XmlNode> {
 function collectContainers(locations: XmlValue[], globalInventories: XmlValue): Container[] {
   const containers: Container[] = [];
   for (const location of walkLocations(locations)) {
-    const name = text(location.uniqueName) || text(location.name) || '?';
+    const name = text(location.name) || '?';
+    // Building interiors share a name ("Shed"); uniqueName adds a GUID that tells them apart.
+    const locationId = text(location.uniqueName) || name;
 
     for (const [key, value] of dictEntries(location.objects)) {
       const object = node(value);
@@ -156,21 +158,21 @@ function collectContainers(locations: XmlValue[], globalInventories: XmlValue): 
       const tile: [number, number] = [num(k?.X), num(k?.Y)];
       const type = xsiType(object);
       if (type === 'Chest' && bool(object.playerChest)) {
-        containers.push({ location: name, kind: 'chest', tile, color: text(node(object.playerChoiceColor)?.PackedValue), items: itemList(object.Items ?? object.items) });
+        containers.push({ location: name, locationId, kind: 'chest', tile, color: text(node(object.playerChoiceColor)?.PackedValue), items: itemList(object.Items ?? object.items) });
       } else if (xsiType(object.heldObject) === 'Chest') {
         // Auto-grabbers keep their contents in a held chest.
-        containers.push({ location: name, kind: 'grabber', tile, items: itemList(node(object.heldObject)?.Items ?? node(object.heldObject)?.items) });
+        containers.push({ location: name, locationId, kind: 'grabber', tile, items: itemList(node(object.heldObject)?.Items ?? node(object.heldObject)?.items) });
       }
     }
 
     const fridge = node(location.fridge);
     if (fridge && (fridge.Items || fridge.items)) {
-      containers.push({ location: name, kind: 'fridge', items: itemList(fridge.Items ?? fridge.items) });
+      containers.push({ location: name, locationId, kind: 'fridge', items: itemList(fridge.Items ?? fridge.items) });
     }
   }
 
   for (const [key, value] of dictEntries(globalInventories)) {
-    containers.push({ location: text(key) ?? 'global', kind: 'global', items: arr(node(value)?.Item).flatMap((v) => itemStack(v) ?? []) });
+    containers.push({ location: text(key) ?? 'global', locationId: text(key) ?? 'global', kind: 'global', items: arr(node(value)?.Item).flatMap((v) => itemStack(v) ?? []) });
   }
   return containers.filter((c) => c.items.length > 0);
 }

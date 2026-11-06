@@ -194,11 +194,48 @@
   transform: translateX(-50%);
   white-space: nowrap;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 80ms steps(2);
+  /* Hidden bubbles must not take part in layout, or they cause horizontal scrolling. */
+  display: none;
 }
 
 .tooltip:hover .tooltip__bubble,
 .tooltip:focus-within .tooltip__bubble {
-  opacity: 1;
+  display: block;
+}
+
+/* ---------- Slot states (collections) ---------- */
+
+.slot-state {
+  position: relative;
+}
+
+.slot-state--done::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgb(90 180 60 / 0.25);
+  pointer-events: none;
+}
+
+.slot-state--ready .slot {
+  filter: drop-shadow(0 0 calc(2 * var(--px)) #ffe066);
+}
+
+.slot-badge {
+  position: absolute;
+  top: calc(-3 * var(--px));
+  right: calc(-2 * var(--px));
+  padding: 0 3px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: var(--px) solid #1e5b12;
+  pointer-events: none;
+}
+
+.slot-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
 }
