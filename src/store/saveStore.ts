@@ -44,6 +44,8 @@ interface SaveState {
   save: SaveData | null;
   playerId: string | null;
   loadedAt: number | null;
+  /** Set when a live folder reloads because the game wrote the save. */
+  lastUpdate: { at: number; date: SaveData['date'] } | null;
 
   init(): Promise<void>;
   connectDirectory(): Promise<void>;
@@ -91,7 +93,10 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
     const playerId = save.players.some((p) => p.id === remembered) ? remembered : save.players[0]?.id ?? null;
     storage.set(SELECTED_KEY, folder);
     setState({ save, folder, playerId, status: 'ready', loadedAt: Date.now() });
-    if (background) setState({ summaries: await source.listSaves() });
+    if (background) {
+      // Lets the UI announce that the game just saved (usually a new day).
+      setState({ lastUpdate: { at: Date.now(), date: save.date }, summaries: await source.listSaves() });
+    }
   }
 
   async function useSource(source: SaveSource) {
@@ -117,6 +122,7 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
     save: null,
     playerId: null,
     loadedAt: null,
+    lastUpdate: null,
 
     async init() {
       try {

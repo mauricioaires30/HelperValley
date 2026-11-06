@@ -1,0 +1,49 @@
+.date-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.date-chip--updated {
+  animation: chip-pop 600ms steps(6);
+}
+
+@keyframes chip-pop {
+  30% {
+    transform: scale(1.12);
+  }
+}
+
+.live-dot {
+  width: calc(4 * var(--px));
+  height: calc(4 * var(--px));
+  background: var(--accent);
+  animation: blink 1.6s steps(1) infinite;
+}
+
+.save-toast {
+  position: fixed;
+  z-index: 50;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  animation: toast-in 300ms steps(5);
+}
+
+@keyframes toast-in {
+  from {
+    transform: translateY(150%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .date-chip--updated,
+  .save-toast,
+  .live-dot {
+    animation: none;
+  }
+}

@@ -54,6 +54,7 @@
     "version": "v{{version}}",
     "host": "Host",
     "farmhand": "Farmhand",
-    "error": "Couldn't read this save: {{message}}"
+    "error": "Couldn't read this save: {{message}}",
+    "updated": "The game saved! Showing the new day"
   }
 }

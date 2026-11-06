@@ -54,6 +54,7 @@
     "version": "v{{version}}",
     "host": "Anfitrião",
     "farmhand": "Ajudante",
-    "error": "Não foi possível ler este save: {{message}}"
+    "error": "Não foi possível ler este save: {{message}}",
+    "updated": "O jogo salvou! Mostrando o novo dia"
   }
 }
