@@ -57,7 +57,8 @@ await writeFile(
 console.log(`Wrote ${Object.keys(datasets).length} datasets to public/data`);
 
 await rm(SPRITES_OUT, { recursive: true, force: true });
-const { written, missing } = await exportTextures(gameDir, textures);
+const { written, missing, sizes } = await exportTextures(gameDir, textures);
+await writeFile(path.join(DATA_OUT, 'sheets.json'), JSON.stringify(sizes));
 console.log(`Wrote ${written} sprite sheets to public/sprites`);
 if (missing.length) console.log(`  (not in this game version, skipped: ${missing.join(', ')})`);
 console.log(`Wrote ${exportUiCrops()} UI crops to public/sprites/ui`);

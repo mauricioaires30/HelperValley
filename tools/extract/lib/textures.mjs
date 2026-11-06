@@ -28,6 +28,8 @@ async function quietly(fn) {
 export async function exportTextures(gameDir, assets) {
   let written = 0;
   const missing = [];
+  /** Sheet sizes keyed by asset, so the site can compute sprite offsets without loading images. */
+  const sizes = {};
   for (const asset of [...assets].sort()) {
     const source = path.join(gameDir, 'Content', asset + '.xnb');
     if (!existsSync(source)) {
@@ -38,8 +40,11 @@ export async function exportTextures(gameDir, assets) {
     if (!(result.content instanceof Blob)) continue;
     const target = path.join(SPRITES_OUT, asset + '.png');
     await mkdir(path.dirname(target), { recursive: true });
-    await writeFile(target, Buffer.from(await result.content.arrayBuffer()));
+    const png = Buffer.from(await result.content.arrayBuffer());
+    await writeFile(target, png);
+    // PNG IHDR: width and height are big-endian uint32 at bytes 16 and 20.
+    sizes[asset] = [png.readUInt32BE(16), png.readUInt32BE(20)];
     written++;
   }
-  return { written, missing };
+  return { written, missing, sizes };
 }
