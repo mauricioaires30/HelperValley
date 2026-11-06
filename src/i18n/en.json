@@ -7,7 +7,10 @@
   },
   "nav": {
     "home": "Saves",
-    "kit": "UI kit"
+    "kit": "UI kit",
+    "cc": "Community Center",
+    "museum": "Museum",
+    "achievements": "Achievements"
   },
   "common": {
     "language": "Language",
@@ -54,6 +57,52 @@
     "version": "v{{version}}",
     "host": "Host",
     "farmhand": "Farmhand",
-    "error": "Couldn't read this save: {{message}}"
+    "error": "Couldn't read this save: {{message}}",
+    "required": "Open your saves folder to see this page."
+  },
+  "locations": {
+    "Farm": "Farm",
+    "FarmHouse": "Farmhouse",
+    "Cellar": "Cellar",
+    "Shed": "Shed",
+    "Big Shed": "Big Shed",
+    "Barn": "Barn",
+    "Big Barn": "Big Barn",
+    "Deluxe Barn": "Deluxe Barn",
+    "Coop": "Coop",
+    "Big Coop": "Big Coop",
+    "Deluxe Coop": "Deluxe Coop",
+    "Greenhouse": "Greenhouse",
+    "Cabin": "Cabin",
+    "IslandWest": "Island Farm",
+    "IslandFarmHouse": "Island Farmhouse",
+    "SlimeHutch": "Slime Hutch",
+    "JunimoChests": "Junimo Chests",
+    "inventory": "{{name}}'s backpack"
+  },
+  "cc": {
+    "title": "Community Center",
+    "onlyMissing": "Only show what is missing",
+    "rooms": "Rooms",
+    "bundles": "Bundles",
+    "roomDone": "Restored!",
+    "reward": "Reward",
+    "pick": "Any {{count}} of {{total}}",
+    "have": "Have",
+    "readyTitle": "Ready to deliver ({{count}})",
+    "readyHint": "You already own these: grab them from your chests and head to the Community Center.",
+    "neededTitle": "Still needed ({{count}})",
+    "minQuality": "{{quality}} or better",
+    "noneOwned": "Not in any chest yet",
+    "jojaTitle": "Joja Community Development",
+    "purchased": "Purchased",
+    "notPurchased": "Not purchased",
+    "joja": {
+      "minecarts": "Minecarts",
+      "bridge": "Bridge to the quarry",
+      "panning": "Panning",
+      "greenhouse": "Greenhouse",
+      "bus": "Bus to the desert"
+    }
   }
 }

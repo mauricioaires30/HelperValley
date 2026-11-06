@@ -1,0 +1,172 @@
+.cc__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cc__filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.cc__filter input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+.cc__totals {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 6px 12px;
+  max-width: 520px;
+  margin: 8px 0 16px;
+}
+
+.cc-summary {
+  margin-bottom: 20px;
+}
+
+.cc-summary h3 {
+  font-size: 19px;
+  margin-top: 4px;
+}
+
+.cc-summary__hint {
+  margin: -4px 0 8px;
+  color: var(--text-soft);
+  font-size: 15px;
+}
+
+.cc-room {
+  margin-top: 20px;
+}
+
+.cc-room h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.cc-room__count {
+  font-size: 16px;
+  color: var(--text-soft);
+  text-shadow: none;
+}
+
+.cc-room__bundles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+}
+
+.cc-bundle {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  box-shadow: inset calc(3 * var(--px)) 0 0 var(--bundle-color);
+}
+
+.cc-bundle--complete {
+  opacity: 0.75;
+}
+
+.cc-bundle__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.cc-bundle__header h4 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.cc-bundle__reward {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 14px;
+  color: var(--text-soft);
+  white-space: nowrap;
+}
+
+.cc-bundle__pick {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-soft);
+}
+
+.cc-bundle__slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.cc-slot {
+  position: relative;
+}
+
+.cc-slot--done::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgb(90 180 60 / 0.25);
+  pointer-events: none;
+}
+
+.cc-slot--ready .slot {
+  filter: drop-shadow(0 0 calc(2 * var(--px)) #ffe066);
+}
+
+.cc-slot__badge {
+  position: absolute;
+  top: calc(-3 * var(--px));
+  right: calc(-2 * var(--px));
+  padding: 0 3px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: var(--px) solid #1e5b12;
+  pointer-events: none;
+}
+
+.cc-money {
+  font-weight: 600;
+}
+
+.cc-money--done {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.cc-joja {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+  max-width: 560px;
+}
+
+.cc-joja li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 12px;
+}
+
+.cc-joja--done {
+  opacity: 0.7;
+}
+
+.slot-tooltip {
+  display: grid;
+  gap: 2px;
+  font-size: 15px;
+}

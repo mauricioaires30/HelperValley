@@ -7,7 +7,8 @@ import './shell.css';
 
 const NAV = [
   { to: '/', key: 'home', icon: '(O)392' },
-  { to: '/kit', key: 'kit', icon: '(O)74' },
+  { to: '/cc', key: 'cc', icon: '(O)24' },
+  { to: '/kit', key: 'kit', icon: '(O)872' },
 ];
 
 export function AppShell() {

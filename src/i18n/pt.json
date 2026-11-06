@@ -7,7 +7,10 @@
   },
   "nav": {
     "home": "Saves",
-    "kit": "Kit de UI"
+    "kit": "Kit de UI",
+    "cc": "Centro Comunitário",
+    "museum": "Museu",
+    "achievements": "Conquistas"
   },
   "common": {
     "language": "Idioma",
@@ -54,6 +57,52 @@
     "version": "v{{version}}",
     "host": "Anfitrião",
     "farmhand": "Ajudante",
-    "error": "Não foi possível ler este save: {{message}}"
+    "error": "Não foi possível ler este save: {{message}}",
+    "required": "Abra a pasta de saves para ver esta página."
+  },
+  "locations": {
+    "Farm": "Fazenda",
+    "FarmHouse": "Casa",
+    "Cellar": "Adega",
+    "Shed": "Galpão",
+    "Big Shed": "Galpão Grande",
+    "Barn": "Celeiro",
+    "Big Barn": "Celeiro Grande",
+    "Deluxe Barn": "Celeiro Luxuoso",
+    "Coop": "Galinheiro",
+    "Big Coop": "Galinheiro Grande",
+    "Deluxe Coop": "Galinheiro Luxuoso",
+    "Greenhouse": "Estufa",
+    "Cabin": "Cabana",
+    "IslandWest": "Fazenda da Ilha",
+    "IslandFarmHouse": "Casa da Ilha",
+    "SlimeHutch": "Viveiro de Slimes",
+    "JunimoChests": "Baús Junimo",
+    "inventory": "Mochila de {{name}}"
+  },
+  "cc": {
+    "title": "Centro Comunitário",
+    "onlyMissing": "Mostrar só o que falta",
+    "rooms": "Salas",
+    "bundles": "Pacotes",
+    "roomDone": "Restaurada!",
+    "reward": "Recompensa",
+    "pick": "Quaisquer {{count}} de {{total}}",
+    "have": "Tem",
+    "readyTitle": "Pronto para entregar ({{count}})",
+    "readyHint": "Você já tem estes itens: pegue nos baús e leve ao Centro Comunitário.",
+    "neededTitle": "Ainda faltam ({{count}})",
+    "minQuality": "{{quality}} ou melhor",
+    "noneOwned": "Ainda não está em nenhum baú",
+    "jojaTitle": "Desenvolvimento Comunitário Joja",
+    "purchased": "Comprado",
+    "notPurchased": "Não comprado",
+    "joja": {
+      "minecarts": "Carrinhos de mina",
+      "bridge": "Ponte para a pedreira",
+      "panning": "Bateia",
+      "greenhouse": "Estufa",
+      "bus": "Ônibus para o deserto"
+    }
   }
 }

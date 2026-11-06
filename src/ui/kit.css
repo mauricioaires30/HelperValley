@@ -194,11 +194,11 @@
   transform: translateX(-50%);
   white-space: nowrap;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 80ms steps(2);
+  /* Hidden bubbles must not take part in layout, or they cause horizontal scrolling. */
+  display: none;
 }
 
 .tooltip:hover .tooltip__bubble,
 .tooltip:focus-within .tooltip__bubble {
-  opacity: 1;
+  display: block;
 }
