@@ -126,5 +126,14 @@
       "Island": "Ilha Gengibre"
     },
     "legend": "Verde: doado · Brilhando: você tem · Apagado: nunca encontrado. Gemas que não aparecem em geodos vêm de pedras e minérios nas minas."
+  },
+  "ach": {
+    "title": "Conquistas de {{name}}",
+    "earned": "Conquistada",
+    "locked": "Ainda não conquistada",
+    "secret": "Oculta",
+    "close": "Quase lá!",
+    "hideEarned": "Esconder conquistadas",
+    "perPlayer": "Conquistas são por jogador: troque o jogador no topo. Conquistas exclusivas da Steam/console não são acompanhadas."
   }
 }

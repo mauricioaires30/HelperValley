@@ -126,5 +126,14 @@
       "Island": "Ginger Island"
     },
     "legend": "Green: donated · Glowing: you own it · Faded: never found. Gems not listed in geodes come from mine rocks and ore nodes."
+  },
+  "ach": {
+    "title": "{{name}}'s achievements",
+    "earned": "Earned",
+    "locked": "Not earned yet",
+    "secret": "Hidden",
+    "close": "Almost there!",
+    "hideEarned": "Hide earned",
+    "perPlayer": "Achievements are per player: switch players in the header. Steam/console-only achievements are not tracked."
   }
 }

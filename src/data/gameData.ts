@@ -53,6 +53,18 @@ export interface AchievementData {
   pre: number;
 }
 
+export interface AchievementGoals {
+  /** Cooking recipe names. */
+  cooking: string[];
+  /** Crafting recipe names that count for Craft Master. */
+  crafting: string[];
+  /** Qualified ids of fish in the collection. */
+  fish: string[];
+  /** Harvest item ids counting for Polyculture / Monoculture. */
+  polyculture: string[];
+  monoculture: string[];
+}
+
 export interface MuseumData {
   artifacts: string[];
   minerals: string[];
@@ -70,10 +82,11 @@ export interface GameData {
   sheets: Record<string, [number, number]>;
   bundles: BundleStrings;
   achievements: Record<string, AchievementData>;
+  achievementGoals: AchievementGoals;
   museum: MuseumData;
 }
 
-const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'museum'] as const;
+const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum'] as const;
 
 export const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 export const spriteUrl = (sheet: string) => assetUrl(`sprites/${sheet}.png`);
