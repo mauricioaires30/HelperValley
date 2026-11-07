@@ -4,6 +4,7 @@ import type { SaveData } from '@/save/model';
 import { RequireSave } from '@/features/saves/RequireSave';
 import { useLocationName } from '@/features/fish/FishInfo';
 import { ItemIcon, Progress } from '@/ui';
+import { ONE_TIME_GUIDE } from './walnutGuide';
 
 export const TOTAL_WALNUTS = 130;
 
@@ -25,27 +26,6 @@ const DROPS: Array<{ key: string; max?: number }> = [
   { key: 'Island_W_BuriedTreasureNut', max: 1 },
   { key: 'Island_W_BuriedTreasureNut2', max: 1 },
   { key: 'VolcanoNormalChest' },
-];
-
-/** One-time walnut rewards (puzzles, quests, restorations) tracked by id in the save. */
-const ONE_TIME = [
-  'IslandGourmand1',
-  'IslandGourmand2',
-  'IslandGourmand3',
-  'Mermaid',
-  'TreeNut',
-  'TreeNutShot',
-  'SandDuggy',
-  'IslandWestCavePuzzle',
-  'IslandShrinePuzzle',
-  'BananaShrine',
-  'StardropPool',
-  'IslandLeftPlantRestored',
-  'IslandRightPlantRestored',
-  'IslandSnakeRestored',
-  'IslandFrogRestored',
-  'IslandBatRestored',
-  'IslandCenterSkeletonRestored',
 ];
 
 function Walnuts({ save }: { save: SaveData }) {
@@ -85,8 +65,11 @@ function Walnuts({ save }: { save: SaveData }) {
               const got = save.walnutDrops[key] ?? 0;
               const done = max !== undefined && got >= max;
               return (
-                <li key={key} className={done ? 'rel__muted' : undefined}>
-                  {done ? '✓' : '·'} {t(`walnuts.drop.${key}`)} — {max !== undefined ? `${got}/${max}` : got}
+                <li key={key} className={done ? 'rel__muted walnut-row' : 'walnut-row'}>
+                  <span>
+                    {done ? '✓' : '·'} <strong>{t(`walnuts.drop.${key}`)}</strong> {max !== undefined ? `${got}/${max}` : got}
+                  </span>
+                  {!done && <span className="cc-summary__hint">{t(`walnuts.dropHow.${key}`, { defaultValue: '' })}</span>}
                 </li>
               );
             })}
@@ -96,9 +79,12 @@ function Walnuts({ save }: { save: SaveData }) {
         <section className="box">
           <h3>{t('walnuts.oneTimeTitle')}</h3>
           <ul className="farm-facts">
-            {ONE_TIME.map((key) => (
-              <li key={key} className={collected.has(key) ? 'rel__muted' : undefined}>
-                {collected.has(key) ? '✓' : '·'} {t(`walnuts.once.${key}`)}
+            {ONE_TIME_GUIDE.map(({ key, total }) => (
+              <li key={key} className={collected.has(key) ? 'rel__muted walnut-row' : 'walnut-row'}>
+                <span>
+                  {collected.has(key) ? '✓' : '·'} <strong>{t(`walnuts.once.${key}`)}</strong> <span className="walnut-total">+{total}</span>
+                </span>
+                {!collected.has(key) && <span className="cc-summary__hint">{t(`walnuts.how.${key}`)}</span>}
               </li>
             ))}
           </ul>

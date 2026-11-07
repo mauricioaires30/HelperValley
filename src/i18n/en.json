@@ -623,7 +623,10 @@
     "resortClosed": "Your save: the resort is closed today.",
     "resortNotBuilt": "Your save: the resort hasn't been rebuilt yet.",
     "questPin": "Quest: {{title}}",
-    "fishPin": "{{name}} bites here"
+    "fishPin": "{{name}} bites here",
+    "fishSearch": "Mark a fish…",
+    "fishMarked": "Marked fish",
+    "fishAdd": "Mark"
   },
   "prod": {
     "title": "Production",
@@ -673,6 +676,17 @@
       "surveys": "Plant surveys",
       "plantsLeft": "Survey of the left plants",
       "plantsRight": "Survey of the right plants"
+    },
+    "fossil": {
+      "O820": "Crack Golden Coconuts (Clint at the Blacksmith).",
+      "O821": "Fish in island north (near the Dig Site).",
+      "O822": "Dig at the Dig Site (island north).",
+      "O823": "Dig at the Dig Site (island north) or crack Golden Coconuts.",
+      "O824": "Dig artifact spots in island south.",
+      "O825": "Dig artifact spots in island west and north, or fish in the west.",
+      "O826": "Dig artifact spots in island west.",
+      "O827": "Break crates and barrels inside the Volcano.",
+      "O828": "Shake/cut the jungle bushes in island east."
     }
   },
   "quests": {
@@ -696,7 +710,8 @@
       "lost": "Find {{item}} at {{place}} (tile {{x}}, {{y}}) and return it to {{npc}}.",
       "socialize": "Talk to every villager.",
       "go": "Go to {{place}}."
-    }
+    },
+    "pinFish": "Mark the fish"
   },
   "fish": {
     "title": "Fish collection",
@@ -771,6 +786,40 @@
       "IslandFrogRestored": "Field office: mummified frog",
       "IslandBatRestored": "Field office: mummified bat",
       "IslandCenterSkeletonRestored": "Field office: large skeleton"
+    },
+    "how": {
+      "IslandGourmand1": "Grow a melon on the island farm and show it to Gourmand (west cave).",
+      "IslandGourmand2": "Then grow a pumpkin and show it to Gourmand.",
+      "IslandGourmand3": "Finally grow a hot pepper and show it to Gourmand.",
+      "Mermaid": "Play the 5 southeast flute blocks in the mermaid song's order.",
+      "TreeNut": "Hit the big tree on the island farm.",
+      "TreeNutShot": "Use a slingshot on the nut at the top of the big tree.",
+      "SandDuggy": "In island west, whack the Duggy popping out of the sand (4 holes).",
+      "IslandWestCavePuzzle": "Crystal cave (west): repeat the color sequence.",
+      "IslandShrinePuzzle": "Shrine (east): place the 4 bird gems on the pedestals.",
+      "BananaShrine": "Bring a banana to the gorilla shrine (east jungle).",
+      "StardropPool": "At the volcano entrance (north), interact with the pool.",
+      "IslandLeftPlantRestored": "Do the left plant survey at the field office.",
+      "IslandRightPlantRestored": "Do the right plant survey at the field office.",
+      "IslandSnakeRestored": "Donate the 3 snake pieces to Professor Snail.",
+      "IslandFrogRestored": "Donate the mummified frog to Professor Snail.",
+      "IslandBatRestored": "Donate the mummified bat to Professor Snail.",
+      "IslandCenterSkeletonRestored": "Donate the 6 large-skeleton pieces to Professor Snail."
+    },
+    "dropHow": {
+      "IslandFishing": "Fish anywhere on the island; some catches drop a walnut.",
+      "IslandFarming": "Harvest island farm crops; some drop a walnut.",
+      "MusselStone": "Break the mussel stones on the island south beach.",
+      "VolcanoMining": "Break rocks in the volcano.",
+      "VolcanoMonsterDrop": "Defeat monsters inside the volcano.",
+      "VolcanoBarrel": "Break barrels inside the volcano.",
+      "Birdie": "Help Birdie (west) find the Pirate's pieces.",
+      "Darts": "Play darts with the pirate at the cove (easy, medium, hard).",
+      "TigerSlimeNut": "Defeat the tiger slime that shows up in the volcano.",
+      "Island_N_BuriedTreasureNut": "Follow the island north treasure map and dig at the X.",
+      "Island_W_BuriedTreasureNut": "Follow the island west treasure map and dig at the X.",
+      "Island_W_BuriedTreasureNut2": "Second island west treasure map.",
+      "VolcanoNormalChest": "Open normal chests in the volcano."
     }
   },
   "animals": {

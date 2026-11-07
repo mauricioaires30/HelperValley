@@ -2,7 +2,9 @@ import { useTranslation } from 'react-i18next';
 import type { SaveData } from '@/save/model';
 import { RequireSave } from '@/features/saves/RequireSave';
 import { findItem } from '@/save/inventory';
-import { ItemIcon, Progress } from '@/ui';
+import { ItemIcon, Progress, Tooltip } from '@/ui';
+import { getItem } from '@/data/gameData';
+import { useGameName } from '@/i18n';
 
 /**
  * Professor Snail's collections, in the order of IslandFieldOffice.piecesDonated:
@@ -18,6 +20,7 @@ const SETS = [
 
 function Office({ save }: { save: SaveData }) {
   const { t } = useTranslation();
+  const name = useGameName();
   const office = save.fieldOffice;
   if (!office) return <p>{t('collections.office.locked')}</p>;
   const donated = office.pieces.filter(Boolean).length;
@@ -42,7 +45,16 @@ function Office({ save }: { save: SaveData }) {
                   const have = !office.pieces[i] && findItem(save, PIECES[i]).length > 0;
                   return (
                     <span key={i} className={`slot-state${office.pieces[i] ? ' slot-state--done' : have ? ' slot-state--ready' : ''}`}>
-                      <ItemIcon id={PIECES[i]} slot faded={!office.pieces[i] && !have} />
+                      <Tooltip
+                        text={
+                          <span className="slot-tooltip">
+                            <strong>{name(getItem(PIECES[i])?.n)}</strong>
+                            <span>{t(`collections.fossil.${PIECES[i].replace(/[()]/g, '')}`)}</span>
+                          </span>
+                        }
+                      >
+                        <ItemIcon id={PIECES[i]} slot faded={!office.pieces[i] && !have} tooltip={false} />
+                      </Tooltip>
                       {have && <span className="slot-badge">{t('museum.donate')}</span>}
                     </span>
                   );

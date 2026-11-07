@@ -623,7 +623,10 @@
     "resortClosed": "No seu save: o resort está fechado hoje.",
     "resortNotBuilt": "No seu save: o resort ainda não foi reconstruído.",
     "questPin": "Missão: {{title}}",
-    "fishPin": "{{name}} aparece aqui"
+    "fishPin": "{{name}} aparece aqui",
+    "fishSearch": "Marcar peixe…",
+    "fishMarked": "Peixes marcados",
+    "fishAdd": "Marcar"
   },
   "prod": {
     "title": "Produção",
@@ -673,6 +676,17 @@
       "surveys": "Pesquisas de plantas",
       "plantsLeft": "Pesquisa das plantas da esquerda",
       "plantsRight": "Pesquisa das plantas da direita"
+    },
+    "fossil": {
+      "O820": "Abra Cocos Dourados (no Ferreiro, com o Clint).",
+      "O821": "Pesque no norte da ilha (perto do Sítio de Escavação).",
+      "O822": "Escave no Sítio de Escavação (norte da ilha).",
+      "O823": "Escave no Sítio de Escavação (norte da ilha) ou abra Cocos Dourados.",
+      "O824": "Escave pontos de artefato no sul da ilha.",
+      "O825": "Escave pontos de artefato no oeste e no norte da ilha, ou pesque no oeste.",
+      "O826": "Escave pontos de artefato no oeste da ilha.",
+      "O827": "Quebre caixas e barris dentro do Vulcão.",
+      "O828": "Sacuda/corte a vegetação da selva no leste da ilha."
     }
   },
   "quests": {
@@ -696,7 +710,8 @@
       "lost": "Ache {{item}} em {{place}} (tile {{x}}, {{y}}) e devolva para {{npc}}.",
       "socialize": "Converse com todos os moradores.",
       "go": "Vá até {{place}}."
-    }
+    },
+    "pinFish": "Marcar o peixe"
   },
   "fish": {
     "title": "Coleção de peixes",
@@ -771,6 +786,40 @@
       "IslandFrogRestored": "Escritório de campo: sapo mumificado",
       "IslandBatRestored": "Escritório de campo: morcego mumificado",
       "IslandCenterSkeletonRestored": "Escritório de campo: esqueleto grande"
+    },
+    "how": {
+      "IslandGourmand1": "Plante melancia na fazenda da ilha e mostre ao sapo Gourmand (caverna do oeste).",
+      "IslandGourmand2": "Depois, plante abóbora e mostre ao Gourmand.",
+      "IslandGourmand3": "Por último, plante pimenta picante e mostre ao Gourmand.",
+      "Mermaid": "Toque os 5 blocos de flauta do sudeste na ordem da música da sereia.",
+      "TreeNut": "Bata na árvore grande da fazenda da ilha.",
+      "TreeNutShot": "Acerte com o estilingue a noz no alto da árvore grande.",
+      "SandDuggy": "No oeste da ilha, bata no Duggy que sai da areia (4 buracos).",
+      "IslandWestCavePuzzle": "Caverna de cristais (oeste): repita a sequência das cores.",
+      "IslandShrinePuzzle": "Santuário (leste): coloque as 4 gemas dos pássaros nos pedestais.",
+      "BananaShrine": "Leve uma banana ao santuário do gorila (selva leste).",
+      "StardropPool": "Na entrada do vulcão (norte), interaja com a piscina.",
+      "IslandLeftPlantRestored": "Faça a pesquisa da planta da esquerda no escritório de campo.",
+      "IslandRightPlantRestored": "Faça a pesquisa da planta da direita no escritório de campo.",
+      "IslandSnakeRestored": "Doe as 3 peças da cobra ao Professor Caracol.",
+      "IslandFrogRestored": "Doe o sapo mumificado ao Professor Caracol.",
+      "IslandBatRestored": "Doe o morcego mumificado ao Professor Caracol.",
+      "IslandCenterSkeletonRestored": "Doe as 6 peças do esqueleto grande ao Professor Caracol."
+    },
+    "dropHow": {
+      "IslandFishing": "Pesque em qualquer lugar da ilha; algumas pescas dão noz.",
+      "IslandFarming": "Colha plantações da fazenda da ilha; algumas dão noz.",
+      "MusselStone": "Quebre as pedras com mexilhão na praia sul da ilha.",
+      "VolcanoMining": "Quebre pedras no vulcão.",
+      "VolcanoMonsterDrop": "Derrote monstros dentro do vulcão.",
+      "VolcanoBarrel": "Quebre barris dentro do vulcão.",
+      "Birdie": "Ajude a Birdie (oeste) a achar as peças do Pirata.",
+      "Darts": "Jogue dardos com o pirata na enseada (fácil, médio e difícil).",
+      "TigerSlimeNut": "Derrote o slime tigre que aparece no vulcão.",
+      "Island_N_BuriedTreasureNut": "Siga o mapa do tesouro do norte da ilha e cave no X.",
+      "Island_W_BuriedTreasureNut": "Siga o mapa do tesouro do oeste e cave no X.",
+      "Island_W_BuriedTreasureNut2": "Segundo mapa do tesouro do oeste.",
+      "VolcanoNormalChest": "Abra baús normais no vulcão."
     }
   },
   "animals": {

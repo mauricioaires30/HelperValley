@@ -172,3 +172,61 @@
 .map-pin__icon .sprite {
   rotate: 45deg;
 }
+
+.fish-picker {
+  display: grid;
+  gap: 4px;
+}
+
+.fish-picker__input {
+  font: inherit;
+  font-size: var(--fs-sm);
+  color: var(--text);
+  background: var(--paper-light);
+  border: var(--px) solid var(--wood-dark);
+  padding: 2px 6px;
+}
+
+.fish-picker__row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: inherit;
+  font-size: var(--fs-sm);
+  color: var(--text);
+  text-align: left;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.fish-picker__row:hover {
+  background: rgb(255 255 255 / 0.4);
+}
+
+.fish-picker__list {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-sm);
+}
+
+.fish-picker__list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fish-picker__list span {
+  flex: 1;
+}
+
+.fish-picker__remove {
+  font: inherit;
+  color: var(--danger);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
