@@ -389,9 +389,7 @@
     "dead_other": "{{count}} plantas mortas",
     "animalsTitle": "Animais ({{count}})",
     "hay": "{{hay}} / {{capacity}} de feno em {{silos}} silo(s)",
-    "hayDays": "Os animais comem {{perDay}} de feno por dia dentro de casa: dá para {{days}} dias",
-    "hayWinter": "Compre {{count}} de feno para passar o inverno (~{{cost}}g na Marnie)",
-    "hayFill": "{{count}} de feno enche os silos (~{{cost}}g)",
+    "hayFill": "Compre {{count}} de feno para encher os silos (~{{cost}}g na Marnie)",
     "fertilizer": "Fertilizante",
     "fert": {
       "none": "Nenhum",
@@ -473,6 +471,10 @@
       "AnimalShop": "Rancho da Marnie",
       "VolcanoShop": "Anão do Vulcão",
       "QiGemShop": "Sala das Nozes do Qi"
-    }
+    },
+    "late": "não dá tempo ({{need}} dias, restam {{left}}): valor numa estação inteira",
+    "hayStock": "Comem {{perDay}} de feno por dia: o estoque dura {{days}} dias (até {{date}})",
+    "hayCycle": "Com os silos cheios dura {{days}} dias: compre de novo por volta de {{date}}",
+    "hayNote": "Considerando que comem feno todo dia (inverno, chuva ou sem grama lá fora)."
   }
 }

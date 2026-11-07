@@ -2,8 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { gameData } from '@/data/gameData';
 import { useGameName } from '@/i18n';
 import type { FarmArea, SaveData } from '@/save/model';
-import { ItemIcon, Tooltip } from '@/ui';
-import { DAYS_IN_SEASON } from './profit';
+import { ItemIcon, Sprite, Tooltip } from '@/ui';
+import { addDays } from '@/features/calendar/calendar';
 
 const SILO_CAPACITY = 240;
 const HAY_PRICE = 50;
@@ -73,36 +73,43 @@ function AnimalsCard({ save }: { save: SaveData }) {
   const byType = new Map<string, number>();
   for (const a of farm.animals) byType.set(a.type, (byType.get(a.type) ?? 0) + 1);
 
-  // Every animal eats one hay a day when it can't graze (always in winter).
+  // Each animal eats one hay a day when it can't graze (winter, rain, no grass).
   const perDay = farm.animals.length;
   const capacity = farm.silos * SILO_CAPACITY;
-  const daysOfHay = perDay ? Math.floor(farm.hay / perDay) : Infinity;
-  const winterDaysLeft = date.season === 'winter' ? DAYS_IN_SEASON - date.day + 1 : DAYS_IN_SEASON;
-  const needWinter = Math.max(0, perDay * winterDaysLeft - farm.hay);
   const toFill = Math.max(0, capacity - farm.hay);
+  const stockDays = perDay ? Math.floor(farm.hay / perDay) : 0;
+  const fullDays = perDay ? Math.floor(capacity / perDay) : 0;
+  const when = (days: number) => {
+    const d = addDays(date, days);
+    return t('saves.day', { day: d.day, season: t(`common.seasons.${d.season}`), year: d.year });
+  };
 
   return (
     <section className="box farm-area">
       <h3>{t('farm.animalsTitle', { count: farm.animals.length })}</h3>
       <div className="farm-animals">
-        {[...byType].map(([type, count]) => (
-          <span key={type} className="farm-animal inset">
-            {animals[type]?.produce[0] && <ItemIcon id={animals[type].produce[0]} tooltip={false} />}
-            {name(animals[type]?.n) || type} ×{count}
-          </span>
-        ))}
+        {[...byType].map(([type, count]) => {
+          const sprite = animals[type]?.sprite;
+          return (
+            <span key={type} className="farm-animal inset">
+              {sprite && <Sprite sheet={sprite[0]} x={0} y={0} w={sprite[1]} h={sprite[2]} scale={sprite[1] > 16 ? 1 : 2} />}
+              {name(animals[type]?.n) || type} ×{count}
+            </span>
+          );
+        })}
       </div>
       <ul className="farm-facts">
         <li>
           <ItemIcon id="(O)178" tooltip={false} /> {t('farm.hay', { hay: farm.hay.toLocaleString(), capacity: capacity.toLocaleString(), silos: farm.silos })}
         </li>
-        {perDay > 0 && <li>{t('farm.hayDays', { perDay, days: daysOfHay === Infinity ? '∞' : daysOfHay })}</li>}
-        {perDay > 0 && needWinter > 0 && (
-          <li className="farm-warn">
-            {t('farm.hayWinter', { count: needWinter.toLocaleString(), cost: (needWinter * HAY_PRICE).toLocaleString() })}
-          </li>
+        {perDay > 0 && (
+          <>
+            <li className={stockDays < 7 ? 'farm-warn' : undefined}>{t('farm.hayStock', { perDay, days: stockDays, date: when(stockDays) })}</li>
+            {toFill > 0 && <li>{t('farm.hayFill', { count: toFill.toLocaleString(), cost: (toFill * HAY_PRICE).toLocaleString() })}</li>}
+            {capacity > 0 && <li>{t('farm.hayCycle', { days: fullDays, date: when(fullDays) })}</li>}
+            <li className="cc-summary__hint">{t('farm.hayNote')}</li>
+          </>
         )}
-        {toFill > 0 && <li>{t('farm.hayFill', { count: toFill.toLocaleString(), cost: (toFill * HAY_PRICE).toLocaleString() })}</li>}
       </ul>
     </section>
   );

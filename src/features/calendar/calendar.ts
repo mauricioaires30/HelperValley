@@ -31,3 +31,11 @@ export function daysUntil(from: { season: Season; day: number }, to: { season: S
   const diff = dayOfYear(to.season, to.day) - dayOfYear(from.season, from.day);
   return diff >= 0 ? diff : diff + DAYS_IN_SEASON * 4;
 }
+
+/** The date `days` days after `from`, rolling over seasons and years. */
+export function addDays(from: { season: Season; day: number; year: number }, days: number) {
+  const index = (from.year - 1) * DAYS_IN_SEASON * 4 + dayOfYear(from.season, from.day) + days;
+  const year = Math.floor(index / (DAYS_IN_SEASON * 4)) + 1;
+  const inYear = index % (DAYS_IN_SEASON * 4);
+  return { year, season: SEASONS[Math.floor(inYear / DAYS_IN_SEASON)], day: (inYear % DAYS_IN_SEASON) + 1 };
+}

@@ -8,6 +8,8 @@ import { SEASONS } from '@/features/calendar/calendar';
 import { cropOptions, DAYS_IN_SEASON, FERTILIZERS, type CropOption, type Fertilizer, type PlanOptions } from './profit';
 import type { AreaId } from './plans';
 
+type SortKey = 'crop' | 'seed' | 'grow' | 'harvests' | 'price' | 'profit' | 'perDay' | 'honey';
+
 /** Profession ids from the save (Farmer.professions). */
 const TILLER = 1;
 const ARTISAN = 4;
@@ -44,14 +46,14 @@ export function useDefaultOptions(player: Player): Omit<PlanOptions, 'season' | 
   );
 }
 
-function OptionRow({ row, mode }: { row: CropOption; mode: 'raw' | 'best' }) {
+function OptionRow({ row, mode, daysLeft }: { row: CropOption; mode: 'raw' | 'best'; daysLeft: number }) {
   const { t } = useTranslation();
   const name = useGameName();
   const item = getItem(row.crop.harvest);
   const profit = mode === 'raw' ? row.profitRaw : row.profitBest;
   const perDay = mode === 'raw' ? row.perDayRaw : row.perDayBest;
   return (
-    <tr>
+    <tr className={row.late ? 'farm-row--late' : undefined}>
       <td>
         <span className="farm-crop">
           <ItemIcon id={row.crop.harvest} tooltip={false} />
@@ -62,6 +64,7 @@ function OptionRow({ row, mode }: { row: CropOption; mode: 'raw' | 'best' }) {
               {row.crop.trellis && <span className="farm-tag">{t('farm.trellis')}</span>}
               {row.crop.paddy && <span className="farm-tag">{t('farm.paddy')}</span>}
               {row.isFlower && <span className="farm-tag farm-tag--honey">{t('farm.honey', { price: row.honeyPrice })}</span>}
+              {row.late && <span className="farm-tag farm-tag--late">{t('farm.late', { need: row.growDays, left: daysLeft })}</span>}
             </span>
           </span>
         </span>
@@ -98,6 +101,7 @@ export function Recommendations({ save, player }: { save: SaveData; player: Play
   const [includeUnbuyable, setIncludeUnbuyable] = useState(true);
   const [mode, setMode] = useState<'raw' | 'best'>('best');
   const [onlyFlowers, setOnlyFlowers] = useState(false);
+  const name = useGameName();
 
   const indoor = area !== 'Farm';
   // Planting today in the current season leaves the rest of it; other seasons start fresh.
@@ -106,9 +110,44 @@ export function Recommendations({ save, player }: { save: SaveData; player: Play
     () => cropOptions({ ...defaults, season: indoor ? 'any' : season, days, fertilizer, includeUnbuyable }),
     [defaults, indoor, season, days, fertilizer, includeUnbuyable],
   );
+  const [sort, setSort] = useState<{ key: SortKey; desc: boolean }>({ key: 'perDay', desc: true });
+  const value = (r: CropOption): number | string => {
+    switch (sort.key) {
+      case 'crop':
+        return name(getItem(r.crop.harvest)?.n);
+      case 'seed':
+        return r.seedPrice ?? Infinity;
+      case 'grow':
+        return r.growDays;
+      case 'harvests':
+        return r.harvests;
+      case 'price':
+        return mode === 'raw' ? r.rawPrice : r.best.price;
+      case 'profit':
+        return mode === 'raw' ? r.profitRaw : r.profitBest;
+      case 'honey':
+        return r.honeyPrice ?? 0;
+      default:
+        return mode === 'raw' ? r.perDayRaw : r.perDayBest;
+    }
+  };
   const sorted = [...rows]
     .filter((r) => !onlyFlowers || r.isFlower)
-    .sort((a, b) => (onlyFlowers ? (b.honeyPrice ?? 0) - (a.honeyPrice ?? 0) : mode === 'raw' ? b.perDayRaw - a.perDayRaw : b.perDayBest - a.perDayBest));
+    .sort((a, b) => {
+      // Crops that make it in time always come before late ones.
+      if (a.late !== b.late) return Number(a.late) - Number(b.late);
+      const [x, y] = [value(a), value(b)];
+      const cmp = typeof x === 'string' ? x.localeCompare(String(y)) : x - (y as number);
+      return sort.desc ? -cmp : cmp;
+    });
+  const header = (key: SortKey, label: string, numeric = true) => (
+    <th className={numeric ? 'num' : undefined} aria-sort={sort.key === key ? (sort.desc ? 'descending' : 'ascending') : 'none'}>
+      <button className="farm-sort" onClick={() => setSort((s) => ({ key, desc: s.key === key ? !s.desc : numeric }))}>
+        {label}
+        <span aria-hidden>{sort.key === key ? (sort.desc ? ' ▼' : ' ▲') : ' ⇅'}</span>
+      </button>
+    </th>
+  );
 
   return (
     <div className="farm-recs">
@@ -150,7 +189,14 @@ export function Recommendations({ save, player }: { save: SaveData; player: Play
             {t('farm.includeUnbuyable')}
           </label>
           <label className="cc__filter">
-            <input type="checkbox" checked={onlyFlowers} onChange={(e) => setOnlyFlowers(e.target.checked)} />
+            <input
+              type="checkbox"
+              checked={onlyFlowers}
+              onChange={(e) => {
+                setOnlyFlowers(e.target.checked);
+                setSort({ key: e.target.checked ? 'honey' : 'perDay', desc: true });
+              }}
+            />
             {t('farm.onlyFlowers')}
           </label>
         </div>
@@ -169,18 +215,18 @@ export function Recommendations({ save, player }: { save: SaveData; player: Play
         <table className="farm-table">
           <thead>
             <tr>
-              <th>{t('farm.col.crop')}</th>
-              <th>{t('farm.col.seed')}</th>
-              <th className="num">{t('farm.col.grow')}</th>
-              <th className="num">{t('farm.col.harvests')}</th>
-              <th className="num">{t('farm.col.price')}</th>
-              <th className="num">{t('farm.col.profit')}</th>
-              <th className="num">{t('farm.col.perDay')}</th>
+              {header('crop', t('farm.col.crop'), false)}
+              {header('seed', t('farm.col.seed'), false)}
+              {header('grow', t('farm.col.grow'))}
+              {header('harvests', t('farm.col.harvests'))}
+              {header('price', t('farm.col.price'))}
+              {header('profit', t('farm.col.profit'))}
+              {header('perDay', t('farm.col.perDay'))}
             </tr>
           </thead>
           <tbody>
             {sorted.map((row) => (
-              <OptionRow key={row.crop.seed} row={row} mode={mode} />
+              <OptionRow key={row.crop.seed} row={row} mode={mode} daysLeft={days} />
             ))}
           </tbody>
         </table>

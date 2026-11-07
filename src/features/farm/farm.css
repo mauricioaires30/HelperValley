@@ -174,3 +174,21 @@
   width: 100%;
   min-width: 120px;
 }
+
+.farm-sort {
+  font: inherit;
+  font-weight: 600;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.farm-row--late {
+  opacity: 0.55;
+}
+
+.farm-tag--late {
+  background: var(--danger);
+}

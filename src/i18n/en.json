@@ -389,9 +389,7 @@
     "dead_other": "{{count}} dead crops",
     "animalsTitle": "Animals ({{count}})",
     "hay": "{{hay}} / {{capacity}} hay in {{silos}} silo(s)",
-    "hayDays": "Animals eat {{perDay}} hay per day indoors: enough for {{days}} days",
-    "hayWinter": "Buy {{count}} hay to get through winter (~{{cost}}g at Marnie)",
-    "hayFill": "{{count}} hay fills your silos (~{{cost}}g)",
+    "hayFill": "Buy {{count}} hay to fill the silos (~{{cost}}g at Marnie)",
     "fertilizer": "Fertilizer",
     "fert": {
       "none": "None",
@@ -473,6 +471,10 @@
       "AnimalShop": "Marnie's Ranch",
       "VolcanoShop": "Volcano Dwarf",
       "QiGemShop": "Qi's Walnut Room"
-    }
+    },
+    "late": "won't finish in time ({{need}} days, {{left}} left): full-season value",
+    "hayStock": "They eat {{perDay}} hay a day: your stock lasts {{days}} days (until {{date}})",
+    "hayCycle": "Full silos last {{days}} days: buy again around {{date}}",
+    "hayNote": "Assumes they eat hay every day (winter, rain or no grass outside)."
   }
 }

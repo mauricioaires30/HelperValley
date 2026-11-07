@@ -37,4 +37,12 @@ describe('farm profit', () => {
     expect(all.some((o) => o.crop.seed === '(O)499')).toBe(true);
     expect(all[0].perDayBest).toBeGreaterThanOrEqual(all.at(-1)!.perDayBest);
   });
+
+  it('keeps crops that cannot finish in time, flagged as late', () => {
+    // Summer day 16: 12 days left; Starfruit needs 13.
+    const opts = { season: 'summer', days: 12, fertilizer: 'none', agriculturist: false, tiller: false, artisan: false, farmingLevel: 10, includeUnbuyable: true } as const;
+    const starfruit = cropOptions(opts).find((o) => o.crop.seed === '(O)486')!;
+    expect(starfruit.late).toBe(true);
+    expect(starfruit.harvests).toBe(2);
+  });
 });

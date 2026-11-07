@@ -57,7 +57,7 @@ function buildSources(objects) {
  * Crops, fruit trees, animals and seed sources for the farm planner.
  * Prices come from the game's shop data, so they match the installed version.
  */
-export function buildFarm() {
+export function buildFarm(textures) {
   const objects = readRaw('Data/Objects');
   const sources = buildSources(objects);
 
@@ -96,6 +96,12 @@ export function buildFarm() {
         produce: (a.ProduceItemIds ?? []).map((p) => (p.ItemId.startsWith('(') ? p.ItemId : `(O)${p.ItemId}`)),
         days: a.DaysToProduce,
         price: a.PurchasePrice,
+        // Overworld sprite: [sheet, frame width, frame height]; the first frame faces down.
+        sprite: (() => {
+          const sheet = a.Texture.replace(/\\/g, '/');
+          textures.add(sheet);
+          return [sheet, a.SpriteWidth, a.SpriteHeight];
+        })(),
       },
     ]),
   );

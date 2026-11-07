@@ -116,7 +116,7 @@ export interface CropData {
 export interface FarmData {
   crops: CropData[];
   fruitTrees: Array<{ sapling: string; fruit: string; seasons: Season[]; sources: ItemSource[] }>;
-  animals: Record<string, { n: LocalizedName; house: string; produce: string[]; days: number; price: number }>;
+  animals: Record<string, { n: LocalizedName; house: string; produce: string[]; days: number; price: number; sprite: [string, number, number] }>;
   hay: ItemSource[];
 }
 

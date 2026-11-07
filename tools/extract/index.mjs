@@ -52,7 +52,7 @@ const datasets = {
   museum: buildMuseum(),
   calendar: buildCalendar(),
   heartEvents: buildHeartEvents(),
-  farm: buildFarm(),
+  farm: buildFarm(textures),
 };
 
 await rm(DATA_OUT, { recursive: true, force: true });
