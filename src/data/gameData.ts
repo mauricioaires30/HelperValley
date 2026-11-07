@@ -87,6 +87,39 @@ export interface HeartEvent {
   conditions: string[][];
 }
 
+/** Where an item can be bought or traded for. currency: 0 gold, 1 star tokens, 2 Qi coins, 4 Qi gems. */
+export interface ItemSource {
+  shop: string;
+  price?: number;
+  trade?: [string, number];
+  random?: boolean;
+  seasons?: Season[];
+  currency?: number;
+}
+
+export interface CropData {
+  seed: string;
+  harvest: string;
+  seasons: Season[];
+  phases: number[];
+  /** Days to regrow after harvest, or -1. */
+  regrow: number;
+  stack: [number, number];
+  perLevel: number;
+  extra: number;
+  paddy: boolean;
+  trellis: boolean;
+  noPots: boolean;
+  sources: ItemSource[];
+}
+
+export interface FarmData {
+  crops: CropData[];
+  fruitTrees: Array<{ sapling: string; fruit: string; seasons: Season[]; sources: ItemSource[] }>;
+  animals: Record<string, { n: LocalizedName; house: string; produce: string[]; days: number; price: number }>;
+  hay: ItemSource[];
+}
+
 export interface MuseumData {
   artifacts: string[];
   minerals: string[];
@@ -108,9 +141,10 @@ export interface GameData {
   museum: MuseumData;
   calendar: { festivals: Festival[] };
   heartEvents: { events: HeartEvent[]; places: Record<string, LocalizedName> };
+  farm: FarmData;
 }
 
-const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents'] as const;
+const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents', 'farm'] as const;
 
 export const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 export const spriteUrl = (sheet: string) => assetUrl(`sprites/${sheet}.png`);
