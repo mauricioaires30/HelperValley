@@ -219,7 +219,7 @@ export interface WalnutSpot {
 const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents', 'farm', 'worldMap', 'schedules', 'fish', 'walnuts', 'gameCollections', 'player', 'shops'] as const;
 
 export const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
-export const spriteUrl = (sheet: string) => assetUrl(`sprites/${sheet}.png`);
+export const spriteUrl = (sheet: string) => assetUrl(`sprites/${sheet}.png?v=${__BUILD_ID__}`);
 
 let data: GameData | null = null;
 let loading: Promise<GameData> | null = null;
@@ -227,7 +227,7 @@ let loading: Promise<GameData> | null = null;
 /** Loads all static game datasets once. */
 export function loadGameData(): Promise<GameData> {
   loading ??= Promise.all(
-    DATASETS.map((name) => fetch(assetUrl(`data/${name}.json`)).then((r) => r.json())),
+    DATASETS.map((name) => fetch(assetUrl(`data/${name}.json?v=${__BUILD_ID__}`)).then((r) => r.json())),
   ).then((values) => {
     data = Object.fromEntries(DATASETS.map((name, i) => [name, values[i]])) as unknown as GameData;
     return data;

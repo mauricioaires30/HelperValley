@@ -98,12 +98,13 @@ function Mastery({ player }: { player: Player }) {
       <ul className="mastery">
         {data.mastery.map((entry, i) => (
           <li key={i} className={m.claimed[i] ? 'mastery__skill inset' : 'mastery__skill inset mastery__skill--missing'}>
-            <strong>
-              {name(entry.title)} {m.claimed[i] ? '✓' : ''}
-            </strong>
+            <span className="mastery__head">
+              <strong>{name(entry.title)}</strong>
+              <span className={m.claimed[i] ? 'check check--on' : 'check'} aria-label={m.claimed[i] ? t('player.mastery.claimed') : undefined} />
+            </span>
             <span className="mastery__rewards">
               {entry.rewards.map((id) => (
-                <ItemIcon key={id} id={id} />
+                <ItemIcon key={id} id={id} slot />
               ))}
             </span>
             <span className="mastery__perk">{name(entry.perk)}</span>

@@ -431,7 +431,8 @@
       "recommendations": "O que plantar",
       "planner": "Planos e compras",
       "production": "Produzindo",
-      "animals": "Animais"
+      "animals": "Animais",
+      "ponds": "Lagos de peixe"
     },
     "area": {
       "Farm": "Fazenda",
@@ -668,7 +669,10 @@
     "workingTitle": "Em andamento",
     "readyNow": "pronto",
     "nextIn": "próximo em {{time}}",
-    "pondNothing": "Nada para coletar"
+    "pondNothing": "Nada para coletar",
+    "noPonds": "Nenhum lago de peixes na fazenda.",
+    "pondFish": "{{count}}/{{max}} peixes",
+    "pondWants": "Pede {{count}}× {{item}}"
   },
   "collections": {
     "tab": {
@@ -727,7 +731,8 @@
     },
     "fishClick": "Clique num peixe para marcar no mapa.",
     "lettersHint": "{{count}} cartas recebidas.",
-    "notesHint": "Notas aparecem ao cavar, cortar mato e pescar depois de ler o primeiro diário."
+    "notesHint": "Notas aparecem ao cavar, cortar mato e pescar depois de ler o primeiro diário.",
+    "recipeLegend": "Colorido: já fez · Apagado: receita conhecida, falta fazer · Silhueta: receita ainda não aprendida. Passe o mouse para ver ingredientes."
   },
   "quests": {
     "title": "Missões de {{name}}",
@@ -755,7 +760,11 @@
     "slayerTitle": "Metas do caçador (Guilda) · {{done}}/{{total}}",
     "slayerHint": "Elimine monstros nas minas para o Marlon. Cada meta completa dá um prêmio na Guilda dos Aventureiros.",
     "slayerCollect": "pegue o prêmio com o Gil",
-    "pinTip": "Dica: use \"Marcar\" numa missão para ela aparecer no mapa (aba Mapa)."
+    "pinTip": "Dica: use \"Marcar\" numa missão para ela aparecer no mapa (aba Mapa).",
+    "pondsTitle": "Pedidos dos lagos de peixe ({{count}})",
+    "pondsNone": "Nenhum lago pedindo item agora. Quando um lago enche, os peixes pedem algo para crescer.",
+    "pondOf": "Lago de {{fish}}",
+    "pondHow": "Entregue no lago para liberar mais vagas ({{count}}/{{max}} peixes)."
   },
   "fish": {
     "title": "Coleção de peixes",
@@ -902,7 +911,8 @@
       "level": "Nível de maestria {{level}} de 5",
       "toClaim": "{{count}} para resgatar nos pedestais",
       "max": "Maestria completa.",
-      "how": "Depois de tudo no nível 10, a XP extra vira XP de maestria (Cultivo conta metade). Cada nível deixa você resgatar um pedestal na caverna, que dá itens, receitas e um bônus."
+      "how": "Depois de tudo no nível 10, a XP extra vira XP de maestria (Cultivo conta metade). Cada nível deixa você resgatar um pedestal na caverna, que dá itens, receitas e um bônus.",
+      "claimed": "resgatada"
     },
     "grandpa": {
       "title": "Avaliação do vovô",

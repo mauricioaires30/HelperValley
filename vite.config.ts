@@ -11,6 +11,8 @@ export default defineConfig({
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
   worker: { format: 'es' },
+  // A per-build id appended to data/sprite URLs so a new deploy never shows a cached old dataset.
+  define: { __BUILD_ID__: JSON.stringify(Date.now().toString(36)) },
   test: {
     environment: 'node',
     include: ['src/**/*.test.ts', 'tools/**/*.test.mjs'],

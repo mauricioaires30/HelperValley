@@ -122,7 +122,7 @@ function SlayerGoals({ player }: { player: Player }) {
       <p className="cc-summary__hint">{t('quests.slayerHint')}</p>
       <div className="quest-grid">
         {goals.map((g) => (
-          <div key={g.id} className={g.done ? 'quest-card box quest-card--done' : 'quest-card box'}>
+          <div key={g.id} className={g.done ? 'quest box quest-card--done' : 'quest box'}>
             <strong>
               {name(g.n)} {g.done && '✓'}
             </strong>
@@ -130,13 +130,44 @@ function SlayerGoals({ player }: { player: Player }) {
             <span className="cc-summary__hint">{g.targets.map(([, n]) => name(n)).join(', ')}</span>
             {g.reward && (
               <span className="quest-card__reward">
-                <ItemIcon id={g.reward} scale={1} /> {name(getItem(g.reward)?.n)}
+                <ItemIcon id={g.reward} /> {name(getItem(g.reward)?.n)}
                 {g.done && !g.collected && <em> · {t('quests.slayerCollect')}</em>}
               </span>
             )}
           </div>
         ))}
       </div>
+    </>
+  );
+}
+
+/** Fish ponds asking for an item before they can grow. */
+function PondRequests({ save }: { save: SaveData }) {
+  const { t } = useTranslation();
+  const name = useGameName();
+  const ponds = save.farm.ponds.filter((p) => p.request);
+  return (
+    <>
+      <h2 className="quest-section">{t('quests.pondsTitle', { count: ponds.length })}</h2>
+      {ponds.length === 0 ? (
+        <p className="cc-summary__hint">{t('quests.pondsNone')}</p>
+      ) : (
+        <div className="quest-grid">
+          {ponds.map((p, i) => (
+            <article key={i} className="quest box">
+              <header className="quest__header">
+                <ItemIcon id={p.fish} tooltip={false} />
+                <h3>{t('quests.pondOf', { fish: name(getItem(p.fish)?.n) })}</h3>
+              </header>
+              <span className="quest-card__reward">
+                <ItemIcon id={p.request!.item} />
+                {t('prod.pondWants', { count: p.request!.count, item: name(getItem(p.request!.item)?.n) })}
+              </span>
+              <span className="cc-summary__hint">{t('quests.pondHow', { count: p.count, max: p.max })}</span>
+            </article>
+          ))}
+        </div>
+      )}
     </>
   );
 }
@@ -164,6 +195,7 @@ function Quests({ save, player }: { save: SaveData; player: Player }) {
           </div>
         </>
       )}
+      <PondRequests save={save} />
       <SlayerGoals player={player} />
     </div>
   );

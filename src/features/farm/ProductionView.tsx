@@ -57,7 +57,6 @@ function ProductCard({ g, ready }: { g: Group; ready: boolean }) {
 /** What the farm is producing, split into "ready to collect" and "in progress". */
 export function ProductionView({ save }: { save: SaveData }) {
   const { t } = useTranslation();
-  const name = useGameName();
 
   const groups = new Map<string, Group>();
   for (const m of save.farm.machines) {
@@ -79,7 +78,6 @@ export function ProductionView({ save }: { save: SaveData }) {
       <div className="prod-summary">
         <span className="box">{t('prod.readyCount', { count: readyCount })}</span>
         <span className="box">{t('prod.workingCount', { count: save.farm.machines.length - readyCount })}</span>
-        {save.farm.ponds.length > 0 && <span className="box">{t('prod.pondCount', { count: save.farm.ponds.length })}</span>}
       </div>
 
       {ready.length > 0 && (
@@ -104,26 +102,37 @@ export function ProductionView({ save }: { save: SaveData }) {
         </section>
       )}
 
-      {save.farm.ponds.length > 0 && (
-        <section>
-          <h3>{t('prod.pondsTitle', { count: save.farm.ponds.length })}</h3>
-          <div className="prod-grid">
-            {save.farm.ponds.map((p, i) => (
-              <Tooltip key={i} text={p.output ? t('prod.pondOutput', { item: name(getItem(p.output)?.n) }) : t('prod.pondNothing')}>
-                <div className={p.output ? 'prod-card inset prod-card--ready' : 'prod-card inset'}>
-                  {p.fish ? <ItemIcon id={p.fish} slot tooltip={false} /> : <span>{t('prod.emptyPond')}</span>}
-                  <span className="prod-card__name">{p.fish ? name(getItem(p.fish)?.n) : ''}</span>
-                  <span className="prod-card__when">
-                    {p.count}/{p.max}
-                  </span>
-                </div>
-              </Tooltip>
-            ))}
-          </div>
-        </section>
-      )}
-
       {save.farm.machines.length === 0 && <p>{t('prod.nothing')}</p>}
+    </div>
+  );
+}
+
+/** Fish ponds: fish, population, what's waiting to be collected and what the fish are asking for. */
+export function PondsView({ save }: { save: SaveData }) {
+  const { t } = useTranslation();
+  const name = useGameName();
+  if (save.farm.ponds.length === 0) return <p>{t('prod.noPonds')}</p>;
+  return (
+    <div className="prod">
+      <div className="prod-grid">
+        {save.farm.ponds.map((p, i) => (
+          <div key={i} className={p.output || p.request ? 'prod-card inset prod-card--ready' : 'prod-card inset'}>
+            {p.fish ? <ItemIcon id={p.fish} slot tooltip={false} /> : <span>{t('prod.emptyPond')}</span>}
+            <span className="prod-card__name">{p.fish ? name(getItem(p.fish)?.n) : ''}</span>
+            <span className="prod-card__when">{t('prod.pondFish', { count: p.count, max: p.max })}</span>
+            {p.output && (
+              <span className="prod-card__when">
+                {t('prod.pondOutput', { item: name(getItem(p.output)?.n) })}
+              </span>
+            )}
+            {p.request && (
+              <span className="prod-card__when farm-warn">
+                {t('prod.pondWants', { count: p.request.count, item: name(getItem(p.request.item)?.n) })}
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
