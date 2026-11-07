@@ -16,7 +16,8 @@
     "today": "Today",
     "farm": "Production",
     "map": "Map",
-    "collections": "Collections"
+    "collections": "Collections",
+    "quests": "Quests"
   },
   "common": {
     "language": "Language",
@@ -575,7 +576,19 @@
       "Mountain": "Mountains",
       "Railroad": "Railroad",
       "BusStop": "Bus stop",
-      "Desert": "Calico Desert"
+      "Desert": "Calico Desert",
+      "IslandSouthEast": "Island southeast",
+      "IslandSouthEastCave": "Pirate cove",
+      "IslandShrine": "Island shrine",
+      "IslandHut": "Leo’s hut",
+      "Caldera": "Volcano caldera",
+      "IslandNorthCave1": "Island north cave",
+      "IslandWestCave1": "Island west cave",
+      "Sewer": "Sewers",
+      "Mine": "The Mines",
+      "Woods": "Secret Woods",
+      "Backwoods": "Backwoods",
+      "Submarine": "Night Market submarine"
     },
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
@@ -584,13 +597,18 @@
     "layer": {
       "npcs": "Villagers",
       "events_one": "Heart events available now ({{count}})",
-      "events_other": "Heart events available now ({{count}})"
+      "events_other": "Heart events available now ({{count}})",
+      "quests": "Marked quests",
+      "fish": "Marked fish",
+      "walnuts": "Missing walnut spots"
     },
     "eventPin": "{{name}}'s {{hearts}}-heart event",
     "walkingTo": "walking to {{place}}",
     "resortOpen": "Your save: the resort is open today.",
     "resortClosed": "Your save: the resort is closed today.",
-    "resortNotBuilt": "Your save: the resort hasn't been rebuilt yet."
+    "resortNotBuilt": "Your save: the resort hasn't been rebuilt yet.",
+    "questPin": "Quest: {{title}}",
+    "fishPin": "{{name}} bites here"
   },
   "prod": {
     "title": "Production",
@@ -616,7 +634,9 @@
     "tab": {
       "cc": "Community Center",
       "museum": "Museum",
-      "island": "Island Field Office"
+      "island": "Island Field Office",
+      "fish": "Fish",
+      "walnuts": "Golden Walnuts"
     },
     "office": {
       "locked": "The Field Office on Ginger Island hasn't been opened yet.",
@@ -630,6 +650,104 @@
       "surveys": "Plant surveys",
       "plantsLeft": "Survey of the left plants",
       "plantsRight": "Survey of the right plants"
+    }
+  },
+  "quests": {
+    "title": "{{name}}'s quests",
+    "none": "No active quests in the journal.",
+    "howTitle": "How:",
+    "daysLeft_one": "1 day left",
+    "daysLeft_other": "{{count}} days left",
+    "reward": "Reward: {{reward}}g",
+    "pin": "Mark on map",
+    "pinned": "Marked ✓",
+    "openMap": "Open map",
+    "ordersTitle": "Special orders",
+    "qiOrder": "Mr. Qi's challenge",
+    "townOrder": "Special order from {{name}}",
+    "how": {
+      "delivery": "Bring {{item}} to {{npc}} (check the map to find them).",
+      "fishing": "Catch {{count}}× {{item}}:",
+      "slay": "Defeat {{count}}× {{monster}} (in the mines or the Skull Cavern).",
+      "resource": "Collect {{count}}× {{item}} and bring it to {{npc}}.",
+      "lost": "Find {{item}} at {{place}} (tile {{x}}, {{y}}) and return it to {{npc}}.",
+      "socialize": "Talk to every villager.",
+      "go": "Go to {{place}}."
+    }
+  },
+  "fish": {
+    "title": "Fish collection",
+    "filter": {
+      "missing": "Not caught",
+      "today": "Can catch today",
+      "all": "All"
+    },
+    "none": "Nothing here.",
+    "level": "fishing level {{level}}",
+    "weather": {
+      "sunny": "sunny days",
+      "rainy": "rainy days"
+    },
+    "trap": {
+      "ocean": "Crab pot in the ocean",
+      "freshwater": "Crab pot in fresh water"
+    },
+    "special": {
+      "default": "Special: special order or event",
+      "(O)158": "The Mines, floor 20",
+      "(O)161": "The Mines, floor 60",
+      "(O)898": "Legendary Family (Mr. Qi's special order)",
+      "(O)899": "Legendary Family (Mr. Qi's special order)",
+      "(O)900": "Legendary Family (Mr. Qi's special order)",
+      "(O)901": "Legendary Family (Mr. Qi's special order)",
+      "(O)902": "Legendary Family (Mr. Qi's special order)"
+    }
+  },
+  "walnuts": {
+    "title": "Golden Walnuts",
+    "hint": "Total found on Ginger Island. Missing bush and buried spots are marked on the island map.",
+    "spotsTitle": "Hidden spots: {{missing}} of {{total}} missing",
+    "spotsHint": "Shake bushes; dig buried ones with a hoe (look for the wiggling sticks).",
+    "kind": {
+      "bush": "Bush",
+      "buried": "Buried"
+    },
+    "allSpots": "All hidden spots found ✓",
+    "dropsTitle": "Repeatable sources",
+    "drop": {
+      "IslandFishing": "Fishing on the island",
+      "IslandFarming": "Harvesting crops on the island farm",
+      "MusselStone": "Breaking mussel stones (island beach)",
+      "VolcanoMining": "Mining in the volcano",
+      "VolcanoMonsterDrop": "Monsters in the volcano",
+      "VolcanoBarrel": "Barrels in the volcano",
+      "Birdie": "Birdie's quest (island west)",
+      "Darts": "Darts at the pirate cove",
+      "TigerSlimeNut": "Tiger slime in the volcano",
+      "Island_N_BuriedTreasureNut": "Treasure map: island north",
+      "Island_W_BuriedTreasureNut": "Treasure map: island west",
+      "Island_W_BuriedTreasureNut2": "Treasure map: island west (2)",
+      "VolcanoNormalChest": "Volcano chests"
+    },
+    "oneTimeTitle": "Puzzles and rewards",
+    "once": {
+      "IslandGourmand1": "Gourmand frog: first crop",
+      "IslandGourmand2": "Gourmand frog: second crop",
+      "IslandGourmand3": "Gourmand frog: third crop",
+      "Mermaid": "Mermaid's song (flute blocks on the island)",
+      "TreeNut": "Big tree on the island farm",
+      "TreeNutShot": "Shoot the nut in the big tree (slingshot)",
+      "SandDuggy": "Whack the sand Duggy (island west)",
+      "IslandWestCavePuzzle": "Crystal cave puzzle (island west)",
+      "IslandShrinePuzzle": "Island shrine gems puzzle",
+      "BananaShrine": "Banana for the gorilla shrine",
+      "StardropPool": "Pool by the volcano entrance",
+      "IslandLeftPlantRestored": "Field office: left plant survey",
+      "IslandRightPlantRestored": "Field office: right plant survey",
+      "IslandSnakeRestored": "Field office: snake skeleton",
+      "IslandFrogRestored": "Field office: mummified frog",
+      "IslandBatRestored": "Field office: mummified bat",
+      "IslandCenterSkeletonRestored": "Field office: large skeleton"
     }
   }
 }

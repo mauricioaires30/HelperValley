@@ -4,7 +4,8 @@ import { gameData, spriteUrl, type Season } from '@/data/gameData';
 import { useGameName } from '@/i18n';
 import { useCurrentSave } from '@/store/saveStore';
 import type { Player } from '@/save/model';
-import { NpcHead, SeasonIcon, Tooltip, UiIcon } from '@/ui';
+import { ItemIcon, NpcHead, SeasonIcon, Tooltip, UiIcon } from '@/ui';
+import { usePinStore } from '@/store/pinStore';
 import { SEASONS } from '@/features/calendar/calendar';
 import { describeEvent } from '@/features/relationships/eventConditions';
 import { formatTime, resolveSchedule, WEEKDAYS, type ScheduleData, type ScheduleResult, type Stop } from './schedule';
@@ -156,7 +157,9 @@ export function MapPage() {
   const [step, setStep] = useState(STEPS.indexOf(1200));
   const [raining, setRaining] = useState(save?.isRaining ?? false);
   const [resort, setResort] = useState(save?.resort.openToday ?? false);
-  const [layers, setLayers] = useState({ npcs: true, events: true });
+  const [layers, setLayers] = useState({ npcs: true, events: true, quests: true, fish: true, walnuts: false });
+  const pinnedQuests = usePinStore((s) => s.quests);
+  const pinnedFish = usePinStore((s) => s.fish);
   const { view, viewport, handlers, zoomIn, zoomOut, reset } = usePanZoom();
   const time = STEPS[step];
 
@@ -211,6 +214,46 @@ export function MapPage() {
     .filter(([npc, s]) => npcs[npc] && s.island !== 'FALSE' && npcs[npc].social !== 3 && npcs[npc].region === 'Town')
     .map(([npc]) => npc);
   const pct = (v: number, of: number) => `${(v / of) * 100}%`;
+
+  /** Pin at a location's middle (or a given tile), on this region only. */
+  const pinAt = (location: string, tile?: [number, number]) => {
+    const size = worldMap.sizes[location];
+    const [x, y] = tile ?? (size ? [size[0] / 2, size[1] / 2] : [0, 0]);
+    const pixel = toMapPixel(worldMap, location, x, y);
+    return pixel && pixel.region === region ? pixel : null;
+  };
+
+  // Marked quests: the lost item's spot, the place to go, or wherever the NPC is right now.
+  const questPins = (player?.quests ?? [])
+    .filter((q) => pinnedQuests.includes(q.id) && !q.completed)
+    .flatMap((q) => {
+      if (q.location) {
+        const p = pinAt(q.location, q.tile);
+        return p ? [{ key: `q-${q.id}`, ...p, q }] : [];
+      }
+      const npcPlace = q.npc ? places.find((x) => x.npc === q.npc && x.region === region) : null;
+      return npcPlace ? [{ key: `q-${q.id}`, px: npcPlace.px, py: npcPlace.py, region, q }] : [];
+    });
+
+  // Marked fish (and fish from marked fishing quests), at each spot where they bite.
+  const fishIds = new Set([
+    ...pinnedFish,
+    ...(player?.quests ?? []).filter((q) => pinnedQuests.includes(q.id) && q.type === 'FishingQuest' && q.item).map((q) => q.item!),
+  ]);
+  const fishPins = [...fishIds].flatMap((id) =>
+    (gameData().fish[id]?.locations ?? []).flatMap((l) => {
+      const p = pinAt(l.location);
+      return p ? [{ key: `f-${id}-${l.location}`, ...p, id }] : [];
+    }),
+  );
+
+  const collectedNuts = new Set(save?.walnutsCollected ?? []);
+  const walnutPins = gameData()
+    .walnuts.filter((w) => !collectedNuts.has(w.id))
+    .flatMap((w) => {
+      const p = pinAt(w.location, w.tile);
+      return p ? [{ key: w.id, ...p, w }] : [];
+    });
   // Pins keep their size while the map zooms.
   const unscale = `scale(${1 / view.zoom})`;
 
@@ -299,6 +342,34 @@ export function MapPage() {
                     </Tooltip>
                   </span>
                 ))}
+              {layers.walnuts &&
+                walnutPins.map((p) => (
+                  <span key={p.key} className="map-pin" style={{ left: pct(p.px, mapW), top: pct(p.py, mapH), transform: `translate(-50%, -50%) ${unscale}` }}>
+                    <Tooltip text={`${t(`walnuts.kind.${p.w.kind}`)} (${p.w.tile[0]}, ${p.w.tile[1]})`}>
+                      <ItemIcon id="(O)73" tooltip={false} />
+                    </Tooltip>
+                  </span>
+                ))}
+              {layers.fish &&
+                fishPins.map((p) => (
+                  <span key={p.key} className="map-pin" style={{ left: pct(p.px, mapW), top: pct(p.py, mapH), transform: `translate(-50%, -100%) ${unscale}` }}>
+                    <Tooltip text={t('map.fishPin', { name: name(gameData().items[p.id]?.n) })}>
+                      <span className="map-pin__icon map-pin__icon--fish">
+                        <ItemIcon id={p.id} tooltip={false} />
+                      </span>
+                    </Tooltip>
+                  </span>
+                ))}
+              {layers.quests &&
+                questPins.map((p) => (
+                  <span key={p.key} className="map-pin" style={{ left: pct(p.px, mapW), top: pct(p.py, mapH), transform: `translate(-50%, -100%) ${unscale}` }}>
+                    <Tooltip text={t('map.questPin', { title: p.q.title })}>
+                      <span className="map-pin__icon map-pin__icon--quest">
+                        <ItemIcon id={p.q.item ?? '(O)842'} tooltip={false} />
+                      </span>
+                    </Tooltip>
+                  </span>
+                ))}
               {layers.npcs &&
                 [...groups.values()].flatMap((group) =>
                   group.map((p, i) => {
@@ -341,6 +412,18 @@ export function MapPage() {
           <label className="cc__filter">
             <input type="checkbox" checked={layers.events} onChange={(e) => setLayers({ ...layers, events: e.target.checked })} />
             {t('map.layer.events', { count: events.length })}
+          </label>
+          <label className="cc__filter">
+            <input type="checkbox" checked={layers.quests} onChange={(e) => setLayers({ ...layers, quests: e.target.checked })} />
+            {t('map.layer.quests')} ({pinnedQuests.length})
+          </label>
+          <label className="cc__filter">
+            <input type="checkbox" checked={layers.fish} onChange={(e) => setLayers({ ...layers, fish: e.target.checked })} />
+            {t('map.layer.fish')} ({fishIds.size})
+          </label>
+          <label className="cc__filter">
+            <input type="checkbox" checked={layers.walnuts} onChange={(e) => setLayers({ ...layers, walnuts: e.target.checked })} />
+            {t('map.layer.walnuts')} ({walnutPins.length || gameData().walnuts.filter((w) => !collectedNuts.has(w.id)).length})
           </label>
           <label className="cc__filter">
             <input type="checkbox" checked={resort} onChange={(e) => setResort(e.target.checked)} />

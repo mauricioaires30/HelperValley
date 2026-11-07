@@ -160,3 +160,15 @@
   align-items: center;
   gap: 6px;
 }
+
+.map-pin__icon--fish {
+  border-color: #3b8fd9;
+}
+
+.map-pin__icon--quest {
+  border-color: #e8892b;
+}
+
+.map-pin__icon .sprite {
+  rotate: 45deg;
+}

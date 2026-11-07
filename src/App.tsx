@@ -6,6 +6,7 @@ import { AppShell } from '@/app/AppShell';
 import { HomePage } from '@/features/home/HomePage';
 import { KitPage } from '@/features/kit/KitPage';
 import { MapPage } from '@/features/map/MapPage';
+import { QuestsPage } from '@/features/quests/QuestsPage';
 import { FarmPage } from '@/features/farm/FarmPage';
 import { RelationshipsPage } from '@/features/relationships/RelationshipsPage';
 import { CalendarPage } from '@/features/calendar/CalendarPage';
@@ -41,6 +42,7 @@ export function App() {
           <Route path="calendar" element={<CalendarPage />} />
           <Route path="relationships" element={<RelationshipsPage />} />
           <Route path="map" element={<MapPage />} />
+          <Route path="quests" element={<QuestsPage />} />
           <Route path="production" element={<FarmPage />} />
           <Route path="farm" element={<Navigate to="/production" replace />} />
           <Route path="collections/:tab?" element={<CollectionsPage />} />

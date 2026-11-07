@@ -16,7 +16,8 @@
     "today": "Hoje",
     "farm": "Produção",
     "map": "Mapa",
-    "collections": "Coleções"
+    "collections": "Coleções",
+    "quests": "Missões"
   },
   "common": {
     "language": "Idioma",
@@ -575,7 +576,19 @@
       "Mountain": "Montanhas",
       "Railroad": "Ferrovia",
       "BusStop": "Ponto de ônibus",
-      "Desert": "Deserto de Calico"
+      "Desert": "Deserto de Calico",
+      "IslandSouthEast": "Sudeste da ilha",
+      "IslandSouthEastCave": "Enseada pirata",
+      "IslandShrine": "Santuário da ilha",
+      "IslandHut": "Cabana do Leo",
+      "Caldera": "Caldeira do vulcão",
+      "IslandNorthCave1": "Caverna do norte da ilha",
+      "IslandWestCave1": "Caverna do oeste da ilha",
+      "Sewer": "Esgoto",
+      "Mine": "Minas",
+      "Woods": "Bosque Secreto",
+      "Backwoods": "Bosque",
+      "Submarine": "Submarino do Mercado Noturno"
     },
     "zoomIn": "Aproximar",
     "zoomOut": "Afastar",
@@ -584,13 +597,18 @@
     "layer": {
       "npcs": "Moradores",
       "events_one": "Eventos de coração disponíveis agora ({{count}})",
-      "events_other": "Eventos de coração disponíveis agora ({{count}})"
+      "events_other": "Eventos de coração disponíveis agora ({{count}})",
+      "quests": "Missões marcadas",
+      "fish": "Peixes marcados",
+      "walnuts": "Nozes que faltam"
     },
     "eventPin": "Evento de {{hearts}} corações de {{name}}",
     "walkingTo": "andando até {{place}}",
     "resortOpen": "No seu save: o resort está aberto hoje.",
     "resortClosed": "No seu save: o resort está fechado hoje.",
-    "resortNotBuilt": "No seu save: o resort ainda não foi reconstruído."
+    "resortNotBuilt": "No seu save: o resort ainda não foi reconstruído.",
+    "questPin": "Missão: {{title}}",
+    "fishPin": "{{name}} aparece aqui"
   },
   "prod": {
     "title": "Produção",
@@ -616,7 +634,9 @@
     "tab": {
       "cc": "Centro Comunitário",
       "museum": "Museu",
-      "island": "Escritório de Campo (ilha)"
+      "island": "Escritório de Campo (ilha)",
+      "fish": "Peixes",
+      "walnuts": "Nozes Douradas"
     },
     "office": {
       "locked": "O Escritório de Campo da Ilha Gengibre ainda não foi aberto.",
@@ -630,6 +650,104 @@
       "surveys": "Pesquisas de plantas",
       "plantsLeft": "Pesquisa das plantas da esquerda",
       "plantsRight": "Pesquisa das plantas da direita"
+    }
+  },
+  "quests": {
+    "title": "Missões de {{name}}",
+    "none": "Nenhuma missão ativa no diário.",
+    "howTitle": "Como:",
+    "daysLeft_one": "Falta 1 dia",
+    "daysLeft_other": "Faltam {{count}} dias",
+    "reward": "Recompensa: {{reward}}g",
+    "pin": "Marcar no mapa",
+    "pinned": "Marcado ✓",
+    "openMap": "Abrir mapa",
+    "ordersTitle": "Pedidos especiais",
+    "qiOrder": "Desafio do Sr. Qi",
+    "townOrder": "Pedido especial de {{name}}",
+    "how": {
+      "delivery": "Leve {{item}} para {{npc}} (veja no mapa onde a pessoa está).",
+      "fishing": "Pesque {{count}}× {{item}}:",
+      "slay": "Derrote {{count}}× {{monster}} (nas minas ou na Caverna da Caveira).",
+      "resource": "Colete {{count}}× {{item}} e leve para {{npc}}.",
+      "lost": "Ache {{item}} em {{place}} (tile {{x}}, {{y}}) e devolva para {{npc}}.",
+      "socialize": "Converse com todos os moradores.",
+      "go": "Vá até {{place}}."
+    }
+  },
+  "fish": {
+    "title": "Coleção de peixes",
+    "filter": {
+      "missing": "Não pescados",
+      "today": "Dá pra pescar hoje",
+      "all": "Todos"
+    },
+    "none": "Nada aqui.",
+    "level": "pesca nível {{level}}",
+    "weather": {
+      "sunny": "dias de sol",
+      "rainy": "dias de chuva"
+    },
+    "trap": {
+      "ocean": "Covo no mar",
+      "freshwater": "Covo em água doce"
+    },
+    "special": {
+      "default": "Especial: pedido especial ou evento",
+      "(O)158": "Minas, andar 20",
+      "(O)161": "Minas, andar 60",
+      "(O)898": "Família Lendária (pedido especial do Sr. Qi)",
+      "(O)899": "Família Lendária (pedido especial do Sr. Qi)",
+      "(O)900": "Família Lendária (pedido especial do Sr. Qi)",
+      "(O)901": "Família Lendária (pedido especial do Sr. Qi)",
+      "(O)902": "Família Lendária (pedido especial do Sr. Qi)"
+    }
+  },
+  "walnuts": {
+    "title": "Nozes Douradas",
+    "hint": "Total encontrado na Ilha Gengibre. Os arbustos e pontos enterrados que faltam aparecem marcados no mapa da ilha.",
+    "spotsTitle": "Pontos escondidos: faltam {{missing}} de {{total}}",
+    "spotsHint": "Sacuda os arbustos; cave os enterrados com a enxada (procure os gravetos se mexendo).",
+    "kind": {
+      "bush": "Arbusto",
+      "buried": "Enterrada"
+    },
+    "allSpots": "Todos os pontos escondidos encontrados ✓",
+    "dropsTitle": "Fontes repetíveis",
+    "drop": {
+      "IslandFishing": "Pescar na ilha",
+      "IslandFarming": "Colher plantações na fazenda da ilha",
+      "MusselStone": "Quebrar pedras de mexilhão (praia da ilha)",
+      "VolcanoMining": "Minerar no vulcão",
+      "VolcanoMonsterDrop": "Monstros do vulcão",
+      "VolcanoBarrel": "Barris do vulcão",
+      "Birdie": "Missão da Birdie (oeste da ilha)",
+      "Darts": "Dardos na enseada pirata",
+      "TigerSlimeNut": "Slime tigre no vulcão",
+      "Island_N_BuriedTreasureNut": "Mapa do tesouro: norte da ilha",
+      "Island_W_BuriedTreasureNut": "Mapa do tesouro: oeste da ilha",
+      "Island_W_BuriedTreasureNut2": "Mapa do tesouro: oeste da ilha (2)",
+      "VolcanoNormalChest": "Baús do vulcão"
+    },
+    "oneTimeTitle": "Quebra-cabeças e recompensas",
+    "once": {
+      "IslandGourmand1": "Sapo Gourmand: primeira plantação",
+      "IslandGourmand2": "Sapo Gourmand: segunda plantação",
+      "IslandGourmand3": "Sapo Gourmand: terceira plantação",
+      "Mermaid": "Canção da sereia (blocos de flauta na ilha)",
+      "TreeNut": "Árvore grande da fazenda da ilha",
+      "TreeNutShot": "Acertar a noz na árvore grande (estilingue)",
+      "SandDuggy": "Acertar o Duggy da areia (oeste da ilha)",
+      "IslandWestCavePuzzle": "Quebra-cabeça da caverna de cristais (oeste)",
+      "IslandShrinePuzzle": "Quebra-cabeça das gemas do santuário",
+      "BananaShrine": "Banana para o santuário do gorila",
+      "StardropPool": "Piscina na entrada do vulcão",
+      "IslandLeftPlantRestored": "Escritório de campo: pesquisa da planta esquerda",
+      "IslandRightPlantRestored": "Escritório de campo: pesquisa da planta direita",
+      "IslandSnakeRestored": "Escritório de campo: esqueleto de cobra",
+      "IslandFrogRestored": "Escritório de campo: sapo mumificado",
+      "IslandBatRestored": "Escritório de campo: morcego mumificado",
+      "IslandCenterSkeletonRestored": "Escritório de campo: esqueleto grande"
     }
   }
 }
