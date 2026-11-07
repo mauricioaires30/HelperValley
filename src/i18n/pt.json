@@ -161,6 +161,22 @@
       "quests": "Complete os pedidos de \"Precisa-se de ajuda\" do quadro em frente ao armazém do Pierre.",
       "house": "Nível atual da reforma da casa: {{level}}. Fale com a Robin para reformar.",
       "money": "Total ganho até agora: {{money}}g."
+    },
+    "recipe": {
+      "tv": "A Rainha do Molho (TV): domingo, dia {{day}} de {{season}}, ano {{year}} (reprises depois às quartas)",
+      "friend": "Carta de {{name}} com {{hearts}} corações",
+      "skill": "{{skill}} nível {{level}}",
+      "level": "Nível do jogador {{level}}",
+      "shop": "Compre em {{shop}} {{price}}",
+      "default": "Já vem aprendida",
+      "known": "Receita conhecida, falta só fazer uma vez",
+      "unknown": "Receita ainda não aprendida:",
+      "other": "Vem de um evento ou missão",
+      "currency": {
+        "1": "estrelas",
+        "2": "moedas do Qi",
+        "4": "gemas do Qi"
+      }
     }
   },
   "calendar": {
@@ -473,7 +489,19 @@
       "Festival_NightMarket_MagicBoat_Day3": "Mercado Noturno",
       "AnimalShop": "Rancho da Marnie",
       "VolcanoShop": "Anão do Vulcão",
-      "QiGemShop": "Sala das Nozes do Qi"
+      "QiGemShop": "Sala das Nozes do Qi",
+      "Saloon": "Saloon Gota Estelar",
+      "Carpenter": "Carpintaria da Robin",
+      "Krobus": "Krobus",
+      "Dwarf": "Anão",
+      "IceCreamStand": "Sorveteria",
+      "ResortBar": "Bar do resort da ilha",
+      "AdventureShop": "Guilda dos Aventureiros",
+      "FishShop": "Loja do Willy",
+      "Blacksmith": "Ferreiro",
+      "Hospital": "Clínica",
+      "HatMouse": "Rato dos Chapéus",
+      "ShadowShop": "Krobus"
     },
     "late": "não dá tempo ({{need}} dias, restam {{left}}): valor numa estação inteira",
     "hayStock": "Comem {{perDay}} de feno por dia: o estoque dura {{days}} dias (até {{date}})",

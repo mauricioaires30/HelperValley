@@ -161,6 +161,22 @@
       "quests": "Complete \"Help Wanted\" requests from the board outside Pierre's shop.",
       "house": "Current house upgrade level: {{level}}. Talk to Robin to upgrade.",
       "money": "Total earned so far: {{money}}g."
+    },
+    "recipe": {
+      "tv": "The Queen of Sauce (TV): Sunday, day {{day}} of {{season}}, year {{year}} (reruns later on Wednesdays)",
+      "friend": "Letter from {{name}} at {{hearts}} hearts",
+      "skill": "{{skill}} level {{level}}",
+      "level": "Player level {{level}}",
+      "shop": "Buy at {{shop}} {{price}}",
+      "default": "Known from the start",
+      "known": "Recipe known, just make it once",
+      "unknown": "Recipe not learned yet:",
+      "other": "From an event or quest",
+      "currency": {
+        "1": "star tokens",
+        "2": "Qi coins",
+        "4": "Qi gems"
+      }
     }
   },
   "calendar": {
@@ -473,7 +489,19 @@
       "Festival_NightMarket_MagicBoat_Day3": "Night Market",
       "AnimalShop": "Marnie's Ranch",
       "VolcanoShop": "Volcano Dwarf",
-      "QiGemShop": "Qi's Walnut Room"
+      "QiGemShop": "Qi's Walnut Room",
+      "Saloon": "The Stardrop Saloon",
+      "Carpenter": "Robin's Carpenter Shop",
+      "Krobus": "Krobus",
+      "Dwarf": "Dwarf",
+      "IceCreamStand": "Ice cream stand",
+      "ResortBar": "Island resort bar",
+      "AdventureShop": "Adventurer's Guild",
+      "FishShop": "Willy's Fish Shop",
+      "Blacksmith": "Blacksmith",
+      "Hospital": "Clinic",
+      "HatMouse": "Hat Mouse",
+      "ShadowShop": "Krobus"
     },
     "late": "won't finish in time ({{need}} days, {{left}} left): full-season value",
     "hayStock": "They eat {{perDay}} hay a day: your stock lasts {{days}} days (until {{date}})",
