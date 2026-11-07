@@ -209,7 +209,7 @@ export function MapPage() {
   const [region, setRegion] = useState<RegionId>(showLayer === 'walnuts' ? 'GingerIsland' : 'Valley');
   const [season, setSeason] = useState<Season>(save?.date.season ?? 'spring');
   const [day, setDay] = useState(save?.date.day ?? 1);
-  const [step, setStep] = useState(STEPS.indexOf(1200));
+  const [step, setStep] = useState(0); // starts at 6:00, when the day begins
   const [raining, setRaining] = useState(save?.isRaining ?? false);
   const [resort, setResort] = useState(save?.resort.openToday ?? false);
   const [layers, setLayers] = useState({ npcs: true, events: true, quests: true, fish: true, walnuts: showLayer === 'walnuts', shops: showLayer === 'shops', donations: showLayer === 'donations' });
@@ -603,7 +603,7 @@ export function MapPage() {
 
       <section className="box map-list-box">
         <h3>{t('map.listTitle', { time: formatTime(time) })}</h3>
-        <ul className="map-list">
+        <ul className="map-list dashed-list">
           {[...places]
             .sort((a, b) => name(npcs[a.npc]?.n).localeCompare(name(npcs[b.npc]?.n)))
             .map((p) => (

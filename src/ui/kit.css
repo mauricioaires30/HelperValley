@@ -337,3 +337,47 @@
   border-width: 0 2px 2px 0;
   rotate: 45deg;
 }
+
+/*
+ * Lists laid out in columns get dashed separators between rows and columns, like the game's
+ * ledger menus. Each item draws its top and left edge; the container clips the outer ones.
+ */
+.dashed-list {
+  gap: 0 !important;
+  overflow: hidden;
+}
+
+.dashed-list > li,
+.dashed-list > * {
+  margin: -1px 0 0 -1px;
+  padding: 4px 10px;
+  border-top: 2px dashed rgb(91 43 21 / 0.28);
+  border-left: 2px dashed rgb(91 43 21 / 0.28);
+}
+
+/* Section headings inside pages share the shop look: a dashed rule under the title. */
+.prod > section > h3,
+.walnuts__section > h3,
+.quest-section,
+.rel-children > h2 {
+  padding-bottom: 2px;
+  border-bottom: 2px dashed rgb(91 43 21 / 0.28);
+}
+
+/* Cards respond to the pointer, so it's clear they can be hovered for details. */
+.prod-card,
+.animal-card,
+.build-card,
+.walnut-card,
+.game-grid__cell {
+  transition: transform 80ms ease-out, filter 80ms ease-out;
+}
+
+.prod-card:hover,
+.animal-card:hover,
+.build-card:hover,
+.walnut-card:hover,
+.game-grid__cell:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.04);
+}

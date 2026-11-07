@@ -1,4 +1,5 @@
 import { readRaw, readRawKeys } from './raw.mjs';
+import { localize } from './strings.mjs';
 
 /** Entries in the game's dictionary order (see readRawKeys). */
 const ordered = (asset) => {
@@ -70,7 +71,7 @@ const modifier = (m) => ({
  * Data/Shops plus, for RANDOM_ITEMS, every item of each type in the game's data order:
  * the game shuffles the whole list with one Random.Next() per entry, so the order and count matter.
  */
-export function buildShops() {
+export function buildShops(textures) {
   const shops = {};
   for (const [id, s] of ordered('Data/Shops')) {
     shops[id] = {
@@ -115,8 +116,51 @@ export function buildShops() {
   );
   const tools = Object.fromEntries(Object.entries(readRaw('Data/Tools') ?? {}).map(([id, t]) => [id, t.SalePrice]));
 
+  // Robin's and the Wizard's constructions (Data/Buildings with a Builder).
+  const buildings = Object.entries(readRaw('Data/Buildings') ?? {})
+    .filter(([, b]) => b.Builder === 'Robin' || b.Builder === 'Wizard')
+    .map(([id, b]) => {
+      const texture = b.Texture.replace(/\\/g, '/');
+      textures.add(texture);
+      const r = b.SourceRect && !b.SourceRect.IsEmpty ? [b.SourceRect.X, b.SourceRect.Y, b.SourceRect.Width, b.SourceRect.Height] : null;
+      return {
+        id,
+        builder: b.Builder,
+        n: localize(b.Name, id),
+        d: localize(b.Description, ''),
+        cost: b.BuildCost,
+        materials: (b.BuildMaterials ?? []).map((m) => [m.ItemId, m.Amount]),
+        days: b.BuildDays,
+        condition: b.BuildCondition ?? undefined,
+        texture,
+        rect: r,
+        size: [b.Size.X, b.Size.Y],
+        upgradeOf: b.BuildingToUpgrade ?? undefined,
+      };
+    });
+
+  // Marnie's animals (Data/FarmAnimals with a purchase price).
+  const animals = Object.entries(readRaw('Data/FarmAnimals') ?? {})
+    .filter(([, a]) => a.PurchasePrice > 0)
+    .map(([id, a]) => {
+      const texture = (a.ShopTexture ?? 'LooseSprites/Cursors').replace(/\\/g, '/');
+      textures.add(texture);
+      const r = a.ShopSourceRect;
+      return {
+        id,
+        n: localize(a.ShopDisplayName ?? a.DisplayName, id),
+        price: a.PurchasePrice,
+        building: a.RequiredBuilding ?? undefined,
+        condition: a.UnlockCondition ?? undefined,
+        texture,
+        rect: [r.X, r.Y, r.Width, r.Height],
+      };
+    });
+
   return {
     shops,
+    buildings,
+    animals,
     pools: {
       O: objects,
       F: furniture,

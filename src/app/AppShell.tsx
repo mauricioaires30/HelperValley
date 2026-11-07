@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGES } from '@/i18n';
 import { ItemIcon, Sprite, UiIcon } from '@/ui';
@@ -49,6 +49,17 @@ function NavIconView({ icon }: { icon: NavIcon }) {
   );
 }
 
+/** Pages that get a one-line "what's here / what you can do" intro, by first path segment. */
+const INTRO_PAGES = new Set(['player', 'calendar', 'relationships', 'map', 'quests', 'shops', 'production', 'community', 'collections']);
+
+/** A short friendly line at the top of each page. */
+function PageIntro() {
+  const { t } = useTranslation();
+  const page = useLocation().pathname.split('/')[1] ?? '';
+  if (!INTRO_PAGES.has(page)) return null;
+  return <p className="page-intro">{t(`intro.${page}`)}</p>;
+}
+
 /** Fixed sidebar (brand, save, player, menu, language) and the page using the rest of the screen. */
 export function AppShell() {
   const { t, i18n } = useTranslation();
@@ -96,6 +107,7 @@ export function AppShell() {
       <div className="content">
         <CachedBanner />
         <main className="content__main panel">
+          <PageIntro />
           <Outlet />
         </main>
       </div>
