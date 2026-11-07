@@ -1,7 +1,7 @@
 import type { Season } from '@/data/gameData';
 import { readFarm } from './farm';
 import type { QuestState } from './model';
-import type { Clothing, CommunityCenter, Container, Friendship, ItemStack, Player, PlayerLook, SaveData, SaveSummary } from './model';
+import type { ChildState, Clothing, SlimeHutchState, CommunityCenter, Container, Friendship, ItemStack, Player, PlayerLook, SaveData, SaveSummary } from './model';
 import {
   arr,
   bool,
@@ -345,6 +345,8 @@ export function normalizeSave(xml: string, folder: string): SaveData {
       };
     })(),
     grandpaScore: num(locations.map(node).find((l) => xsiType(l) === 'Farm' || text(l?.name) === 'Farm')?.grandpaScore),
+    children: findChildren(locations),
+    slimeHutches: findSlimeHutches(locations),
     world: {
       profitMargin: num(node(save.player)?.difficultyModifier, 1),
       dishOfTheDay: node(save.dishOfTheDay) && text(node(save.dishOfTheDay)!['@_xsi:nil']) !== 'true' ? qualifiedId(node(save.dishOfTheDay)!) : undefined,
@@ -358,6 +360,51 @@ export function normalizeSave(xml: string, folder: string): SaveData {
       return { restored: bool(south?.resortRestored), openToday: bool(south?.resortOpenToday) };
     })(),
   };
+}
+
+/** Slime hutches: slimes, troughs, slime balls and the slime machines inside. */
+function findSlimeHutches(locations: XmlValue[]): SlimeHutchState[] {
+  const out: SlimeHutchState[] = [];
+  for (const location of walkLocations(locations)) {
+    if (xsiType(location) !== 'SlimeHutch') continue;
+    const slimes = arr(node(location.characters)?.NPC).flatMap((c) => {
+      const slime = node(c);
+      return slime && xsiType(slime) === 'GreenSlime' ? [{ name: text(slime.name) ?? 'Green Slime', color: color(slime.color, '#5ac74a') }] : [];
+    });
+    const names = dictEntries(location.objects).map(([, v]) => text(node(v)?.name) ?? '');
+    const count = (n: string) => names.filter((x) => x === n).length;
+    out.push({
+      slimes,
+      water: arr(node(location.waterSpots)?.boolean).map(bool),
+      sprinkler: names.some((n) => n.endsWith('Sprinkler')),
+      balls: count('Slime Ball'),
+      wickedStatue: count('Wicked Statue') > 0,
+      incubators: count('Slime Incubator'),
+      eggPresses: count('Slime Egg-Press'),
+    });
+  }
+  return out;
+}
+
+/** Children live in the farmhouse (or a cabin) as Child NPCs. */
+function findChildren(locations: XmlValue[]): ChildState[] {
+  const out: ChildState[] = [];
+  for (const location of walkLocations(locations)) {
+    for (const c of arr(node(location.characters)?.NPC)) {
+      const child = node(c);
+      if (!child || xsiType(child) !== 'Child') continue;
+      const gender = text(child.Gender) ?? text(child.gender);
+      out.push({
+        name: text(child.name) ?? '',
+        male: gender ? gender === 'Male' || gender === '0' : true,
+        age: num(child.age ?? child.Age),
+        daysOld: num(child.daysOld),
+        dark: bool(child.darkSkinned),
+        parent: text(child.idOfParent) ?? '',
+      });
+    }
+  }
+  return out;
 }
 
 /** Reads the small SaveGameInfo file (a serialized Farmer) for the save picker. */

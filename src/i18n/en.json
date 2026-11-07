@@ -269,7 +269,6 @@
     "sortHearts": "Hearts",
     "sortBirthday": "Next birthday",
     "sortName": "Name",
-    "hint": "Suggested gifts = items you own now.",
     "toNext": "{{points}} points to the next heart",
     "bouquet": "Give a bouquet to go past 8 ♥",
     "giftsLeft_one": "1 gift left this week",
@@ -383,7 +382,19 @@
     "allEventsSeen": "All heart events seen ✓",
     "reverse": "Reverse order",
     "eventSeen": "——— EVENT SEEN ———",
-    "eventImpossible": "——— UNAVAILABLE (married to someone else) ———"
+    "eventImpossible": "——— UNAVAILABLE (married to someone else) ———",
+    "children": {
+      "title": "Children",
+      "age": {
+        "0": "newborn",
+        "1": "baby",
+        "2": "crawling",
+        "3": "toddler"
+      },
+      "days": "{{count}} days old",
+      "talk": "Talk today (+friendship)",
+      "talked": "Talked today"
+    }
   },
   "today": {
     "luck": {
@@ -428,11 +439,12 @@
     "title": "Farm",
     "view": {
       "overview": "Crops",
-      "recommendations": "What to plant",
+      "recommendations": "Recommendations",
       "planner": "Plans & shopping",
       "production": "Producing",
       "animals": "Animals",
-      "ponds": "Fish ponds"
+      "ponds": "Fish ponds",
+      "slimes": "Slime hutch"
     },
     "area": {
       "Farm": "Farm",
@@ -987,7 +999,32 @@
     "uncertain": "A hidden roll happened before these items; the ones marked ? may differ in game.",
     "uncertainItem": "May differ in game (see the note above).",
     "nothing": "Nothing found.",
-    "closed": "Closed or away today: {{names}}"
+    "closed": "Closed or away today: {{names}}",
+    "group": {
+      "seeds": "Seeds",
+      "saplings": "Saplings",
+      "produce": "Crops & forage",
+      "food": "Food",
+      "animal": "Animal products",
+      "artisan": "Artisan goods",
+      "fish": "Fish",
+      "farming": "Fertilizer & farming",
+      "fishing": "Bait & tackle",
+      "materials": "Materials & minerals",
+      "crafting": "Machines & crafting",
+      "tools": "Tools",
+      "weapons": "Weapons",
+      "boots": "Boots",
+      "rings": "Rings & trinkets",
+      "hats": "Hats",
+      "clothing": "Clothing",
+      "furniture": "Furniture",
+      "decor": "Wallpaper, floors & decor",
+      "books": "Books",
+      "recipes": "Recipes",
+      "other": "Other",
+      "ingredients": "Cooking ingredients"
+    }
   },
   "community": {
     "tab": {
@@ -995,6 +1032,26 @@
       "joja": "Joja",
       "museum": "Museum",
       "island": "Island Field Office"
+    }
+  },
+  "slimes": {
+    "none": "No slime hutch on the farm.",
+    "hutch": "Slime hutch {{n}}",
+    "count": "{{count}}/{{max}} slimes",
+    "sprinkler": "A sprinkler fills the troughs",
+    "water": "Fill the troughs: {{filled}}/{{needed}}",
+    "waterOk": "Troughs full ({{filled}}/{{total}})",
+    "balls": "{{count}} slime balls to break",
+    "statue": "Wicked Statue: no witch",
+    "noStatue": "No Wicked Statue (the witch may visit)",
+    "hint": "Each full trough lets 5 slimes make a slime ball overnight.",
+    "machines": "Incubators and presses",
+    "kind": {
+      "Green Slime": "Green slime",
+      "Frost Jelly": "Frost jelly",
+      "Sludge": "Sludge (red/purple)",
+      "Tiger Slime": "Tiger slime",
+      "Prismatic Slime": "Prismatic slime"
     }
   }
 }

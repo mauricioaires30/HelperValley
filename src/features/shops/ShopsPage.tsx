@@ -7,11 +7,15 @@ import type { Player, SaveData } from '@/save/model';
 import { RequireSave } from '@/features/saves/RequireSave';
 import { ItemIcon, NpcHead, Tooltip } from '@/ui';
 import { jojaMartGone, SHOPS, type ShopInfo } from './catalog';
+import { groupStock } from './groups';
 import { shopStock, type ShopDay, type ShopsData, type StockEntry } from './stock';
 import './shops.css';
 
 /** Data/Shops currency: 0 gold, 1 star tokens, 2 Qi coins, 4 Qi gems. */
-const CURRENCY_ICON: Record<number, string | undefined> = { 1: '(O)PrizeTicket', 4: '(O)858' };
+const CURRENCY_ICON: Record<number, string | undefined> = {
+  1: '(O)PrizeTicket',
+  4: '(O)858',
+};
 
 function Price({ entry, currency }: { entry: StockEntry; currency: number }) {
   const { t } = useTranslation();
@@ -55,31 +59,36 @@ function ShopView({ info, save, player, day, query }: { info: ShopInfo; save: Sa
       </header>
       {uncertainFrom !== null && <p className="shop__warn">{t('shops.uncertain')}</p>}
       {shown.length === 0 && <p className="cc-summary__hint">{t('shops.nothing')}</p>}
-      <ul className="shop__items">
-        {shown.map((entry, i) => {
-          const item = getItem(entry.id);
-          const late = uncertainFrom !== null && items.indexOf(entry) >= uncertainFrom;
-          return (
-            <li key={`${entry.id}-${i}`} className={['shop-row', entry.maybe || late ? 'shop-row--maybe' : ''].join(' ')}>
-              <ItemIcon id={entry.id} tooltip={false} />
-              <span className="shop-row__name">
-                <span>
-                  {item ? name(item.n) : entry.id}
-                  {entry.recipe && <em> · {t('shops.recipe')}</em>}
-                  {entry.stack > 1 && <em> ×{entry.stack}</em>}
-                  {(entry.maybe || late) && (
-                    <Tooltip text={t(entry.maybe ? 'shops.maybe' : 'shops.uncertainItem')}>
-                      <span className="shop-row__maybe">?</span>
-                    </Tooltip>
-                  )}
-                </span>
-                {entry.stock !== null && entry.stock < 100 && <small className="shop-row__stock">{t('shops.stock', { count: entry.stock })}</small>}
-              </span>
-              <Price entry={entry} currency={shopCurrency(info.id)} />
-            </li>
-          );
-        })}
-      </ul>
+      {groupStock(shown).map(([group, entries]) => (
+        <section key={group} className="shop__group">
+          <h3 className="shop__group-title">{t(`shops.group.${group}`)}</h3>
+          <ul className="shop__items">
+            {entries.map((entry, i) => {
+              const item = getItem(entry.id);
+              const late = uncertainFrom !== null && items.indexOf(entry) >= uncertainFrom;
+              return (
+                <li key={`${entry.id}-${i}`} className={['shop-row', entry.maybe || late ? 'shop-row--maybe' : ''].join(' ')}>
+                  <ItemIcon id={entry.id} tooltip={false} />
+                  <span className="shop-row__name">
+                    <span>
+                      {item ? name(item.n) : entry.id}
+                      {entry.recipe && <em> · {t('shops.recipe')}</em>}
+                      {entry.stack > 1 && <em> ×{entry.stack}</em>}
+                      {(entry.maybe || late) && (
+                        <Tooltip text={t(entry.maybe ? 'shops.maybe' : 'shops.uncertainItem')}>
+                          <span className="shop-row__maybe">?</span>
+                        </Tooltip>
+                      )}
+                    </span>
+                    {entry.stock !== null && entry.stock < 100 && <small className="shop-row__stock">{t('shops.stock', { count: entry.stock })}</small>}
+                  </span>
+                  <Price entry={entry} currency={shopCurrency(info.id)} />
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))}
     </section>
   );
 }
@@ -102,9 +111,7 @@ function Shops({ save, player }: { save: SaveData; player: Player }) {
   // While searching, count matches per shop so the list says where to buy it.
   const matches = useMemo(() => {
     if (!query) return null;
-    return Object.fromEntries(
-      listed.map((s) => [s.id, shopStock(s.id, save, player, day).items.filter((i) => name(getItem(i.id)?.n).toLowerCase().includes(query)).length]),
-    );
+    return Object.fromEntries(listed.map((s) => [s.id, shopStock(s.id, save, player, day).items.filter((i) => name(getItem(i.id)?.n).toLowerCase().includes(query)).length]));
   }, [query, listed, save, player, day, name]);
   const visible = matches ? listed.filter((s) => matches[s.id] > 0) : listed;
   const selected = visible.find((s) => s.id === selectedId) ?? visible[0] ?? listed.find((s) => s.id === selectedId) ?? listed[0];
@@ -130,9 +137,20 @@ function Shops({ save, player }: { save: SaveData; player: Player }) {
       <div className="shops__bar">
         <input className="shops__search" type="search" placeholder={t('shops.search')} value={search} onChange={(e) => setSearch(e.target.value)} />
         <p className="cc-summary__hint">
-          {t('shops.dayLabel', { day: day.day, season: t(`common.seasons.${day.season}`), year: day.year })} · {t('shops.how')}
+          {t('shops.dayLabel', {
+            day: day.day,
+            season: t(`common.seasons.${day.season}`),
+            year: day.year,
+          })}{' '}
+          · {t('shops.how')}
         </p>
-        {closed.length > 0 && <p className="cc-summary__hint">{t('shops.closed', { names: closed.map((s) => t(`shops.name.${s.id}`)).join(', ') })}</p>}
+        {closed.length > 0 && (
+          <p className="cc-summary__hint">
+            {t('shops.closed', {
+              names: closed.map((s) => t(`shops.name.${s.id}`)).join(', '),
+            })}
+          </p>
+        )}
       </div>
       {visible.length === 0 && <p className="cc-summary__hint">{t('shops.nothing')}</p>}
       {selected && visible.length > 0 && <ShopView info={selected} save={save} player={player} day={day} query={query} />}

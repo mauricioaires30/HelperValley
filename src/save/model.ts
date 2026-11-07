@@ -135,6 +135,34 @@ export interface Player {
   hasSkullKey: boolean;
 }
 
+/** A slime hutch: its slimes, water troughs and what's lying on the floor. */
+export interface SlimeHutchState {
+  /** One entry per slime: name (Green Slime, Frost Jelly, Sludge, Tiger Slime...) and color (#rrggbb). */
+  slimes: Array<{ name: string; color: string }>;
+  /** The 4 troughs on the left wall; true = has water. */
+  water: boolean[];
+  /** A sprinkler waters the troughs every morning. */
+  sprinkler: boolean;
+  /** Slime balls waiting to be broken. */
+  balls: number;
+  /** Wicked Statue placed (keeps the witch away). */
+  wickedStatue: boolean;
+  incubators: number;
+  eggPresses: number;
+}
+
+/** A farmer's child (an NPC living in the farmhouse). */
+export interface ChildState {
+  name: string;
+  male: boolean;
+  /** 0 newborn, 1 baby, 2 crawling, 3 toddler (Child.Age). */
+  age: number;
+  daysOld: number;
+  dark: boolean;
+  /** UniqueMultiplayerID of the parent. */
+  parent: string;
+}
+
 export interface WorldState {
   /** Profit margin (difficultyModifier), 1 = normal. */
   profitMargin: number;
@@ -209,6 +237,8 @@ export interface SaveData {
   grandpaScore: number;
   /** World state the shops read (Data/Shops conditions and prices). */
   world: WorldState;
+  children: ChildState[];
+  slimeHutches: SlimeHutchState[];
   fieldOffice: FieldOfficeState | null;
   specialOrders: SpecialOrderState[];
   /** Golden walnut ids already collected (e.g. "Bush_IslandEast_17_37"). */

@@ -41,6 +41,8 @@ export function buildPlayer(textures) {
   for (const sheet of ['farmer_base', 'farmer_girl_base', 'hairstyles', 'hairstyles2', 'accessories', 'pants', 'shirts', 'hats', 'skinColors', 'shoeColors']) {
     textures.add(FARMER + sheet);
   }
+  // Children: babies and toddlers (Child.reloadSprite).
+  for (const sheet of ['Baby', 'Baby_dark', 'Toddler', 'Toddler_dark', 'Toddler_girl', 'Toddler_girl_dark']) textures.add('Characters/' + sheet);
 
   // Hair ids >= 100 live in other sheets: "sheet/tileX/tileY/uniqueLeft/coveredIndex/...".
   const hair = {};

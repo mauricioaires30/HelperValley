@@ -124,3 +124,14 @@
   font-size: var(--fs-sm);
   white-space: normal;
 }
+
+.rel-children {
+  margin-bottom: 16px;
+}
+
+.rel-child__pic {
+  display: grid;
+  place-items: end center;
+  width: 64px;
+  min-height: 64px;
+}
