@@ -18,6 +18,7 @@ import { PNG } from 'pngjs';
 import { buildAchievementGoals, buildAchievements, buildBundles, buildMuseum } from './lib/collections.mjs';
 import { buildCalendar, buildHeartEvents } from './lib/calendar.mjs';
 import { buildFarm } from './lib/farm.mjs';
+import { buildSchedules, buildWorldMap } from './lib/worldmap.mjs';
 import { exportTextures, UI_TEXTURES } from './lib/textures.mjs';
 import { exportUiCrops } from './lib/ui.mjs';
 
@@ -54,6 +55,8 @@ const datasets = {
   calendar: buildCalendar(),
   heartEvents: buildHeartEvents(),
   farm: buildFarm(textures),
+  worldMap: await buildWorldMap(gameDir, textures),
+  schedules: buildSchedules(),
 };
 
 await rm(DATA_OUT, { recursive: true, force: true });
