@@ -91,26 +91,31 @@ function AnimalsCard({ save }: { save: SaveData }) {
         {[...byType].map(([type, count]) => {
           const sprite = animals[type]?.sprite;
           return (
-            <span key={type} className="farm-animal inset">
-              {sprite && <Sprite sheet={sprite[0]} x={0} y={0} w={sprite[1]} h={sprite[2]} scale={sprite[1] > 16 ? 1 : 2} />}
-              {name(animals[type]?.n) || type} ×{count}
-            </span>
+            <Tooltip key={type} text={name(animals[type]?.n) || type}>
+              <span className="farm-animal">
+                {sprite && <Sprite sheet={sprite[0]} x={0} y={0} w={sprite[1]} h={sprite[2]} scale={sprite[1] > 16 ? 1 : 2} />}
+                <strong>×{count}</strong>
+              </span>
+            </Tooltip>
           );
         })}
       </div>
-      <ul className="farm-facts">
-        <li>
-          <ItemIcon id="(O)178" tooltip={false} /> {t('farm.hay', { hay: farm.hay.toLocaleString(), capacity: capacity.toLocaleString(), silos: farm.silos })}
-        </li>
-        {perDay > 0 && (
-          <>
-            <li className={stockDays < 7 ? 'farm-warn' : undefined}>{t('farm.hayStock', { perDay, days: stockDays, date: when(stockDays) })}</li>
-            {toFill > 0 && <li>{t('farm.hayFill', { count: toFill.toLocaleString(), cost: (toFill * HAY_PRICE).toLocaleString() })}</li>}
-            {capacity > 0 && <li>{t('farm.hayCycle', { days: fullDays, date: when(fullDays) })}</li>}
-            <li className="cc-summary__hint">{t('farm.hayNote')}</li>
-          </>
-        )}
-      </ul>
+      {/* Hay in one line; the refill plan sits in the tooltip. */}
+      <Tooltip
+        text={
+          <span className="slot-tooltip">
+            {perDay > 0 && <span>{t('farm.hayStock', { perDay, days: stockDays, date: when(stockDays) })}</span>}
+            {toFill > 0 && <span>{t('farm.hayFill', { count: toFill.toLocaleString(), cost: (toFill * HAY_PRICE).toLocaleString() })}</span>}
+            {capacity > 0 && perDay > 0 && <span>{t('farm.hayCycle', { days: fullDays, date: when(fullDays) })}</span>}
+            <em>{t('farm.hayNote')}</em>
+          </span>
+        }
+      >
+        <span className={perDay > 0 && stockDays < 7 ? 'farm-hay farm-warn' : 'farm-hay'}>
+          <ItemIcon id="(O)178" tooltip={false} />
+          {t('farm.hayShort', { hay: farm.hay.toLocaleString(), capacity: capacity.toLocaleString(), days: perDay ? stockDays : '∞' })}
+        </span>
+      </Tooltip>
     </section>
   );
 }

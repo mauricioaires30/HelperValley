@@ -42,16 +42,16 @@
     }
   },
   "saves": {
-    "intro": "HelperValley reads your save files directly from your computer. Nothing is uploaded.",
+    "intro": "Reads saves from your PC. Nothing is uploaded.",
     "where": "Your saves are in:",
     "copy": "Copy path",
     "copied": "Copied!",
     "open": "Open Saves folder",
-    "openHint": "Pick the Saves folder (or the StardewValley folder). The site watches it and updates every time the game saves.",
+    "openHint": "The site updates itself when the game saves.",
     "fallback": "Select Saves folder",
-    "fallbackHint": "Your browser can't keep a folder open, so select it again after playing. For auto-reload, use Chrome or Edge.",
+    "fallbackHint": "No live updates in this browser. Use Chrome or Edge.",
     "reconnect": "Reconnect to your saves",
-    "reconnectHint": "Click anywhere and allow access to the saves folder. Choose \"Allow on every visit\" so the site always watches the folder without asking again.",
+    "reconnectHint": "Click anywhere and choose \"Allow on every visit\".",
     "change": "Change folder",
     "none": "No saves were found in that folder.",
     "list": "Your farms",
@@ -71,23 +71,29 @@
     "cachedLive": "Reconnect to update live",
     "cachedOpen": "Connect Saves folder",
     "cachedMode": "Saved in this browser: reconnect to update live",
-    "cachedHintReconnect": "Click anywhere and choose \"Allow on every visit\" so it stays live from now on.",
-    "cachedHintPick": "Connect the Saves folder once; next visits ask once, choose \"Allow on every visit\" and it stays live.",
-    "cachedHintUnsupported": "This browser can't keep watching a folder. Use Chrome or Edge for live updates (in Brave, enable the File System Access API flag).",
+    "cachedHintReconnect": "Click anywhere and choose \"Allow on every visit\".",
+    "cachedHintPick": "Connect the folder for live updates.",
+    "cachedHintUnsupported": "For live updates, use Chrome or Edge.",
     "guide": {
       "title": "Keep the site live (Chrome / Edge)",
-      "why": "Chrome and Edge don't let sites open folders inside AppData, which is where the game saves. The fix is to move the saves to Documents and leave a link in the old place: the game keeps saving normally and the browser reads Documents.",
+      "why": "Chrome won't open folders in AppData. Move the saves to Documents and leave a link behind: the game won't notice.",
       "close": "Close Stardew Valley.",
       "run": "Open PowerShell (Start menu → \"PowerShell\") and run this once:",
       "copy": "Copy command",
-      "pick": "Then choose the folder Documents/StardewValley Saves (in your user folder):",
-      "allow": "On your next visit, when the browser asks, choose \"Allow on every visit\". From then on the site opens live and updates whenever the game saves.",
-      "safe": "Your saves stay the same files; Steam Cloud keeps working. To undo, delete the link in AppData and move the folder back.",
-      "noLive": "Don't want to change anything? Select the folder each time instead (no live updates):"
+      "pick": "Choose Documents/StardewValley Saves:",
+      "allow": "On your next visit, choose \"Allow on every visit\".",
+      "safe": "Same files; Steam Cloud keeps working.",
+      "noLive": "Without changing anything (not live):"
     },
     "quickTitle": "See your farm now",
-    "quickHint": "Select the folder %AppData%\\StardewValley\\Saves (paste the path in the address bar of the window). The browser keeps a copy, so next time it opens on its own.",
-    "quickButton": "Select Saves folder"
+    "quickHint": "Select %AppData%\\StardewValley\\Saves. The browser keeps a copy.",
+    "quickButton": "Select Saves folder",
+    "how": {
+      "title": "How it works",
+      "local": "The site reads your save files right on your PC; nothing is uploaded.",
+      "copy": "Each save it reads is kept in the browser, so the site opens even without the folder.",
+      "live": "With the folder connected (Chrome/Edge), it updates itself when the game saves."
+    }
   },
   "locations": {
     "Farm": "Farm",
@@ -154,7 +160,7 @@
       "Farm": "Your farm",
       "Island": "Ginger Island"
     },
-    "legend": "Green: donated · Glowing: you own it · Faded: never found. Gems not listed in geodes come from mine rocks and ore nodes."
+    "legend": "Green: donated · Glowing: you own it · Faded: never found."
   },
   "ach": {
     "title": "{{name}}'s achievements",
@@ -163,13 +169,13 @@
     "secret": "Hidden",
     "close": "Almost there!",
     "hideEarned": "Hide earned",
-    "perPlayer": "Achievements are per player: switch players in the header. Steam/console-only achievements are not tracked.",
+    "perPlayer": "Per player. Switch players at the top.",
     "showDetails": "See what is missing",
     "hideDetails": "Hide",
     "details": {
       "friends": "Villagers below {{hearts}} hearts, closest first:",
       "cooking_one": "1 dish not cooked yet. Faded = recipe not learned.",
-      "cooking_other": "{{count}} dishes not cooked yet. Faded = recipe not learned.",
+      "cooking_other": "{{count}} dishes left. Faded = recipe not learned.",
       "crafting_one": "1 item not crafted yet. Faded = recipe not learned.",
       "crafting_other": "{{count}} items not crafted yet. Faded = recipe not learned.",
       "fish_one": "1 fish not caught yet:",
@@ -178,13 +184,13 @@
       "polyculture_other": "{{count}} crops still need 15 shipped:",
       "monoculture": "Your most shipped crops:",
       "museum": "Open the museum tracker",
-      "quests": "Complete \"Help Wanted\" requests from the board outside Pierre's shop.",
-      "house": "Current house upgrade level: {{level}}. Talk to Robin to upgrade.",
+      "quests": "Do the requests on the board outside Pierre's.",
+      "house": "House level {{level}}. Upgrade with Robin.",
       "money": "Total earned so far: {{money}}g.",
       "allDone": "Everything done ✓"
     },
     "recipe": {
-      "tv": "The Queen of Sauce (TV): Sunday, day {{day}} of {{season}}, year {{year}} (reruns later on Wednesdays)",
+      "tv": "Queen of Sauce TV: Sunday {{day}} {{season}}, year {{year}}",
       "friend": "Letter from {{name}} at {{hearts}} hearts",
       "skill": "{{skill}} level {{level}}",
       "level": "Player level {{level}}",
@@ -254,9 +260,9 @@
     "sortHearts": "Hearts",
     "sortBirthday": "Next birthday",
     "sortName": "Name",
-    "hint": "Gift suggestions only use items you have right now in chests or backpacks.",
+    "hint": "Suggested gifts = items you own now.",
     "toNext": "{{points}} points to the next heart",
-    "bouquet": "Max for now: give a bouquet to date",
+    "bouquet": "Give a bouquet to go past 8 ♥",
     "giftsLeft_one": "1 gift left this week",
     "giftsLeft_other": "{{count}} gifts left this week",
     "giftedToday": "Already gifted today",
@@ -377,7 +383,7 @@
       "neutral": "The spirits feel absolutely neutral today.",
       "mixed": "The spirits are in a mixed mood today.",
       "bad": "The spirits are somewhat annoyed today.",
-      "awful": "The spirits are very displeased today. Maybe stay on the farm."
+      "awful": "Terrible luck today. Maybe stay on the farm."
     },
     "tomorrow": "Tomorrow: {{weather}}",
     "weather": {
@@ -392,7 +398,7 @@
     },
     "daysLeft_one": "1 day left before {{season}}",
     "daysLeft_other": "{{count}} days left before {{season}}",
-    "lastDay": "Last day of the season! Crops die tomorrow unless they grow in {{season}}.",
+    "lastDay": "Last day of the season! Crops die tomorrow.",
     "soon": "Next 7 days",
     "todayLabel": "today",
     "inDays_one": "tomorrow",
@@ -460,7 +466,7 @@
     "useMachines": "Process in kegs/jars",
     "includeUnbuyable": "Include seeds you can't buy",
     "onlyFlowers": "Flowers for honey",
-    "assumptions": "Planting today: {{days}} growing days. Farming level {{level}}; professions: {{professions}}. Prices are base quality.",
+    "assumptions": "{{days}} growing days · Farming {{level}} · {{professions}}",
     "prof": {
       "tiller": "Tiller",
       "agriculturist": "Agriculturist",
@@ -498,7 +504,7 @@
       "(O)890": "Mr. Qi's quests",
       "(O)433": "Traveling Cart or Dust Sprites (mines)"
     },
-    "nothing": "Nothing grows in time with the days left. Try another season or the greenhouse.",
+    "nothing": "Nothing grows in time. Try another season or the greenhouse.",
     "planTotal": "Tiles to plan",
     "useSave": "Use save ({{count}})",
     "planFree": "{{free}} of {{total}} tiles free",
@@ -508,7 +514,7 @@
     "addRow": "Add crop",
     "planProfit": "Expected profit this season: {{profit}}g",
     "shoppingTitle": "Shopping list",
-    "shoppingHint": "One seed per planned tile for the next planting, cheapest place first.",
+    "shoppingHint": "1 seed per tile, at the cheapest shop.",
     "shoppingEmpty": "Add crops to your plans to build the list.",
     "shoppingTotal": "Total: {{total}}g",
     "shop": {
@@ -544,10 +550,11 @@
       "HatMouse": "Hat Mouse",
       "ShadowShop": "Krobus"
     },
-    "late": "won't finish in time ({{need}} days, {{left}} left): full-season value",
-    "hayStock": "They eat {{perDay}} hay a day: your stock lasts {{days}} days (until {{date}})",
-    "hayCycle": "Full silos last {{days}} days: buy again around {{date}}",
-    "hayNote": "Assumes they eat hay every day (winter, rain or no grass outside)."
+    "late": "won't make it ({{need}}d, {{left}} left)",
+    "hayStock": "{{perDay}}/day · lasts {{days}} days (until {{date}})",
+    "hayCycle": "Full silos last {{days}} days (until {{date}})",
+    "hayNote": "Assumes they eat hay every day.",
+    "hayShort": "Hay {{hay}}/{{capacity}} · lasts {{days}} days"
   },
   "map": {
     "title": "Villager map",
@@ -562,7 +569,7 @@
     "since": "there since {{time}}",
     "listTitle": "Everyone at {{time}}",
     "resortTitle": "Who may be at the resort",
-    "resortHint": "The game picks a few of these at random each day the resort is open, so check the beach on the island.",
+    "resortHint": "The game picks a few of these each day.",
     "location": {
       "Farm": "Your farm",
       "FarmHouse": "Your house",
@@ -613,7 +620,7 @@
   "prod": {
     "title": "Production",
     "machinesTitle": "Machines working ({{count}})",
-    "summary": "{{ready}} ready to collect · about {{value}}g of goods inside (base price)",
+    "summary": "{{ready}} ready · ~{{value}}g inside",
     "col": {
       "machine": "Machine",
       "making": "Making",
@@ -640,7 +647,7 @@
     },
     "office": {
       "locked": "The Field Office on Ginger Island hasn't been opened yet.",
-      "hint": "Bring fossils to Professor Snail in the Island North field office. Each finished set pays Golden Walnuts.",
+      "hint": "Bring fossils to Professor Snail (island north). Each set pays walnuts.",
       "skeleton": "Large animal",
       "snake": "Snake",
       "bat": "Mummified bat",
@@ -705,9 +712,9 @@
   },
   "walnuts": {
     "title": "Golden Walnuts",
-    "hint": "Total found on Ginger Island. Missing bush and buried spots are marked on the island map.",
+    "hint": "Missing spots are marked on the island map.",
     "spotsTitle": "Hidden spots: {{missing}} of {{total}} missing",
-    "spotsHint": "Shake bushes; dig buried ones with a hoe (look for the wiggling sticks).",
+    "spotsHint": "Shake bushes; dig buried ones (wiggling sticks).",
     "kind": {
       "bush": "Bush",
       "buried": "Buried"

@@ -41,11 +41,11 @@
   flex-direction: column;
   gap: 2px;
   min-height: 96px;
-  font-size: 14px;
+  font-size: var(--fs-sm);
 }
 
 .calendar__number {
-  font-size: 18px;
+  font-size: var(--fs-md);
   font-weight: 600;
 }
 
@@ -67,7 +67,7 @@
   top: 2px;
   right: 4px;
   padding: 0 4px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   color: #fff;
   background: var(--accent);
@@ -100,7 +100,7 @@
 @media (max-width: 640px) {
   .calendar__day {
     min-height: 64px;
-    font-size: 11px;
+    font-size: var(--fs-xs);
     padding: 2px;
   }
 
@@ -114,7 +114,7 @@
   .calendar__festival {
     flex-direction: column;
     align-items: flex-start;
-    font-size: 12px;
+    font-size: var(--fs-xs);
   }
 }
 

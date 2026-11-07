@@ -27,7 +27,7 @@ function RelationshipCard({ rel, owned }: { rel: Relationship; owned: string[] }
           <h3>{name(npcs[rel.npc].n)}</h3>
           {rel.status !== 'Friendly' && <span className="rel__status">{t(`rel.status.${rel.status}`, { defaultValue: rel.status })}</span>}
         </header>
-        <Hearts value={rel.hearts} max={rel.shownHearts} reachable={rel.marriedElsewhere ? 10 : rel.maxHearts} />
+        <Hearts value={rel.hearts} max={rel.shownHearts} reachable={rel.maxHearts} possible={rel.marriedElsewhere ? 10 : rel.shownHearts} />
         <ul className="rel__facts">
           {toNext > 0 && <li>{t('rel.toNext', { points: toNext })}</li>}
           {rel.hearts >= rel.maxHearts && rel.maxHearts === 8 && <li>{t('rel.bouquet')}</li>}
