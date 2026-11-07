@@ -1,4 +1,4 @@
-import { gameData } from '@/data/gameData';
+import { gameData, type HeartEvent } from '@/data/gameData';
 import type { Player, SaveData } from '@/save/model';
 import { daysUntil } from '@/features/calendar/calendar';
 
@@ -16,7 +16,9 @@ export interface Relationship {
   /** Days until the NPC's birthday (0 = today). */
   birthdayIn: number | null;
   /** Lowest heart event not seen yet. */
-  nextEvent: { hearts: number; location: string; unlocked: boolean } | null;
+  nextEvent: (HeartEvent & { unlocked: boolean }) | null;
+  /** Every heart event for this NPC, with whether this player has seen it. */
+  events: Array<HeartEvent & { seen: boolean }>;
 }
 
 export function buildRelationships(save: SaveData, player: Player): Relationship[] {
@@ -39,7 +41,8 @@ export function buildRelationships(save: SaveData, player: Player): Relationship
         giftsThisWeek: f.giftsThisWeek,
         giftsToday: f.giftsToday,
         birthdayIn: data.birth ? daysUntil(save.date, data.birth) : null,
-        nextEvent: next ? { hearts: next.hearts, location: next.location, unlocked: hearts >= next.hearts } : null,
+        nextEvent: next ? { ...next, unlocked: hearts >= next.hearts } : null,
+        events: heartEvents.events.filter((e) => e.npc === npc).map((e) => ({ ...e, seen: seen.has(e.id) })),
       };
     })
     .sort((a, b) => b.points - a.points);

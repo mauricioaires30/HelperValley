@@ -6,6 +6,7 @@ import type { Player, SaveData } from '@/save/model';
 import { RequireSave } from '@/features/saves/RequireSave';
 import { Hearts, ItemIcon, Popover, Portrait } from '@/ui';
 import { bestOwnedGifts, ownedObjectIds, TASTES, tasteGroups } from './gifts';
+import { describeEvent } from './eventConditions';
 import { buildRelationships, POINTS_PER_HEART, type Relationship } from './relationships';
 import './relationships.css';
 
@@ -14,7 +15,7 @@ type Sort = 'hearts' | 'birthday' | 'name';
 function RelationshipCard({ rel, owned }: { rel: Relationship; owned: string[] }) {
   const { t } = useTranslation();
   const name = useGameName();
-  const { npcs, heartEvents } = gameData();
+  const { npcs } = gameData();
   const gifts = useMemo(() => bestOwnedGifts(rel.npc, owned), [rel.npc, owned]);
   const toNext = rel.hearts < rel.maxHearts ? POINTS_PER_HEART - (rel.points % POINTS_PER_HEART) : 0;
   const giftsLeft = Math.max(0, 2 - rel.giftsThisWeek);
@@ -39,11 +40,10 @@ function RelationshipCard({ rel, owned }: { rel: Relationship; owned: string[] }
           )}
           {rel.nextEvent && (
             <li className={rel.nextEvent.unlocked ? 'rel__event rel__event--ready' : 'rel__event'}>
-              {rel.nextEvent.unlocked
-                ? heartEvents.places[rel.nextEvent.location]
-                  ? t('rel.eventReadyAt', { hearts: rel.nextEvent.hearts, place: name(heartEvents.places[rel.nextEvent.location]) })
-                  : t('rel.eventReady', { hearts: rel.nextEvent.hearts })
-                : t('rel.eventAt', { hearts: rel.nextEvent.hearts })}
+              {rel.nextEvent.unlocked ? t('rel.eventReady', { hearts: rel.nextEvent.hearts }) : t('rel.eventAt', { hearts: rel.nextEvent.hearts })}
+              <span className="rel__how">
+                {t('rel.how')} {describeEvent(rel.nextEvent, t, name).join(' · ')}
+              </span>
             </li>
           )}
         </ul>
@@ -57,7 +57,25 @@ function RelationshipCard({ rel, owned }: { rel: Relationship; owned: string[] }
             </div>
           </div>
         )}
-        <TasteButtons npc={rel.npc} owned={owned} />
+        <div className="rel__tastes">
+          <TasteButtons npc={rel.npc} owned={owned} />
+          {rel.events.length > 0 && (
+            <Popover className="taste" label={t('rel.events', { seen: rel.events.filter((e) => e.seen).length, total: rel.events.length })}>
+              <strong>{t('rel.eventsTitle')}</strong>
+              <ul className="rel__event-list">
+                {rel.events.map((e) => (
+                  <li key={e.id} className={e.seen ? 'rel__muted' : rel.hearts >= e.hearts ? 'rel__event--ready' : undefined}>
+                    <strong>
+                      {e.seen ? '✓ ' : ''}
+                      {t('rel.eventHearts', { count: e.hearts })}
+                    </strong>{' '}
+                    {describeEvent(e, t, name).join(' · ')}
+                  </li>
+                ))}
+              </ul>
+            </Popover>
+          )}
+        </div>
       </div>
     </article>
   );
@@ -69,7 +87,7 @@ function TasteButtons({ npc, owned }: { npc: string; owned: string[] }) {
   const groups = useMemo(() => tasteGroups(npc), [npc]);
   const ownedSet = useMemo(() => new Set(owned), [owned]);
   return (
-    <div className="rel__tastes">
+    <>
       {TASTES.map((taste) => {
         const { items, groups: categories } = groups[taste];
         if (!items.length && !categories.length) return null;
@@ -98,7 +116,7 @@ function TasteButtons({ npc, owned }: { npc: string; owned: string[] }) {
           </Popover>
         );
       })}
-    </div>
+    </>
   );
 }
 

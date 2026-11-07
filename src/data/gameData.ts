@@ -80,6 +80,8 @@ export interface HeartEvent {
   npc: string;
   hearts: number;
   location: string;
+  /** Other preconditions as [code, ...args], e.g. ["t", "1000", "1600"] or ["w", "rainy"]. */
+  conditions: string[][];
 }
 
 export interface MuseumData {

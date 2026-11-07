@@ -190,7 +190,7 @@
     "birthdayToday": "Birthday today! Gifts count 8×",
     "birthdayIn_one": "Birthday tomorrow",
     "birthdayIn_other": "Birthday in {{count}} days",
-    "eventReady": "{{hearts}}-heart event available",
+    "eventReady": "{{hearts}}-heart event available!",
     "eventAt": "Next event at {{hearts}} hearts",
     "gifts": {
       "love": "Loves, and you have:",
@@ -251,6 +251,45 @@
       "toy_item": "Toys",
       "forage_item_beach": "Beach forage",
       "category_trinket": "Trinkets"
+    },
+    "how": "How:",
+    "events": "Events {{seen}}/{{total}}",
+    "eventsTitle": "Heart events (✓ = seen)",
+    "eventHearts_one": "{{count}} heart:",
+    "eventHearts_other": "{{count}} hearts:",
+    "place": {
+      "Farm": "Your farm",
+      "FarmHouse": "Your house",
+      "IslandWest": "Ginger Island (west)",
+      "IslandNorth": "Ginger Island (north)",
+      "IslandSouth": "Ginger Island (south)",
+      "SebastianRoom": "Sebastian's room"
+    },
+    "when": {
+      "place": "go to {{place}}",
+      "time": "between {{from}} and {{to}}",
+      "weather": {
+        "sunny": "on a sunny day",
+        "rainy": "on a rainy day"
+      },
+      "notSeason": "not in {{seasons}}",
+      "notDays": "not on {{days}}",
+      "firstYear": "only in year 1",
+      "fromYear": "from year {{year}}",
+      "present": "{{name}} must be there",
+      "friend": "{{hearts}} hearts with {{name}}",
+      "married": "married to {{name}}",
+      "notMarried": "not married to {{names}}",
+      "single": "while single",
+      "dating": "dating {{name}}",
+      "house": "house upgrade level {{level}}",
+      "money": "have {{money}}g",
+      "daysPlayed_one": "after {{count}} day played",
+      "daysPlayed_other": "after {{count}} days played",
+      "item": "carry {{item}}",
+      "mail": "after a special letter or story step",
+      "priorEvents_one": "after seeing 1 earlier event",
+      "priorEvents_other": "after seeing {{count}} earlier events"
     }
   },
   "today": {

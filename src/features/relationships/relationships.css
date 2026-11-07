@@ -107,3 +107,20 @@
 .taste__group {
   font-size: 14px;
 }
+
+.rel__how {
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-soft);
+}
+
+.rel__event-list {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  white-space: normal;
+}
