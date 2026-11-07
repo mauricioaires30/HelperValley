@@ -1,7 +1,7 @@
 import type { Season } from '@/data/gameData';
 import { readFarm } from './farm';
 import type { QuestState } from './model';
-import type { CommunityCenter, Container, Friendship, ItemStack, Player, SaveData, SaveSummary } from './model';
+import type { Clothing, CommunityCenter, Container, Friendship, ItemStack, Player, PlayerLook, SaveData, SaveSummary } from './model';
 import {
   arr,
   bool,
@@ -115,6 +115,38 @@ function questState(q: XmlNode): QuestState {
   };
 }
 
+/** XNA Color (<R><G><B>) to #rrggbb. */
+function color(value: XmlValue, fallback = '#ffffff'): string {
+  const c = node(value);
+  if (!c || c.R === undefined) return fallback;
+  return '#' + [c.R, c.G, c.B].map((v) => num(v).toString(16).padStart(2, '0')).join('');
+}
+
+function clothing(value: XmlValue): Clothing | undefined {
+  const c = node(value);
+  if (!c || text(c['@_xsi:nil']) === 'true') return undefined;
+  return { id: text(c.itemId) ?? '', index: num(c.indexInTileSheet), color: color(c.clothesColor), prismatic: bool(c.isPrismatic) };
+}
+
+function look(p: XmlNode): PlayerLook {
+  const gender = text(p.Gender);
+  const hat = node(p.hat);
+  const boots = node(p.boots);
+  return {
+    male: gender ? gender === 'Male' : text(p.isMale) !== 'false',
+    skin: num(p.skin),
+    hair: num(p.hair),
+    hairColor: color(p.hairstyleColor, '#c15b32'),
+    prismaticHair: bool(p.prismaticHair),
+    eyeColor: color(p.newEyeColor, '#7a4434'),
+    accessory: num(p.accessory, -1),
+    shirt: clothing(p.shirtItem),
+    pants: clothing(p.pantsItem),
+    hat: hat && text(hat['@_xsi:nil']) !== 'true' ? text(hat.itemId) : undefined,
+    shoeColor: boots && text(boots['@_xsi:nil']) !== 'true' ? num(boots.indexInColorSheet, 12) : 12,
+  };
+}
+
 export function normalizePlayer(value: XmlValue, isHost: boolean): Player {
   const p = node(value) ?? {};
   const { stats, monstersKilled } = flattenStats(p.stats);
@@ -162,6 +194,9 @@ export function normalizePlayer(value: XmlValue, isHost: boolean): Player {
     stats,
     monstersKilled,
     inventory: itemList(p.items),
+    look: look(p),
+    hasRustyKey: bool(p.hasRustyKey) || strings(p.mailReceived).includes('HasRustyKey'),
+    hasSkullKey: bool(p.hasSkullKey) || strings(p.mailReceived).includes('HasSkullKey'),
     quests: arr(node(p.questLog)?.Quest).flatMap((q) => {
       const quest = node(q);
       return quest ? [questState(quest)] : [];
@@ -309,6 +344,7 @@ export function normalizeSave(xml: string, folder: string): SaveData {
         plantsRight: bool(office.plantsRestoredRight),
       };
     })(),
+    grandpaScore: num(locations.map(node).find((l) => xsiType(l) === 'Farm' || text(l?.name) === 'Farm')?.grandpaScore),
     resort: (() => {
       const south = locations.map(node).find((l) => text(l?.name) === 'IslandSouth');
       return { restored: bool(south?.resortRestored), openToday: bool(south?.resortOpenToday) };

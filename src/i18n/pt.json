@@ -17,7 +17,8 @@
     "farm": "Produção",
     "map": "Mapa",
     "collections": "Coleções",
-    "quests": "Missões"
+    "quests": "Missões",
+    "player": "Personagem"
   },
   "common": {
     "language": "Idioma",
@@ -873,5 +874,40 @@
     },
     "needsPet": "fazer carinho",
     "cracker": "comeu biscoito dourado"
+  },
+  "player": {
+    "skills": "Habilidades · nível {{level}} de fazendeiro",
+    "level": "Nível {{level}}",
+    "maxed": "Nível máximo",
+    "xp": "{{into}}/{{of}} XP",
+    "farm": "Fazenda {{farm}}",
+    "spouse": "Casado(a) com {{name}}",
+    "earned": "{{amount}}g ganhos no total",
+    "wearing": "Usando: {{hat}}",
+    "mastery": {
+      "title": "Maestria (sala secreta do vovô)",
+      "locked": "A Caverna da Maestria abre quando Cultivo, Pesca, Coleta, Mineração e Combate chegam ao nível 10.",
+      "level": "Nível de maestria {{level}} de 5",
+      "toClaim": "{{count}} para resgatar nos pedestais",
+      "max": "Maestria completa.",
+      "how": "Depois de tudo no nível 10, a XP extra vira XP de maestria (Cultivo conta metade). Cada nível deixa você resgatar um pedestal na caverna, que dá itens, receitas e um bônus."
+    },
+    "grandpa": {
+      "title": "Avaliação do vovô",
+      "lit": "Velas acesas na última avaliação: {{count}} de 4",
+      "notYet": "O vovô avalia na manhã de 1º de Primavera do Ano 3",
+      "now": "Agora: {{score}} pontos = {{candles}} velas",
+      "how": "Com menos de 4 velas, coloque um Diamante no altar do vovô para uma nova avaliação no dia seguinte. 12 pontos acendem as 4 velas.",
+      "money": "Ganhar {{amount}}g",
+      "achievement": "Conquista \"{{name}}\"",
+      "skullKey": "Achar a Chave de Caveira (fundo da mina)",
+      "ccDone": "Completar o Centro Comunitário (ou a Joja)",
+      "ccCeremony": "Cerimônia de reabertura do Centro Comunitário",
+      "house": "Casado(a) e casa com 2 reformas",
+      "rustyKey": "Chave Enferrujada (60 itens no museu)",
+      "friends": "{{count}} amigos com 8 corações ({{have}} agora)",
+      "level": "Nível de fazendeiro {{count}} ({{have}} agora)",
+      "pet": "Amizade máxima com o animal de estimação"
+    }
   }
 }

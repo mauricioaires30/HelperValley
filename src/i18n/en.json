@@ -17,7 +17,8 @@
     "farm": "Production",
     "map": "Map",
     "collections": "Collections",
-    "quests": "Quests"
+    "quests": "Quests",
+    "player": "Character"
   },
   "common": {
     "language": "Language",
@@ -873,5 +874,40 @@
     },
     "needsPet": "pet it",
     "cracker": "ate a golden cracker"
+  },
+  "player": {
+    "skills": "Skills · farmer level {{level}}",
+    "level": "Level {{level}}",
+    "maxed": "Max level",
+    "xp": "{{into}}/{{of}} XP",
+    "farm": "{{farm}} Farm",
+    "spouse": "Married to {{name}}",
+    "earned": "{{amount}}g earned in total",
+    "wearing": "Wearing: {{hat}}",
+    "mastery": {
+      "title": "Mastery (Grandpa's secret room)",
+      "locked": "The Mastery Cave opens once Farming, Fishing, Foraging, Mining and Combat all reach level 10.",
+      "level": "Mastery level {{level}} of 5",
+      "toClaim": "{{count}} to claim at the pedestals",
+      "max": "Mastery complete.",
+      "how": "With every skill at 10, extra XP becomes Mastery XP (Farming counts half). Each level lets you claim one pedestal in the cave: items, recipes and a perk."
+    },
+    "grandpa": {
+      "title": "Grandpa's evaluation",
+      "lit": "Candles lit at the last evaluation: {{count}} of 4",
+      "notYet": "Grandpa evaluates on the morning of Spring 1, Year 3",
+      "now": "Now: {{score}} points = {{candles}} candles",
+      "how": "With fewer than 4 candles, put a Diamond on Grandpa's shrine to be evaluated again the next day. 12 points light all 4.",
+      "money": "Earn {{amount}}g",
+      "achievement": "Achievement \"{{name}}\"",
+      "skullKey": "Find the Skull Key (bottom of the mines)",
+      "ccDone": "Complete the Community Center (or Joja)",
+      "ccCeremony": "Community Center reopening ceremony",
+      "house": "Married with a twice-upgraded house",
+      "rustyKey": "Rusty Key (60 museum donations)",
+      "friends": "{{count}} friends at 8 hearts ({{have}} now)",
+      "level": "Farmer level {{count}} ({{have}} now)",
+      "pet": "Max friendship with your pet"
+    }
   }
 }
