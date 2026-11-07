@@ -127,3 +127,52 @@
   cursor: default;
   opacity: 0.55;
 }
+
+.live-guide {
+  text-align: left;
+  display: grid;
+  gap: 8px;
+}
+
+.live-guide h3 {
+  margin: 0;
+}
+
+.live-guide ol {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 22px;
+}
+
+.live-guide li {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+}
+
+.live-guide__code {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 13px;
+  white-space: pre;
+  user-select: all;
+}
+
+.live-guide__fallback {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.saves__guide {
+  margin-bottom: 12px;
+}
+
+.saves__guide > summary {
+  list-style: none;
+  margin-bottom: 8px;
+}

@@ -71,7 +71,18 @@
     "cachedMode": "Saved in this browser: reconnect to update live",
     "cachedHintReconnect": "Click anywhere and choose \"Allow on every visit\" so it stays live from now on.",
     "cachedHintPick": "Connect the Saves folder once; next visits ask once, choose \"Allow on every visit\" and it stays live.",
-    "cachedHintUnsupported": "This browser can't keep watching a folder. Use Chrome or Edge for live updates (in Brave, enable the File System Access API flag)."
+    "cachedHintUnsupported": "This browser can't keep watching a folder. Use Chrome or Edge for live updates (in Brave, enable the File System Access API flag).",
+    "guide": {
+      "title": "Keep the site live (Chrome / Edge)",
+      "why": "Chrome and Edge don't let sites open folders inside AppData, which is where the game saves. The fix is to move the saves to Documents and leave a link in the old place: the game keeps saving normally and the browser reads Documents.",
+      "close": "Close Stardew Valley.",
+      "run": "Open PowerShell (Start menu → \"PowerShell\") and run this once:",
+      "copy": "Copy command",
+      "pick": "Then choose the folder DocumentsStardewValley Saves:",
+      "allow": "On your next visit, when the browser asks, choose \"Allow on every visit\". From then on the site opens live and updates whenever the game saves.",
+      "safe": "Your saves stay the same files; Steam Cloud keeps working. To undo, delete the link in AppData and move the folder back.",
+      "noLive": "Don't want to change anything? Select the folder each time instead (no live updates):"
+    }
   },
   "locations": {
     "Farm": "Farm",
