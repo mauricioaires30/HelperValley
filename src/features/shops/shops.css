@@ -121,3 +121,18 @@
   display: grid;
   line-height: 1.15;
 }
+
+.shop__group {
+  margin-top: 10px;
+}
+
+.shop__group-title {
+  margin: 0 0 4px;
+  padding-bottom: 2px;
+  font-size: var(--fs-md);
+  border-bottom: var(--px) solid rgb(91 43 21 / 0.35);
+}
+
+.shop__group .shop__items {
+  margin-top: 0;
+}

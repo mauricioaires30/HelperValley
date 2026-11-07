@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { gameData, getItem, spriteUrl, type Season } from '@/data/gameData';
 import { useGameName } from '@/i18n';
 import { useCurrentSave } from '@/store/saveStore';
@@ -203,13 +203,16 @@ export function MapPage() {
   const { t } = useTranslation();
   const name = useGameName();
   const { save, player } = useCurrentSave();
-  const [region, setRegion] = useState<RegionId>('Valley');
+  // ?show=walnuts (from the walnuts tab) opens the island with that layer on.
+  const [params] = useSearchParams();
+  const showLayer = params.get('show');
+  const [region, setRegion] = useState<RegionId>(showLayer === 'walnuts' ? 'GingerIsland' : 'Valley');
   const [season, setSeason] = useState<Season>(save?.date.season ?? 'spring');
   const [day, setDay] = useState(save?.date.day ?? 1);
   const [step, setStep] = useState(STEPS.indexOf(1200));
   const [raining, setRaining] = useState(save?.isRaining ?? false);
   const [resort, setResort] = useState(save?.resort.openToday ?? false);
-  const [layers, setLayers] = useState({ npcs: true, events: true, quests: true, fish: true, walnuts: false, shops: false, donations: false });
+  const [layers, setLayers] = useState({ npcs: true, events: true, quests: true, fish: true, walnuts: showLayer === 'walnuts', shops: showLayer === 'shops', donations: showLayer === 'donations' });
   const navigate = useNavigate();
   const pinnedQuests = usePinStore((s) => s.quests);
   const pinnedFish = usePinStore((s) => s.fish);

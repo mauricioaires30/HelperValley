@@ -134,8 +134,7 @@ export function Recommendations({ save, player }: { save: SaveData; player: Play
   const sorted = [...rows]
     .filter((r) => !onlyFlowers || r.isFlower)
     .sort((a, b) => {
-      // Crops that make it in time always come before late ones.
-      if (a.late !== b.late) return Number(a.late) - Number(b.late);
+      // Late crops sort like any other; their row carries a "no time left" warning.
       const [x, y] = [value(a), value(b)];
       const cmp = typeof x === 'string' ? x.localeCompare(String(y)) : x - (y as number);
       return sort.desc ? -cmp : cmp;

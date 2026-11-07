@@ -269,7 +269,6 @@
     "sortHearts": "Corações",
     "sortBirthday": "Próximo aniversário",
     "sortName": "Nome",
-    "hint": "Presentes sugeridos = itens que você tem agora.",
     "toNext": "Faltam {{points}} pontos para o próximo coração",
     "bouquet": "Dê um buquê para passar de 8 ♥",
     "giftsLeft_one": "Resta 1 presente nesta semana",
@@ -383,7 +382,19 @@
     "allEventsSeen": "Todos os eventos vistos ✓",
     "reverse": "Inverter ordem",
     "eventSeen": "——— EVENTO VISTO ———",
-    "eventImpossible": "——— INDISPONÍVEL (casado com outra pessoa) ———"
+    "eventImpossible": "——— INDISPONÍVEL (casado com outra pessoa) ———",
+    "children": {
+      "title": "Filhos",
+      "age": {
+        "0": "recém-nascido",
+        "1": "bebê",
+        "2": "engatinhando",
+        "3": "criança"
+      },
+      "days": "{{count}} dias de vida",
+      "talk": "Converse hoje (+amizade)",
+      "talked": "Já conversou hoje"
+    }
   },
   "today": {
     "luck": {
@@ -428,11 +439,12 @@
     "title": "Fazenda",
     "view": {
       "overview": "Plantações",
-      "recommendations": "O que plantar",
+      "recommendations": "Recomendações",
       "planner": "Planos e compras",
       "production": "Produzindo",
       "animals": "Animais",
-      "ponds": "Lagos de peixe"
+      "ponds": "Lagos de peixe",
+      "slimes": "Casa de slimes"
     },
     "area": {
       "Farm": "Fazenda",
@@ -873,7 +885,15 @@
       "Island_W_BuriedTreasureNut": "Siga o mapa do tesouro do oeste e cave no X.",
       "Island_W_BuriedTreasureNut2": "Segundo mapa do tesouro do oeste.",
       "VolcanoNormalChest": "Abra baús normais no vulcão."
-    }
+    },
+    "onMap": "Ver no mapa da ilha",
+    "leftTotal": "Faltam {{count}} nozes",
+    "leftSpots": "{{count}} em arbustos/enterradas",
+    "leftDrops": "{{count}} de fontes repetíveis",
+    "leftPuzzles": "{{count}} de quebra-cabeças e tarefas",
+    "puzzlesTitle": "Quebra-cabeças e tarefas que faltam ({{count}})",
+    "allPuzzles": "Todos os quebra-cabeças feitos!",
+    "doneTitle": "Já feito"
   },
   "animals": {
     "fillBowl": "Encha a tigela do pet hoje",
@@ -987,7 +1007,32 @@
     "uncertain": "Uma rolagem escondida aconteceu antes destes itens; os marcados com ? podem ser diferentes no jogo.",
     "uncertainItem": "Pode ser diferente no jogo (veja o aviso acima).",
     "nothing": "Nada encontrado.",
-    "closed": "Fechadas ou ausentes hoje: {{names}}"
+    "closed": "Fechadas ou ausentes hoje: {{names}}",
+    "group": {
+      "seeds": "Sementes",
+      "saplings": "Mudas de árvore",
+      "produce": "Colheitas e coleta",
+      "food": "Comida",
+      "animal": "Produtos animais",
+      "artisan": "Produtos artesanais",
+      "fish": "Peixes",
+      "farming": "Fertilizantes e cultivo",
+      "fishing": "Iscas e equipamentos de pesca",
+      "materials": "Materiais e minerais",
+      "crafting": "Máquinas e artesanato",
+      "tools": "Ferramentas",
+      "weapons": "Armas",
+      "boots": "Botas",
+      "rings": "Anéis e amuletos",
+      "hats": "Chapéus",
+      "clothing": "Roupas",
+      "furniture": "Móveis",
+      "decor": "Papel de parede, piso e decoração",
+      "books": "Livros",
+      "recipes": "Receitas",
+      "other": "Outros",
+      "ingredients": "Ingredientes"
+    }
   },
   "community": {
     "tab": {
@@ -995,6 +1040,26 @@
       "joja": "Joja",
       "museum": "Museu",
       "island": "Pesquisa da Ilha"
+    }
+  },
+  "slimes": {
+    "none": "Nenhuma casa de slimes na fazenda.",
+    "hutch": "Casa de slimes {{n}}",
+    "count": "{{count}}/{{max}} slimes",
+    "sprinkler": "Aspersor enche os bebedouros",
+    "water": "Encha os bebedouros: {{filled}}/{{needed}}",
+    "waterOk": "Bebedouros cheios ({{filled}}/{{total}})",
+    "balls": "{{count}} bolas de slime para quebrar",
+    "statue": "Estátua Maligna: sem bruxa",
+    "noStatue": "Sem Estátua Maligna (a bruxa pode aparecer)",
+    "hint": "Cada bebedouro cheio deixa 5 slimes fazerem uma bola de slime durante a noite.",
+    "machines": "Incubadoras e prensas",
+    "kind": {
+      "Green Slime": "Slime verde",
+      "Frost Jelly": "Geleia gelada",
+      "Sludge": "Lodo (vermelho/roxo)",
+      "Tiger Slime": "Slime tigre",
+      "Prismatic Slime": "Slime prismático"
     }
   }
 }

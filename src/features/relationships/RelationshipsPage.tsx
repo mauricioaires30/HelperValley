@@ -2,15 +2,56 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { gameData } from '@/data/gameData';
 import { useGameName } from '@/i18n';
-import type { Player, SaveData } from '@/save/model';
+import type { ChildState, Player, SaveData } from '@/save/model';
 import { RequireSave } from '@/features/saves/RequireSave';
-import { Hearts, ItemIcon, Popover, Portrait } from '@/ui';
+import { Hearts, ItemIcon, Popover, Portrait, Sprite } from '@/ui';
 import { ownedObjectIds, TASTES, tasteGroups } from './gifts';
 import { describeEvent } from './eventConditions';
 import { buildRelationships, POINTS_PER_HEART, type Relationship } from './relationships';
 import './relationships.css';
 
 type Sort = 'hearts' | 'birthday' | 'name';
+
+/** Child sprite: babies use Baby(_dark), toddlers Toddler(_girl)(_dark) — first frame. */
+function ChildSprite({ child }: { child: ChildState }) {
+  const sheet = child.age >= 3 ? `Characters/Toddler${child.male ? '' : '_girl'}${child.dark ? '_dark' : ''}` : `Characters/Baby${child.dark ? '_dark' : ''}`;
+  return child.age >= 3 ? <Sprite sheet={sheet} x={0} y={0} w={16} h={32} scale={2} /> : <Sprite sheet={sheet} x={0} y={0} w={22} h={16} scale={2} />;
+}
+
+/** Your children: age, hearts and whether you've talked today. */
+function Children({ save, player }: { save: SaveData; player: Player }) {
+  const { t } = useTranslation();
+  const children = save.children.filter((c) => !c.parent || c.parent === player.id || save.players.length === 1);
+  if (children.length === 0) return null;
+  return (
+    <section className="rel-children">
+      <h2>{t('rel.children.title')}</h2>
+      <div className="rel-grid">
+        {children.map((c) => {
+          const f = player.friendships[c.name];
+          return (
+            <article key={c.name} className="rel box">
+              <span className="rel-child__pic">
+                <ChildSprite child={c} />
+              </span>
+              <div className="rel__body">
+                <header className="rel__header">
+                  <h3>{c.name}</h3>
+                  <span className="rel__status">{t(`rel.children.age.${Math.min(3, c.age)}`)}</span>
+                </header>
+                <Hearts value={Math.floor((f?.points ?? 0) / POINTS_PER_HEART)} max={10} />
+                <ul className="rel__facts">
+                  <li>{t('rel.children.days', { count: c.daysOld })}</li>
+                  <li className={f?.talkedToday ? 'rel__muted' : undefined}>{f?.talkedToday ? t('rel.children.talked') : t('rel.children.talk')}</li>
+                </ul>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
 
 function RelationshipCard({ rel, owned }: { rel: Relationship; owned: string[] }) {
   const { t } = useTranslation();
@@ -27,7 +68,7 @@ function RelationshipCard({ rel, owned }: { rel: Relationship; owned: string[] }
           <h3>{name(npcs[rel.npc].n)}</h3>
           {rel.status !== 'Friendly' && <span className="rel__status">{t(`rel.status.${rel.status}`, { defaultValue: rel.status })}</span>}
         </header>
-        <Hearts value={rel.hearts} max={rel.shownHearts} reachable={rel.maxHearts} possible={rel.marriedElsewhere ? 10 : rel.shownHearts} />
+        <Hearts value={rel.hearts} max={rel.shownHearts} reachable={rel.maxHearts} possible={rel.shownHearts} />
         <ul className="rel__facts">
           {toNext > 0 && <li>{t('rel.toNext', { points: toNext })}</li>}
           {rel.hearts >= rel.maxHearts && rel.maxHearts === 8 && <li>{t('rel.bouquet')}</li>}
@@ -136,7 +177,7 @@ function Relationships({ save, player }: { save: SaveData; player: Player }) {
           </button>
         </label>
       </header>
-      <p className="cc-summary__hint">{t('rel.hint')}</p>
+      <Children save={save} player={player} />
       <div className="rel-grid">
         {sorted.map((rel) => (
           <RelationshipCard key={rel.npc} rel={rel} owned={owned} />

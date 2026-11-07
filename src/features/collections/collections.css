@@ -71,3 +71,49 @@ button.game-grid__cell[aria-label] {
 .game-grid__cell--known .sprite {
   opacity: 0.4;
 }
+
+.walnuts__section {
+  margin-top: 14px;
+}
+
+.walnut-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 8px;
+}
+
+.walnut-card {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  font-size: var(--fs-sm);
+}
+
+.walnut-card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.walnut-spots {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-xs);
+}
+
+.walnut-spots li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.walnuts__done {
+  margin-top: 14px;
+}
+
+.walnuts__done summary {
+  cursor: pointer;
+}
