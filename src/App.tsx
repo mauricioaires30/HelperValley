@@ -10,7 +10,6 @@ import { QuestsPage } from '@/features/quests/QuestsPage';
 import { FarmPage } from '@/features/farm/FarmPage';
 import { RelationshipsPage } from '@/features/relationships/RelationshipsPage';
 import { CalendarPage } from '@/features/calendar/CalendarPage';
-import { AchievementsPage } from '@/features/achievements/AchievementsPage';
 import { CollectionsPage } from '@/features/collections/CollectionsPage';
 import '@/i18n';
 import '@/ui';
@@ -48,7 +47,7 @@ export function App() {
           <Route path="collections/:tab?" element={<CollectionsPage />} />
           <Route path="cc" element={<Navigate to="/collections/cc" replace />} />
           <Route path="museum" element={<Navigate to="/collections/museum" replace />} />
-          <Route path="achievements" element={<AchievementsPage />} />
+          <Route path="achievements" element={<Navigate to="/collections/achievements" replace />} />
           <Route path="kit" element={<KitPage />} />
         </Route>
       </Routes>

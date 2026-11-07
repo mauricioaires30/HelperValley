@@ -35,7 +35,7 @@ function ItemGrid({ items }: { items: Array<{ id: string; label?: string; faded?
 const SEASON_KEYS = ['spring', 'summer', 'fall', 'winter'];
 
 /** Name of the dish/item plus how its recipe is learned, for a slot tooltip. */
-function RecipeTip({ id, sources, known }: { id: string; sources: Array<Array<string | number | null>>; known: boolean }) {
+export function RecipeTip({ id, sources, known }: { id: string; sources: Array<Array<string | number | null>>; known: boolean }) {
   const { t } = useTranslation();
   const name = useGameName();
   const npcs = gameData().npcs;

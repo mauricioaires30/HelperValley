@@ -136,10 +136,3 @@
   font-size: var(--fs-sm);
 }
 
-.collections__tabs {
-  margin-bottom: 12px;
-}
-
-.collections__tabs a {
-  text-decoration: none;
-}

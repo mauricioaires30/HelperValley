@@ -662,7 +662,14 @@
       "museum": "Museum",
       "island": "Island Field Office",
       "fish": "Fish",
-      "walnuts": "Golden Walnuts"
+      "walnuts": "Golden Walnuts",
+      "shipped": "Items Shipped",
+      "artifacts": "Artifacts",
+      "minerals": "Minerals",
+      "cooking": "Cooking",
+      "achievements": "Achievements",
+      "letters": "Letters",
+      "notes": "Secret Notes"
     },
     "office": {
       "locked": "The Field Office on Ginger Island hasn't been opened yet.",
@@ -687,7 +694,24 @@
       "O826": "Dig artifact spots in island west.",
       "O827": "Break crates and barrels inside the Volcano.",
       "O828": "Shake/cut the jungle bushes in island east."
-    }
+    },
+    "notYet": "Not yet",
+    "count": {
+      "shipped": "Shipped {{count}}×",
+      "fish": "Caught {{count}}×",
+      "artifacts": "Found {{count}}×",
+      "minerals": "Found {{count}}×",
+      "cooking": "Cooked {{count}}×"
+    },
+    "how": {
+      "crop": "Grow in: {{seasons}}",
+      "tree": "Fruit tree ({{seasons}})",
+      "machine": "Made in: {{machines}}",
+      "forage": "Forage in: {{seasons}}"
+    },
+    "fishClick": "Click a fish to mark it on the map.",
+    "lettersHint": "{{count}} letters received.",
+    "notesHint": "Notes turn up when digging, cutting weeds and fishing after the first one."
   },
   "quests": {
     "title": "{{name}}'s quests",

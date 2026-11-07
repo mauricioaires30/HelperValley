@@ -158,6 +158,14 @@ export interface GameData {
   schedules: Record<string, ScheduleData>;
   fish: Record<string, FishData>;
   walnuts: WalnutSpot[];
+  gameCollections: {
+    shipped: string[];
+    /** Mail key → [en, pt] title. */
+    letters: Record<string, LocalizedName>;
+    secretNotes: number[];
+    /** Item → machines that make it. */
+    madeBy: Record<string, string[]>;
+  };
 }
 
 export interface FishData {
@@ -177,7 +185,7 @@ export interface WalnutSpot {
   tile: [number, number];
 }
 
-const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents', 'farm', 'worldMap', 'schedules', 'fish', 'walnuts'] as const;
+const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents', 'farm', 'worldMap', 'schedules', 'fish', 'walnuts', 'gameCollections'] as const;
 
 export const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 export const spriteUrl = (sheet: string) => assetUrl(`sprites/${sheet}.png`);
