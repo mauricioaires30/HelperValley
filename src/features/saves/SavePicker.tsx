@@ -89,11 +89,11 @@ export function ConnectPanel() {
   );
 }
 
-function SaveCard({ summary, selected, onSelect }: { summary: SaveSummary; selected: boolean; onSelect: () => void }) {
+function SaveCard({ summary, selected, disabled, onSelect }: { summary: SaveSummary; selected: boolean; disabled?: boolean; onSelect: () => void }) {
   const { t } = useTranslation();
   const hours = Math.floor(summary.millisecondsPlayed / 3_600_000);
   return (
-    <button className={selected ? 'save-card box save-card--selected' : 'save-card box'} onClick={onSelect} aria-pressed={selected}>
+    <button className={selected ? 'save-card box save-card--selected' : 'save-card box'} onClick={onSelect} aria-pressed={selected} disabled={disabled}>
       <span className="save-card__title">{summary.farmName}</span>
       <span className="save-card__player">{summary.playerName}</span>
       <span className="save-card__date">
@@ -117,15 +117,21 @@ export function SaveList() {
   const status = useSaveStore((s) => s.status);
   const selectSave = useSaveStore((s) => s.selectSave);
   const connectDirectory = useSaveStore((s) => s.connectDirectory);
+  const pendingHandle = useSaveStore((s) => s.pendingHandle);
+  const reconnect = useSaveStore((s) => s.reconnect);
+  const cachedFolders = useSaveStore((s) => s.cachedFolders);
+  const mode = source?.live ? 'live' : source ? 'snapshot' : 'cached';
 
   return (
     <section>
       <div className="saves__header">
         <h2>{t('saves.list')}</h2>
-        <span className={source?.live ? 'saves__mode saves__mode--live' : 'saves__mode'}>
-          {source?.live ? t('saves.live') : t('saves.snapshot')}
-        </span>
-        {supportsDirectoryAccess() ? (
+        <span className={mode === 'live' ? 'saves__mode saves__mode--live' : 'saves__mode'}>{t(mode === 'cached' ? 'saves.cachedMode' : `saves.${mode}`)}</span>
+        {pendingHandle && !source ? (
+          <button className="button button--primary" onClick={() => void reconnect()}>
+            {t('saves.cachedLive')}
+          </button>
+        ) : supportsDirectoryAccess() ? (
           <button className="button" onClick={() => void connectDirectory()}>
             {t('saves.change')}
           </button>
@@ -136,7 +142,14 @@ export function SaveList() {
       {summaries.length === 0 && status !== 'listing' && <p>{t('saves.none')}</p>}
       <div className="saves__grid">
         {summaries.map((s) => (
-          <SaveCard key={s.folder} summary={s} selected={s.folder === folder} onSelect={() => void selectSave(s.folder)} />
+          <SaveCard
+            key={s.folder}
+            summary={s}
+            selected={s.folder === folder}
+            // Without folder access, only saves already cached in the browser can open.
+            disabled={!source && !pendingHandle && !cachedFolders[s.folder]}
+            onSelect={() => void selectSave(s.folder)}
+          />
         ))}
       </div>
     </section>

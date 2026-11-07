@@ -65,7 +65,8 @@
     "updated": "O jogo salvou! Mostrando o novo dia",
     "cached": "Mostrando a cópia salva no navegador (lida {{time}}). Clique em qualquer lugar para ficar ao vivo.",
     "cachedLive": "Reconectar para atualizar ao vivo",
-    "cachedOpen": "Abrir a pasta para atualizar"
+    "cachedOpen": "Abrir a pasta para atualizar",
+    "cachedMode": "Salvo neste navegador: reconecte para atualizar ao vivo"
   },
   "locations": {
     "Farm": "Fazenda",
