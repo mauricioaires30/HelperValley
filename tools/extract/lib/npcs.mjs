@@ -16,9 +16,11 @@ export function buildNpcs(textures) {
     const row = tastes[key]?.split('/');
     const gifts = row ? Object.fromEntries(TASTES.map((t, i) => [t, parseIds(row[i * 2 + 1])])) : null;
     const hasPortrait = readRaw(`Characters/Dialogue/${key}`) !== null || c.CanReceiveGifts;
+    // Some NPCs use a texture with another name (Leo → ParrotBoy, Mister Qi → MrQi).
+    const tex = (c.TextureName ?? key).replace(/\\/g, '/');
     if (hasPortrait) {
-      textures.add(`Portraits/${key}`);
-      textures.add(`Characters/${key}`);
+      textures.add(`Portraits/${tex}`);
+      textures.add(`Characters/${tex}`);
     }
     npcs[key] = {
       n: localize(c.DisplayName, key),
@@ -28,6 +30,8 @@ export function buildNpcs(textures) {
       social: c.SocialTab,
       perfection: c.PerfectionScore,
       region: c.HomeRegion,
+      tex,
+      size: [c.Size?.X ?? 16, c.Size?.Y ?? 32],
     };
   }
 
@@ -35,4 +39,26 @@ export function buildNpcs(textures) {
     TASTES.map((t) => [t, parseIds(tastes[`Universal_${t[0].toUpperCase()}${t.slice(1)}`])]),
   );
   return { npcs, universalGifts: universal };
+}
+
+/**
+ * Adds the first visible row of each NPC's first sprite frame (where the head starts),
+ * so the site can crop a head icon for small and tall sprites alike.
+ */
+export function addHeadOffsets(npcs, readPng) {
+  for (const npc of Object.values(npcs)) {
+    const png = readPng(`Characters/${npc.tex}`);
+    if (!png) continue;
+    const [w, h] = npc.size;
+    let top = 0;
+    search: for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        if (png.data[(y * png.width + x) * 4 + 3] > 0) {
+          top = y;
+          break search;
+        }
+      }
+    }
+    npc.head = top;
+  }
 }

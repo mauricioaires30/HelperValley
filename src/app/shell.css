@@ -15,10 +15,12 @@
   top: 0;
   height: 100vh;
   overflow-y: auto;
+  /* The active tab slides right; keep that inside the bar instead of scrolling sideways. */
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding: 14px 10px 14px 14px;
+  padding: 14px 18px 14px 12px;
   background: linear-gradient(var(--sky-top), var(--sky-bottom) 140px, transparent 141px);
   border-right: calc(2 * var(--px)) solid var(--wood-dark);
   box-shadow: inset calc(-2 * var(--px)) 0 0 rgb(0 0 0 / 0.15);
@@ -166,4 +168,18 @@
   .content {
     padding: 12px 8px;
   }
+}
+
+/* Menu icons share one 32px box so labels line up. */
+.nav-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+}
+
+/* The Junimo sprite is grayscale; the game tints it at runtime. */
+.nav-junimo img {
+  filter: sepia(1) saturate(5) hue-rotate(55deg) brightness(0.9);
 }

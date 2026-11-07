@@ -5,7 +5,7 @@ import { useGameName } from '@/i18n';
 import type { Player, SaveData } from '@/save/model';
 import { RequireSave } from '@/features/saves/RequireSave';
 import { Hearts, ItemIcon, Popover, Portrait } from '@/ui';
-import { bestOwnedGifts, ownedObjectIds, TASTES, tasteGroups } from './gifts';
+import { ownedObjectIds, TASTES, tasteGroups } from './gifts';
 import { describeEvent } from './eventConditions';
 import { buildRelationships, POINTS_PER_HEART, type Relationship } from './relationships';
 import './relationships.css';
@@ -16,7 +16,6 @@ function RelationshipCard({ rel, owned }: { rel: Relationship; owned: string[] }
   const { t } = useTranslation();
   const name = useGameName();
   const { npcs } = gameData();
-  const gifts = useMemo(() => bestOwnedGifts(rel.npc, owned), [rel.npc, owned]);
   const toNext = rel.hearts < rel.maxHearts ? POINTS_PER_HEART - (rel.points % POINTS_PER_HEART) : 0;
   const giftsLeft = Math.max(0, 2 - rel.giftsThisWeek);
 
@@ -47,16 +46,6 @@ function RelationshipCard({ rel, owned }: { rel: Relationship; owned: string[] }
             </li>
           )}
         </ul>
-        {gifts.ids.length > 0 && (
-          <div className="rel__gifts">
-            <span>{t(`rel.gifts.${gifts.taste}`)}</span>
-            <div className="slot-grid">
-              {gifts.ids.map((id) => (
-                <ItemIcon key={id} id={id} />
-              ))}
-            </div>
-          </div>
-        )}
         <div className="rel__tastes">
           <TasteButtons npc={rel.npc} owned={owned} />
           {/* Seen events are gone for good, so only the ones still ahead are listed. */}

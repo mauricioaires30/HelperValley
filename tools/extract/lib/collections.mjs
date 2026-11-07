@@ -1,6 +1,9 @@
 import { readRaw } from './raw.mjs';
 import { LANGUAGES } from './paths.mjs';
 import { localize } from './strings.mjs';
+import { readdirSync } from 'node:fs';
+import path from 'node:path';
+import { CACHE_DIR } from './paths.mjs';
 
 const perLanguage = (asset, key) => LANGUAGES.map(([, suffix]) => (readRaw(asset + suffix) ?? readRaw(asset))?.[key] ?? key);
 
@@ -63,6 +66,26 @@ function recipeSources() {
     }
   }
 
+  // Letters that attach a recipe: "%item craftingRecipe Stone_Chest %%".
+  const viaMail = {};
+  for (const [key, text] of Object.entries(readRaw('Data/mail'))) {
+    for (const m of text.matchAll(/%item (?:cookingRecipe|craftingRecipe) ([^%]+?) %%/g)) {
+      (viaMail[m[1].trim().replace(/_/g, ' ')] ??= []).push(['mail', key]);
+    }
+  }
+  // Cutscenes that teach a recipe: "addCraftingRecipe Furnace", with who/when from preconditions.
+  const viaEvent = {};
+  for (const file of readdirSync(path.join(CACHE_DIR, 'Data/Events')).filter((x) => !/\.[a-z]{2}-[A-Z]{2}\.json$/.test(x))) {
+    const location = file.replace(/\.json$/, '');
+    for (const [key, script] of Object.entries(readRaw(`Data/Events/${location}`) ?? {})) {
+      for (const m of script.matchAll(/add(?:Crafting|Cooking)Recipe ([^/"]+)/gi)) {
+        const friend = key.match(/(?:^|\/)f ([A-Za-z]+) (\d+)/);
+        const entry = friend ? ['event', location, friend[1], Math.round(Number(friend[2]) / 250)] : ['event', location];
+        (viaEvent[m[1].trim()] ??= []).push(entry);
+      }
+    }
+  }
+
   const build = (recipes, unlockField, isBig) => {
     const out = {};
     const outputIds = outputs(recipes, isBig);
@@ -73,6 +96,7 @@ function recipeSources() {
       if (code === 'f' || code === 's') list.push([code, ...args]);
       else if (code === 'l' && !tv[name]) list.push(['l', args[0]]);
       else if (code === 'default') list.push(['default']);
+      list.push(...(viaMail[name] ?? []), ...(viaEvent[name] ?? []));
       list.push(...(sold[outputIds[name]] ?? []));
       out[name] = list;
     }

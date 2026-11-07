@@ -57,6 +57,16 @@ function RecipeTip({ id, sources, known }: { id: string; sources: Array<Array<st
         });
       case 'default':
         return t('ach.recipe.default');
+      case 'mail':
+        return t(`ach.recipe.mail.${args[0]}`, { defaultValue: t('ach.recipe.mailGeneric') });
+      case 'event': {
+        const places = gameData().heartEvents.places;
+        const key = String(args[0]);
+        const place = places[key] ? name(places[key]) : t(`rel.place.${key}`, { defaultValue: key });
+        return args[1]
+          ? t('ach.recipe.eventWith', { name: name(npcs[String(args[1])]?.n) || args[1], hearts: args[2], place })
+          : t('ach.recipe.eventAt', { place });
+      }
       default:
         return null;
     }

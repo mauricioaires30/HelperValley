@@ -8,12 +8,13 @@
  * Step 2 (this script) builds the compact datasets the site loads and converts textures to PNG.
  */
 import { execFileSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { CACHE_DIR, DATA_OUT, DEFAULT_GAME_DIR, ROOT, SPRITES_OUT } from './lib/paths.mjs';
 import { buildItems } from './lib/items.mjs';
-import { buildNpcs } from './lib/npcs.mjs';
+import { addHeadOffsets, buildNpcs } from './lib/npcs.mjs';
+import { PNG } from 'pngjs';
 import { buildAchievementGoals, buildAchievements, buildBundles, buildMuseum } from './lib/collections.mjs';
 import { buildCalendar, buildHeartEvents } from './lib/calendar.mjs';
 import { buildFarm } from './lib/farm.mjs';
@@ -69,6 +70,13 @@ console.log(`Wrote ${Object.keys(datasets).length} datasets to public/data`);
 await rm(SPRITES_OUT, { recursive: true, force: true });
 const { written, missing, sizes } = await exportTextures(gameDir, textures);
 await writeFile(path.join(DATA_OUT, 'sheets.json'), JSON.stringify(sizes));
+
+// Head offsets need the exported PNGs, so npcs.json is written again with them.
+addHeadOffsets(datasets.npcs, (asset) => {
+  const file = path.join(SPRITES_OUT, asset + '.png');
+  return existsSync(file) ? PNG.sync.read(readFileSync(file)) : null;
+});
+await writeFile(path.join(DATA_OUT, 'npcs.json'), JSON.stringify(datasets.npcs));
 console.log(`Wrote ${written} sprite sheets to public/sprites`);
 if (missing.length) console.log(`  (not in this game version, skipped: ${missing.join(', ')})`);
 console.log(`Wrote ${exportUiCrops()} UI crops to public/sprites/ui`);

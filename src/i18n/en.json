@@ -64,10 +64,13 @@
     "error": "Couldn't read this save: {{message}}",
     "required": "Open your saves folder to see this page.",
     "updated": "The game saved! Showing the new day",
-    "cached": "Showing the copy saved in your browser (read {{time}}). Click anywhere to go live.",
+    "cached": "Showing the copy saved in your browser (read {{time}}).",
     "cachedLive": "Reconnect to update live",
-    "cachedOpen": "Open the folder to update",
-    "cachedMode": "Saved in this browser: reconnect to update live"
+    "cachedOpen": "Connect Saves folder",
+    "cachedMode": "Saved in this browser: reconnect to update live",
+    "cachedHintReconnect": "Click anywhere and choose \"Allow on every visit\" so it stays live from now on.",
+    "cachedHintPick": "Connect the Saves folder once; next visits ask once, choose \"Allow on every visit\" and it stays live.",
+    "cachedHintUnsupported": "This browser can't keep watching a folder. Use Chrome or Edge for live updates (in Brave, enable the File System Access API flag)."
   },
   "locations": {
     "Farm": "Farm",
@@ -176,6 +179,23 @@
         "1": "star tokens",
         "2": "Qi coins",
         "4": "Qi gems"
+      },
+      "eventWith": "Cutscene with {{name}} at {{hearts}} hearts ({{place}})",
+      "eventAt": "Cutscene at {{place}} (happens on its own one morning)",
+      "mailGeneric": "Arrives by mail after a story step",
+      "mail": {
+        "RarecrowSociety": "Letter after collecting all 8 Rarecrows",
+        "CarolineTea": "Caroline's 2-heart event in her sunroom",
+        "KrobusCrafting": "Letter from Krobus",
+        "robinResource": "Robin's special order (board outside Lewis's house)",
+        "ClintReward": "Clint's special order",
+        "willyBugWadCutscene": "Willy's event after his bait special order",
+        "WizardReward": "The Wizard's special order",
+        "WizardReward2": "The Wizard's Prismatic Jelly special order",
+        "DemetriusReward": "Demetrius's special order",
+        "linusTrashCleanup": "Linus's special order",
+        "carolineSO": "Caroline's special order",
+        "guntherBones": "Gunther's special order (fossils)"
       }
     }
   },

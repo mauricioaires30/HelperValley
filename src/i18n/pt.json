@@ -64,10 +64,13 @@
     "error": "Não foi possível ler este save: {{message}}",
     "required": "Abra a pasta de saves para ver esta página.",
     "updated": "O jogo salvou! Mostrando o novo dia",
-    "cached": "Mostrando a cópia salva no navegador (lida {{time}}). Clique em qualquer lugar para ficar ao vivo.",
+    "cached": "Mostrando a cópia salva no navegador (lida {{time}}).",
     "cachedLive": "Reconectar para atualizar ao vivo",
-    "cachedOpen": "Abrir a pasta para atualizar",
-    "cachedMode": "Salvo neste navegador: reconecte para atualizar ao vivo"
+    "cachedOpen": "Conectar pasta Saves",
+    "cachedMode": "Salvo neste navegador: reconecte para atualizar ao vivo",
+    "cachedHintReconnect": "Clique em qualquer lugar e escolha \"Permitir em todas as visitas\" para ficar ao vivo daqui pra frente.",
+    "cachedHintPick": "Conecte a pasta Saves uma vez; nas próximas visitas o navegador pergunta uma vez, escolha \"Permitir em todas as visitas\" e fica ao vivo.",
+    "cachedHintUnsupported": "Este navegador não consegue ficar de olho numa pasta. Use Chrome ou Edge para atualizar ao vivo (no Brave, ative a flag File System Access API)."
   },
   "locations": {
     "Farm": "Fazenda",
@@ -176,6 +179,23 @@
         "1": "estrelas",
         "2": "moedas do Qi",
         "4": "gemas do Qi"
+      },
+      "eventWith": "Cena com {{name}} com {{hearts}} corações ({{place}})",
+      "eventAt": "Cena em {{place}} (acontece sozinha numa manhã)",
+      "mailGeneric": "Chega por carta depois de uma etapa da história",
+      "mail": {
+        "RarecrowSociety": "Carta depois de juntar os 8 Espantalhos Raros",
+        "CarolineTea": "Evento de 2 corações da Caroline no solário dela",
+        "KrobusCrafting": "Carta do Krobus",
+        "robinResource": "Pedido especial da Robin (quadro em frente à casa do Lewis)",
+        "ClintReward": "Pedido especial do Clint",
+        "willyBugWadCutscene": "Evento do Willy depois do pedido especial da isca",
+        "WizardReward": "Pedido especial do Mago",
+        "WizardReward2": "Pedido especial do Mago da Geleia Prismática",
+        "DemetriusReward": "Pedido especial do Demetrius",
+        "linusTrashCleanup": "Pedido especial do Linus",
+        "carolineSO": "Pedido especial da Caroline",
+        "guntherBones": "Pedido especial do Gunther (fósseis)"
       }
     }
   },
