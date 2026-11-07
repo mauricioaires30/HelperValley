@@ -27,6 +27,17 @@ export function buildBundles() {
   };
 }
 
+/** "ingredients/unused/yield [count]/bigCraftable/..." → { name: "(O)194" | "(BC)12" }. */
+function recipeOutputs(recipes, isBigCraftable) {
+  return Object.fromEntries(
+    Object.entries(recipes).map(([name, raw]) => {
+      const fields = raw.split('/');
+      const id = fields[2].split(' ')[0];
+      return [name, id.startsWith('(') ? id : `${isBigCraftable(fields) ? '(BC)' : '(O)'}${id}`];
+    }),
+  );
+}
+
 /**
  * Inputs for achievement progress: recipe totals, the fish collection and the crops that
  * count for Polyculture/Monoculture.
@@ -43,6 +54,9 @@ export function buildAchievementGoals() {
       .map(([id]) => `(O)${id}`),
     polyculture: crops.filter((c) => c.CountForPolyculture).map((c) => c.HarvestItemId),
     monoculture: crops.filter((c) => c.CountForMonoculture).map((c) => c.HarvestItemId),
+    // Recipe name → qualified output item, to show which dishes/items are still missing.
+    cookingOutputs: recipeOutputs(readRaw('Data/CookingRecipes'), () => false),
+    craftingOutputs: recipeOutputs(readRaw('Data/CraftingRecipes'), (fields) => fields[3] === 'true'),
   };
 }
 
