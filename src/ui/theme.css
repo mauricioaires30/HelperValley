@@ -2,12 +2,25 @@
 @import '@fontsource/pixelify-sans/600.css';
 
 /*
+ * Pixelify Sans digits are hard to tell apart (5 vs S, 3 vs 8), so numbers use VT323,
+ * another pixel font with very clear digits. unicode-range limits it to 0-9.
+ */
+@font-face {
+  font-family: 'HV Digits';
+  src: url('@fontsource/vt323/files/vt323-latin-400-normal.woff2') format('woff2');
+  unicode-range: U+0030-0039;
+  font-display: swap;
+  /* VT323 is drawn smaller than Pixelify Sans at the same size. */
+  size-adjust: 125%;
+}
+
+/*
  * Visual language follows the game's menus: everything is drawn from game sprites at an integer
  * scale (2x) with nearest-neighbour filtering. Colors are sampled from the game's UI.
  */
 :root {
   --px: 2px; /* one game pixel */
-  --font: 'Pixelify Sans', ui-monospace, monospace;
+  --font: 'HV Digits', 'Pixelify Sans', ui-monospace, monospace;
 
   --text: #561608; /* Game1.textColor */
   --text-soft: #8a4b1e;
