@@ -885,7 +885,15 @@
       "Island_W_BuriedTreasureNut": "Siga o mapa do tesouro do oeste e cave no X.",
       "Island_W_BuriedTreasureNut2": "Segundo mapa do tesouro do oeste.",
       "VolcanoNormalChest": "Abra baús normais no vulcão."
-    }
+    },
+    "onMap": "Ver no mapa da ilha",
+    "leftTotal": "Faltam {{count}} nozes",
+    "leftSpots": "{{count}} em arbustos/enterradas",
+    "leftDrops": "{{count}} de fontes repetíveis",
+    "leftPuzzles": "{{count}} de quebra-cabeças e tarefas",
+    "puzzlesTitle": "Quebra-cabeças e tarefas que faltam ({{count}})",
+    "allPuzzles": "Todos os quebra-cabeças feitos!",
+    "doneTitle": "Já feito"
   },
   "animals": {
     "fillBowl": "Encha a tigela do pet hoje",

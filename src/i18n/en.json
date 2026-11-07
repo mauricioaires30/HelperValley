@@ -885,7 +885,15 @@
       "Island_W_BuriedTreasureNut": "Follow the island west treasure map and dig at the X.",
       "Island_W_BuriedTreasureNut2": "Second island west treasure map.",
       "VolcanoNormalChest": "Open normal chests in the volcano."
-    }
+    },
+    "onMap": "See on the island map",
+    "leftTotal": "{{count}} walnuts left",
+    "leftSpots": "{{count}} in bushes/buried",
+    "leftDrops": "{{count}} from repeatable sources",
+    "leftPuzzles": "{{count}} from puzzles and tasks",
+    "puzzlesTitle": "Puzzles and tasks left ({{count}})",
+    "allPuzzles": "Every puzzle done!",
+    "doneTitle": "Done"
   },
   "animals": {
     "fillBowl": "Fill the pet's bowl today",
