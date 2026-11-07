@@ -4,27 +4,11 @@ import { gameData, type Festival, type Season } from '@/data/gameData';
 import { useGameName } from '@/i18n';
 import { useCurrentSave } from '@/store/saveStore';
 import { TodayHero, TodayLists } from '@/features/today/TodayPage';
-import { ItemIcon, NpcHead, SeasonIcon, Tooltip } from '@/ui';
+import { NpcHead, SeasonIcon, Tooltip } from '@/ui';
 import { SEASONS, seasonDays } from './calendar';
 import './calendar.css';
 
 const WEEKDAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const;
-
-/** Game items that stand for each festival on the calendar. */
-const FESTIVAL_ICONS: Record<string, string> = {
-  spring13: '(O)176',
-  spring24: '(O)591',
-  summer11: '(O)832',
-  summer28: '(O)SeaJelly',
-  fall16: '(O)268',
-  fall27: '(O)373',
-  winter8: '(O)161',
-  winter25: '(O)283',
-  NightMarket: '(O)797',
-  DesertFestival: '(O)CalicoEgg',
-  TroutDerby: '(O)TroutDerbyTag',
-  SquidFest: '(O)151',
-};
 
 export function useFestivalName() {
   const { t } = useTranslation();
@@ -32,9 +16,9 @@ export function useFestivalName() {
   return (f: Festival) => (f.n ? name(f.n) : t(`calendar.festival.${f.id}`));
 }
 
+/** The waving purple flag the game's calendar billboard uses to mark festivals. */
 export function FestivalIcon({ festival }: { festival: Festival }) {
-  const icon = FESTIVAL_ICONS[festival.id];
-  return icon ? <ItemIcon id={icon} scale={2} tooltip={false} /> : null;
+  return <span className={festival.passive ? 'festival-flag festival-flag--passive' : 'festival-flag'} aria-hidden />;
 }
 
 /** Order of a (year, season) pair, to compare and step through seasons. */

@@ -11,6 +11,7 @@ export const UI_TEXTURES = [
   'LooseSprites/Cursors_1_6',
   'Maps/MenuTiles',
   'LooseSprites/textBox',
+  'LooseSprites/Billboard',
 ];
 
 /** xnb.js logs every step; keep the extractor output readable. */

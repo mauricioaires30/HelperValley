@@ -59,21 +59,22 @@ function RelationshipCard({ rel, owned }: { rel: Relationship; owned: string[] }
         )}
         <div className="rel__tastes">
           <TasteButtons npc={rel.npc} owned={owned} />
-          {rel.events.length > 0 && (
-            <Popover className="taste" label={t('rel.events', { seen: rel.events.filter((e) => e.seen).length, total: rel.events.length })}>
+          {/* Seen events are gone for good, so only the ones still ahead are listed. */}
+          {rel.events.some((e) => !e.seen) ? (
+            <Popover className="taste" label={t('rel.eventsLeft', { count: rel.events.filter((e) => !e.seen).length })}>
               <strong>{t('rel.eventsTitle')}</strong>
               <ul className="rel__event-list">
-                {rel.events.map((e) => (
-                  <li key={e.id} className={e.seen ? 'rel__muted' : rel.hearts >= e.hearts ? 'rel__event--ready' : undefined}>
-                    <strong>
-                      {e.seen ? '✓ ' : ''}
-                      {t('rel.eventHearts', { count: e.hearts })}
-                    </strong>{' '}
-                    {describeEvent(e, t, name).join(' · ')}
-                  </li>
-                ))}
+                {rel.events
+                  .filter((e) => !e.seen)
+                  .map((e) => (
+                    <li key={e.id} className={rel.hearts >= e.hearts ? 'rel__event--ready' : undefined}>
+                      <strong>{t('rel.eventHearts', { count: e.hearts })}</strong> {describeEvent(e, t, name).join(' · ')}
+                    </li>
+                  ))}
               </ul>
             </Popover>
+          ) : (
+            rel.events.length > 0 && <span className="cc-summary__hint">{t('rel.allEventsSeen')}</span>
           )}
         </div>
       </div>
@@ -127,10 +128,13 @@ function Relationships({ save, player }: { save: SaveData; player: Player }) {
   const relationships = useMemo(() => buildRelationships(save, player), [save, player]);
   const owned = useMemo(() => ownedObjectIds(save), [save]);
 
+  const [reversed, setReversed] = useState(false);
   const sorted = [...relationships].sort((a, b) => {
-    if (sort === 'birthday') return (a.birthdayIn ?? 999) - (b.birthdayIn ?? 999);
-    if (sort === 'name') return name(gameData().npcs[a.npc].n).localeCompare(name(gameData().npcs[b.npc].n));
-    return b.points - a.points;
+    let cmp: number;
+    if (sort === 'birthday') cmp = (a.birthdayIn ?? 999) - (b.birthdayIn ?? 999);
+    else if (sort === 'name') cmp = name(gameData().npcs[a.npc].n).localeCompare(name(gameData().npcs[b.npc].n));
+    else cmp = b.points - a.points;
+    return reversed ? -cmp : cmp;
   });
 
   return (
@@ -144,6 +148,9 @@ function Relationships({ save, player }: { save: SaveData; player: Player }) {
             <option value="birthday">{t('rel.sortBirthday')}</option>
             <option value="name">{t('rel.sortName')}</option>
           </select>
+          <button className="button" aria-pressed={reversed} onClick={() => setReversed(!reversed)} title={t('rel.reverse')}>
+            {reversed ? '▲' : '▼'}
+          </button>
         </label>
       </header>
       <p className="cc-summary__hint">{t('rel.hint')}</p>

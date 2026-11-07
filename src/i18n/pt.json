@@ -272,8 +272,7 @@
       "category_trinket": "Bugigangas"
     },
     "how": "Como:",
-    "events": "Eventos {{seen}}/{{total}}",
-    "eventsTitle": "Eventos de coração (✓ = visto)",
+    "eventsTitle": "Eventos de coração que faltam ver",
     "eventHearts_one": "{{count}} coração:",
     "eventHearts_other": "{{count}} corações:",
     "place": {
@@ -309,7 +308,11 @@
       "mail": "depois de uma carta ou etapa da história",
       "priorEvents_one": "depois de ver 1 evento anterior",
       "priorEvents_other": "depois de ver {{count}} eventos anteriores"
-    }
+    },
+    "eventsLeft_one": "Falta 1 evento",
+    "eventsLeft_other": "Faltam {{count}} eventos",
+    "allEventsSeen": "Todos os eventos vistos ✓",
+    "reverse": "Inverter ordem"
   },
   "today": {
     "luck": {
