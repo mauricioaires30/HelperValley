@@ -47,6 +47,11 @@ export interface CropOption {
   isFlower: boolean;
   /** Honey value when this flower is next to bee houses. */
   honeyPrice: number | null;
+  /**
+   * Won't be ready in the days left: profit figures are for a full season instead
+   * (plant on day 1 next time).
+   */
+  late: boolean;
 }
 
 /** Growth days after speed bonuses (the game removes whole days from the phases). */
@@ -109,7 +114,10 @@ export function cropOptions(options: PlanOptions): CropOption[] {
     if (!seedSource && !options.includeUnbuyable) continue;
 
     const grow = growDays(crop, options);
-    const harvests = harvestsIn(crop, grow, options.days);
+    // Crops that can't finish in time are still listed, valued over a full season.
+    const late = harvestsIn(crop, grow, options.days) === 0;
+    const days = late ? DAYS_IN_SEASON : options.days;
+    const harvests = harvestsIn(crop, grow, days);
     if (harvests === 0) continue;
     const plantings = crop.regrow > 0 ? 1 : harvests;
     const yieldPerHarvest = expectedYield(crop, options.farmingLevel);
@@ -132,13 +140,14 @@ export function cropOptions(options: PlanOptions): CropOption[] {
       best,
       profitRaw,
       profitBest,
-      perDayRaw: profitRaw / options.days,
-      perDayBest: profitBest / options.days,
+      perDayRaw: profitRaw / days,
+      perDayBest: profitBest / days,
       isFlower,
       honeyPrice: isFlower ? HONEY_BASE + (getItem(crop.harvest)?.p ?? 0) * 2 : null,
+      late,
     });
   }
-  return out.sort((a, b) => b.perDayBest - a.perDayBest);
+  return out.sort((a, b) => Number(a.late) - Number(b.late) || b.perDayBest - a.perDayBest);
 }
 
 /** Days of growing time left: rest of the season outdoors, a full season indoors. */
