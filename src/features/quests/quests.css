@@ -58,3 +58,14 @@
 .quest__footer a {
   text-decoration: none;
 }
+
+.walnut-row {
+  display: grid !important;
+  gap: 0;
+}
+
+.walnut-total {
+  font-size: var(--fs-xs);
+  color: #9a6a00;
+  font-weight: 600;
+}

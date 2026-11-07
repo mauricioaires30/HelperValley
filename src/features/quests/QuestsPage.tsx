@@ -10,13 +10,13 @@ import { ItemIcon, NpcHead, Progress } from '@/ui';
 import './quests.css';
 
 /** Toggle to mark a quest (or fish) on the map. */
-export function PinButton({ kind, id }: { kind: 'quests' | 'fish'; id: string }) {
+export function PinButton({ kind, id, label }: { kind: 'quests' | 'fish'; id: string; label?: string }) {
   const { t } = useTranslation();
   const pinned = usePinStore((s) => s[kind].includes(id));
   const toggle = usePinStore((s) => s.toggle);
   return (
     <button className={pinned ? 'button button--primary' : 'button'} aria-pressed={pinned} onClick={() => toggle(kind, id)}>
-      {pinned ? t('quests.pinned') : t('quests.pin')}
+      {pinned ? t('quests.pinned') : label ?? t('quests.pin')}
     </button>
   );
 }
@@ -74,6 +74,7 @@ function QuestCard({ quest }: { quest: QuestState }) {
         {mappable && (
           <>
             <PinButton kind="quests" id={quest.id} />
+            {quest.type === 'FishingQuest' && quest.item && <PinButton kind="fish" id={quest.item} label={t('quests.pinFish')} />}
             <Link to="/map" className="button">
               {t('quests.openMap')}
             </Link>
