@@ -22,9 +22,14 @@ export function CachedBanner() {
   const connectDirectory = useSaveStore((s) => s.connectDirectory);
   if (!cachedAt || source) return null;
 
+  // Three cases: a remembered folder waiting for a click, no folder chosen yet, or a browser
+  // that can't keep folder access at all (Firefox, Safari, Brave by default).
+  const hint = pendingHandle ? 'cachedHintReconnect' : supportsDirectoryAccess() ? 'cachedHintPick' : 'cachedHintUnsupported';
   return (
     <div className="cached-banner box" role="status">
-      <span>{t('saves.cached', { time: relativeTime(cachedAt, i18n.language) })}</span>
+      <span>
+        {t('saves.cached', { time: relativeTime(cachedAt, i18n.language) })} {t(`saves.${hint}`)}
+      </span>
       {pendingHandle ? (
         <button className="button button--primary" onClick={() => void reconnect()}>
           {t('saves.cachedLive')}

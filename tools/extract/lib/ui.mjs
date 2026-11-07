@@ -28,6 +28,9 @@ export const UI_CROPS = {
   'text-box': ['LooseSprites/textBox', 0, 0, 192, 48],
   // Animated festival flag from the calendar billboard: 6 frames of 14x12.
   'festival-flag': ['LooseSprites/Billboard', 1, 398, 84, 12],
+  // Menu icons.
+  'nav-calendar': ['LooseSprites/Billboard', 1, 398, 14, 12],
+  junimo: ['Characters/Junimo', 0, 0, 16, 16],
 };
 
 export function exportUiCrops() {

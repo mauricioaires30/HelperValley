@@ -33,6 +33,12 @@ export interface NpcData {
   social: number;
   perfection: boolean;
   region: string;
+  /** Texture name under Characters/ and Portraits/ (usually the NPC key). */
+  tex: string;
+  /** Overworld sprite frame size. */
+  size: [number, number];
+  /** First visible row of the first frame (top of the head). */
+  head?: number;
 }
 
 export interface BundleStrings {

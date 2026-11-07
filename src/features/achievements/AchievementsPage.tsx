@@ -9,10 +9,17 @@ import { achievementProgress, type AchievementProgress } from './achievements';
 import { AchievementDetails, HAS_DETAILS } from './AchievementDetails';
 import './achievements.css';
 
-function AchievementCard({ progress, player }: { progress: AchievementProgress; player: Player }) {
+interface CardProps {
+  progress: AchievementProgress;
+  player: Player;
+  /** Only one card shows its details at a time; the page owns which. */
+  open: boolean;
+  onToggle: () => void;
+}
+
+function AchievementCard({ progress, player, open, onToggle }: CardProps) {
   const { t } = useTranslation();
   const name = useGameName();
-  const [open, setOpen] = useState(false);
   const canExpand = !progress.earned && HAS_DETAILS.has(progress.id);
   const data = gameData().achievements[progress.id];
   const pct = progress.goal ? Math.round(((progress.value ?? 0) / progress.goal) * 100) : 0;
@@ -32,7 +39,7 @@ function AchievementCard({ progress, player }: { progress: AchievementProgress; 
           </>
         )}
         {canExpand && (
-          <button className="button ach__toggle" aria-expanded={open} onClick={() => setOpen(!open)}>
+          <button className="button ach__toggle" aria-expanded={open} onClick={onToggle}>
             {open ? t('ach.hideDetails') : t('ach.showDetails')}
           </button>
         )}
@@ -49,6 +56,7 @@ function AchievementCard({ progress, player }: { progress: AchievementProgress; 
 function Achievements({ save, player }: { save: SaveData; player: Player }) {
   const { t } = useTranslation();
   const [hideEarned, setHideEarned] = useState(false);
+  const [openId, setOpenId] = useState<string | null>(null);
   const progress = useMemo(() => {
     const ids = Object.keys(gameData().achievements).sort((a, b) => Number(a) - Number(b));
     return achievementProgress(save, player, gameData().achievementGoals, ids);
@@ -75,7 +83,7 @@ function Achievements({ save, player }: { save: SaveData; player: Player }) {
       </div>
       <ul className="ach-list">
         {visible.map((p) => (
-          <AchievementCard key={p.id} progress={p} player={player} />
+          <AchievementCard key={p.id} progress={p} player={player} open={openId === p.id} onToggle={() => setOpenId(openId === p.id ? null : p.id)} />
         ))}
       </ul>
     </div>

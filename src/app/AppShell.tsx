@@ -1,21 +1,33 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGES } from '@/i18n';
-import { ItemIcon } from '@/ui';
+import { ItemIcon, UiIcon } from '@/ui';
 import { PlayerSwitcher } from '@/features/saves/PlayerSwitcher';
 import { SaveDateChip, SaveUpdatedToast } from '@/features/saves/LiveStatus';
 import { CachedBanner } from '@/features/saves/CachedBanner';
 import './shell.css';
 
-const NAV = [
-  { to: '/', key: 'home', icon: '(O)392' },
-  { to: '/calendar', key: 'calendar', icon: '(O)221' },
-  { to: '/relationships', key: 'relationships', icon: '(O)458' },
-  { to: '/farm', key: 'farm', icon: '(O)472' },
-  { to: '/cc', key: 'cc', icon: '(O)24' },
-  { to: '/museum', key: 'museum', icon: '(O)96' },
-  { to: '/achievements', key: 'achievements', icon: '(O)74' },
+/** Menu icon: a game item, or a UI crop from public/sprites/ui. */
+type NavIcon = { item: string } | { ui: string; w: number; h: number; scale: number; className?: string };
+
+const NAV: Array<{ to: string; key: string; icon: NavIcon }> = [
+  { to: '/', key: 'home', icon: { item: '(BC)130' } },
+  { to: '/calendar', key: 'calendar', icon: { ui: 'nav-calendar', w: 14, h: 12, scale: 2 } },
+  { to: '/relationships', key: 'relationships', icon: { ui: 'heart-full', w: 7, h: 6, scale: 4 } },
+  { to: '/farm', key: 'farm', icon: { item: '(T)Hoe' } },
+  { to: '/cc', key: 'cc', icon: { ui: 'junimo', w: 16, h: 16, scale: 2, className: 'nav-junimo' } },
+  { to: '/museum', key: 'museum', icon: { item: '(O)103' } },
+  { to: '/achievements', key: 'achievements', icon: { ui: 'star-gold', w: 8, h: 8, scale: 4 } },
 ];
+
+function NavIconView({ icon }: { icon: NavIcon }) {
+  if ('item' in icon) return <ItemIcon id={icon.item} scale={2} tooltip={false} />;
+  return (
+    <span className={`nav-icon ${icon.className ?? ''}`}>
+      <UiIcon name={icon.ui} w={icon.w} h={icon.h} scale={icon.scale} />
+    </span>
+  );
+}
 
 /** Fixed sidebar (brand, save, player, menu, language) and the page using the rest of the screen. */
 export function AppShell() {
@@ -38,7 +50,7 @@ export function AppShell() {
             {NAV.map((item) => (
               <li key={item.to}>
                 <NavLink to={item.to} end className="side-tab">
-                  <ItemIcon id={item.icon} scale={2} tooltip={false} />
+                  <NavIconView icon={item.icon} />
                   <span>{t(`nav.${item.key}`)}</span>
                 </NavLink>
               </li>
