@@ -33,6 +33,9 @@ export function buildCalendar() {
   return { festivals };
 }
 
+/** Event precondition codes the site knows how to explain. */
+const CONDITION_CODES = new Set(['t', 'w', 'z', 'd', 'y', 'e', 'k', 'p', 'f', 'O', 'o', 'D', 'L', 'M', 'j', 'n', 'Hn', 'i']);
+
 /**
  * Heart events: events whose preconditions require "f <NPC> <points>" friendship.
  * Used to show which cutscenes a player still hasn't seen.
@@ -47,7 +50,13 @@ export function buildHeartEvents() {
       const match = key.match(/(?:^|\/)f ([A-Za-z]+) (\d+)/);
       // Below one heart these are introductions, not heart events.
       if (!match || Number(match[2]) < 250) continue;
-      events.push({ id: key.split('/')[0], npc: match[1], hearts: Math.round(Number(match[2]) / 250), location });
+      // Other preconditions, as [code, ...args], so the site can explain how to trigger it.
+      const conditions = key
+        .split('/')
+        .slice(1)
+        .map((c) => c.trim().split(/\s+/))
+        .filter(([code, who]) => !(code === 'f' && who === match[1]) && CONDITION_CODES.has(code));
+      events.push({ id: key.split('/')[0], npc: match[1], hearts: Math.round(Number(match[2]) / 250), location, conditions });
     }
   }
   events.sort((a, b) => a.npc.localeCompare(b.npc) || a.hearts - b.hearts);
