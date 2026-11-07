@@ -26,6 +26,8 @@ export const UI_CROPS = {
   'season-winter': ['LooseSprites/Cursors', 406, 465, 12, 8],
   'wood-planks': ['Maps/MenuTiles', 128, 1024, 64, 64],
   'text-box': ['LooseSprites/textBox', 0, 0, 192, 48],
+  // Animated festival flag from the calendar billboard: 6 frames of 14x12.
+  'festival-flag': ['LooseSprites/Billboard', 1, 398, 84, 12],
 };
 
 export function exportUiCrops() {

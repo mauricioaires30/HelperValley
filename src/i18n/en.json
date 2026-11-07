@@ -272,8 +272,7 @@
       "category_trinket": "Trinkets"
     },
     "how": "How:",
-    "events": "Events {{seen}}/{{total}}",
-    "eventsTitle": "Heart events (✓ = seen)",
+    "eventsTitle": "Heart events still to see",
     "eventHearts_one": "{{count}} heart:",
     "eventHearts_other": "{{count}} hearts:",
     "place": {
@@ -309,7 +308,11 @@
       "mail": "after a special letter or story step",
       "priorEvents_one": "after seeing 1 earlier event",
       "priorEvents_other": "after seeing {{count}} earlier events"
-    }
+    },
+    "eventsLeft_one": "1 event left",
+    "eventsLeft_other": "{{count}} events left",
+    "allEventsSeen": "All heart events seen ✓",
+    "reverse": "Reverse order"
   },
   "today": {
     "luck": {

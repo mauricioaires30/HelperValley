@@ -117,3 +117,30 @@
     font-size: 12px;
   }
 }
+
+/* Festival flag from the billboard: 6 frames of 14x12, 100ms each like in the game. */
+.festival-flag {
+  display: inline-block;
+  flex: none;
+  width: calc(14 * var(--px));
+  height: calc(12 * var(--px));
+  background: url('/sprites/ui/festival-flag.png') 0 0 / calc(84 * var(--px)) calc(12 * var(--px));
+  image-rendering: pixelated;
+  animation: festival-flag 600ms steps(6) infinite;
+}
+
+.festival-flag--passive {
+  filter: hue-rotate(160deg) saturate(0.8);
+}
+
+@keyframes festival-flag {
+  to {
+    background-position-x: calc(-84 * var(--px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .festival-flag {
+    animation: none;
+  }
+}
