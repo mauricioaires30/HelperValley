@@ -1,0 +1,56 @@
+.collections__tabs {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.collections__tabs a {
+  text-decoration: none;
+}
+
+/* Like the game's collection pages: a tight grid of item icons. */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+  gap: 4px;
+}
+
+.game-grid__cell {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: rgb(255 255 255 / 0.25);
+  border: var(--px) solid rgb(91 43 21 / 0.25);
+  cursor: default;
+}
+
+button.game-grid__cell[aria-label] {
+  font: inherit;
+}
+
+/* Not collected yet: a dark silhouette, as in the game. */
+.game-grid__cell--missing .sprite {
+  filter: brightness(0) opacity(0.45);
+}
+
+.game-grid__cell--pinned {
+  border-color: #3b8fd9;
+  box-shadow: inset 0 0 0 var(--px) #3b8fd9;
+}
+
+.game-grid__tip {
+  max-width: 300px;
+  white-space: normal;
+}
+
+.letters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-sm);
+}

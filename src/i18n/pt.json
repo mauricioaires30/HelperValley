@@ -662,7 +662,14 @@
       "museum": "Museu",
       "island": "Escritório de Campo (ilha)",
       "fish": "Peixes",
-      "walnuts": "Nozes Douradas"
+      "walnuts": "Nozes Douradas",
+      "shipped": "Itens Enviados",
+      "artifacts": "Artefatos",
+      "minerals": "Minerais",
+      "cooking": "Culinária",
+      "achievements": "Conquistas",
+      "letters": "Cartas",
+      "notes": "Notas Secretas"
     },
     "office": {
       "locked": "O Escritório de Campo da Ilha Gengibre ainda não foi aberto.",
@@ -687,7 +694,24 @@
       "O826": "Escave pontos de artefato no oeste da ilha.",
       "O827": "Quebre caixas e barris dentro do Vulcão.",
       "O828": "Sacuda/corte a vegetação da selva no leste da ilha."
-    }
+    },
+    "notYet": "Ainda não",
+    "count": {
+      "shipped": "Enviado {{count}}×",
+      "fish": "Pescado {{count}}×",
+      "artifacts": "Achado {{count}}×",
+      "minerals": "Achado {{count}}×",
+      "cooking": "Cozinhado {{count}}×"
+    },
+    "how": {
+      "crop": "Plante em: {{seasons}}",
+      "tree": "Árvore frutífera ({{seasons}})",
+      "machine": "Feito em: {{machines}}",
+      "forage": "Coleta em: {{seasons}}"
+    },
+    "fishClick": "Clique num peixe para marcar no mapa.",
+    "lettersHint": "{{count}} cartas recebidas.",
+    "notesHint": "Notas aparecem ao cavar, cortar mato e pescar depois de ler o primeiro diário."
   },
   "quests": {
     "title": "Missões de {{name}}",
