@@ -20,6 +20,7 @@ import { buildCalendar, buildHeartEvents } from './lib/calendar.mjs';
 import { buildFarm } from './lib/farm.mjs';
 import { buildSchedules, buildWorldMap } from './lib/worldmap.mjs';
 import { buildFish } from './lib/fish.mjs';
+import { buildWalnutSpots } from './lib/walnuts.mjs';
 import { exportTextures, UI_TEXTURES } from './lib/textures.mjs';
 import { exportUiCrops } from './lib/ui.mjs';
 
@@ -59,6 +60,7 @@ const datasets = {
   worldMap: await buildWorldMap(gameDir, textures),
   schedules: buildSchedules(),
   fish: buildFish(),
+  walnuts: buildWalnutSpots(gameDir),
 };
 
 await rm(DATA_OUT, { recursive: true, force: true });
