@@ -40,7 +40,7 @@ export function buildItems(textures) {
   }
 
   for (const [id, t] of Object.entries(readRaw('Data/Tools'))) {
-    add(`(T)${id}`, localize(t.DisplayName, t.Name), normTexture(t.Texture, 'TileSheets/tools'), t.MenuSpriteIndex, 16, 16, { lvl: t.UpgradeLevel });
+    add(`(T)${id}`, localize(t.DisplayName, t.Name), normTexture(t.Texture, 'TileSheets/tools'), t.MenuSpriteIndex >= 0 ? t.MenuSpriteIndex : t.SpriteIndex, 16, 16, { lvl: t.UpgradeLevel });
   }
 
   for (const [id, t] of Object.entries(readRaw('Data/Trinkets'))) {
