@@ -5,6 +5,7 @@ import { useSaveStore } from '@/store/saveStore';
 import { AppShell } from '@/app/AppShell';
 import { HomePage } from '@/features/home/HomePage';
 import { KitPage } from '@/features/kit/KitPage';
+import { MapPage } from '@/features/map/MapPage';
 import { FarmPage } from '@/features/farm/FarmPage';
 import { RelationshipsPage } from '@/features/relationships/RelationshipsPage';
 import { CalendarPage } from '@/features/calendar/CalendarPage';
@@ -40,6 +41,7 @@ export function App() {
           <Route path="today" element={<Navigate to="/calendar" replace />} />
           <Route path="calendar" element={<CalendarPage />} />
           <Route path="relationships" element={<RelationshipsPage />} />
+          <Route path="map" element={<MapPage />} />
           <Route path="farm" element={<FarmPage />} />
           <Route path="cc" element={<CommunityCenterPage />} />
           <Route path="museum" element={<MuseumPage />} />

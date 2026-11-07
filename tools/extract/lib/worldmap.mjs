@@ -1,0 +1,130 @@
+import { unpackToContent } from 'xnb';
+import { readFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import path from 'node:path';
+import { readRaw } from './raw.mjs';
+import { localize } from './strings.mjs';
+
+/**
+ * Reads a map's size in tiles from its tBIN data (first layer's width/height).
+ * Layout: "tBIN10", id, description, properties, tile sheets, then layers.
+ */
+function tbinSize(buf) {
+  let o = 6;
+  const int = () => {
+    const v = buf.readInt32LE(o);
+    o += 4;
+    return v;
+  };
+  const str = () => {
+    const len = int();
+    o += len;
+  };
+  const props = () => {
+    const count = int();
+    for (let i = 0; i < count; i++) {
+      str();
+      const type = buf.readUInt8(o++);
+      if (type === 0) o += 1; // bool
+      else if (type === 1 || type === 2) o += 4; // int / float
+      else str(); // string
+    }
+  };
+  str(); // id
+  str(); // description
+  props();
+  const sheets = int();
+  for (let i = 0; i < sheets; i++) {
+    str(); // id
+    str(); // description
+    str(); // image source
+    o += 8 * 4; // sheet size, tile size, margin, spacing
+    props();
+  }
+  int(); // layer count
+  str(); // layer id
+  o += 1; // visible
+  str(); // description
+  return [int(), int()];
+}
+
+async function mapSize(gameDir, location) {
+  // Map asset names can differ from location names (IslandWest → Maps/Island_W).
+  const mapPath = readRaw('Data/Locations')[location]?.CreateOnLoad?.MapPath?.split(/[\\/]/).pop() ?? location;
+  const file = path.join(gameDir, 'Content', 'Maps', `${mapPath}.xnb`);
+  if (!existsSync(file)) return null;
+  const { log, info } = console;
+  console.log = console.info = () => {};
+  try {
+    const result = await unpackToContent(await readFile(file));
+    const buf = Buffer.from(result.content instanceof Blob ? await result.content.arrayBuffer() : result.content);
+    return tbinSize(buf);
+  } catch {
+    return null;
+  } finally {
+    Object.assign(console, { log, info });
+  }
+}
+
+const rect = (r) => (r && !r.IsEmpty ? [r.X, r.Y, r.Width, r.Height] : null);
+
+/**
+ * The in-game world maps (Valley and Ginger Island) and how each location's tiles land on
+ * them, from Data/WorldMap. Outdoor locations without a tile area are scaled by map size.
+ */
+export async function buildWorldMap(gameDir, textures) {
+  const data = readRaw('Data/WorldMap');
+  const regions = {};
+  for (const [regionId, region] of Object.entries(data)) {
+    const base = region.BaseTexture?.[0];
+    const texture = base.Texture.replace(/\\/g, '/');
+    textures.add(texture);
+    const positions = [];
+    for (const area of region.MapAreas ?? []) {
+      for (const p of area.WorldPositions ?? []) {
+        const names = p.LocationNames?.length ? p.LocationNames : [p.LocationName];
+        for (const location of names.filter(Boolean)) {
+          positions.push({
+            location,
+            tiles: rect(p.TileArea),
+            // Without its own pixel area, a position covers the whole map area.
+            pixels: rect(p.MapPixelArea) ?? rect(area.PixelArea),
+            n: p.ScrollText ? localize(p.ScrollText, location) : null,
+          });
+        }
+      }
+    }
+    regions[regionId] = { texture, source: rect(base.SourceRect), positions };
+  }
+
+  // Locations mapped as a whole need their size to place tiles inside the pixel area.
+  const sizes = {};
+  for (const region of Object.values(regions)) {
+    for (const p of region.positions) {
+      if (!p.tiles && !(p.location in sizes)) sizes[p.location] = await mapSize(gameDir, p.location);
+    }
+  }
+  return { regions, sizes };
+}
+
+/** NPC schedules and home positions, stripped of dialogue text. */
+export function buildSchedules() {
+  const characters = readRaw('Data/Characters');
+  const out = {};
+  for (const [npc, c] of Object.entries(characters)) {
+    const raw = readRaw(`Characters/schedules/${npc}`);
+    if (!raw) continue;
+    const schedules = {};
+    for (const [key, value] of Object.entries(raw)) {
+      // Drop quoted dialogue keys; keep "time location x y facing [animation]".
+      schedules[key] = value.replace(/\s*"[^"]*"/g, '');
+    }
+    const home = c.Home?.[0];
+    out[npc] = {
+      home: home ? [home.Location, home.Tile?.X ?? 0, home.Tile?.Y ?? 0] : null,
+      island: c.CanVisitIsland ?? null,
+      schedules,
+    };
+  }
+  return out;
+}

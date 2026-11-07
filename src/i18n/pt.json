@@ -14,7 +14,8 @@
     "calendar": "Calendário",
     "relationships": "Relacionamentos",
     "today": "Hoje",
-    "farm": "Fazenda"
+    "farm": "Fazenda",
+    "map": "Mapa"
   },
   "common": {
     "language": "Idioma",
@@ -527,5 +528,38 @@
     "hayStock": "Comem {{perDay}} de feno por dia: o estoque dura {{days}} dias (até {{date}})",
     "hayCycle": "Com os silos cheios dura {{days}} dias: compre de novo por volta de {{date}}",
     "hayNote": "Considerando que comem feno todo dia (inverno, chuva ou sem grama lá fora)."
+  },
+  "map": {
+    "title": "Mapa dos moradores",
+    "region": {
+      "Valley": "Vale e deserto",
+      "GingerIsland": "Ilha Gengibre"
+    },
+    "time": "Horário",
+    "day": "Dia",
+    "raining": "Chovendo",
+    "resort": "Resort da ilha aberto",
+    "fromSave": "Corações e casamento vêm do seu save (cônjuge: {{spouse}}).",
+    "single": "ninguém",
+    "noSave": "Carregue um save para usar seus corações e casamento.",
+    "since": "lá desde {{time}}",
+    "listTitle": "Todo mundo às {{time}}",
+    "resortTitle": "Quem pode estar no resort",
+    "resortHint": "O jogo sorteia alguns destes a cada dia em que o resort está aberto; confira a praia da ilha.",
+    "location": {
+      "Farm": "Sua fazenda",
+      "FarmHouse": "Sua casa",
+      "IslandWest": "Fazenda da ilha",
+      "IslandSouth": "Praia da ilha",
+      "IslandNorth": "Norte da ilha",
+      "IslandEast": "Selva da ilha",
+      "Beach": "Praia Pelicanos",
+      "Forest": "Floresta Cinzaseiva",
+      "Town": "Vila Pelicanos",
+      "Mountain": "Montanhas",
+      "Railroad": "Ferrovia",
+      "BusStop": "Ponto de ônibus",
+      "Desert": "Deserto de Calico"
+    }
   }
 }

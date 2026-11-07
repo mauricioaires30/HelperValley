@@ -1,3 +1,5 @@
+import type { WorldMapData } from '@/features/map/worldMap';
+import type { ScheduleData } from '@/features/map/schedule';
 /** Localized name as [en, pt], matching the extractor output. */
 export type LocalizedName = [string, string];
 
@@ -150,9 +152,11 @@ export interface GameData {
   calendar: { festivals: Festival[] };
   heartEvents: { events: HeartEvent[]; places: Record<string, LocalizedName> };
   farm: FarmData;
+  worldMap: WorldMapData;
+  schedules: Record<string, ScheduleData>;
 }
 
-const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents', 'farm'] as const;
+const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents', 'farm', 'worldMap', 'schedules'] as const;
 
 export const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 export const spriteUrl = (sheet: string) => assetUrl(`sprites/${sheet}.png`);
