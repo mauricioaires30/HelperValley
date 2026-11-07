@@ -27,7 +27,7 @@ function RelationshipCard({ rel, owned }: { rel: Relationship; owned: string[] }
           <h3>{name(npcs[rel.npc].n)}</h3>
           {rel.status !== 'Friendly' && <span className="rel__status">{t(`rel.status.${rel.status}`, { defaultValue: rel.status })}</span>}
         </header>
-        <Hearts value={rel.hearts} max={Math.max(10, rel.maxHearts)} />
+        <Hearts value={rel.hearts} max={rel.shownHearts} reachable={rel.marriedElsewhere ? 10 : rel.maxHearts} />
         <ul className="rel__facts">
           {toNext > 0 && <li>{t('rel.toNext', { points: toNext })}</li>}
           {rel.hearts >= rel.maxHearts && rel.maxHearts === 8 && <li>{t('rel.bouquet')}</li>}
@@ -48,22 +48,24 @@ function RelationshipCard({ rel, owned }: { rel: Relationship; owned: string[] }
         </ul>
         <div className="rel__tastes">
           <TasteButtons npc={rel.npc} owned={owned} />
-          {/* Seen events are gone for good, so only the ones still ahead are listed. */}
-          {rel.events.some((e) => !e.seen) ? (
-            <Popover className="taste" label={t('rel.eventsLeft', { count: rel.events.filter((e) => !e.seen).length })}>
+          {rel.events.length > 0 && (
+            <Popover className="taste" label={t('rel.eventsLeft', { count: rel.events.filter((e) => !e.seen && !e.impossible).length })}>
               <strong>{t('rel.eventsTitle')}</strong>
               <ul className="rel__event-list">
-                {rel.events
-                  .filter((e) => !e.seen)
-                  .map((e) => (
+                {rel.events.map((e) =>
+                  // Seen or impossible events stay as a placeholder line, like a crossed-out entry.
+                  e.seen || e.impossible ? (
+                    <li key={e.id} className="rel__muted rel__event-done">
+                      {t('rel.eventHearts', { count: e.hearts })} {e.seen ? t('rel.eventSeen') : t('rel.eventImpossible')}
+                    </li>
+                  ) : (
                     <li key={e.id} className={rel.hearts >= e.hearts ? 'rel__event--ready' : undefined}>
                       <strong>{t('rel.eventHearts', { count: e.hearts })}</strong> {describeEvent(e, t, name).join(' · ')}
                     </li>
-                  ))}
+                  ),
+                )}
               </ul>
             </Popover>
-          ) : (
-            rel.events.length > 0 && <span className="cc-summary__hint">{t('rel.allEventsSeen')}</span>
           )}
         </div>
       </div>

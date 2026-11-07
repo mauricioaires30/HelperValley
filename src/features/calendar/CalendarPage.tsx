@@ -56,6 +56,11 @@ export function CalendarPage() {
       <header className="calendar__header">
         <h2>{t('calendar.title')}</h2>
         <div className="calendar__nav">
+          {today && shown !== current && (
+            <button className="button" onClick={() => setView({ year: today.year, season: today.season })}>
+              {t('calendar.backToToday')}
+            </button>
+          )}
           <button className="button" onClick={() => step(-1)} disabled={shown === 0} aria-label={t('calendar.previous')}>
             ◀
           </button>
@@ -66,11 +71,6 @@ export function CalendarPage() {
           <button className="button" onClick={() => step(1)} aria-label={t('calendar.next')}>
             ▶
           </button>
-          {today && shown !== current && (
-            <button className="button" onClick={() => setView({ year: today.year, season: today.season })}>
-              {t('calendar.backToToday')}
-            </button>
-          )}
         </div>
       </header>
 

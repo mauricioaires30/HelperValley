@@ -320,7 +320,7 @@
       "category_trinket": "Trinkets"
     },
     "how": "How:",
-    "eventsTitle": "Heart events still to see",
+    "eventsTitle": "Heart events",
     "eventHearts_one": "{{count}} heart:",
     "eventHearts_other": "{{count}} hearts:",
     "place": {
@@ -360,7 +360,9 @@
     "eventsLeft_one": "1 event left",
     "eventsLeft_other": "{{count}} events left",
     "allEventsSeen": "All heart events seen ✓",
-    "reverse": "Reverse order"
+    "reverse": "Reverse order",
+    "eventSeen": "——— EVENT SEEN ———",
+    "eventImpossible": "——— UNAVAILABLE (married to someone else) ———"
   },
   "today": {
     "luck": {

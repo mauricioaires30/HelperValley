@@ -274,3 +274,12 @@
   width: max-content;
   max-width: min(380px, 80vw);
 }
+
+.heart {
+  display: inline-flex;
+}
+
+/* Hearts you can't earn yet (dating/marriage), darkened like in the social menu. */
+.heart--locked {
+  filter: brightness(0.35) saturate(0.4);
+}

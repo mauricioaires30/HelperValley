@@ -320,7 +320,7 @@
       "category_trinket": "Bugigangas"
     },
     "how": "Como:",
-    "eventsTitle": "Eventos de coração que faltam ver",
+    "eventsTitle": "Eventos de coração",
     "eventHearts_one": "{{count}} coração:",
     "eventHearts_other": "{{count}} corações:",
     "place": {
@@ -360,7 +360,9 @@
     "eventsLeft_one": "Falta 1 evento",
     "eventsLeft_other": "Faltam {{count}} eventos",
     "allEventsSeen": "Todos os eventos vistos ✓",
-    "reverse": "Inverter ordem"
+    "reverse": "Inverter ordem",
+    "eventSeen": "——— EVENTO VISTO ———",
+    "eventImpossible": "——— INDISPONÍVEL (casado com outra pessoa) ———"
   },
   "today": {
     "luck": {
