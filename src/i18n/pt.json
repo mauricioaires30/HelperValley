@@ -951,17 +951,6 @@
       "Festival_NightMarket_MagicBoat_Day3": "Mercado Noturno: barco mágico",
       "Festival_FeastOfTheWinterStar_Pierre": "Festa da Estrela Invernal"
     },
-    "day": "Dia",
-    "today": "Hoje",
-    "weekday": [
-      "Seg",
-      "Ter",
-      "Qua",
-      "Qui",
-      "Sex",
-      "Sáb",
-      "Dom"
-    ],
     "dayLabel": "{{day}} de {{season}}, ano {{year}}",
     "how": "O estoque sorteado é calculado com a mesma semente do jogo, então deve bater com o que aparece lá.",
     "search": "Onde compro…? (nome do item)",
@@ -973,8 +962,7 @@
     "maybe": "Depende de uma rolagem que o save não mostra; pode não aparecer.",
     "uncertain": "Uma rolagem escondida aconteceu antes destes itens; os marcados com ? podem ser diferentes no jogo.",
     "uncertainItem": "Pode ser diferente no jogo (veja o aviso acima).",
-    "closedToday": "fechada neste dia",
-    "closedShort": "fechada",
-    "nothing": "Nada encontrado."
+    "nothing": "Nada encontrado.",
+    "closed": "Fechadas ou ausentes hoje: {{names}}"
   }
 }

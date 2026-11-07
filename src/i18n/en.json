@@ -951,17 +951,6 @@
       "Festival_NightMarket_MagicBoat_Day3": "Night Market: magic boat",
       "Festival_FeastOfTheWinterStar_Pierre": "Feast of the Winter Star"
     },
-    "day": "Day",
-    "today": "Today",
-    "weekday": [
-      "Mon",
-      "Tue",
-      "Wed",
-      "Thu",
-      "Fri",
-      "Sat",
-      "Sun"
-    ],
     "dayLabel": "{{season}} {{day}}, year {{year}}",
     "how": "Random stock is computed with the game's own seed, so it should match what you see in game.",
     "search": "Where do I buy…? (item name)",
@@ -973,8 +962,7 @@
     "maybe": "Depends on a roll the save doesn't show; it may not appear.",
     "uncertain": "A hidden roll happened before these items; the ones marked ? may differ in game.",
     "uncertainItem": "May differ in game (see the note above).",
-    "closedToday": "closed this day",
-    "closedShort": "closed",
-    "nothing": "Nothing found."
+    "nothing": "Nothing found.",
+    "closed": "Closed or away today: {{names}}"
   }
 }

@@ -6,11 +6,10 @@ import { useGameName } from '@/i18n';
 import type { Player, SaveData } from '@/save/model';
 import { RequireSave } from '@/features/saves/RequireSave';
 import { ItemIcon, NpcHead, Tooltip } from '@/ui';
-import { SHOPS, weekday, type ShopInfo } from './catalog';
-import { shiftDay, shopStock, type ShopDay, type ShopsData, type StockEntry } from './stock';
+import { SHOPS, type ShopInfo } from './catalog';
+import { shopStock, type ShopDay, type ShopsData, type StockEntry } from './stock';
 import './shops.css';
 
-const DAYS_AHEAD = 14;
 /** Data/Shops currency: 0 gold, 1 star tokens, 2 Qi coins, 4 Qi gems. */
 const CURRENCY_ICON: Record<number, string | undefined> = { 1: '(O)PrizeTicket', 4: '(O)858' };
 
@@ -38,7 +37,7 @@ const ShopIcon = ({ info, scale = 2 }: { info: ShopInfo; scale?: number }) =>
   info.npc ? <NpcHead npc={info.npc} scale={scale} /> : info.icon ? <ItemIcon id={info.icon} scale={scale} tooltip={false} /> : null;
 
 /** The selected shop: everything it sells on the chosen day. */
-function ShopView({ info, isOpen, save, player, day, query }: { info: ShopInfo; isOpen: boolean; save: SaveData; player: Player; day: ShopDay; query: string }) {
+function ShopView({ info, save, player, day, query }: { info: ShopInfo; save: SaveData; player: Player; day: ShopDay; query: string }) {
   const { t } = useTranslation();
   const name = useGameName();
   const { items, uncertainFrom } = useMemo(() => shopStock(info.id, save, player, day), [info.id, save, player, day]);
@@ -52,7 +51,6 @@ function ShopView({ info, isOpen, save, player, day, query }: { info: ShopInfo; 
           <h2>{t(`shops.name.${info.id}`)}</h2>
           <span className="shop__count">{t('shops.items', { count: items.length })}</span>
           {info.rotates && <span className="shop__tag">{t('shops.rotates')}</span>}
-          {!isOpen && <span className="shop__tag shop__tag--closed">{t('shops.closedToday')}</span>}
         </div>
       </header>
       {uncertainFrom !== null && <p className="shop__warn">{t('shops.uncertain')}</p>}
@@ -93,13 +91,13 @@ function Shops({ save, player }: { save: SaveData; player: Player }) {
   const name = useGameName();
   const { shop: selectedId } = useParams<{ shop?: string }>();
   const navigate = useNavigate();
-  const [offset, setOffset] = useState(0);
   const [search, setSearch] = useState('');
-  const today: ShopDay = useMemo(() => ({ ...save.date, daysPlayed: player.stats.daysPlayed ?? 0 }), [save.date, player.stats.daysPlayed]);
-  const day = useMemo(() => shiftDay(today, offset), [today, offset]);
+  // Always the save's current day.
+  const day: ShopDay = useMemo(() => ({ ...save.date, daysPlayed: player.stats.daysPlayed ?? 0 }), [save.date, player.stats.daysPlayed]);
   const isOpen = (s: ShopInfo) => !s.open || s.open(day, save);
-  // Festival stalls only exist on their day; every other shop is always listed.
-  const listed = SHOPS.filter((s) => !s.id.startsWith('Festival_') || isOpen(s));
+  // Only the shops that are open (or around) today get a tab.
+  const listed = SHOPS.filter(isOpen);
+  const closed = SHOPS.filter((s) => !isOpen(s) && !s.id.startsWith('Festival_'));
   const query = search.trim().toLowerCase();
   // While searching, count matches per shop so the list says where to buy it.
   const matches = useMemo(() => {
@@ -113,41 +111,31 @@ function Shops({ save, player }: { save: SaveData; player: Player }) {
 
   return (
     <div className="shops">
-      <div className="panel shops__bar">
-        <div className="shops__days" role="tablist" aria-label={t('shops.day')}>
-          {Array.from({ length: DAYS_AHEAD }, (_, i) => {
-            const d = shiftDay(today, i);
-            return (
-              <button key={i} type="button" role="tab" aria-selected={i === offset} className={i === offset ? 'button button--primary' : 'button'} onClick={() => setOffset(i)}>
-                {i === 0 ? t('shops.today') : t(`shops.weekday.${weekday(d)}`)} {d.day}
-              </button>
-            );
-          })}
-        </div>
+      <nav className="shops__tabs" role="tablist" aria-label={t('nav.shops')}>
+        {visible.map((s) => (
+          <button
+            key={s.id}
+            type="button"
+            role="tab"
+            aria-selected={s.id === selected?.id}
+            className={s.id === selected?.id ? 'button button--primary shops__tab' : 'button shops__tab'}
+            onClick={() => navigate(`/shops/${s.id}`)}
+          >
+            <ShopIcon info={s} scale={1} />
+            {t(`shops.name.${s.id}`)}
+            {matches && <em>({matches[s.id]})</em>}
+          </button>
+        ))}
+      </nav>
+      <div className="shops__bar">
         <input className="shops__search" type="search" placeholder={t('shops.search')} value={search} onChange={(e) => setSearch(e.target.value)} />
         <p className="cc-summary__hint">
           {t('shops.dayLabel', { day: day.day, season: t(`common.seasons.${day.season}`), year: day.year })} · {t('shops.how')}
         </p>
+        {closed.length > 0 && <p className="cc-summary__hint">{t('shops.closed', { names: closed.map((s) => t(`shops.name.${s.id}`)).join(', ') })}</p>}
       </div>
-      <div className="shops__body">
-        <nav className="panel shops__list" aria-label={t('nav.shops')}>
-          {visible.map((s) => (
-            <button
-              key={s.id}
-              type="button"
-              className={['shops__pick', s.id === selected.id ? 'shops__pick--active' : '', isOpen(s) ? '' : 'shops__pick--closed'].join(' ')}
-              onClick={() => navigate(`/shops/${s.id}`)}
-              aria-current={s.id === selected.id ? 'page' : undefined}
-            >
-              <ShopIcon info={s} scale={1} />
-              <span>{t(`shops.name.${s.id}`)}</span>
-              {matches ? <em>{matches[s.id]}</em> : !isOpen(s) && <em>{t('shops.closedShort')}</em>}
-            </button>
-          ))}
-          {visible.length === 0 && <p className="cc-summary__hint">{t('shops.nothing')}</p>}
-        </nav>
-        {selected && <ShopView info={selected} isOpen={isOpen(selected)} save={save} player={player} day={day} query={query} />}
-      </div>
+      {visible.length === 0 && <p className="cc-summary__hint">{t('shops.nothing')}</p>}
+      {selected && visible.length > 0 && <ShopView info={selected} save={save} player={player} day={day} query={query} />}
     </div>
   );
 }

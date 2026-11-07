@@ -8,10 +8,21 @@
   gap: 8px;
 }
 
-.shops__days {
+.shops__tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
+}
+
+.shops__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.shops__tab em {
+  font-style: normal;
+  opacity: 0.8;
 }
 
 .shops__search {
@@ -94,53 +105,6 @@
   font-weight: bold;
 }
 
-.shops__body {
-  display: grid;
-  grid-template-columns: 270px 1fr;
-  gap: var(--gap);
-  align-items: start;
-}
-
-.shops__list {
-  display: grid;
-  gap: 2px;
-  position: sticky;
-  top: 8px;
-  max-height: calc(100vh - 16px);
-  overflow-y: auto;
-}
-
-.shops__pick {
-  display: grid;
-  grid-template-columns: 24px 1fr auto;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 6px;
-  font: inherit;
-  font-size: var(--fs-sm);
-  text-align: left;
-  background: none;
-  border: var(--px) solid transparent;
-  color: inherit;
-  cursor: pointer;
-}
-
-.shops__pick:hover {
-  background: rgb(255 255 255 / 0.3);
-}
-
-.shops__pick--active {
-  background: rgb(255 255 255 / 0.45);
-  border-color: rgb(91 43 21 / 0.5);
-}
-
-.shops__pick--closed {
-  opacity: 0.55;
-}
-
-.shops__pick em {
-  font-size: var(--fs-xs);
-}
 
 .shop__head h2 {
   margin: 0;
@@ -151,20 +115,4 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-}
-
-.shop__tag--closed {
-  color: #a3271b;
-}
-
-@media (max-width: 760px) {
-  .shops__body {
-    grid-template-columns: 1fr;
-  }
-
-  .shops__list {
-    position: static;
-    max-height: none;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  }
 }
