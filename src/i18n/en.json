@@ -142,7 +142,25 @@
     "secret": "Hidden",
     "close": "Almost there!",
     "hideEarned": "Hide earned",
-    "perPlayer": "Achievements are per player: switch players in the header. Steam/console-only achievements are not tracked."
+    "perPlayer": "Achievements are per player: switch players in the header. Steam/console-only achievements are not tracked.",
+    "showDetails": "See what is missing",
+    "hideDetails": "Hide",
+    "details": {
+      "friends": "Villagers below {{hearts}} hearts, closest first:",
+      "cooking_one": "1 dish not cooked yet. Faded = recipe not learned.",
+      "cooking_other": "{{count}} dishes not cooked yet. Faded = recipe not learned.",
+      "crafting_one": "1 item not crafted yet. Faded = recipe not learned.",
+      "crafting_other": "{{count}} items not crafted yet. Faded = recipe not learned.",
+      "fish_one": "1 fish not caught yet:",
+      "fish_other": "{{count}} fish not caught yet:",
+      "polyculture_one": "1 crop still needs 15 shipped:",
+      "polyculture_other": "{{count}} crops still need 15 shipped:",
+      "monoculture": "Your most shipped crops:",
+      "museum": "Open the museum tracker",
+      "quests": "Complete \"Help Wanted\" requests from the board outside Pierre's shop.",
+      "house": "Current house upgrade level: {{level}}. Talk to Robin to upgrade.",
+      "money": "Total earned so far: {{money}}g."
+    }
   },
   "calendar": {
     "title": "Calendar",

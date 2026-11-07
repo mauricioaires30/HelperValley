@@ -142,7 +142,25 @@
     "secret": "Oculta",
     "close": "Quase lá!",
     "hideEarned": "Esconder conquistadas",
-    "perPlayer": "Conquistas são por jogador: troque o jogador no topo. Conquistas exclusivas da Steam/console não são acompanhadas."
+    "perPlayer": "Conquistas são por jogador: troque o jogador no topo. Conquistas exclusivas da Steam/console não são acompanhadas.",
+    "showDetails": "Ver o que falta",
+    "hideDetails": "Esconder",
+    "details": {
+      "friends": "Moradores abaixo de {{hearts}} corações, os mais próximos primeiro:",
+      "cooking_one": "1 prato ainda não cozinhado. Apagado = receita não aprendida.",
+      "cooking_other": "{{count}} pratos ainda não cozinhados. Apagado = receita não aprendida.",
+      "crafting_one": "1 item ainda não fabricado. Apagado = receita não aprendida.",
+      "crafting_other": "{{count}} itens ainda não fabricados. Apagado = receita não aprendida.",
+      "fish_one": "1 peixe ainda não pescado:",
+      "fish_other": "{{count}} peixes ainda não pescados:",
+      "polyculture_one": "1 plantação ainda precisa de 15 enviados:",
+      "polyculture_other": "{{count}} plantações ainda precisam de 15 enviados:",
+      "monoculture": "Suas plantações mais enviadas:",
+      "museum": "Abrir o acompanhamento do museu",
+      "quests": "Complete os pedidos de \"Precisa-se de ajuda\" do quadro em frente ao armazém do Pierre.",
+      "house": "Nível atual da reforma da casa: {{level}}. Fale com a Robin para reformar.",
+      "money": "Total ganho até agora: {{money}}g."
+    }
   },
   "calendar": {
     "title": "Calendário",

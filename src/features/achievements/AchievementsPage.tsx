@@ -6,11 +6,14 @@ import type { Player, SaveData } from '@/save/model';
 import { RequireSave } from '@/features/saves/RequireSave';
 import { Progress, UiIcon } from '@/ui';
 import { achievementProgress, type AchievementProgress } from './achievements';
+import { AchievementDetails, HAS_DETAILS } from './AchievementDetails';
 import './achievements.css';
 
-function AchievementCard({ progress }: { progress: AchievementProgress }) {
+function AchievementCard({ progress, player }: { progress: AchievementProgress; player: Player }) {
   const { t } = useTranslation();
   const name = useGameName();
+  const [open, setOpen] = useState(false);
+  const canExpand = !progress.earned && HAS_DETAILS.has(progress.id);
   const data = gameData().achievements[progress.id];
   const pct = progress.goal ? Math.round(((progress.value ?? 0) / progress.goal) * 100) : 0;
   return (
@@ -27,6 +30,16 @@ function AchievementCard({ progress }: { progress: AchievementProgress }) {
             <Progress value={progress.value ?? 0} max={progress.goal} />
             {pct >= 75 && <span className="ach__close">{t('ach.close')}</span>}
           </>
+        )}
+        {canExpand && (
+          <button className="button ach__toggle" aria-expanded={open} onClick={() => setOpen(!open)}>
+            {open ? t('ach.hideDetails') : t('ach.showDetails')}
+          </button>
+        )}
+        {open && (
+          <div className="ach-details inset">
+            <AchievementDetails id={progress.id} player={player} />
+          </div>
         )}
       </div>
     </li>
@@ -62,7 +75,7 @@ function Achievements({ save, player }: { save: SaveData; player: Player }) {
       </div>
       <ul className="ach-list">
         {visible.map((p) => (
-          <AchievementCard key={p.id} progress={p} />
+          <AchievementCard key={p.id} progress={p} player={player} />
         ))}
       </ul>
     </div>
