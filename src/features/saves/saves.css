@@ -19,7 +19,7 @@
 
 .saves__hint {
   color: var(--text-soft);
-  font-size: 16px;
+  font-size: var(--fs-sm);
 }
 
 .saves__header {
@@ -37,7 +37,7 @@
 .saves__mode {
   flex: 1;
   color: var(--text-soft);
-  font-size: 16px;
+  font-size: var(--fs-sm);
 }
 
 .saves__mode--live::before {
@@ -83,7 +83,7 @@
 }
 
 .save-card__title {
-  font-size: 22px;
+  font-size: var(--fs-lg);
   font-weight: 600;
 }
 
@@ -96,7 +96,7 @@
 }
 
 .save-card__meta {
-  font-size: 15px;
+  font-size: var(--fs-sm);
   color: var(--text-soft);
 }
 
@@ -156,7 +156,7 @@
   max-width: 100%;
   overflow-x: auto;
   font-family: ui-monospace, Consolas, monospace;
-  font-size: 13px;
+  font-size: var(--fs-xs);
   white-space: pre;
   user-select: all;
 }
@@ -182,4 +182,12 @@
   gap: 6px;
   justify-items: center;
   margin: 12px 0;
+}
+
+.how-it-works {
+  display: grid;
+  gap: 8px;
+  margin-top: 24px;
+  padding-top: 12px;
+  border-top: var(--px) dashed rgb(91 43 21 / 0.3);
 }

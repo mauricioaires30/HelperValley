@@ -27,7 +27,7 @@
 
 .today__page {
   color: var(--text-soft);
-  font-size: 15px;
+  font-size: var(--fs-sm);
 }
 
 .today__list {

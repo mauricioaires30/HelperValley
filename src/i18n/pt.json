@@ -42,16 +42,16 @@
     }
   },
   "saves": {
-    "intro": "O HelperValley lê os saves direto do seu computador. Nada é enviado para a internet.",
+    "intro": "Lê os saves do seu PC. Nada vai para a internet.",
     "where": "Seus saves ficam em:",
     "copy": "Copiar caminho",
     "copied": "Copiado!",
     "open": "Abrir pasta Saves",
-    "openHint": "Escolha a pasta Saves (ou a pasta StardewValley). O site fica de olho nela e atualiza toda vez que o jogo salvar.",
+    "openHint": "O site atualiza sozinho quando o jogo salva.",
     "fallback": "Selecionar pasta Saves",
-    "fallbackHint": "Seu navegador não consegue manter a pasta aberta, então selecione de novo depois de jogar. Para recarga automática, use Chrome ou Edge.",
+    "fallbackHint": "Sem atualização ao vivo neste navegador. Use Chrome ou Edge.",
     "reconnect": "Reconectar aos saves",
-    "reconnectHint": "Clique em qualquer lugar e permita o acesso à pasta de saves. Escolha \"Permitir em todas as visitas\" para o site sempre acompanhar a pasta sem perguntar de novo.",
+    "reconnectHint": "Clique em qualquer lugar e escolha \"Permitir em todas as visitas\".",
     "change": "Trocar pasta",
     "none": "Nenhum save encontrado nessa pasta.",
     "list": "Suas fazendas",
@@ -71,23 +71,29 @@
     "cachedLive": "Reconectar para atualizar ao vivo",
     "cachedOpen": "Conectar pasta Saves",
     "cachedMode": "Salvo neste navegador: reconecte para atualizar ao vivo",
-    "cachedHintReconnect": "Clique em qualquer lugar e escolha \"Permitir em todas as visitas\" para ficar ao vivo daqui pra frente.",
-    "cachedHintPick": "Conecte a pasta Saves uma vez; nas próximas visitas o navegador pergunta uma vez, escolha \"Permitir em todas as visitas\" e fica ao vivo.",
-    "cachedHintUnsupported": "Este navegador não consegue ficar de olho numa pasta. Use Chrome ou Edge para atualizar ao vivo (no Brave, ative a flag File System Access API).",
+    "cachedHintReconnect": "Clique em qualquer lugar e escolha \"Permitir em todas as visitas\".",
+    "cachedHintPick": "Conecte a pasta para atualizar ao vivo.",
+    "cachedHintUnsupported": "Para atualizar ao vivo, use Chrome ou Edge.",
     "guide": {
       "title": "Deixar o site ao vivo (Chrome / Edge)",
-      "why": "O Chrome e o Edge não deixam sites abrirem pastas dentro de AppData, que é onde o jogo salva. A solução é mover os saves para Documentos e deixar um atalho de pasta no lugar antigo: o jogo continua salvando normalmente e o navegador lê a pasta em Documentos.",
+      "why": "O Chrome não abre pastas em AppData. Mova os saves para Documentos e deixe um atalho no lugar: o jogo nem percebe.",
       "close": "Feche o Stardew Valley.",
       "run": "Abra o PowerShell (menu Iniciar → \"PowerShell\") e rode isto uma vez:",
       "copy": "Copiar comando",
-      "pick": "Depois escolha a pasta Documentos/StardewValley Saves (dentro da sua pasta de usuário):",
-      "allow": "Na próxima visita, quando o navegador perguntar, escolha \"Permitir em todas as visitas\". A partir daí o site abre ao vivo e atualiza sempre que o jogo salvar.",
-      "safe": "Os saves continuam sendo os mesmos arquivos e a Steam Cloud continua funcionando. Para desfazer, apague o atalho em AppData e mova a pasta de volta.",
-      "noLive": "Não quer mudar nada? Selecione a pasta toda vez (sem atualização ao vivo):"
+      "pick": "Escolha a pasta Documentos/StardewValley Saves:",
+      "allow": "Na próxima visita, escolha \"Permitir em todas as visitas\".",
+      "safe": "Os arquivos são os mesmos e a Steam Cloud continua funcionando.",
+      "noLive": "Sem mudar nada (sem ao vivo):"
     },
     "quickTitle": "Ver sua fazenda agora",
-    "quickHint": "Selecione a pasta %AppData%\\StardewValley\\Saves (cole o caminho na barra de endereço da janela). O navegador guarda uma cópia, então da próxima vez abre sozinho.",
-    "quickButton": "Selecionar pasta Saves"
+    "quickHint": "Selecione %AppData%\\StardewValley\\Saves. O navegador guarda uma cópia.",
+    "quickButton": "Selecionar pasta Saves",
+    "how": {
+      "title": "Como funciona",
+      "local": "O site lê os arquivos de save direto do seu PC; nada é enviado.",
+      "copy": "Cada save lido fica guardado no navegador, então o site abre mesmo sem a pasta.",
+      "live": "Com a pasta conectada (Chrome/Edge), o site atualiza sozinho quando o jogo salva."
+    }
   },
   "locations": {
     "Farm": "Fazenda",
@@ -154,7 +160,7 @@
       "Farm": "Sua fazenda",
       "Island": "Ilha Gengibre"
     },
-    "legend": "Verde: doado · Brilhando: você tem · Apagado: nunca encontrado. Gemas que não aparecem em geodos vêm de pedras e minérios nas minas."
+    "legend": "Verde: doado · Brilhando: você tem · Apagado: nunca achou."
   },
   "ach": {
     "title": "Conquistas de {{name}}",
@@ -163,13 +169,13 @@
     "secret": "Oculta",
     "close": "Quase lá!",
     "hideEarned": "Esconder conquistadas",
-    "perPlayer": "Conquistas são por jogador: troque o jogador no topo. Conquistas exclusivas da Steam/console não são acompanhadas.",
+    "perPlayer": "Por jogador. Troque o jogador no topo.",
     "showDetails": "Ver o que falta",
     "hideDetails": "Esconder",
     "details": {
       "friends": "Moradores abaixo de {{hearts}} corações, os mais próximos primeiro:",
       "cooking_one": "1 prato ainda não cozinhado. Apagado = receita não aprendida.",
-      "cooking_other": "{{count}} pratos ainda não cozinhados. Apagado = receita não aprendida.",
+      "cooking_other": "Faltam {{count}} pratos. Apagado = receita não aprendida.",
       "crafting_one": "1 item ainda não fabricado. Apagado = receita não aprendida.",
       "crafting_other": "{{count}} itens ainda não fabricados. Apagado = receita não aprendida.",
       "fish_one": "1 peixe ainda não pescado:",
@@ -178,13 +184,13 @@
       "polyculture_other": "{{count}} plantações ainda precisam de 15 enviados:",
       "monoculture": "Suas plantações mais enviadas:",
       "museum": "Abrir o acompanhamento do museu",
-      "quests": "Complete os pedidos de \"Precisa-se de ajuda\" do quadro em frente ao armazém do Pierre.",
-      "house": "Nível atual da reforma da casa: {{level}}. Fale com a Robin para reformar.",
+      "quests": "Faça os pedidos do quadro em frente ao Pierre.",
+      "house": "Casa nível {{level}}. Reforme com a Robin.",
       "money": "Total ganho até agora: {{money}}g.",
       "allDone": "Tudo completo ✓"
     },
     "recipe": {
-      "tv": "A Rainha do Molho (TV): domingo, dia {{day}} de {{season}}, ano {{year}} (reprises depois às quartas)",
+      "tv": "TV Rainha do Molho: domingo {{day}} de {{season}}, ano {{year}}",
       "friend": "Carta de {{name}} com {{hearts}} corações",
       "skill": "{{skill}} nível {{level}}",
       "level": "Nível do jogador {{level}}",
@@ -254,9 +260,9 @@
     "sortHearts": "Corações",
     "sortBirthday": "Próximo aniversário",
     "sortName": "Nome",
-    "hint": "As sugestões de presente usam só itens que você tem agora nos baús ou mochilas.",
+    "hint": "Presentes sugeridos = itens que você tem agora.",
     "toNext": "Faltam {{points}} pontos para o próximo coração",
-    "bouquet": "Máximo por enquanto: dê um buquê para namorar",
+    "bouquet": "Dê um buquê para passar de 8 ♥",
     "giftsLeft_one": "Resta 1 presente nesta semana",
     "giftsLeft_other": "Restam {{count}} presentes nesta semana",
     "giftedToday": "Já recebeu presente hoje",
@@ -377,7 +383,7 @@
       "neutral": "Os espíritos estão completamente neutros hoje.",
       "mixed": "Os espíritos estão com humor variado hoje.",
       "bad": "Os espíritos estão um pouco irritados hoje.",
-      "awful": "Os espíritos estão muito descontentes hoje. Talvez seja melhor ficar na fazenda."
+      "awful": "Sorte péssima hoje. Melhor ficar na fazenda."
     },
     "tomorrow": "Amanhã: {{weather}}",
     "weather": {
@@ -392,7 +398,7 @@
     },
     "daysLeft_one": "Falta 1 dia para o {{season}}",
     "daysLeft_other": "Faltam {{count}} dias para o {{season}}",
-    "lastDay": "Último dia da estação! As plantações morrem amanhã, a não ser que cresçam no {{season}}.",
+    "lastDay": "Último dia da estação! Plantações morrem amanhã.",
     "soon": "Próximos 7 dias",
     "todayLabel": "hoje",
     "inDays_one": "amanhã",
@@ -460,7 +466,7 @@
     "useMachines": "Processar em barris/jarras",
     "includeUnbuyable": "Incluir sementes que não se compram",
     "onlyFlowers": "Flores para mel",
-    "assumptions": "Plantando hoje: {{days}} dias de crescimento. Cultivo nível {{level}}; profissões: {{professions}}. Preços em qualidade normal.",
+    "assumptions": "{{days}} dias de crescimento · Cultivo {{level}} · {{professions}}",
     "prof": {
       "tiller": "Lavrador",
       "agriculturist": "Agricultor",
@@ -498,7 +504,7 @@
       "(O)890": "Missões do Sr. Qi",
       "(O)433": "Carrinho de Viagem ou Fadas da Poeira (minas)"
     },
-    "nothing": "Nada cresce a tempo com os dias que restam. Tente outra estação ou a estufa.",
+    "nothing": "Nada cresce a tempo. Tente outra estação ou a estufa.",
     "planTotal": "Canteiros para planejar",
     "useSave": "Usar do save ({{count}})",
     "planFree": "{{free}} de {{total}} canteiros livres",
@@ -508,7 +514,7 @@
     "addRow": "Adicionar plantação",
     "planProfit": "Lucro esperado nesta estação: {{profit}}g",
     "shoppingTitle": "Lista de compras",
-    "shoppingHint": "Uma semente por canteiro planejado para o próximo plantio, na loja mais barata.",
+    "shoppingHint": "1 semente por canteiro, na loja mais barata.",
     "shoppingEmpty": "Adicione plantações aos planos para montar a lista.",
     "shoppingTotal": "Total: {{total}}g",
     "shop": {
@@ -544,10 +550,11 @@
       "HatMouse": "Rato dos Chapéus",
       "ShadowShop": "Krobus"
     },
-    "late": "não dá tempo ({{need}} dias, restam {{left}}): valor numa estação inteira",
-    "hayStock": "Comem {{perDay}} de feno por dia: o estoque dura {{days}} dias (até {{date}})",
-    "hayCycle": "Com os silos cheios dura {{days}} dias: compre de novo por volta de {{date}}",
-    "hayNote": "Considerando que comem feno todo dia (inverno, chuva ou sem grama lá fora)."
+    "late": "não dá tempo ({{need}}d, restam {{left}})",
+    "hayStock": "{{perDay}}/dia · dura {{days}} dias (até {{date}})",
+    "hayCycle": "Silos cheios duram {{days}} dias (até {{date}})",
+    "hayNote": "Conta como se comessem feno todo dia.",
+    "hayShort": "Feno {{hay}}/{{capacity}} · dura {{days}} dias"
   },
   "map": {
     "title": "Mapa dos moradores",
@@ -562,7 +569,7 @@
     "since": "lá desde {{time}}",
     "listTitle": "Todo mundo às {{time}}",
     "resortTitle": "Quem pode estar no resort",
-    "resortHint": "O jogo sorteia alguns destes a cada dia em que o resort está aberto; confira a praia da ilha.",
+    "resortHint": "O jogo sorteia alguns destes por dia.",
     "location": {
       "Farm": "Sua fazenda",
       "FarmHouse": "Sua casa",
@@ -613,7 +620,7 @@
   "prod": {
     "title": "Produção",
     "machinesTitle": "Máquinas trabalhando ({{count}})",
-    "summary": "{{ready}} prontas para coletar · cerca de {{value}}g em produtos lá dentro (preço base)",
+    "summary": "{{ready}} prontas · ~{{value}}g lá dentro",
     "col": {
       "machine": "Máquina",
       "making": "Fazendo",
@@ -640,7 +647,7 @@
     },
     "office": {
       "locked": "O Escritório de Campo da Ilha Gengibre ainda não foi aberto.",
-      "hint": "Leve fósseis ao Professor Caracol no escritório de campo do norte da ilha. Cada conjunto completo dá Nozes Douradas.",
+      "hint": "Leve fósseis ao Professor Caracol (norte da ilha). Cada conjunto dá nozes.",
       "skeleton": "Animal grande",
       "snake": "Cobra",
       "bat": "Morcego mumificado",
@@ -705,9 +712,9 @@
   },
   "walnuts": {
     "title": "Nozes Douradas",
-    "hint": "Total encontrado na Ilha Gengibre. Os arbustos e pontos enterrados que faltam aparecem marcados no mapa da ilha.",
+    "hint": "Os pontos que faltam aparecem no mapa da ilha.",
     "spotsTitle": "Pontos escondidos: faltam {{missing}} de {{total}}",
-    "spotsHint": "Sacuda os arbustos; cave os enterrados com a enxada (procure os gravetos se mexendo).",
+    "spotsHint": "Sacuda arbustos; cave os enterrados (gravetos se mexendo).",
     "kind": {
       "bush": "Arbusto",
       "buried": "Enterrada"

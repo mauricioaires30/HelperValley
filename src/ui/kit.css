@@ -37,7 +37,8 @@
   border-image: url('/sprites/ui/dialog-box.png') 6 fill / calc(6 * var(--px)) stretch;
   padding: 0 calc(4 * var(--px));
   background: none;
-  min-height: calc(22 * var(--px));
+  min-height: var(--btn-h);
+  font-size: var(--fs-sm);
   display: inline-flex;
   align-items: center;
   gap: calc(3 * var(--px));
@@ -131,7 +132,7 @@
   position: absolute;
   right: calc(2 * var(--px));
   bottom: 0;
-  font-size: 16px;
+  font-size: var(--fs-sm);
   font-weight: 600;
   color: #fff;
   text-shadow:
@@ -226,7 +227,7 @@
   top: calc(-3 * var(--px));
   right: calc(-2 * var(--px));
   padding: 0 3px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   color: #fff;
   background: var(--accent);
@@ -250,7 +251,7 @@
 .popover__trigger {
   min-height: calc(16 * var(--px));
   padding: 0 calc(2 * var(--px));
-  font-size: 14px;
+  font-size: var(--fs-sm);
 }
 
 .popover__panel {
@@ -282,4 +283,9 @@
 /* Hearts you can't earn yet (dating/marriage), darkened like in the social menu. */
 .heart--locked {
   filter: brightness(0.35) saturate(0.4);
+}
+
+/* Hearts that need dating or marriage first: still possible, so only faded. */
+.heart--soft {
+  opacity: 0.4;
 }

@@ -2,6 +2,24 @@ import { useTranslation } from 'react-i18next';
 import { useSaveStore } from '@/store/saveStore';
 import { ConnectPanel, SaveList } from '@/features/saves/SavePicker';
 import { SaveOverview } from './SaveOverview';
+import { LiveSetupGuide } from '@/features/saves/LiveSetupGuide';
+import { supportsDirectoryAccess } from '@/save/sources';
+
+/** Always at the bottom: what the site does with saves and how to keep it live. */
+function HowItWorks() {
+  const { t } = useTranslation();
+  return (
+    <section className="how-it-works">
+      <h2>{t('saves.how.title')}</h2>
+      <ul className="farm-facts">
+        <li>{t('saves.how.local')}</li>
+        <li>{t('saves.how.copy')}</li>
+        <li>{t('saves.how.live')}</li>
+      </ul>
+      {supportsDirectoryAccess() && <LiveSetupGuide />}
+    </section>
+  );
+}
 
 export function HomePage() {
   const { t } = useTranslation();
@@ -20,6 +38,7 @@ export function HomePage() {
       {source || summaries.length > 0 ? <SaveList /> : <ConnectPanel />}
       {status === 'loading' && <p>{t('saves.loading')}</p>}
       <SaveOverview />
+      <HowItWorks />
     </div>
   );
 }

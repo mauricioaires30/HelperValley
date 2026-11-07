@@ -2,6 +2,7 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGES } from '@/i18n';
 import { ItemIcon, UiIcon } from '@/ui';
+import { getItem } from '@/data/gameData';
 import { PlayerSwitcher } from '@/features/saves/PlayerSwitcher';
 import { SaveDateChip, SaveUpdatedToast } from '@/features/saves/LiveStatus';
 import { CachedBanner } from '@/features/saves/CachedBanner';
@@ -22,7 +23,15 @@ const NAV: Array<{ to: string; key: string; icon: NavIcon }> = [
 ];
 
 function NavIconView({ icon }: { icon: NavIcon }) {
-  if ('item' in icon) return <ItemIcon id={icon.item} scale={2} tooltip={false} />;
+  if ('item' in icon) {
+    // Every menu icon fits one 32px box; tall items (16x32 machines, chests) draw at 1x.
+    const tall = (getItem(icon.item)?.s[3] ?? 16) > 16;
+    return (
+      <span className="nav-icon">
+        <ItemIcon id={icon.item} scale={tall ? 1 : 2} tooltip={false} />
+      </span>
+    );
+  }
   return (
     <span className={`nav-icon ${icon.className ?? ''}`}>
       <UiIcon name={icon.ui} w={icon.w} h={icon.h} scale={icon.scale} />

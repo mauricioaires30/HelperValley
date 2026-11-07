@@ -4,7 +4,6 @@ import { useSaveStore } from '@/store/saveStore';
 import { supportsDirectoryAccess } from '@/save/sources';
 import type { SaveSummary } from '@/save/model';
 import { ItemIcon, SeasonIcon } from '@/ui';
-import { LiveSetupGuide } from './LiveSetupGuide';
 import './saves.css';
 
 const SAVES_PATH = '%AppData%\\StardewValley\\Saves';
@@ -77,14 +76,7 @@ export function ConnectPanel() {
         <span className="saves__hint">{t('saves.quickHint')}</span>
         <FolderInput label={t('saves.quickButton')} primary />
       </div>
-      {supportsDirectoryAccess() ? (
-        <LiveSetupGuide />
-      ) : (
-        <>
-          <FolderInput label={t('saves.fallback')} primary />
-          <p className="saves__hint">{t('saves.fallbackHint')}</p>
-        </>
-      )}
+      {!supportsDirectoryAccess() && <p className="saves__hint">{t('saves.fallbackHint')}</p>}
     </div>
   );
 }
@@ -140,12 +132,6 @@ export function SaveList() {
         )}
       </div>
       {summaries.length === 0 && status !== 'listing' && <p>{t('saves.none')}</p>}
-      {!source?.live && !pendingHandle && supportsDirectoryAccess() && (
-        <details className="saves__guide">
-          <summary className="button">{t('saves.guide.title')}</summary>
-          <LiveSetupGuide />
-        </details>
-      )}
       <div className="saves__grid">
         {summaries.map((s) => (
           <SaveCard

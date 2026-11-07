@@ -27,7 +27,7 @@
 
 .quest__days {
   padding: 0 4px;
-  font-size: 13px;
+  font-size: var(--fs-xs);
   color: #fff;
   background: var(--danger);
 }
@@ -44,7 +44,7 @@
 }
 
 .fish-where {
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--text-soft);
 }
 
