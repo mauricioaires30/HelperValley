@@ -135,6 +135,18 @@ export interface Player {
   hasSkullKey: boolean;
 }
 
+export interface WorldState {
+  /** Profit margin (difficultyModifier), 1 = normal. */
+  profitMargin: number;
+  /** Today's Saloon special, a qualified item id. */
+  dishOfTheDay?: string;
+  timesFedRaccoons: number;
+  goldenCoconutCracked: boolean;
+  visitsUntilY1Guarantee: number;
+  /** "Use legacy randomization" farm option. */
+  legacyRandom: boolean;
+}
+
 /** A piece of clothing: item id, sprite index, dye color (#rrggbb) and prismatic flag. */
 export interface Clothing {
   id: string;
@@ -195,6 +207,8 @@ export interface SaveData {
   resort: { restored: boolean; openToday: boolean };
   /** Candles Grandpa lit at his evaluation (0 = not evaluated yet) and the score behind them. */
   grandpaScore: number;
+  /** World state the shops read (Data/Shops conditions and prices). */
+  world: WorldState;
   fieldOffice: FieldOfficeState | null;
   specialOrders: SpecialOrderState[];
   /** Golden walnut ids already collected (e.g. "Bush_IslandEast_17_37"). */

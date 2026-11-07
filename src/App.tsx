@@ -10,6 +10,7 @@ import { QuestsPage } from '@/features/quests/QuestsPage';
 import { FarmPage } from '@/features/farm/FarmPage';
 import { RelationshipsPage } from '@/features/relationships/RelationshipsPage';
 import { PlayerPage } from '@/features/player/PlayerPage';
+import { ShopsPage } from '@/features/shops/ShopsPage';
 import { CalendarPage } from '@/features/calendar/CalendarPage';
 import { CollectionsPage } from '@/features/collections/CollectionsPage';
 import '@/i18n';
@@ -45,6 +46,7 @@ export function App() {
           <Route path="map" element={<MapPage />} />
           <Route path="quests" element={<QuestsPage />} />
           <Route path="production" element={<FarmPage />} />
+          <Route path="shops" element={<ShopsPage />} />
           <Route path="farm" element={<Navigate to="/production" replace />} />
           <Route path="collections/:tab?" element={<CollectionsPage />} />
           <Route path="cc" element={<Navigate to="/collections/cc" replace />} />

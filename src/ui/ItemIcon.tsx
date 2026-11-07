@@ -1,4 +1,4 @@
-import { getItem } from '@/data/gameData';
+import { gameData, getItem, type ItemData } from '@/data/gameData';
 import { useGameName } from '@/i18n';
 import { Sprite, gridRect } from './Sprite';
 import { QualityStar, type Quality } from './QualityStar';
@@ -18,17 +18,30 @@ interface ItemIconProps {
   tooltip?: boolean;
 }
 
+/** Where an item's icon sits in its sheet. */
+export function itemRect(item: ItemData) {
+  const [sheet, index, w, h] = item.s;
+  if (item.r) return { x: item.r[0], y: item.r[1] };
+  if (item.f) {
+    const [sheetW] = gameData().sheets[sheet] ?? [512];
+    return { x: (index * 16) % sheetW, y: Math.floor((index * 16) / sheetW) * 16 };
+  }
+  // Hats are 20x80 cells (four facings); the icon is the top frame.
+  return item.hat ? gridRect(sheet, index, 20, 80) : gridRect(sheet, index, w, h);
+}
+
 export function ItemIcon({ id, scale = 2, slot, quality = 0, count, faded, tooltip = true }: ItemIconProps) {
   const item = getItem(id);
   const name = useGameName();
   if (!item) return null;
 
-  const [sheet, index, w, h] = item.s;
-  // Hats are 20x80 cells (four facings); the icon is the top frame.
-  const rect = item.hat ? gridRect(sheet, index, 20, 80) : gridRect(sheet, index, w, h);
+  const [sheet, , w, h] = item.s;
+  const rect = itemRect(item);
   const label = name(item.n);
-  // Big craftables are 16x32; shrink them to fit a slot like the game does.
-  const drawScale = slot && h > 16 ? Math.max(1, scale / 2) : scale;
+  // Big craftables are 16x32 and furniture can be larger; shrink them to fit a slot like the game does.
+  const big = Math.max(w, h);
+  const fit = big > 32 ? Math.max(1, Math.floor((scale * 16) / big)) : slot && h > 16 ? Math.max(1, scale / 2) : scale;
+  const drawScale = fit * (item.z ?? 1);
   const sprite = <Sprite sheet={sheet} x={rect.x} y={rect.y} w={w} h={h} scale={drawScale} label={label} />;
 
   const content = slot ? (

@@ -23,6 +23,7 @@ import { buildFish } from './lib/fish.mjs';
 import { buildWalnutSpots } from './lib/walnuts.mjs';
 import { buildGameCollections } from './lib/collectionsGame.mjs';
 import { buildPlayer } from './lib/player.mjs';
+import { buildShops } from './lib/shops.mjs';
 import { exportTextures, UI_TEXTURES } from './lib/textures.mjs';
 import { exportUiCrops } from './lib/ui.mjs';
 
@@ -65,6 +66,7 @@ const datasets = {
   walnuts: buildWalnutSpots(gameDir),
   gameCollections: buildGameCollections(),
   player: buildPlayer(textures),
+  shops: buildShops(),
 };
 
 await rm(DATA_OUT, { recursive: true, force: true });
