@@ -624,7 +624,9 @@
       "events_other": "Eventos de coração disponíveis agora ({{count}})",
       "quests": "Missões marcadas",
       "fish": "Peixes marcados",
-      "walnuts": "Nozes que faltam"
+      "walnuts": "Nozes que faltam",
+      "shops": "Lojas abertas",
+      "donations": "Doações que faltam"
     },
     "eventPin": "Evento de {{hearts}} corações de {{name}}",
     "walkingTo": "andando até {{place}}",
@@ -635,7 +637,10 @@
     "fishPin": "{{name}} aparece aqui",
     "fishSearch": "Marcar peixe…",
     "fishMarked": "Peixes marcados",
-    "fishAdd": "Marcar"
+    "fishAdd": "Marcar",
+    "shopClick": "Clique para ver o estoque de hoje.",
+    "donationPin": "{{place}}: {{count}} para doar",
+    "tip": "Dica: marque peixes aqui ou em Coleções → Peixes, e missões na tela de Missões (botão \"Marcar\"). Tudo aparece neste mapa."
   },
   "prod": {
     "title": "Produção",

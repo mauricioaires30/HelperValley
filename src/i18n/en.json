@@ -624,7 +624,9 @@
       "events_other": "Heart events available now ({{count}})",
       "quests": "Marked quests",
       "fish": "Marked fish",
-      "walnuts": "Missing walnut spots"
+      "walnuts": "Missing walnut spots",
+      "shops": "Open shops",
+      "donations": "Missing donations"
     },
     "eventPin": "{{name}}'s {{hearts}}-heart event",
     "walkingTo": "walking to {{place}}",
@@ -635,7 +637,10 @@
     "fishPin": "{{name}} bites here",
     "fishSearch": "Mark a fish…",
     "fishMarked": "Marked fish",
-    "fishAdd": "Mark"
+    "fishAdd": "Mark",
+    "shopClick": "Click to see today's stock.",
+    "donationPin": "{{place}}: {{count}} to donate",
+    "tip": "Tip: mark fish here or in Collections → Fish, and quests on the Quests page (\"Mark\" button). Everything shows on this map."
   },
   "prod": {
     "title": "Production",
