@@ -1,0 +1,82 @@
+.map-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 20px;
+  margin: 12px 0;
+}
+
+.map-time {
+  display: grid;
+  gap: 4px;
+  min-width: 260px;
+  flex: 1;
+}
+
+.map-time input {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.cc__filter input.map-day {
+  width: 4.5em;
+  min-height: 28px;
+  padding: 0 4px;
+  font: inherit;
+  color: var(--text);
+  background: var(--paper-light);
+  border: var(--px) solid var(--wood-dark);
+}
+
+.map-frame {
+  margin: 0;
+}
+
+/* The in-game map texture, scaled with nearest-neighbour like the game. */
+.map-canvas {
+  position: relative;
+  width: 100%;
+  image-rendering: pixelated;
+  background-repeat: no-repeat;
+}
+
+.map-npc {
+  position: absolute;
+  z-index: 1;
+}
+
+.map-npc:hover,
+.map-npc:focus-within {
+  z-index: 5;
+}
+
+.map-npc__face {
+  display: inline-grid;
+  place-items: center;
+  padding: 1px;
+  background: var(--paper-light);
+  border: var(--px) solid var(--wood-dark);
+  border-radius: 50%;
+  box-shadow: 0 var(--px) 0 rgb(0 0 0 / 0.35);
+  overflow: hidden;
+}
+
+.map-resort {
+  margin-top: 12px;
+}
+
+.map-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 4px 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 15px;
+}
+
+.map-list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

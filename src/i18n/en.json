@@ -14,7 +14,8 @@
     "calendar": "Calendar",
     "relationships": "Relationships",
     "today": "Today",
-    "farm": "Farm"
+    "farm": "Farm",
+    "map": "Map"
   },
   "common": {
     "language": "Language",
@@ -527,5 +528,38 @@
     "hayStock": "They eat {{perDay}} hay a day: your stock lasts {{days}} days (until {{date}})",
     "hayCycle": "Full silos last {{days}} days: buy again around {{date}}",
     "hayNote": "Assumes they eat hay every day (winter, rain or no grass outside)."
+  },
+  "map": {
+    "title": "Villager map",
+    "region": {
+      "Valley": "Valley & desert",
+      "GingerIsland": "Ginger Island"
+    },
+    "time": "Time",
+    "day": "Day",
+    "raining": "Raining",
+    "resort": "Island resort open",
+    "fromSave": "Hearts and marriage come from your save (spouse: {{spouse}}).",
+    "single": "none",
+    "noSave": "Load a save to use your hearts and marriage.",
+    "since": "there since {{time}}",
+    "listTitle": "Everyone at {{time}}",
+    "resortTitle": "Who may be at the resort",
+    "resortHint": "The game picks a few of these at random each day the resort is open, so check the beach on the island.",
+    "location": {
+      "Farm": "Your farm",
+      "FarmHouse": "Your house",
+      "IslandWest": "Island farm",
+      "IslandSouth": "Island beach",
+      "IslandNorth": "Island north",
+      "IslandEast": "Island jungle",
+      "Beach": "Pelican Beach",
+      "Forest": "Cindersap Forest",
+      "Town": "Pelican Town",
+      "Mountain": "Mountains",
+      "Railroad": "Railroad",
+      "BusStop": "Bus stop",
+      "Desert": "Calico Desert"
+    }
   }
 }
