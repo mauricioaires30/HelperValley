@@ -169,7 +169,11 @@
       "fri": "Sexta",
       "sat": "Sábado",
       "sun": "Domingo"
-    }
+    },
+    "seasonYear": "{{season}}, Ano {{year}}",
+    "previous": "Estação anterior",
+    "next": "Próxima estação",
+    "backToToday": "Voltar para hoje"
   },
   "rel": {
     "title": "Relacionamentos de {{name}}",

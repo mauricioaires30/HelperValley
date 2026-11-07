@@ -1,7 +1,26 @@
-.calendar__seasons {
+.calendar__header {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.calendar__nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.calendar__current {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 210px;
+  justify-content: center;
+  font-weight: 600;
 }
 
 .calendar__grid {
@@ -55,8 +74,12 @@
 }
 
 .calendar__festival {
+  display: flex;
+  align-items: center;
+  gap: 2px;
   font-weight: 600;
   color: #9a4a00;
+  line-height: 1.1;
 }
 
 .calendar__festival--passive {

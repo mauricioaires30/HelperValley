@@ -31,9 +31,15 @@
 
 .today__list li {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   gap: 6px;
+}
+
+/* Icon stays beside its text; the text takes the remaining width. */
+.today__list li > span,
+.today__list li > a {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .today__birthday {
