@@ -28,7 +28,7 @@ export function Sprite({ sheet, x, y, w, h, scale = 2, label, className, style }
       style={{
         width: w * scale,
         height: h * scale,
-        backgroundImage: `url(${spriteUrl(sheet)})`,
+        backgroundImage: `url("${encodeURI(spriteUrl(sheet))}")`,
         backgroundPosition: `${-x * scale}px ${-y * scale}px`,
         backgroundSize: `${sheetW * scale}px ${sheetH * scale}px`,
         ...style,
