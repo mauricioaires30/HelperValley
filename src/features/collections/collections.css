@@ -66,3 +66,8 @@ button.game-grid__cell[aria-label] {
   align-items: center;
   gap: 4px;
 }
+
+/* Recipe known but never made: real colors, faded. */
+.game-grid__cell--known .sprite {
+  opacity: 0.4;
+}

@@ -15,6 +15,8 @@ interface Entry {
   id: string;
   /** Times shipped / caught / cooked / found (0 = not yet). */
   count: number;
+  /** Recipe known but not made yet: shown in faded color instead of a silhouette. */
+  known?: boolean;
   extra?: ReactNode;
 }
 
@@ -37,6 +39,7 @@ function entriesFor(tab: GameTab, player: Player): Entry[] {
       return Object.entries(data.achievementGoals.cookingOutputs).map(([recipe, id]) => ({
         id,
         count: player.recipesCooked[bare(id)] ?? 0,
+        known: recipe in player.cookingRecipes,
         extra: (
           <RecipeTip
             id={id}
@@ -55,6 +58,7 @@ function entriesFor(tab: GameTab, player: Player): Entry[] {
           {
             id,
             count: player.craftingRecipes[recipe] ?? 0,
+            known: recipe in player.craftingRecipes,
             extra: (
               <RecipeTip
                 id={id}
@@ -86,6 +90,7 @@ function Grid({ tab, player }: { tab: GameTab; player: Player }) {
       <div className="museum__progress">
         <Progress value={done} max={entries.length} />
         {tab === 'fish' && <p className="cc-summary__hint">{t('collections.fishClick')}</p>}
+        {(tab === 'cooking' || tab === 'crafting') && <p className="cc-summary__hint">{t('collections.recipeLegend')}</p>}
       </div>
       <div className="game-grid">
         {entries.map((e) => {
@@ -104,7 +109,7 @@ function Grid({ tab, player }: { tab: GameTab; player: Player }) {
             >
               <button
                 type="button"
-                className={['game-grid__cell', e.count > 0 ? '' : 'game-grid__cell--missing', pinned ? 'game-grid__cell--pinned' : ''].join(' ')}
+                className={['game-grid__cell', e.count > 0 ? '' : e.known ? 'game-grid__cell--known' : 'game-grid__cell--missing', pinned ? 'game-grid__cell--pinned' : ''].join(' ')}
                 onClick={tab === 'fish' ? () => toggle('fish', e.id) : undefined}
                 aria-label={name(getItem(e.id)?.n)}
               >

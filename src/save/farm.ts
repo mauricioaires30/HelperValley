@@ -166,11 +166,14 @@ function readPonds(locations: XmlValue[]): FishPondState[] {
       if (xsiType(building) !== 'FishPond' || !building) continue;
       const fish = text(building.fishType) || text(inner(building.fishType)) || '';
       const output = node(node(building.output)?.Item ?? building.output);
+      const needed = node(node(building.neededItem)?.Item ?? building.neededItem);
+      const neededCount = num(inner(building.neededItemCount) ?? building.neededItemCount, -1);
       out.push({
         fish: fish ? (fish.startsWith('(') ? fish : `(O)${fish}`) : '',
         count: num(building.currentOccupants),
         max: num(building.maxOccupants),
         output: output && text(output.itemId) ? itemId(output) : null,
+        request: needed && text(needed.itemId) && !bool(inner(building.hasCompletedRequest) ?? building.hasCompletedRequest) ? { item: itemId(needed), count: Math.max(1, neededCount) } : undefined,
       });
     }
   }

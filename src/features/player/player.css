@@ -73,8 +73,8 @@
 
 .mastery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 6px;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 8px;
   margin: 8px 0;
   padding: 0;
   list-style: none;
@@ -82,7 +82,8 @@
 
 .mastery__skill {
   display: grid;
-  gap: 4px;
+  align-content: start;
+  gap: 6px;
   font-size: var(--fs-sm);
 }
 
@@ -154,4 +155,23 @@
 .grandpa__done summary {
   cursor: pointer;
   font-size: var(--fs-sm);
+}
+
+.mastery__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.mastery__head strong {
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mastery__perk {
+  font-size: var(--fs-xs);
+  line-height: 1.3;
 }

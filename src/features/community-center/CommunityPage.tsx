@@ -4,6 +4,8 @@ import { RequireSave } from '@/features/saves/RequireSave';
 import { MuseumPage } from '@/features/museum/MuseumPage';
 import { FieldOfficeView } from '@/features/collections/FieldOffice';
 import { CommunityCenterPage, JojaView } from './CommunityCenterPage';
+import { useCurrentSave } from '@/store/saveStore';
+import { ccIsWarehouse, jojaMartGone } from '@/features/shops/catalog';
 import '@/features/collections/collections.css';
 
 /** Donation projects in their own tab: Community Center (or Joja), museum and the island field office. */
@@ -13,13 +15,17 @@ type Tab = (typeof TABS)[number];
 export function CommunityPage() {
   const { t } = useTranslation();
   const { tab } = useParams<{ tab: Tab }>();
-  if (!tab || !(TABS as readonly string[]).includes(tab)) return <Navigate to="/community/cc" replace />;
+  const { save } = useCurrentSave();
+  // Tabs for places that no longer exist in this save go away: Joja once it's the movie theater,
+  // the Community Center once it's a Joja warehouse.
+  const tabs = TABS.filter((id) => !save || (id === 'joja' ? !jojaMartGone(save) : id === 'cc' ? !ccIsWarehouse(save) : true));
+  if (!tab || !(tabs as readonly string[]).includes(tab)) return <Navigate to={`/community/${tabs[0]}`} replace />;
 
   return (
     <div>
       <nav className="collections__tabs" aria-label={t('nav.community')}>
         <div className="calendar__nav">
-          {TABS.map((id) => (
+          {tabs.map((id) => (
             <NavLink key={id} to={`/community/${id}`} className={({ isActive }) => (isActive ? 'button button--primary' : 'button')}>
               {t(`community.tab.${id}`)}
             </NavLink>

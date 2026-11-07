@@ -287,6 +287,8 @@ export interface FishPondState {
   max: number;
   /** Item waiting to be collected, if any. */
   output: string | null;
+  /** What the fish ask for to grow the pond (the pond "quest"), if anything. */
+  request?: { item: string; count: number };
 }
 
 export interface FarmState {

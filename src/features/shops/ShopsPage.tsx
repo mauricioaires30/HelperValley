@@ -6,7 +6,7 @@ import { useGameName } from '@/i18n';
 import type { Player, SaveData } from '@/save/model';
 import { RequireSave } from '@/features/saves/RequireSave';
 import { ItemIcon, NpcHead, Tooltip } from '@/ui';
-import { SHOPS, type ShopInfo } from './catalog';
+import { jojaMartGone, SHOPS, type ShopInfo } from './catalog';
 import { shopStock, type ShopDay, type ShopsData, type StockEntry } from './stock';
 import './shops.css';
 
@@ -97,7 +97,7 @@ function Shops({ save, player }: { save: SaveData; player: Player }) {
   const isOpen = (s: ShopInfo) => !s.open || s.open(day, save);
   // Only the shops that are open (or around) today get a tab.
   const listed = SHOPS.filter(isOpen);
-  const closed = SHOPS.filter((s) => !isOpen(s) && !s.id.startsWith('Festival_'));
+  const closed = SHOPS.filter((s) => !isOpen(s) && !s.id.startsWith('Festival_') && !(s.id === 'Joja' && jojaMartGone(save)));
   const query = search.trim().toLowerCase();
   // While searching, count matches per shop so the list says where to buy it.
   const matches = useMemo(() => {

@@ -17,11 +17,18 @@ export interface ShopInfo {
 /** 0 = Monday ... 6 = Sunday. */
 export const weekday = (day: ShopDay) => (day.day - 1) % 7;
 const on = (season: Season, ...days: number[]) => (d: ShopDay) => d.season === season && days.includes(d.day);
-const ccDone = (save: SaveData) => save.players.some((p) => p.mailReceived.includes('ccIsComplete')) || save.broadcastedMail.includes('ccIsComplete');
+/** Any player (or the farm) has this mail flag. */
+export const hasFlag = (save: SaveData, flag: string) => save.players.some((p) => p.mailReceived.includes(flag)) || save.broadcastedMail.includes(flag);
+const ccDone = (save: SaveData) => hasFlag(save, 'ccIsComplete');
+/** JojaMart closes for good when the Community Center is restored, or once it's turned into the movie theater. */
+export const jojaMartGone = (save: SaveData) => hasFlag(save, 'ccIsComplete') || hasFlag(save, 'ccMovieTheater');
+/** On the Joja route, the Community Center becomes a Joja warehouse once every project is bought. */
+export const ccIsWarehouse = (save: SaveData) =>
+  hasFlag(save, 'JojaMember') && ['jojaBoilerRoom', 'jojaCraftsRoom', 'jojaFishTank', 'jojaPantry', 'jojaVault'].every((f) => hasFlag(save, f));
 
 export const SHOPS: ShopInfo[] = [
   { id: 'SeedShop', npc: 'Pierre', rotates: true, open: (d, save) => weekday(d) !== 2 || ccDone(save) },
-  { id: 'Joja', npc: 'Morris', rotates: true },
+  { id: 'Joja', npc: 'Morris', rotates: true, open: (_, save) => !jojaMartGone(save) },
   { id: 'AnimalShop', npc: 'Marnie', open: (d) => ![0, 1].includes(weekday(d)) },
   { id: 'Carpenter', npc: 'Robin', rotates: true, open: (d) => weekday(d) !== 1 },
   { id: 'Blacksmith', npc: 'Clint' },

@@ -431,7 +431,8 @@
       "recommendations": "What to plant",
       "planner": "Plans & shopping",
       "production": "Producing",
-      "animals": "Animals"
+      "animals": "Animals",
+      "ponds": "Fish ponds"
     },
     "area": {
       "Farm": "Farm",
@@ -668,7 +669,10 @@
     "workingTitle": "In progress",
     "readyNow": "ready",
     "nextIn": "next in {{time}}",
-    "pondNothing": "Nothing to collect"
+    "pondNothing": "Nothing to collect",
+    "noPonds": "No fish ponds on the farm.",
+    "pondFish": "{{count}}/{{max}} fish",
+    "pondWants": "Wants {{count}}× {{item}}"
   },
   "collections": {
     "tab": {
@@ -727,7 +731,8 @@
     },
     "fishClick": "Click a fish to mark it on the map.",
     "lettersHint": "{{count}} letters received.",
-    "notesHint": "Notes turn up when digging, cutting weeds and fishing after the first one."
+    "notesHint": "Notes turn up when digging, cutting weeds and fishing after the first one.",
+    "recipeLegend": "Color: made it · Faded: recipe known, not made yet · Silhouette: recipe not learned. Hover for ingredients."
   },
   "quests": {
     "title": "{{name}}'s quests",
@@ -755,7 +760,11 @@
     "slayerTitle": "Monster slayer goals (Guild) · {{done}}/{{total}}",
     "slayerHint": "Slay monsters in the mines for Marlon. Each finished goal gives a reward at the Adventurer's Guild.",
     "slayerCollect": "collect it from Gil",
-    "pinTip": "Tip: use \"Mark\" on a quest to show it on the map (Map tab)."
+    "pinTip": "Tip: use \"Mark\" on a quest to show it on the map (Map tab).",
+    "pondsTitle": "Fish pond requests ({{count}})",
+    "pondsNone": "No pond is asking for an item right now. When a pond fills up, the fish ask for something to grow.",
+    "pondOf": "{{fish}} pond",
+    "pondHow": "Bring it to the pond to unlock more room ({{count}}/{{max}} fish)."
   },
   "fish": {
     "title": "Fish collection",
@@ -902,7 +911,8 @@
       "level": "Mastery level {{level}} of 5",
       "toClaim": "{{count}} to claim at the pedestals",
       "max": "Mastery complete.",
-      "how": "With every skill at 10, extra XP becomes Mastery XP (Farming counts half). Each level lets you claim one pedestal in the cave: items, recipes and a perk."
+      "how": "With every skill at 10, extra XP becomes Mastery XP (Farming counts half). Each level lets you claim one pedestal in the cave: items, recipes and a perk.",
+      "claimed": "claimed"
     },
     "grandpa": {
       "title": "Grandpa's evaluation",
