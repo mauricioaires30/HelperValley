@@ -288,6 +288,8 @@
     "museumReady_other": "{{count}} items ready to donate to the museum",
     "eventReady": "{{name}}'s {{hearts}}-heart event is available",
     "giftable_one": "1 villager can still get a gift this week",
-    "giftable_other": "{{count}} villagers can still get a gift this week"
+    "giftable_other": "{{count}} villagers can still get a gift this week",
+    "previous": "Previous",
+    "next": "Next"
   }
 }

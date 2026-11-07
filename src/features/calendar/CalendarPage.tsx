@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { gameData, type Festival, type Season } from '@/data/gameData';
 import { useGameName } from '@/i18n';
 import { useCurrentSave } from '@/store/saveStore';
-import { TodayPanel } from '@/features/today/TodayPage';
+import { TodayHero, TodayLists } from '@/features/today/TodayPage';
 import { ItemIcon, NpcHead, SeasonIcon, Tooltip } from '@/ui';
 import { SEASONS, seasonDays } from './calendar';
 import './calendar.css';
@@ -67,7 +67,7 @@ export function CalendarPage() {
 
   return (
     <div className="calendar">
-      {save && <TodayPanel />}
+      <TodayHero />
 
       <header className="calendar__header">
         <h2>{t('calendar.title')}</h2>
@@ -121,6 +121,8 @@ export function CalendarPage() {
           </div>
         ))}
       </div>
+
+      <TodayLists />
     </div>
   );
 }

@@ -288,6 +288,8 @@
     "museumReady_other": "{{count}} itens prontos para doar ao museu",
     "eventReady": "Evento de {{hearts}} corações de {{name}} disponível",
     "giftable_one": "1 morador ainda pode ganhar presente nesta semana",
-    "giftable_other": "{{count}} moradores ainda podem ganhar presente nesta semana"
+    "giftable_other": "{{count}} moradores ainda podem ganhar presente nesta semana",
+    "previous": "Anterior",
+    "next": "Próximo"
   }
 }

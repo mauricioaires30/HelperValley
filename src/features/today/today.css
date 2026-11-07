@@ -8,17 +8,26 @@
   margin: 2px 0;
 }
 
-.today__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 12px;
-  margin-top: 14px;
+.today__lists {
+  margin-top: 16px;
 }
 
-@media (max-width: 420px) {
-  .today__grid {
-    grid-template-columns: 1fr;
-  }
+.today__pager {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.today__pager h3 {
+  flex: 1;
+  margin: 0;
+  text-align: center;
+}
+
+.today__page {
+  color: var(--text-soft);
+  font-size: 15px;
 }
 
 .today__list {
@@ -27,6 +36,9 @@
   margin: 0;
   padding: 0;
   list-style: none;
+  /* Keeps the box from jumping in height between pages. */
+  min-height: 190px;
+  align-content: start;
 }
 
 .today__list li {
@@ -36,7 +48,7 @@
 }
 
 /* Icon stays beside its text; the text takes the remaining width. */
-.today__list li > span,
+.today__text,
 .today__list li > a {
   flex: 1 1 auto;
   min-width: 0;
