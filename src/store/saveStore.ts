@@ -123,7 +123,7 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
     const { xml, modified } = await source.readSave(folder);
     const save = await parseSave(xml, folder);
     const loadedAt = Date.now();
-    await writeSave(save, getState().summaries, loadedAt);
+    await writeSave(save, xml, getState().summaries, loadedAt);
     setState((s) => ({ cachedFolders: { ...s.cachedFolders, [folder]: loadedAt } }));
     return { save, modified, loadedAt };
   }
@@ -146,8 +146,15 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
 
   /** Shows a save from the browser cache (no folder access needed). */
   async function loadCached(folder: string) {
-    const save = await readCachedSave(folder);
-    if (!save) return false;
+    const cached = await readCachedSave(folder);
+    if (!cached) return false;
+    let save: SaveData;
+    if ('save' in cached) save = cached.save;
+    else {
+      // Saved by an older version of the site: parse the stored file again.
+      save = await parseSave(cached.xml, folder);
+      await writeSave(save, null, getState().summaries, getState().cachedFolders[folder] ?? Date.now());
+    }
     storage.set(SELECTED_KEY, folder);
     const at = getState().cachedFolders[folder] ?? Date.now();
     setState({ save, folder, playerId: rememberedPlayer(save), status: 'ready', loadedAt: at, cachedAt: at });

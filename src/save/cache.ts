@@ -1,40 +1,46 @@
 import { get, set, del, delMany, keys } from 'idb-keyval';
 import type { SaveData, SaveSummary } from './model';
 
-/** Bump when SaveData's shape changes so stale caches are ignored. */
-const CACHE_VERSION = 7;
+/**
+ * Bump when SaveData's shape changes. Parsed copies from older versions are re-parsed from
+ * the raw save kept next to them, so updating the site never loses a farm.
+ */
+const CACHE_VERSION = 9;
 const INDEX_KEY = 'saves:index';
 const saveKey = (folder: string) => `saves:data:${folder}`;
+const xmlKey = (folder: string) => `saves:xml:${folder}`;
 
-/** List of known saves plus which folders have a parsed copy in the browser. */
+/** List of known saves plus which folders have a copy in the browser. */
 export interface CacheIndex {
-  version: number;
   summaries: SaveSummary[];
-  /** Folder → when its cached copy was read from disk (ms). */
+  /** Folder → when its copy was read from disk (ms). */
   cached: Record<string, number>;
 }
 
-const emptyIndex = (): CacheIndex => ({ version: CACHE_VERSION, summaries: [], cached: {} });
+interface StoredSave {
+  version: number;
+  save: SaveData;
+}
 
 export async function readIndex(): Promise<CacheIndex> {
   try {
     const index = await get<CacheIndex>(INDEX_KEY);
-    return index?.version === CACHE_VERSION ? index : emptyIndex();
+    return { summaries: index?.summaries ?? [], cached: index?.cached ?? {} };
   } catch {
-    return emptyIndex();
+    return { summaries: [], cached: {} };
   }
 }
 
 /**
- * Keeps every parsed save in IndexedDB so the site opens instantly, and any save can be
- * switched to, even before folder access is granted again.
+ * Keeps every save (raw file and parsed copy) in IndexedDB so the site opens instantly and any
+ * save can be switched to, even without folder access.
  */
-export async function writeSave(save: SaveData, summaries: SaveSummary[], loadedAt: number) {
+export async function writeSave(save: SaveData, xml: string | null, summaries: SaveSummary[], loadedAt: number) {
   try {
     const index = await readIndex();
-    await set(saveKey(save.folder), save);
+    await set(saveKey(save.folder), { version: CACHE_VERSION, save } satisfies StoredSave);
+    if (xml) await set(xmlKey(save.folder), xml);
     await set(INDEX_KEY, {
-      version: CACHE_VERSION,
       summaries: summaries.length ? summaries : index.summaries,
       cached: { ...index.cached, [save.folder]: loadedAt },
     } satisfies CacheIndex);
@@ -52,9 +58,13 @@ export async function writeSummaries(summaries: SaveSummary[]) {
   }
 }
 
-export async function readSave(folder: string): Promise<SaveData | null> {
+/** The parsed save if it's current; otherwise the raw file to parse again (or null). */
+export async function readSave(folder: string): Promise<{ save: SaveData } | { xml: string } | null> {
   try {
-    return (await get<SaveData>(saveKey(folder))) ?? null;
+    const stored = await get<StoredSave>(saveKey(folder));
+    if (stored?.version === CACHE_VERSION) return { save: stored.save };
+    const xml = await get<string>(xmlKey(folder));
+    return xml ? { xml } : null;
   } catch {
     return null;
   }

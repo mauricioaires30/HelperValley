@@ -3,8 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { CommunityCenterPage } from '@/features/community-center/CommunityCenterPage';
 import { MuseumPage } from '@/features/museum/MuseumPage';
 import { FieldOfficeView } from './FieldOffice';
+import { FishTab } from '@/features/fish/FishTab';
+import { WalnutsTab } from '@/features/walnuts/WalnutsTab';
 
-const TABS = ['cc', 'museum', 'island'] as const;
+const TABS = ['cc', 'museum', 'island', 'fish', 'walnuts'] as const;
 type Tab = (typeof TABS)[number];
 
 /** Community Center, Museum and the island Field Office under one tab bar. */
@@ -25,6 +27,8 @@ export function CollectionsPage() {
       {tab === 'cc' && <CommunityCenterPage />}
       {tab === 'museum' && <MuseumPage />}
       {tab === 'island' && <FieldOfficeView />}
+      {tab === 'fish' && <FishTab />}
+      {tab === 'walnuts' && <WalnutsTab />}
     </div>
   );
 }

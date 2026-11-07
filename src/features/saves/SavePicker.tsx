@@ -71,6 +71,12 @@ export function ConnectPanel() {
     <div className="saves__connect">
       <p>{t('saves.intro')}</p>
       <CopyPath />
+      {/* Works everywhere, even with the saves inside AppData: load once, the browser keeps a copy. */}
+      <div className="saves__quick box">
+        <strong>{t('saves.quickTitle')}</strong>
+        <span className="saves__hint">{t('saves.quickHint')}</span>
+        <FolderInput label={t('saves.quickButton')} primary />
+      </div>
       {supportsDirectoryAccess() ? (
         <LiveSetupGuide />
       ) : (

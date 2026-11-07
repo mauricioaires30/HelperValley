@@ -15,6 +15,7 @@ const NAV: Array<{ to: string; key: string; icon: NavIcon }> = [
   { to: '/calendar', key: 'calendar', icon: { ui: 'nav-calendar', w: 14, h: 12, scale: 2 } },
   { to: '/relationships', key: 'relationships', icon: { ui: 'heart-full', w: 7, h: 6, scale: 4 } },
   { to: '/map', key: 'map', icon: { item: '(O)102' } },
+  { to: '/quests', key: 'quests', icon: { item: '(O)842' } },
   { to: '/production', key: 'farm', icon: { item: '(BC)12' } },
   { to: '/collections', key: 'collections', icon: { ui: 'junimo', w: 16, h: 16, scale: 2, className: 'nav-junimo' } },
   { to: '/achievements', key: 'achievements', icon: { ui: 'star-gold', w: 8, h: 8, scale: 4 } },

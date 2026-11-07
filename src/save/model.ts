@@ -55,6 +55,40 @@ export interface Skills {
   luck: number;
 }
 
+/** A quest in the player's journal. Text fields are in the save's language. */
+export interface QuestState {
+  id: string;
+  /** Serialized quest class: ItemDeliveryQuest, FishingQuest, SlayMonsterQuest, LostItemQuest... */
+  type: string;
+  title: string;
+  description: string;
+  objective: string;
+  /** Days left for timed quests (0 = no limit). */
+  daysLeft: number;
+  reward: number;
+  daily: boolean;
+  completed: boolean;
+  /** Who asked / who to bring it to. */
+  npc?: string;
+  /** Item, fish or resource involved (qualified id). */
+  item?: string;
+  count?: number;
+  monster?: string;
+  /** Where to go or where the lost item is. */
+  location?: string;
+  tile?: [number, number];
+}
+
+/** A special order from the town board or Mr. Qi (shared by the farm). */
+export interface SpecialOrderState {
+  key: string;
+  requester: string;
+  type: string;
+  dueDate: number;
+  state: string;
+  objectives: Array<{ description: string; current: number; max: number }>;
+}
+
 export interface Player {
   id: string;
   name: string;
@@ -94,6 +128,7 @@ export interface Player {
   stats: Record<string, number>;
   monstersKilled: Record<string, number>;
   inventory: ItemStack[];
+  quests: QuestState[];
 }
 
 export interface CommunityCenter {
@@ -132,6 +167,11 @@ export interface SaveData {
   /** Ginger Island resort: built, and open to villagers today. */
   resort: { restored: boolean; openToday: boolean };
   fieldOffice: FieldOfficeState | null;
+  specialOrders: SpecialOrderState[];
+  /** Golden walnut ids already collected (e.g. "Bush_IslandEast_17_37"). */
+  walnutsCollected: string[];
+  /** Repeatable walnut sources found so far, e.g. { IslandFishing: 5, Darts: 3 }. */
+  walnutDrops: Record<string, number>;
 }
 
 /** A crop growing on a tile or in a garden pot. */
