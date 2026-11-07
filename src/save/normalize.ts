@@ -1,5 +1,6 @@
 import type { Season } from '@/data/gameData';
 import { readFarm } from './farm';
+import type { QuestState } from './model';
 import type { CommunityCenter, Container, Friendship, ItemStack, Player, SaveData, SaveSummary } from './model';
 import {
   arr,
@@ -91,6 +92,29 @@ function flattenStats(value: XmlValue): { stats: Record<string, number>; monster
   return { stats, monstersKilled: dict(s.specificMonstersKilled, toNumber) };
 }
 
+const qualify = (id: string | undefined) => (id ? (id.startsWith('(') ? id : `(O)${id}`) : undefined);
+
+function questState(q: XmlNode): QuestState {
+  const tileX = text(q.tileX);
+  return {
+    id: text(q.id) ?? '',
+    type: xsiType(q) ?? 'Quest',
+    title: text(q._questTitle) || text(q.questTitle) || '',
+    description: text(q._questDescription) ?? '',
+    objective: text(q._currentObjective) ?? '',
+    daysLeft: num(q.daysLeft),
+    reward: num(q.moneyReward),
+    daily: bool(q.dailyQuest),
+    completed: bool(q.completed),
+    npc: text(q.target) || text(q.npcName) || undefined,
+    item: qualify(text(q.ItemId) || text(q.item) || text(q.whichFish) || text(q.resource) || text(q.itemIndex) || undefined),
+    count: num(q.numberToFish) || num(q.numberToKill) || num(q.number) || undefined,
+    monster: text(q.monsterName) || undefined,
+    location: text(q.locationOfItem) || text(q.whereToGo) || undefined,
+    tile: tileX ? [num(q.tileX), num(q.tileY)] : undefined,
+  };
+}
+
 export function normalizePlayer(value: XmlValue, isHost: boolean): Player {
   const p = node(value) ?? {};
   const { stats, monstersKilled } = flattenStats(p.stats);
@@ -138,6 +162,10 @@ export function normalizePlayer(value: XmlValue, isHost: boolean): Player {
     stats,
     monstersKilled,
     inventory: itemList(p.items),
+    quests: arr(node(p.questLog)?.Quest).flatMap((q) => {
+      const quest = node(q);
+      return quest ? [questState(quest)] : [];
+    }),
   };
 }
 
@@ -253,6 +281,25 @@ export function normalizeSave(xml: string, folder: string): SaveData {
     broadcastedMail: strings(save.broadcastedMail),
     completedSpecialOrders: dictEntries(save.completedSpecialOrders).map(([k]) => text(k) ?? '').filter(Boolean),
     farm: readFarm(locations),
+    specialOrders: arr(node(save.specialOrders)?.SpecialOrder).flatMap((o) => {
+      const order = node(o);
+      if (!order) return [];
+      return [
+        {
+          key: text(order.questKey) ?? '',
+          requester: text(order.requester) ?? '',
+          type: text(order.orderType) ?? '',
+          dueDate: num(order.dueDate),
+          state: text(order.questState) ?? '',
+          objectives: arr(order.objectives).flatMap((v) => {
+            const obj = node(v);
+            return obj ? [{ description: text(obj.description) ?? '', current: num(obj.currentCount), max: num(obj.maxCount) }] : [];
+          }),
+        },
+      ];
+    }),
+    walnutsCollected: strings(save.collectedNutTracker),
+    walnutDrops: dict(save.limitedNutDrops, (v) => num(v)),
     fieldOffice: (() => {
       const office = locations.map(node).find((l) => xsiType(l) === 'IslandFieldOffice');
       if (!office) return null;

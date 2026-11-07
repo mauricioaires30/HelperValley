@@ -154,9 +154,28 @@ export interface GameData {
   farm: FarmData;
   worldMap: WorldMapData;
   schedules: Record<string, ScheduleData>;
+  fish: Record<string, FishData>;
+  walnuts: WalnutSpot[];
 }
 
-const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents', 'farm', 'worldMap', 'schedules'] as const;
+export interface FishData {
+  /** Crab pot catch: "ocean" or "freshwater". */
+  trap?: 'ocean' | 'freshwater';
+  times?: Array<[number, number]>;
+  seasons?: Season[];
+  weather?: 'sunny' | 'rainy' | 'both';
+  level?: number;
+  locations: Array<{ location: string; seasons?: Season[]; area?: string }>;
+}
+
+export interface WalnutSpot {
+  id: string;
+  kind: 'bush' | 'buried';
+  location: string;
+  tile: [number, number];
+}
+
+const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents', 'farm', 'worldMap', 'schedules', 'fish', 'walnuts'] as const;
 
 export const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 export const spriteUrl = (sheet: string) => assetUrl(`sprites/${sheet}.png`);

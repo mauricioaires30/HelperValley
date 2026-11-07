@@ -79,11 +79,14 @@
       "close": "Feche o Stardew Valley.",
       "run": "Abra o PowerShell (menu Iniciar → \"PowerShell\") e rode isto uma vez:",
       "copy": "Copiar comando",
-      "pick": "Depois escolha a pasta DocumentosStardewValley Saves:",
+      "pick": "Depois escolha a pasta Documentos/StardewValley Saves (dentro da sua pasta de usuário):",
       "allow": "Na próxima visita, quando o navegador perguntar, escolha \"Permitir em todas as visitas\". A partir daí o site abre ao vivo e atualiza sempre que o jogo salvar.",
       "safe": "Os saves continuam sendo os mesmos arquivos e a Steam Cloud continua funcionando. Para desfazer, apague o atalho em AppData e mova a pasta de volta.",
       "noLive": "Não quer mudar nada? Selecione a pasta toda vez (sem atualização ao vivo):"
-    }
+    },
+    "quickTitle": "Ver sua fazenda agora",
+    "quickHint": "Selecione a pasta %AppData%\\StardewValley\\Saves (cole o caminho na barra de endereço da janela). O navegador guarda uma cópia, então da próxima vez abre sozinho.",
+    "quickButton": "Selecionar pasta Saves"
   },
   "locations": {
     "Farm": "Fazenda",

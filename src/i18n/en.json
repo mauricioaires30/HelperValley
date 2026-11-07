@@ -79,11 +79,14 @@
       "close": "Close Stardew Valley.",
       "run": "Open PowerShell (Start menu → \"PowerShell\") and run this once:",
       "copy": "Copy command",
-      "pick": "Then choose the folder DocumentsStardewValley Saves:",
+      "pick": "Then choose the folder Documents/StardewValley Saves (in your user folder):",
       "allow": "On your next visit, when the browser asks, choose \"Allow on every visit\". From then on the site opens live and updates whenever the game saves.",
       "safe": "Your saves stay the same files; Steam Cloud keeps working. To undo, delete the link in AppData and move the folder back.",
       "noLive": "Don't want to change anything? Select the folder each time instead (no live updates):"
-    }
+    },
+    "quickTitle": "See your farm now",
+    "quickHint": "Select the folder %AppData%\\StardewValley\\Saves (paste the path in the address bar of the window). The browser keeps a copy, so next time it opens on its own.",
+    "quickButton": "Select Saves folder"
   },
   "locations": {
     "Farm": "Farm",

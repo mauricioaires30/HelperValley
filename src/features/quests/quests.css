@@ -1,0 +1,60 @@
+.quest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 10px;
+}
+
+.quest-section {
+  margin-top: 20px;
+}
+
+.quest {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+
+.quest__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.quest__header h3 {
+  flex: 1;
+  margin: 0;
+}
+
+.quest__days {
+  padding: 0 4px;
+  font-size: 13px;
+  color: #fff;
+  background: var(--danger);
+}
+
+.quest__objective,
+.quest__how {
+  margin: 0;
+}
+
+.quest__how-fish,
+.fish-where {
+  display: inline-grid;
+  gap: 2px;
+}
+
+.fish-where {
+  font-size: 14px;
+  color: var(--text-soft);
+}
+
+.quest__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.quest__footer a {
+  text-decoration: none;
+}
