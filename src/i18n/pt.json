@@ -71,7 +71,18 @@
     "cachedMode": "Salvo neste navegador: reconecte para atualizar ao vivo",
     "cachedHintReconnect": "Clique em qualquer lugar e escolha \"Permitir em todas as visitas\" para ficar ao vivo daqui pra frente.",
     "cachedHintPick": "Conecte a pasta Saves uma vez; nas próximas visitas o navegador pergunta uma vez, escolha \"Permitir em todas as visitas\" e fica ao vivo.",
-    "cachedHintUnsupported": "Este navegador não consegue ficar de olho numa pasta. Use Chrome ou Edge para atualizar ao vivo (no Brave, ative a flag File System Access API)."
+    "cachedHintUnsupported": "Este navegador não consegue ficar de olho numa pasta. Use Chrome ou Edge para atualizar ao vivo (no Brave, ative a flag File System Access API).",
+    "guide": {
+      "title": "Deixar o site ao vivo (Chrome / Edge)",
+      "why": "O Chrome e o Edge não deixam sites abrirem pastas dentro de AppData, que é onde o jogo salva. A solução é mover os saves para Documentos e deixar um atalho de pasta no lugar antigo: o jogo continua salvando normalmente e o navegador lê a pasta em Documentos.",
+      "close": "Feche o Stardew Valley.",
+      "run": "Abra o PowerShell (menu Iniciar → \"PowerShell\") e rode isto uma vez:",
+      "copy": "Copiar comando",
+      "pick": "Depois escolha a pasta DocumentosStardewValley Saves:",
+      "allow": "Na próxima visita, quando o navegador perguntar, escolha \"Permitir em todas as visitas\". A partir daí o site abre ao vivo e atualiza sempre que o jogo salvar.",
+      "safe": "Os saves continuam sendo os mesmos arquivos e a Steam Cloud continua funcionando. Para desfazer, apague o atalho em AppData e mova a pasta de volta.",
+      "noLive": "Não quer mudar nada? Selecione a pasta toda vez (sem atualização ao vivo):"
+    }
   },
   "locations": {
     "Farm": "Fazenda",
@@ -164,7 +175,8 @@
       "museum": "Abrir o acompanhamento do museu",
       "quests": "Complete os pedidos de \"Precisa-se de ajuda\" do quadro em frente ao armazém do Pierre.",
       "house": "Nível atual da reforma da casa: {{level}}. Fale com a Robin para reformar.",
-      "money": "Total ganho até agora: {{money}}g."
+      "money": "Total ganho até agora: {{money}}g.",
+      "allDone": "Tudo completo ✓"
     },
     "recipe": {
       "tv": "A Rainha do Molho (TV): domingo, dia {{day}} de {{season}}, ano {{year}} (reprises depois às quartas)",
@@ -309,7 +321,7 @@
       "category_trinket": "Bugigangas"
     },
     "how": "Como:",
-    "eventsTitle": "Eventos de coração que faltam ver",
+    "eventsTitle": "Eventos de coração",
     "eventHearts_one": "{{count}} coração:",
     "eventHearts_other": "{{count}} corações:",
     "place": {
@@ -349,7 +361,9 @@
     "eventsLeft_one": "Falta 1 evento",
     "eventsLeft_other": "Faltam {{count}} eventos",
     "allEventsSeen": "Todos os eventos vistos ✓",
-    "reverse": "Inverter ordem"
+    "reverse": "Inverter ordem",
+    "eventSeen": "——— EVENTO VISTO ———",
+    "eventImpossible": "——— INDISPONÍVEL (casado com outra pessoa) ———"
   },
   "today": {
     "luck": {
@@ -539,9 +553,6 @@
     "day": "Dia",
     "raining": "Chovendo",
     "resort": "Resort da ilha aberto",
-    "fromSave": "Corações e casamento vêm do seu save (cônjuge: {{spouse}}).",
-    "single": "ninguém",
-    "noSave": "Carregue um save para usar seus corações e casamento.",
     "since": "lá desde {{time}}",
     "listTitle": "Todo mundo às {{time}}",
     "resortTitle": "Quem pode estar no resort",
@@ -560,6 +571,20 @@
       "Railroad": "Ferrovia",
       "BusStop": "Ponto de ônibus",
       "Desert": "Deserto de Calico"
-    }
+    },
+    "zoomIn": "Aproximar",
+    "zoomOut": "Afastar",
+    "zoomReset": "Resetar",
+    "show": "Mostrar no mapa",
+    "layer": {
+      "npcs": "Moradores",
+      "events_one": "Eventos de coração disponíveis agora ({{count}})",
+      "events_other": "Eventos de coração disponíveis agora ({{count}})"
+    },
+    "eventPin": "Evento de {{hearts}} corações de {{name}}",
+    "walkingTo": "andando até {{place}}",
+    "resortOpen": "No seu save: o resort está aberto hoje.",
+    "resortClosed": "No seu save: o resort está fechado hoje.",
+    "resortNotBuilt": "No seu save: o resort ainda não foi reconstruído."
   }
 }

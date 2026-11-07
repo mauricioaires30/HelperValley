@@ -20,7 +20,7 @@ interface CardProps {
 function AchievementCard({ progress, player, open, onToggle }: CardProps) {
   const { t } = useTranslation();
   const name = useGameName();
-  const canExpand = !progress.earned && HAS_DETAILS.has(progress.id);
+  const canExpand = HAS_DETAILS.has(progress.id);
   const data = gameData().achievements[progress.id];
   const pct = progress.goal ? Math.round(((progress.value ?? 0) / progress.goal) * 100) : 0;
   return (

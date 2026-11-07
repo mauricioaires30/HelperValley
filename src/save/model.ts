@@ -129,6 +129,8 @@ export interface SaveData {
   broadcastedMail: string[];
   completedSpecialOrders: string[];
   farm: FarmState;
+  /** Ginger Island resort: built, and open to villagers today. */
+  resort: { restored: boolean; openToday: boolean };
 }
 
 /** A crop growing on a tile or in a garden pot. */

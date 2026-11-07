@@ -22,6 +22,7 @@ describe('normalizeSave', () => {
     expect(host.skills.farming).toBe(10);
     expect(host.professions).toEqual([1, 4]);
     expect(host.achievements).toEqual([0, 5]);
+    expect(host.eventsSeen).toEqual(['60367', 'festival_spring13']);
     expect(host.basicShipped).toEqual({ '24': 40 });
     expect(host.fishCaught['(O)145']).toEqual([3, 12]);
     expect(host.friendships.Abigail).toMatchObject({ points: 1500, status: 'Dating', talkedToday: true });

@@ -1,17 +1,12 @@
 import { useMemo, useState, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { gameData } from '@/data/gameData';
 import { useGameName } from '@/i18n';
-import type { Player, SaveData } from '@/save/model';
-import { totalCount } from '@/save/inventory';
+import type { SaveData } from '@/save/model';
 import { useCurrentSave } from '@/store/saveStore';
 import { daysUntil, DAYS_IN_SEASON, SEASONS } from '@/features/calendar/calendar';
 import { FestivalIcon, useFestivalName } from '@/features/calendar/CalendarPage';
-import { buildRelationships } from '@/features/relationships/relationships';
 import { bestOwnedGifts, ownedObjectIds } from '@/features/relationships/gifts';
-import { buildRooms } from '@/features/community-center/bundles';
-import { buildMuseum } from '@/features/museum/museum';
 import { ItemIcon, NpcHead, SeasonIcon } from '@/ui';
 import './today.css';
 
@@ -75,21 +70,12 @@ export function TodayHero() {
   );
 }
 
-function useTodayEntries(save: SaveData, player: Player) {
+function useTodayEntries(save: SaveData) {
   const { t } = useTranslation();
   const name = useGameName();
   const festivalName = useFestivalName();
   const owned = useMemo(() => ownedObjectIds(save), [save]);
   const soon = useMemo(() => upcoming(save, 7), [save]);
-  const relationships = useMemo(() => buildRelationships(save, player), [save, player]);
-  const ccReady = useMemo(() => {
-    if (save.communityCenter.isJoja) return 0;
-    const slots = buildRooms(save, gameData().bundles).flatMap((r) =>
-      r.bundles.filter((b) => !b.complete).flatMap((b) => b.slots.filter((s) => !s.done && s.id !== 'money')),
-    );
-    return slots.filter((s) => totalCount(s.owned) >= s.count).length;
-  }, [save]);
-  const museumReady = useMemo(() => buildMuseum(save, gameData().museum).filter((e) => e.status === 'owned').length, [save]);
   const when = (d: number) => (d === 0 ? t('today.todayLabel') : t('today.inDays', { count: d }));
 
   const soonEntries: ReactNode[] = [
@@ -115,53 +101,25 @@ function useTodayEntries(save: SaveData, player: Player) {
     }),
   ];
 
-  const giftable = relationships.filter((r) => r.giftsThisWeek < 2 && r.giftsToday === 0).length;
-  const todoEntries: ReactNode[] = [
-    ccReady > 0 && (
-      <li key="cc">
-        <ItemIcon id="(O)24" tooltip={false} />
-        <Link to="/cc">{t('today.ccReady', { count: ccReady })}</Link>
-      </li>
-    ),
-    museumReady > 0 && (
-      <li key="museum">
-        <ItemIcon id="(O)96" tooltip={false} />
-        <Link to="/museum">{t('today.museumReady', { count: museumReady })}</Link>
-      </li>
-    ),
-    ...relationships
-      .filter((r) => r.nextEvent?.unlocked)
-      .map((r) => (
-        <li key={`event-${r.npc}`}>
-          <NpcHead npc={r.npc} />
-          <Link to="/relationships">{t('today.eventReady', { name: name(gameData().npcs[r.npc].n), hearts: r.nextEvent!.hearts })}</Link>
-        </li>
-      )),
-    <li key="gifts">
-      <ItemIcon id="(O)458" tooltip={false} />
-      <Link to="/relationships">{t('today.giftable', { count: giftable })}</Link>
-    </li>,
-  ].filter(Boolean);
-
-  return { soonEntries, todoEntries };
+  return { soonEntries };
 }
 
-/** "Next 7 days" and "Things to do", one page at a time with arrows to keep the page short. */
+/** "Next 7 days", one page at a time with arrows to keep the page short. */
 export function TodayLists() {
-  const { save, player } = useCurrentSave();
-  return save && player ? <TodayListsFor save={save} player={player} /> : null;
+  const { save } = useCurrentSave();
+  return save ? <TodayListsFor save={save} /> : null;
 }
 
-function TodayListsFor({ save, player }: { save: SaveData; player: Player }) {
+function TodayListsFor({ save }: { save: SaveData }) {
   const { t } = useTranslation();
-  const { soonEntries, todoEntries } = useTodayEntries(save, player);
+  const { soonEntries } = useTodayEntries(save);
   const [page, setPage] = useState(0);
 
   const chunk = (title: string, entries: ReactNode[]) => {
     const list = entries.length ? entries : [<li key="empty">{t('today.nothingSoon')}</li>];
     return Array.from({ length: Math.ceil(list.length / PAGE_SIZE) }, (_, i) => ({ title, entries: list.slice(i * PAGE_SIZE, (i + 1) * PAGE_SIZE) }));
   };
-  const pages = [...chunk(t('today.soon'), soonEntries), ...chunk(t('today.todo'), todoEntries)];
+  const pages = chunk(t('today.soon'), soonEntries);
   const index = Math.min(page, pages.length - 1);
   const current = pages[index];
 

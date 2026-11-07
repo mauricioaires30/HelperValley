@@ -119,7 +119,8 @@ export function normalizePlayer(value: XmlValue, isHost: boolean): Player {
     millisecondsPlayed: num(p.millisecondsPlayed),
     achievements: numbers(p.achievements),
     mailReceived: strings(p.mailReceived),
-    eventsSeen: strings(p.eventsSeen),
+    // Serialized as <int> elements even though some ids are text ("festival_spring13").
+    eventsSeen: [...strings(p.eventsSeen), ...strings(p.eventsSeen, 'int')],
     secretNotesSeen: numbers(p.secretNotesSeen),
     specialItems: strings(p.specialItems),
     cookingRecipes: dict(p.cookingRecipes, toNumber),
@@ -252,6 +253,10 @@ export function normalizeSave(xml: string, folder: string): SaveData {
     broadcastedMail: strings(save.broadcastedMail),
     completedSpecialOrders: dictEntries(save.completedSpecialOrders).map(([k]) => text(k) ?? '').filter(Boolean),
     farm: readFarm(locations),
+    resort: (() => {
+      const south = locations.map(node).find((l) => text(l?.name) === 'IslandSouth');
+      return { restored: bool(south?.resortRestored), openToday: bool(south?.resortOpenToday) };
+    })(),
   };
 }
 

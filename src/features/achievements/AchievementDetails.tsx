@@ -11,6 +11,9 @@ const MONOCULTURE_GOAL = 300;
 
 /** A grid of items with an optional "n/goal" badge; faded ones aren't unlocked yet. */
 function ItemGrid({ items }: { items: Array<{ id: string; label?: string; faded?: boolean; tip?: ReactNode }> }) {
+  const { t } = useTranslation();
+  // Earned achievements open too; with nothing missing, say so.
+  if (items.length === 0) return <p className="ach__close">{t('ach.details.allDone')}</p>;
   return (
     <div className="slot-grid ach-details__grid">
       {items.map(({ id, label, faded, tip }) => (

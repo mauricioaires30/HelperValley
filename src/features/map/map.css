@@ -32,12 +32,92 @@
   margin: 0;
 }
 
-/* The in-game map texture, scaled with nearest-neighbour like the game. */
-.map-canvas {
+.map-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 12px;
+  align-items: start;
+}
+
+@media (max-width: 1000px) {
+  .map-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.map-frame {
+  position: relative;
+}
+
+.map-zoom {
+  position: absolute;
+  z-index: 10;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+}
+
+.map-viewport {
   position: relative;
   width: 100%;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.map-viewport--zoomed {
+  cursor: grab;
+}
+
+.map-viewport--zoomed:active {
+  cursor: grabbing;
+}
+
+/* The in-game map texture, scaled with nearest-neighbour like the game. */
+.map-canvas {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
   image-rendering: pixelated;
   background-repeat: no-repeat;
+}
+
+.map-side {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.map-side h3 {
+  margin: 0;
+}
+
+.map-pin {
+  position: absolute;
+  z-index: 2;
+  transform-origin: 50% 100%;
+}
+
+.map-pin__icon {
+  display: inline-grid;
+  place-items: center;
+  padding: 3px;
+  background: var(--paper-light);
+  border: var(--px) solid #b3264a;
+  border-radius: 50% 50% 50% 0;
+  rotate: -45deg;
+}
+
+.map-pin__icon img {
+  rotate: 45deg;
+}
+
+.map-npc--walking .map-npc__face {
+  border-style: dashed;
+}
+
+.map-list-box {
+  margin-top: 12px;
 }
 
 .map-npc {
