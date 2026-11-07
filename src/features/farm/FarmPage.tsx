@@ -4,11 +4,12 @@ import type { Player, SaveData } from '@/save/model';
 import { RequireSave } from '@/features/saves/RequireSave';
 import { FarmOverview } from './FarmOverview';
 import { ProductionView } from './ProductionView';
+import { AnimalsView } from './AnimalsView';
 import { Recommendations } from './Recommendations';
 import { Planner } from './Planner';
 import './farm.css';
 
-const VIEWS = ['production', 'overview', 'recommendations', 'planner'] as const;
+const VIEWS = ['production', 'animals', 'overview', 'recommendations', 'planner'] as const;
 type View = (typeof VIEWS)[number];
 
 function Farm({ save, player }: { save: SaveData; player: Player }) {
@@ -27,6 +28,7 @@ function Farm({ save, player }: { save: SaveData; player: Player }) {
         </div>
       </header>
       {view === 'production' && <ProductionView save={save} />}
+      {view === 'animals' && <AnimalsView save={save} />}
       {view === 'overview' && <FarmOverview save={save} />}
       {view === 'recommendations' && <Recommendations save={save} player={player} />}
       {view === 'planner' && <Planner save={save} player={player} />}

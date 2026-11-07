@@ -128,6 +128,8 @@ export interface FarmData {
   fruitTrees: Array<{ sapling: string; fruit: string; seasons: Season[]; sources: ItemSource[] }>;
   animals: Record<string, { n: LocalizedName; house: string; produce: string[]; days: number; price: number; sprite: [string, number, number] }>;
   hay: ItemSource[];
+  /** Pet type → name and breed id → sprite sheet. */
+  pets: Record<string, { n: LocalizedName; breeds: Record<string, string> }>;
 }
 
 export interface MuseumData {
