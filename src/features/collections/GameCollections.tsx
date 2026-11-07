@@ -9,7 +9,7 @@ import { usePinStore } from '@/store/pinStore';
 import { ItemIcon, Progress, Tooltip } from '@/ui';
 import { HowToGet } from './HowToGet';
 
-export type GameTab = 'shipped' | 'fish' | 'artifacts' | 'minerals' | 'cooking';
+export type GameTab = 'shipped' | 'fish' | 'artifacts' | 'minerals' | 'cooking' | 'crafting';
 
 interface Entry {
   id: string;
@@ -37,8 +37,35 @@ function entriesFor(tab: GameTab, player: Player): Entry[] {
       return Object.entries(data.achievementGoals.cookingOutputs).map(([recipe, id]) => ({
         id,
         count: player.recipesCooked[bare(id)] ?? 0,
-        extra: <RecipeTip id={id} known={recipe in player.cookingRecipes} sources={data.achievementGoals.recipeSources.cooking[recipe] ?? []} />,
+        extra: (
+          <RecipeTip
+            id={id}
+            known={recipe in player.cookingRecipes}
+            sources={data.achievementGoals.recipeSources.cooking[recipe] ?? []}
+            ingredients={data.gameCollections.ingredients.cooking[recipe]}
+          />
+        ),
       }));
+    case 'crafting':
+      // The game's crafting page: lit once crafted at least once.
+      return data.achievementGoals.crafting.flatMap((recipe) => {
+        const id = data.achievementGoals.craftingOutputs[recipe];
+        if (!id) return [];
+        return [
+          {
+            id,
+            count: player.craftingRecipes[recipe] ?? 0,
+            extra: (
+              <RecipeTip
+                id={id}
+                known={recipe in player.craftingRecipes}
+                sources={data.achievementGoals.recipeSources.crafting[recipe] ?? []}
+                ingredients={data.gameCollections.ingredients.crafting[recipe]}
+              />
+            ),
+          },
+        ];
+      });
   }
 }
 
@@ -68,7 +95,7 @@ function Grid({ tab, player }: { tab: GameTab; player: Player }) {
               key={e.id}
               text={
                 <span className="slot-tooltip game-grid__tip">
-                  <strong>{name(getItem(e.id)?.n)}</strong>
+                  {!e.extra && <strong>{name(getItem(e.id)?.n)}</strong>}
                   <em>{e.count > 0 ? t(`collections.count.${tab}`, { count: e.count }) : t('collections.notYet')}</em>
                   {e.extra ?? <HowToGet id={e.id} />}
                   {pinned && <span>{t('quests.pinned')}</span>}

@@ -121,6 +121,8 @@ function Grandpa({ save, player }: { save: SaveData; player: Player }) {
   const points = grandpaPoints(save, player);
   const score = points.reduce((sum, p) => sum + (p.done ? p.points : 0), 0);
   const candles = candlesFor(score);
+  const missing = points.filter((p) => !p.done);
+  const done = points.filter((p) => p.done);
   const achievements = gameData().achievements;
   const label = (p: (typeof points)[number]) => {
     if (p.key === 'achievement') return t('player.grandpa.achievement', { name: name(achievements[p.values!.id]?.n) });
@@ -135,15 +137,35 @@ function Grandpa({ save, player }: { save: SaveData; player: Player }) {
         {t('player.grandpa.now', { score, candles })}
       </p>
       <Progress value={score} max={21} />
-      <ul className="grandpa">
-        {points.map((p, i) => (
-          <li key={i} className={p.done ? 'grandpa__point grandpa__point--done' : 'grandpa__point'}>
-            <span>{p.done ? '✓' : '·'}</span>
-            <span>{label(p)}</span>
-            <span className="grandpa__pts">+{p.points}</span>
-          </li>
-        ))}
-      </ul>
+      {/* What's missing comes first and stands out; what's done folds away. */}
+      {missing.length > 0 ? (
+        <>
+          <h3 className="grandpa__todo-title">{t('player.grandpa.todo', { count: missing.reduce((n, p) => n + p.points, 0) })}</h3>
+          <ul className="grandpa grandpa--todo">
+            {missing.map((p, i) => (
+              <li key={i} className="grandpa__point grandpa__point--todo box">
+                <span className="check" aria-hidden="true" />
+                <span>{label(p)}</span>
+                <span className="grandpa__pts">+{p.points}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p className="grandpa__all">{t('player.grandpa.allDone')}</p>
+      )}
+      <details className="grandpa__done">
+        <summary>{t('player.grandpa.doneList', { count: done.length })}</summary>
+        <ul className="grandpa">
+          {done.map((p, i) => (
+            <li key={i} className="grandpa__point grandpa__point--done">
+              <span className="check check--on" aria-hidden="true" />
+              <span>{label(p)}</span>
+              <span className="grandpa__pts">+{p.points}</span>
+            </li>
+          ))}
+        </ul>
+      </details>
       <p className="cc-summary__hint">{t('player.grandpa.how')}</p>
     </section>
   );

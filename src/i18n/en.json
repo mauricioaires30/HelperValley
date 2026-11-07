@@ -19,7 +19,8 @@
     "collections": "Collections",
     "quests": "Quests",
     "player": "Character",
-    "shops": "Shops"
+    "shops": "Shops",
+    "community": "Center & Museum"
   },
   "common": {
     "language": "Language",
@@ -222,6 +223,12 @@
         "linusTrashCleanup": "Linus's special order",
         "carolineSO": "Caroline's special order",
         "guntherBones": "Gunther's special order (fossils)"
+      },
+      "category": {
+        "-4": "any fish",
+        "-5": "any egg",
+        "-6": "any milk",
+        "-777": "wild seeds (any)"
       }
     }
   },
@@ -617,7 +624,9 @@
       "events_other": "Heart events available now ({{count}})",
       "quests": "Marked quests",
       "fish": "Marked fish",
-      "walnuts": "Missing walnut spots"
+      "walnuts": "Missing walnut spots",
+      "shops": "Open shops",
+      "donations": "Missing donations"
     },
     "eventPin": "{{name}}'s {{hearts}}-heart event",
     "walkingTo": "walking to {{place}}",
@@ -628,7 +637,10 @@
     "fishPin": "{{name}} bites here",
     "fishSearch": "Mark a fish…",
     "fishMarked": "Marked fish",
-    "fishAdd": "Mark"
+    "fishAdd": "Mark",
+    "shopClick": "Click to see today's stock.",
+    "donationPin": "{{place}}: {{count}} to donate",
+    "tip": "Tip: mark fish here or in Collections → Fish, and quests on the Quests page (\"Mark\" button). Everything shows on this map."
   },
   "prod": {
     "title": "Production",
@@ -671,7 +683,8 @@
       "cooking": "Cooking",
       "achievements": "Achievements",
       "letters": "Letters",
-      "notes": "Secret Notes"
+      "notes": "Secret Notes",
+      "crafting": "Crafting"
     },
     "office": {
       "locked": "The Field Office on Ginger Island hasn't been opened yet.",
@@ -703,7 +716,8 @@
       "fish": "Caught {{count}}×",
       "artifacts": "Found {{count}}×",
       "minerals": "Found {{count}}×",
-      "cooking": "Cooked {{count}}×"
+      "cooking": "Cooked {{count}}×",
+      "crafting": "Crafted {{count}}×"
     },
     "how": {
       "crop": "Grow in: {{seasons}}",
@@ -737,7 +751,11 @@
       "socialize": "Talk to every villager.",
       "go": "Go to {{place}}."
     },
-    "pinFish": "Mark the fish"
+    "pinFish": "Mark the fish",
+    "slayerTitle": "Monster slayer goals (Guild) · {{done}}/{{total}}",
+    "slayerHint": "Slay monsters in the mines for Marlon. Each finished goal gives a reward at the Adventurer's Guild.",
+    "slayerCollect": "collect it from Gil",
+    "pinTip": "Tip: use \"Mark\" on a quest to show it on the map (Map tab)."
   },
   "fish": {
     "title": "Fish collection",
@@ -857,24 +875,17 @@
     "petDaily": "pet it every day",
     "horse": "horse",
     "farmAnimals": "Farm animals ({{count}})",
-    "petN": "{{count}} without auto-petter",
-    "sad": "{{count}} unhappy",
-    "allTitle": "Every animal (fewest hearts first)",
-    "col": {
-      "name": "Name",
-      "type": "Type",
-      "hearts": "Hearts",
-      "mood": "Mood",
-      "home": "Lives in",
-      "care": "Care"
-    },
     "mood": {
       "happy": "happy",
       "fine": "ok",
       "sad": "unhappy"
     },
-    "needsPet": "pet it",
-    "cracker": "ate a golden cracker"
+    "needsPet": "pet today",
+    "cracker": "golden cracker",
+    "petted": "petted",
+    "requests": "Requests for animal products",
+    "noRequests": "No quest or special order asks for eggs, milk, wool or truffles right now.",
+    "daysLeft": "{{count}} days"
   },
   "player": {
     "skills": "Skills · farmer level {{level}}",
@@ -908,7 +919,10 @@
       "rustyKey": "Rusty Key (60 museum donations)",
       "friends": "{{count}} friends at 8 hearts ({{have}} now)",
       "level": "Farmer level {{count}} ({{have}} now)",
-      "pet": "Max friendship with your pet"
+      "pet": "Max friendship with your pet",
+      "todo": "Still to do (+{{count}} points available)",
+      "allDone": "All done! Grandpa lights all 4 candles.",
+      "doneList": "Done ({{count}})"
     }
   },
   "shops": {
@@ -964,5 +978,13 @@
     "uncertainItem": "May differ in game (see the note above).",
     "nothing": "Nothing found.",
     "closed": "Closed or away today: {{names}}"
+  },
+  "community": {
+    "tab": {
+      "cc": "Community Center",
+      "joja": "Joja",
+      "museum": "Museum",
+      "island": "Island Field Office"
+    }
   }
 }

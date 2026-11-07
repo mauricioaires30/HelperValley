@@ -35,7 +35,39 @@ function ItemGrid({ items }: { items: Array<{ id: string; label?: string; faded?
 const SEASON_KEYS = ['spring', 'summer', 'fall', 'winter'];
 
 /** Name of the dish/item plus how its recipe is learned, for a slot tooltip. */
-export function RecipeTip({ id, sources, known }: { id: string; sources: Array<Array<string | number | null>>; known: boolean }) {
+/** Recipe ingredients categories: any fish, egg, milk, wild seeds. Icon shown for each. */
+const CATEGORY_ICON: Record<string, string> = { '-4': '(O)145', '-5': '(O)176', '-6': '(O)184', '-777': '(O)495' };
+
+/** "What goes in": ingredient icons with counts, as on the game's recipe tooltip. */
+export function Ingredients({ list }: { list: Array<[string, number]> }) {
+  const { t } = useTranslation();
+  const name = useGameName();
+  return (
+    <span className="ingredients">
+      {list.map(([id, count]) => {
+        const category = id.startsWith('-');
+        return (
+          <span key={id} className="ingredients__item">
+            <ItemIcon id={category ? CATEGORY_ICON[id] ?? '(O)0' : id} scale={1} tooltip={false} />
+            {count}× {category ? t(`ach.recipe.category.${id}`) : name(getItem(id)?.n)}
+          </span>
+        );
+      })}
+    </span>
+  );
+}
+
+export function RecipeTip({
+  id,
+  sources,
+  known,
+  ingredients,
+}: {
+  id: string;
+  sources: Array<Array<string | number | null>>;
+  known: boolean;
+  ingredients?: Array<[string, number]>;
+}) {
   const { t } = useTranslation();
   const name = useGameName();
   const npcs = gameData().npcs;
@@ -77,6 +109,7 @@ export function RecipeTip({ id, sources, known }: { id: string; sources: Array<A
   return (
     <span className="slot-tooltip">
       <strong>{name(getItem(id)?.n)}</strong>
+      {ingredients && <Ingredients list={ingredients} />}
       <em>{known ? t('ach.recipe.known') : t('ach.recipe.unknown')}</em>
       {!known && (sources.length ? sources.map((s, i) => <span key={i}>{line(s)}</span>) : <span>{t('ach.recipe.other')}</span>)}
     </span>
@@ -130,7 +163,7 @@ export function AchievementDetails({ id, player }: { id: string; player: Player 
         .filter(([, item]) => !player.recipesCooked[item.replace('(O)', '')])
         .map(([recipe, item]) => {
           const known = recipe in player.cookingRecipes;
-          return { id: item, faded: !known, tip: <RecipeTip id={item} known={known} sources={goals.recipeSources.cooking[recipe] ?? []} /> };
+          return { id: item, faded: !known, tip: <RecipeTip id={item} known={known} sources={goals.recipeSources.cooking[recipe] ?? []} ingredients={gameData().gameCollections.ingredients.cooking[recipe]} /> };
         });
       return (
         <>
@@ -148,7 +181,7 @@ export function AchievementDetails({ id, player }: { id: string; player: Player 
         .map((recipe) => {
           const known = recipe in player.craftingRecipes;
           const id = goals.craftingOutputs[recipe];
-          return { id, faded: !known, tip: <RecipeTip id={id} known={known} sources={goals.recipeSources.crafting[recipe] ?? []} /> };
+          return { id, faded: !known, tip: <RecipeTip id={id} known={known} sources={goals.recipeSources.crafting[recipe] ?? []} ingredients={gameData().gameCollections.ingredients.crafting[recipe]} /> };
         })
         .filter((m) => m.id);
       return (

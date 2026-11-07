@@ -118,7 +118,7 @@ function MissingSummary({ rooms }: { rooms: Room[] }) {
   );
 }
 
-function JojaView({ save }: { save: SaveData }) {
+export function JojaView({ save }: { save: SaveData }) {
   const { t } = useTranslation();
   const projects = jojaProgress(save);
   return (

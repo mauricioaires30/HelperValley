@@ -1,12 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { gameData } from '@/data/gameData';
+import { gameData, getItem } from '@/data/gameData';
 import { useGameName } from '@/i18n';
 import type { SaveData } from '@/save/model';
-import { Hearts, Sprite, Tooltip } from '@/ui';
+import { Hearts, ItemIcon, Sprite } from '@/ui';
 import { HayCard } from './FarmOverview';
 
-/** Farm animals reach 5 hearts at 1000 friendship. */
-const animalHearts = (friendship: number) => Math.floor(friendship / 200);
 
 /**
  * Pets, horses and farm animals: hearts, mood and today's chores
@@ -18,13 +16,12 @@ export function AnimalsView({ save }: { save: SaveData }) {
   const { animals, pets } = gameData().farm;
   const { farm, isRaining } = save;
 
-  const byType = new Map<string, typeof farm.animals>();
-  for (const a of farm.animals) byType.set(a.type, [...(byType.get(a.type) ?? []), a]);
   const toPet = farm.animals.filter((a) => !a.autoPet).length;
   const dryBowls = farm.bowls.filter((w) => !w).length;
 
   return (
     <div className="prod">
+      <HayCard save={save} />
       <div className="prod-summary">
         {/* Rain fills the bowl on its own. */}
         {farm.pets.length > 0 && <span className={dryBowls && !isRaining ? 'box farm-warn' : 'box'}>{dryBowls && !isRaining ? t('animals.fillBowl') : t('animals.bowlOk')}</span>}
@@ -60,79 +57,73 @@ export function AnimalsView({ save }: { save: SaveData }) {
 
       <section>
         <h3>{t('animals.farmAnimals', { count: farm.animals.length })}</h3>
-        <div className="prod-grid">
-          {[...byType].map(([type, list]) => {
-            const sprite = animals[type]?.sprite;
-            const avg = list.reduce((n, a) => n + animalHearts(a.friendship), 0) / list.length;
-            const sad = list.filter((a) => a.happiness < 150).length;
-            const manual = list.filter((a) => !a.autoPet).length;
-            return (
-              <Tooltip
-                key={type}
-                text={
-                  <span className="slot-tooltip">
-                    {list.map((a) => (
-                      <span key={a.name}>
-                        {a.name}: {animalHearts(a.friendship)}♥
-                      </span>
-                    ))}
+        <div className="animal-grid">
+          {[...farm.animals]
+            .sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name))
+            .map((a) => {
+              const sprite = animals[a.type]?.sprite;
+              const mood = a.happiness >= 200 ? 'happy' : a.happiness >= 150 ? 'fine' : 'sad';
+              return (
+                <div key={a.type + a.name} className="animal-card inset">
+                  <span className="animal-card__pic">{sprite && <Sprite sheet={sprite[0]} x={0} y={0} w={sprite[1]} h={sprite[2]} scale={sprite[1] > 16 ? 1 : 2} />}</span>
+                  <span className="animal-card__name">
+                    <strong>{a.name}</strong>
+                    <small>{name(animals[a.type]?.n) || a.type}</small>
                   </span>
-                }
-              >
-                <div className="prod-card inset">
-                  {sprite && <Sprite sheet={sprite[0]} x={0} y={0} w={sprite[1]} h={sprite[2]} scale={sprite[1] > 16 ? 1 : 2} />}
-                  <span className="prod-card__name">
-                    {name(animals[type]?.n) || type} ×{list.length}
+                  <span className={mood === 'sad' ? 'animal-card__mood farm-warn' : 'animal-card__mood'}>{t(`animals.mood.${mood}`)}</span>
+                  <span className="animal-card__check">
+                    <span className={a.ateAnimalCracker ? 'check check--on' : 'check'} aria-hidden="true" />
+                    {t('animals.cracker')}
                   </span>
-                  <Hearts value={Math.round(avg)} max={5} scale={1} />
-                  {manual > 0 && <span className="prod-card__when farm-warn">{t('animals.petN', { count: manual })}</span>}
-                  {sad > 0 && <span className="prod-card__when farm-warn">{t('animals.sad', { count: sad })}</span>}
+                  <span className={a.autoPet ? 'animal-card__check' : 'animal-card__check farm-warn'}>
+                    <span className={a.autoPet ? 'check check--on' : 'check'} aria-hidden="true" />
+                    {a.autoPet ? t('animals.petted') : t('animals.needsPet')}
+                  </span>
                 </div>
-              </Tooltip>
-            );
-          })}
+              );
+            })}
         </div>
       </section>
 
-      <section>
-        <h3>{t('animals.allTitle')}</h3>
-        <div className="farm-table-wrap">
-          <table className="farm-table">
-            <thead>
-              <tr>
-                <th>{t('animals.col.name')}</th>
-                <th>{t('animals.col.type')}</th>
-                <th>{t('animals.col.hearts')}</th>
-                <th>{t('animals.col.mood')}</th>
-                <th>{t('animals.col.home')}</th>
-                <th>{t('animals.col.care')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[...farm.animals]
-                .sort((a, b) => a.friendship - b.friendship)
-                .map((a) => (
-                  <tr key={a.type + a.name}>
-                    <td>
-                      <strong>{a.name}</strong>
-                    </td>
-                    <td>{name(animals[a.type]?.n) || a.type}</td>
-                    <td>
-                      <Hearts value={animalHearts(a.friendship)} max={5} scale={1} />
-                    </td>
-                    <td className={a.happiness < 150 ? 'farm-warn' : undefined}>{t(`animals.mood.${a.happiness >= 200 ? 'happy' : a.happiness >= 150 ? 'fine' : 'sad'}`)}</td>
-                    <td>{t(`locations.${a.building}`, { defaultValue: a.building })}</td>
-                    <td>
-                      {[!a.autoPet && t('animals.needsPet'), a.ateAnimalCracker && t('animals.cracker')].filter(Boolean).join(' · ') || '—'}
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <HayCard save={save} />
+      <AnimalRequests save={save} />
     </div>
+  );
+}
+
+/** Animal products (eggs, milk, wool, truffles...) by object category. */
+const ANIMAL_CATEGORIES = new Set([-5, -6, -18]);
+
+/** Help-wanted quests and special orders that ask for animal products. */
+function AnimalRequests({ save }: { save: SaveData }) {
+  const { t } = useTranslation();
+  const name = useGameName();
+  const seen = new Set<string>();
+  const quests = save.players
+    .flatMap((p) => p.quests)
+    .filter((q) => q.item && ANIMAL_CATEGORIES.has(getItem(q.item)?.c ?? 0) && !seen.has(q.id) && seen.add(q.id));
+  const productNames = [...new Set(Object.values(gameData().items).filter((i) => ANIMAL_CATEGORIES.has(i.c ?? 0)).map((i) => name(i.n).toLowerCase()))];
+  const orders = save.specialOrders.filter((o) => o.objectives.some((ob) => productNames.some((n) => n && ob.description.toLowerCase().includes(n))));
+  return (
+    <section>
+      <h3>{t('animals.requests')}</h3>
+      {quests.length === 0 && orders.length === 0 && <p className="cc-summary__hint">{t('animals.noRequests')}</p>}
+      <ul className="map-list">
+        {quests.map((q) => (
+          <li key={q.id} className="inset">
+            <ItemIcon id={q.item!} />
+            <span>
+              <strong>{q.title}</strong> · {q.npc ?? ''} {q.count ? `×${q.count}` : ''} {q.daysLeft > 0 ? t('animals.daysLeft', { count: q.daysLeft }) : ''}
+            </span>
+          </li>
+        ))}
+        {orders.map((o) => (
+          <li key={o.key} className="inset">
+            <span>
+              <strong>{o.requester}</strong>: {o.objectives.map((ob) => `${ob.description} (${ob.current}/${ob.max})`).join(' · ')}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

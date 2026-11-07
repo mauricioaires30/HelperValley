@@ -169,7 +169,7 @@
   border-color: #e8892b;
 }
 
-.map-pin__icon .sprite {
+.map-pin__icon .item-box {
   rotate: 45deg;
 }
 
@@ -219,7 +219,7 @@
   gap: 6px;
 }
 
-.fish-picker__list span {
+.fish-picker__list li > span:not(.item-box) {
   flex: 1;
 }
 
@@ -229,4 +229,30 @@
   background: none;
   border: 0;
   cursor: pointer;
+}
+
+.map-pin__icon--shop {
+  border-color: #3a8f2a;
+  cursor: pointer;
+  font: inherit;
+}
+
+.map-pin__icon--donation {
+  border-color: #8a5bd1;
+}
+
+.map-pin__icon .sprite {
+  rotate: 45deg;
+}
+
+.map-pin__icon .item-box .sprite {
+  rotate: none;
+}
+
+.map-tip {
+  margin: 4px 0;
+  padding: 4px 6px;
+  font-size: var(--fs-xs);
+  background: rgb(255 255 255 / 0.35);
+  border-left: calc(2 * var(--px)) solid var(--accent);
 }

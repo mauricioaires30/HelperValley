@@ -1,5 +1,6 @@
 import { readRaw } from './raw.mjs';
 import { LANGUAGES } from './paths.mjs';
+import { localize } from './strings.mjs';
 
 /**
  * Categories the game leaves out of the shipping collection (fertilizer, bait, tackle, saplings,
@@ -43,5 +44,31 @@ export function buildGameCollections() {
     }
   }
 
-  return { shipped, letters, secretNotes: Object.keys(readRaw('Data/SecretNotes')).map(Number), madeBy };
+  // Recipe ingredients: "id count id count/..."; negative ids are categories (-4 any fish, -5 egg, -6 milk...).
+  const ingredientsOf = (asset) =>
+    Object.fromEntries(
+      Object.entries(readRaw(asset) ?? {}).map(([name, raw]) => {
+        const parts = raw.split('/')[0].split(' ');
+        const list = [];
+        for (let i = 0; i + 1 < parts.length; i += 2) {
+          const id = parts[i];
+          const category = /^-\d+$/.test(id);
+          list.push([category || id.startsWith('(') ? id : `(O)${id}`, Number(parts[i + 1])]);
+        }
+        return [name, list];
+      }),
+    );
+  const ingredients = { cooking: ingredientsOf('Data/CookingRecipes'), crafting: ingredientsOf('Data/CraftingRecipes') };
+
+  // Adventurer's Guild monster eradication goals; monster names localized from Data/Monsters (last field).
+  const monsterName = (id) => LANGUAGES.map(([, suffix]) => (readRaw('Data/Monsters' + suffix) ?? readRaw('Data/Monsters'))?.[id]?.split('/').at(-1) || id);
+  const slayer = Object.entries(readRaw('Data/MonsterSlayerQuests') ?? {}).map(([id, q]) => ({
+    id,
+    n: localize(q.DisplayName, id),
+    targets: q.Targets.map((m) => [m, monsterName(m)]),
+    count: q.Count,
+    reward: q.RewardItemId ?? null,
+  }));
+
+  return { shipped, letters, secretNotes: Object.keys(readRaw('Data/SecretNotes')).map(Number), madeBy, ingredients, slayer };
 }

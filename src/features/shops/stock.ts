@@ -309,7 +309,7 @@ export function shopStock(shopId: string, save: SaveData, player: Player, day: S
         return ok !== false;
       });
       if (entry.MaxItems !== undefined) results = results.slice(0, entry.MaxItems);
-    } else if (/^[A-Z_]+$/.test(queryKey) && queryKey !== selected.replace(QUALIFIED, '')) {
+    } else if (/^[A-Z_]+$/.test(queryKey) && !getItem(qualify(queryKey))) {
       // Other item queries (dish of the day, tool upgrades, flavored items...).
       if (queryKey === 'DISH_OF_THE_DAY' && save.world.dishOfTheDay) results = [save.world.dishOfTheDay];
       else continue;

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { gameData, spriteUrl, type Season } from '@/data/gameData';
+import { useNavigate } from 'react-router-dom';
+import { gameData, getItem, spriteUrl, type Season } from '@/data/gameData';
 import { useGameName } from '@/i18n';
 import { useCurrentSave } from '@/store/saveStore';
 import type { Player } from '@/save/model';
@@ -8,6 +9,7 @@ import { ItemIcon, NpcHead, SeasonIcon, Tooltip, UiIcon } from '@/ui';
 import { usePinStore } from '@/store/pinStore';
 import { FishPicker } from './FishPicker';
 import { ONE_TIME_GUIDE } from '@/features/walnuts/walnutGuide';
+import { SHOPS } from '@/features/shops/catalog';
 import { SEASONS } from '@/features/calendar/calendar';
 import { describeEvent } from '@/features/relationships/eventConditions';
 import { formatTime, resolveSchedule, WEEKDAYS, type ScheduleData, type ScheduleResult, type Stop } from './schedule';
@@ -18,6 +20,45 @@ import './map.css';
 const STEPS = Array.from({ length: 20 * 6 + 1 }, (_, i) => 600 + Math.floor(i / 6) * 100 + (i % 6) * 10);
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 4;
+
+/** Where each shop is on the world map (Data/Shops id → location). */
+const SHOP_LOCATIONS: Record<string, string> = {
+  SeedShop: 'SeedShop',
+  Joja: 'JojaMart',
+  AnimalShop: 'AnimalShop',
+  Carpenter: 'ScienceHouse',
+  Blacksmith: 'Blacksmith',
+  FishShop: 'FishShop',
+  Saloon: 'Saloon',
+  Hospital: 'Hospital',
+  ShadowShop: 'Sewer',
+  Sandy: 'SandyShop',
+  DesertTrade: 'Desert',
+  Traveler: 'Forest',
+  Dwarf: 'Mines',
+  AdventureShop: 'AdventureGuild',
+  IslandTrade: 'IslandNorth',
+  ResortBar: 'IslandSouth',
+  VolcanoShop: 'Caldera',
+  Casino: 'Club',
+  HatMouse: 'Forest',
+  Raccoon: 'Forest',
+};
+
+/** Where to look for each island fossil (see collections.fossil texts). */
+const FOSSIL_LOCATIONS: Record<string, string> = {
+  '(O)820': 'Blacksmith',
+  '(O)821': 'IslandNorth',
+  '(O)822': 'IslandNorth',
+  '(O)823': 'IslandNorth',
+  '(O)824': 'IslandSouth',
+  '(O)825': 'IslandWest',
+  '(O)826': 'IslandWest',
+  '(O)827': 'Caldera',
+  '(O)828': 'IslandEast',
+};
+/** IslandFieldOffice.piecesDonated order. */
+const FOSSIL_PIECES = ['(O)820', '(O)821', '(O)822', '(O)823', '(O)823', '(O)824', '(O)825', '(O)826', '(O)826', '(O)827', '(O)828'];
 
 interface Placed {
   npc: string;
@@ -168,7 +209,8 @@ export function MapPage() {
   const [step, setStep] = useState(STEPS.indexOf(1200));
   const [raining, setRaining] = useState(save?.isRaining ?? false);
   const [resort, setResort] = useState(save?.resort.openToday ?? false);
-  const [layers, setLayers] = useState({ npcs: true, events: true, quests: true, fish: true, walnuts: false });
+  const [layers, setLayers] = useState({ npcs: true, events: true, quests: true, fish: true, walnuts: false, shops: false, donations: false });
+  const navigate = useNavigate();
   const pinnedQuests = usePinStore((s) => s.quests);
   const pinnedFish = usePinStore((s) => s.fish);
   const { view, viewport, handlers, zoomIn, zoomOut, reset } = usePanZoom();
@@ -270,6 +312,34 @@ export function MapPage() {
     const p = pinAt(g.pin!.location);
     return p ? [{ key: g.key, ...p }] : [];
   });
+  // Shops around on the chosen day; clicking one opens its tab on the Shops page.
+  const shopDay = { season, day, year: save?.date.year ?? 1, daysPlayed: 0 };
+  const shopPins = save
+    ? SHOPS.filter((s) => SHOP_LOCATIONS[s.id] && (!s.open || s.open(shopDay, save))).flatMap((s, i) => {
+        const p = pinAt(SHOP_LOCATIONS[s.id]);
+        return p ? [{ key: `s-${s.id}`, ...p, shop: s, i }] : [];
+      })
+    : [];
+
+  // Missing donations: museum pieces you can dig up somewhere, and island fossils for Professor Snail.
+  const donated = new Set(Object.values(save?.museum ?? {}).map((id) => (id.startsWith('(') ? id : `(O)${id}`)));
+  const museumData = gameData().museum;
+  const needByPlace = new Map<string, string[]>();
+  for (const id of [...museumData.artifacts, ...museumData.minerals]) {
+    if (donated.has(id)) continue;
+    for (const place of museumData.sources[id]?.dig ?? []) needByPlace.set(place, [...(needByPlace.get(place) ?? []), id]);
+  }
+  FOSSIL_PIECES.forEach((id, i) => {
+    if (save?.fieldOffice && !save.fieldOffice.pieces[i]) {
+      const place = FOSSIL_LOCATIONS[id];
+      if (!needByPlace.get(place)?.includes(id)) needByPlace.set(place, [...(needByPlace.get(place) ?? []), id]);
+    }
+  });
+  const donationPins = [...needByPlace].flatMap(([place, ids]) => {
+    const p = pinAt(place);
+    return p ? [{ key: `d-${place}`, ...p, place, ids }] : [];
+  });
+
   // Pins keep their size while the map zooms.
   const unscale = `scale(${1 / view.zoom})`;
 
@@ -404,6 +474,45 @@ export function MapPage() {
                     </Tooltip>
                   </span>
                 ))}
+              {layers.shops &&
+                shopPins.map((p) => (
+                  <span key={p.key} className="map-pin" style={{ left: pct(p.px, mapW), top: pct(p.py, mapH), transform: `translate(-50%, -100%) ${unscale} translate(${(p.i % 2) * 18}px, 0)` }}>
+                    <Tooltip
+                      text={
+                        <span className="slot-tooltip">
+                          <strong>{t(`shops.name.${p.shop.id}`)}</strong>
+                          <span>{t('map.shopClick')}</span>
+                        </span>
+                      }
+                    >
+                      <button type="button" className="map-pin__icon map-pin__icon--shop" onClick={() => navigate(`/shops/${p.shop.id}`)} aria-label={t(`shops.name.${p.shop.id}`)}>
+                        {p.shop.npc ? <NpcHead npc={p.shop.npc} scale={1} /> : <ItemIcon id={p.shop.icon ?? '(O)472'} scale={1} tooltip={false} />}
+                      </button>
+                    </Tooltip>
+                  </span>
+                ))}
+              {layers.donations &&
+                donationPins.map((p) => (
+                  <span key={p.key} className="map-pin" style={{ left: pct(p.px, mapW), top: pct(p.py, mapH), transform: `translate(-50%, -100%) ${unscale}` }}>
+                    <Tooltip
+                      text={
+                        <span className="slot-tooltip">
+                          <strong>{t('map.donationPin', { place: locationName(p.place), count: p.ids.length })}</strong>
+                          <span className="slot-grid">
+                            {p.ids.map((id) => (
+                              <ItemIcon key={id} id={id} scale={1} tooltip={false} />
+                            ))}
+                          </span>
+                          <span>{p.ids.map((id) => name(getItem(id)?.n)).join(', ')}</span>
+                        </span>
+                      }
+                    >
+                      <span className="map-pin__icon map-pin__icon--donation">
+                        <ItemIcon id="(O)101" scale={1} tooltip={false} />
+                      </span>
+                    </Tooltip>
+                  </span>
+                ))}
               {layers.npcs &&
                 [...groups.values()].flatMap((group) =>
                   group.map((p, i) => {
@@ -460,6 +569,15 @@ export function MapPage() {
             <input type="checkbox" checked={layers.walnuts} onChange={(e) => setLayers({ ...layers, walnuts: e.target.checked })} />
             {t('map.layer.walnuts')} ({walnutPins.length || gameData().walnuts.filter((w) => !collectedNuts.has(w.id)).length})
           </label>
+          <label className="cc__filter">
+            <input type="checkbox" checked={layers.shops} onChange={(e) => setLayers({ ...layers, shops: e.target.checked })} />
+            {t('map.layer.shops')} ({shopPins.length})
+          </label>
+          <label className="cc__filter">
+            <input type="checkbox" checked={layers.donations} onChange={(e) => setLayers({ ...layers, donations: e.target.checked })} />
+            {t('map.layer.donations')} ({[...needByPlace.values()].reduce((n, l) => n + l.length, 0)})
+          </label>
+          <p className="map-tip">{t('map.tip')}</p>
           <label className="cc__filter">
             <input type="checkbox" checked={resort} onChange={(e) => setResort(e.target.checked)} />
             {t('map.resort')}

@@ -19,7 +19,8 @@
     "collections": "Coleções",
     "quests": "Missões",
     "player": "Personagem",
-    "shops": "Lojas"
+    "shops": "Lojas",
+    "community": "Centro e Museu"
   },
   "common": {
     "language": "Idioma",
@@ -222,6 +223,12 @@
         "linusTrashCleanup": "Pedido especial do Linus",
         "carolineSO": "Pedido especial da Caroline",
         "guntherBones": "Pedido especial do Gunther (fósseis)"
+      },
+      "category": {
+        "-4": "qualquer peixe",
+        "-5": "qualquer ovo",
+        "-6": "qualquer leite",
+        "-777": "sementes silvestres (qualquer)"
       }
     }
   },
@@ -617,7 +624,9 @@
       "events_other": "Eventos de coração disponíveis agora ({{count}})",
       "quests": "Missões marcadas",
       "fish": "Peixes marcados",
-      "walnuts": "Nozes que faltam"
+      "walnuts": "Nozes que faltam",
+      "shops": "Lojas abertas",
+      "donations": "Doações que faltam"
     },
     "eventPin": "Evento de {{hearts}} corações de {{name}}",
     "walkingTo": "andando até {{place}}",
@@ -628,7 +637,10 @@
     "fishPin": "{{name}} aparece aqui",
     "fishSearch": "Marcar peixe…",
     "fishMarked": "Peixes marcados",
-    "fishAdd": "Marcar"
+    "fishAdd": "Marcar",
+    "shopClick": "Clique para ver o estoque de hoje.",
+    "donationPin": "{{place}}: {{count}} para doar",
+    "tip": "Dica: marque peixes aqui ou em Coleções → Peixes, e missões na tela de Missões (botão \"Marcar\"). Tudo aparece neste mapa."
   },
   "prod": {
     "title": "Produção",
@@ -671,7 +683,8 @@
       "cooking": "Culinária",
       "achievements": "Conquistas",
       "letters": "Cartas",
-      "notes": "Notas Secretas"
+      "notes": "Notas Secretas",
+      "crafting": "Artesanato"
     },
     "office": {
       "locked": "O Escritório de Campo da Ilha Gengibre ainda não foi aberto.",
@@ -703,7 +716,8 @@
       "fish": "Pescado {{count}}×",
       "artifacts": "Achado {{count}}×",
       "minerals": "Achado {{count}}×",
-      "cooking": "Cozinhado {{count}}×"
+      "cooking": "Cozinhado {{count}}×",
+      "crafting": "Fabricado {{count}}×"
     },
     "how": {
       "crop": "Plante em: {{seasons}}",
@@ -737,7 +751,11 @@
       "socialize": "Converse com todos os moradores.",
       "go": "Vá até {{place}}."
     },
-    "pinFish": "Marcar o peixe"
+    "pinFish": "Marcar o peixe",
+    "slayerTitle": "Metas do caçador (Guilda) · {{done}}/{{total}}",
+    "slayerHint": "Elimine monstros nas minas para o Marlon. Cada meta completa dá um prêmio na Guilda dos Aventureiros.",
+    "slayerCollect": "pegue o prêmio com o Gil",
+    "pinTip": "Dica: use \"Marcar\" numa missão para ela aparecer no mapa (aba Mapa)."
   },
   "fish": {
     "title": "Coleção de peixes",
@@ -857,24 +875,17 @@
     "petDaily": "faça carinho todo dia",
     "horse": "cavalo",
     "farmAnimals": "Animais da fazenda ({{count}})",
-    "petN": "{{count}} sem afagador",
-    "sad": "{{count}} tristes",
-    "allTitle": "Cada animal (menos corações primeiro)",
-    "col": {
-      "name": "Nome",
-      "type": "Tipo",
-      "hearts": "Corações",
-      "mood": "Humor",
-      "home": "Mora em",
-      "care": "Cuidados"
-    },
     "mood": {
       "happy": "feliz",
       "fine": "ok",
       "sad": "triste"
     },
-    "needsPet": "fazer carinho",
-    "cracker": "comeu biscoito dourado"
+    "needsPet": "fazer carinho hoje",
+    "cracker": "biscoito dourado",
+    "petted": "carinho em dia",
+    "requests": "Pedidos de produtos de animais",
+    "noRequests": "Nenhuma missão ou pedido especial pedindo ovos, leite, lã ou trufas agora.",
+    "daysLeft": "{{count}} dias"
   },
   "player": {
     "skills": "Habilidades · nível {{level}} de fazendeiro",
@@ -908,7 +919,10 @@
       "rustyKey": "Chave Enferrujada (60 itens no museu)",
       "friends": "{{count}} amigos com 8 corações ({{have}} agora)",
       "level": "Nível de fazendeiro {{count}} ({{have}} agora)",
-      "pet": "Amizade máxima com o animal de estimação"
+      "pet": "Amizade máxima com o animal de estimação",
+      "todo": "Falta fazer (+{{count}} pontos possíveis)",
+      "allDone": "Tudo feito! O vovô acende as 4 velas.",
+      "doneList": "Já feito ({{count}})"
     }
   },
   "shops": {
@@ -964,5 +978,13 @@
     "uncertainItem": "Pode ser diferente no jogo (veja o aviso acima).",
     "nothing": "Nada encontrado.",
     "closed": "Fechadas ou ausentes hoje: {{names}}"
+  },
+  "community": {
+    "tab": {
+      "cc": "Centro Comunitário",
+      "joja": "Joja",
+      "museum": "Museu",
+      "island": "Pesquisa da Ilha"
+    }
   }
 }

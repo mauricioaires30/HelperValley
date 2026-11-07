@@ -171,6 +171,10 @@ export interface GameData {
     secretNotes: number[];
     /** Item → machines that make it. */
     madeBy: Record<string, string[]>;
+    /** Recipe name → [item id or negative category, count]. */
+    ingredients: { cooking: Record<string, Array<[string, number]>>; crafting: Record<string, Array<[string, number]>> };
+    /** Adventurer's Guild monster eradication goals; targets are [monster id, names]. */
+    slayer: Array<{ id: string; n: LocalizedName; targets: Array<[string, LocalizedName]>; count: number; reward: string | null }>;
   };
   player: PlayerData;
   /** Data/Shops and item pools; typed in features/shops/stock.ts. */

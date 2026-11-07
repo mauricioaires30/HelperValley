@@ -1,19 +1,16 @@
 import { NavLink, Navigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { CommunityCenterPage } from '@/features/community-center/CommunityCenterPage';
-import { MuseumPage } from '@/features/museum/MuseumPage';
 import { AchievementsPage } from '@/features/achievements/AchievementsPage';
 import { WalnutsTab } from '@/features/walnuts/WalnutsTab';
-import { FieldOfficeView } from './FieldOffice';
 import { GameCollectionTab, LettersTab, NotesTab, type GameTab } from './GameCollections';
 import './collections.css';
 
 /** Same tabs as the game's collections menu, then the bigger trackers. */
-const GAME_TABS = ['shipped', 'fish', 'artifacts', 'minerals', 'cooking', 'achievements', 'letters', 'notes'] as const;
-const EXTRA_TABS = ['cc', 'museum', 'island', 'walnuts'] as const;
+const GAME_TABS = ['shipped', 'fish', 'artifacts', 'minerals', 'cooking', 'crafting', 'achievements', 'letters', 'notes'] as const;
+const EXTRA_TABS = ['walnuts'] as const;
 type Tab = (typeof GAME_TABS)[number] | (typeof EXTRA_TABS)[number];
 
-const isGrid = (tab: Tab): tab is GameTab => ['shipped', 'fish', 'artifacts', 'minerals', 'cooking'].includes(tab);
+const isGrid = (tab: Tab): tab is GameTab => ['shipped', 'fish', 'artifacts', 'minerals', 'cooking', 'crafting'].includes(tab);
 
 export function CollectionsPage() {
   const { t } = useTranslation();
@@ -37,9 +34,6 @@ export function CollectionsPage() {
       {tab === 'achievements' && <AchievementsPage />}
       {tab === 'letters' && <LettersTab />}
       {tab === 'notes' && <NotesTab />}
-      {tab === 'cc' && <CommunityCenterPage />}
-      {tab === 'museum' && <MuseumPage />}
-      {tab === 'island' && <FieldOfficeView />}
       {tab === 'walnuts' && <WalnutsTab />}
     </div>
   );

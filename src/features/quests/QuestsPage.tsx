@@ -106,6 +106,41 @@ function OrderCard({ order, save }: { order: SpecialOrderState; save: SaveData }
   );
 }
 
+/** Marlon's monster eradication goals: kills so far (summed over the goal's monsters) and the reward. */
+function SlayerGoals({ player }: { player: Player }) {
+  const { t } = useTranslation();
+  const name = useGameName();
+  const goals = gameData().gameCollections.slayer.map((g) => {
+    const kills = g.targets.reduce((n, [id]) => n + (player.monstersKilled[id] ?? 0), 0);
+    return { ...g, kills, done: kills >= g.count, collected: player.mailReceived.includes(`Gil_${g.id}`) };
+  });
+  // Unfinished goals first, closest to done at the top.
+  goals.sort((a, b) => Number(a.done) - Number(b.done) || b.kills / b.count - a.kills / a.count);
+  return (
+    <>
+      <h2 className="quest-section">{t('quests.slayerTitle', { done: goals.filter((g) => g.done).length, total: goals.length })}</h2>
+      <p className="cc-summary__hint">{t('quests.slayerHint')}</p>
+      <div className="quest-grid">
+        {goals.map((g) => (
+          <div key={g.id} className={g.done ? 'quest-card box quest-card--done' : 'quest-card box'}>
+            <strong>
+              {name(g.n)} {g.done && '✓'}
+            </strong>
+            <Progress value={Math.min(g.kills, g.count)} max={g.count} />
+            <span className="cc-summary__hint">{g.targets.map(([, n]) => name(n)).join(', ')}</span>
+            {g.reward && (
+              <span className="quest-card__reward">
+                <ItemIcon id={g.reward} scale={1} /> {name(getItem(g.reward)?.n)}
+                {g.done && !g.collected && <em> · {t('quests.slayerCollect')}</em>}
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
 function Quests({ save, player }: { save: SaveData; player: Player }) {
   const { t } = useTranslation();
   const quests = player.quests.filter((q) => !q.completed);
@@ -113,6 +148,7 @@ function Quests({ save, player }: { save: SaveData; player: Player }) {
     <div>
       <h2>{t('quests.title', { name: player.name })}</h2>
       {quests.length === 0 && <p>{t('quests.none')}</p>}
+      {quests.length > 0 && <p className="map-tip">{t('quests.pinTip')}</p>}
       <div className="quest-grid">
         {quests.map((q) => (
           <QuestCard key={q.id} quest={q} />
@@ -128,6 +164,7 @@ function Quests({ save, player }: { save: SaveData; player: Player }) {
           </div>
         </>
       )}
+      <SlayerGoals player={player} />
     </div>
   );
 }

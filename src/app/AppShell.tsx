@@ -2,7 +2,6 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGES } from '@/i18n';
 import { ItemIcon, Sprite, UiIcon } from '@/ui';
-import { getItem } from '@/data/gameData';
 import { PlayerSwitcher } from '@/features/saves/PlayerSwitcher';
 import { SaveDateChip, SaveUpdatedToast } from '@/features/saves/LiveStatus';
 import { CachedBanner } from '@/features/saves/CachedBanner';
@@ -23,6 +22,7 @@ const NAV: Array<{ to: string; key: string; icon: NavIcon }> = [
   { to: '/quests', key: 'quests', icon: { item: '(O)842' } },
   { to: '/shops', key: 'shops', icon: { item: '(O)472' } },
   { to: '/production', key: 'farm', icon: { item: '(BC)12' } },
+  { to: '/community', key: 'community', icon: { item: '(O)96' } },
   { to: '/collections', key: 'collections', icon: { ui: 'junimo', w: 16, h: 16, scale: 2, className: 'nav-junimo' } },
 ];
 
@@ -35,11 +35,10 @@ function NavIconView({ icon }: { icon: NavIcon }) {
     );
   }
   if ('item' in icon) {
-    // Every menu icon fits one 32px box; tall items (16x32 machines, chests) draw at 1x.
-    const tall = (getItem(icon.item)?.s[3] ?? 16) > 16;
+    // ItemIcon fits every item in a 32px box.
     return (
       <span className="nav-icon">
-        <ItemIcon id={icon.item} scale={tall ? 1 : 2} tooltip={false} />
+        <ItemIcon id={icon.item} scale={2} tooltip={false} />
       </span>
     );
   }

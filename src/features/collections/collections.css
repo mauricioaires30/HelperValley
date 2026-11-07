@@ -54,3 +54,15 @@ button.game-grid__cell[aria-label] {
   list-style: none;
   font-size: var(--fs-sm);
 }
+
+.ingredients {
+  display: grid;
+  gap: 2px;
+  margin: 2px 0;
+}
+
+.ingredients__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
