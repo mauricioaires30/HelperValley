@@ -1,0 +1,176 @@
+.farm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.farm-grid--wide {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.farm-area {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.farm-area h3 {
+  margin: 0;
+}
+
+.farm-facts {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 15px;
+}
+
+.farm-facts li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.farm-warn {
+  font-weight: 600;
+  color: var(--danger);
+}
+
+.farm-days {
+  display: block;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.farm-animals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.farm-animal {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 15px;
+}
+
+/* ---------- Recommendations ---------- */
+
+.farm-controls {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.farm-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+
+.farm-toggles select,
+.farm-plan select,
+.farm-plan input {
+  font: inherit;
+  color: var(--text);
+  background: var(--paper-light);
+  border: var(--px) solid var(--wood-dark);
+}
+
+.farm-table-wrap {
+  overflow-x: auto;
+}
+
+.farm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.farm-table th {
+  text-align: left;
+  font-weight: 600;
+  border-bottom: var(--px) solid var(--wood-dark);
+  padding: 4px 6px;
+}
+
+.farm-table td {
+  padding: 4px 6px;
+  border-bottom: var(--px) dashed rgb(91 43 21 / 0.25);
+  vertical-align: middle;
+}
+
+.farm-table .num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.farm-crop {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.farm-crop > span {
+  display: grid;
+}
+
+.farm-tags {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 2px 4px;
+}
+
+.farm-tag {
+  padding: 0 4px;
+  font-size: 12px;
+  color: #fff;
+  background: var(--text-soft);
+}
+
+.farm-tag--honey {
+  background: #c98a10;
+}
+
+.farm-source {
+  font-size: 14px;
+}
+
+.farm-source--none {
+  color: var(--text-soft);
+}
+
+/* ---------- Planner ---------- */
+
+.farm-plan {
+  display: grid;
+  gap: 8px;
+}
+
+.farm-plan__header,
+.farm-plan__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+
+.farm-plan__header h3 {
+  margin: 0;
+  flex: 1;
+}
+
+.farm-plan input[type='number'] {
+  width: 5.5em;
+}
+
+.farm-note {
+  width: 100%;
+  min-width: 120px;
+}

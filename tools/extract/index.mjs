@@ -16,6 +16,7 @@ import { buildItems } from './lib/items.mjs';
 import { buildNpcs } from './lib/npcs.mjs';
 import { buildAchievementGoals, buildAchievements, buildBundles, buildMuseum } from './lib/collections.mjs';
 import { buildCalendar, buildHeartEvents } from './lib/calendar.mjs';
+import { buildFarm } from './lib/farm.mjs';
 import { exportTextures, UI_TEXTURES } from './lib/textures.mjs';
 import { exportUiCrops } from './lib/ui.mjs';
 
@@ -51,6 +52,7 @@ const datasets = {
   museum: buildMuseum(),
   calendar: buildCalendar(),
   heartEvents: buildHeartEvents(),
+  farm: buildFarm(),
 };
 
 await rm(DATA_OUT, { recursive: true, force: true });

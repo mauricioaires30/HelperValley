@@ -13,7 +13,8 @@
     "achievements": "Conquistas",
     "calendar": "Calendário",
     "relationships": "Relacionamentos",
-    "today": "Hoje"
+    "today": "Hoje",
+    "farm": "Fazenda"
   },
   "common": {
     "language": "Idioma",
@@ -348,5 +349,130 @@
     "giftable_other": "{{count}} moradores ainda podem ganhar presente nesta semana",
     "previous": "Anterior",
     "next": "Próximo"
+  },
+  "farm": {
+    "title": "Fazenda",
+    "view": {
+      "overview": "Visão geral",
+      "recommendations": "O que plantar",
+      "planner": "Planos e compras"
+    },
+    "area": {
+      "Farm": "Fazenda",
+      "Greenhouse": "Estufa",
+      "IslandWest": "Fazenda da ilha"
+    },
+    "tilled": "{{count}} canteiros arados",
+    "pots_one": "{{count}} vaso de jardim",
+    "pots_other": "{{count}} vasos de jardim",
+    "planted": "{{count}} plantados · {{empty}} vazios",
+    "sprinklers": "Irrigadores regam ~{{tiles}} canteiros ({{percent}}% dos arados)",
+    "beeHouses_one": "{{count}} colmeia",
+    "beeHouses_other": "{{count}} colmeias",
+    "machine": {
+      "keg_one": "{{count}} barril",
+      "keg_other": "{{count}} barris",
+      "jar_one": "{{count}} jarra de conservas",
+      "jar_other": "{{count}} jarras de conservas",
+      "seedMaker_one": "{{count}} fábrica de sementes",
+      "seedMaker_other": "{{count}} fábricas de sementes",
+      "tapper_one": "{{count}} torneira",
+      "tapper_other": "{{count}} torneiras",
+      "cask_one": "{{count}} barrica",
+      "cask_other": "{{count}} barricas"
+    },
+    "readyNow_one": "{{count}} pronta para colher",
+    "readyNow_other": "{{count}} prontas para colher",
+    "readyIn_one": "Próxima colheita amanhã",
+    "readyIn_other": "Próxima colheita em {{count}} dias",
+    "dead_one": "{{count}} planta morta",
+    "dead_other": "{{count}} plantas mortas",
+    "animalsTitle": "Animais ({{count}})",
+    "hay": "{{hay}} / {{capacity}} de feno em {{silos}} silo(s)",
+    "hayDays": "Os animais comem {{perDay}} de feno por dia dentro de casa: dá para {{days}} dias",
+    "hayWinter": "Compre {{count}} de feno para passar o inverno (~{{cost}}g na Marnie)",
+    "hayFill": "{{count}} de feno enche os silos (~{{cost}}g)",
+    "fertilizer": "Fertilizante",
+    "fert": {
+      "none": "Nenhum",
+      "speedGro": "Acelerador",
+      "deluxe": "Acelerador Deluxe",
+      "hyper": "Hiper Acelerador"
+    },
+    "useMachines": "Processar em barris/jarras",
+    "includeUnbuyable": "Incluir sementes que não se compram",
+    "onlyFlowers": "Flores para mel",
+    "assumptions": "Plantando hoje: {{days}} dias de crescimento. Cultivo nível {{level}}; profissões: {{professions}}. Preços em qualidade normal.",
+    "prof": {
+      "tiller": "Lavrador",
+      "agriculturist": "Agricultor",
+      "artisan": "Artesão",
+      "none": "nenhuma"
+    },
+    "col": {
+      "crop": "Plantação",
+      "seed": "Semente",
+      "grow": "Cresce em",
+      "harvests": "Colheitas",
+      "price": "Vende por",
+      "profit": "Lucro / canteiro",
+      "perDay": "/ dia"
+    },
+    "daysShort_one": "{{count}} dia",
+    "daysShort_other": "{{count}} dias",
+    "regrows": "rebrota {{count}}d",
+    "trellis": "treliça",
+    "paddy": "arrozal",
+    "honey": "mel {{price}}g",
+    "method": {
+      "raw": "Vendido cru: {{price}}g",
+      "keg": "No barril (vinho/suco): {{price}}g",
+      "jar": "Na jarra de conservas: {{price}}g"
+    },
+    "trade": "{{shop}}: troca {{count}}× {{item}}",
+    "random": "{{shop}} (estoque aleatório)",
+    "starTokens": "estrelas",
+    "unbuyable": {
+      "default": "Não se compra: fábrica de sementes ou recompensas",
+      "(O)499": "Recompensa do museu, Carrinho de Viagem ou fábrica de sementes",
+      "(O)347": "Carrinho de Viagem (Semente Rara) ou fábrica de sementes",
+      "(O)885": "Fabricada com fibra; ou fábrica de sementes",
+      "(O)890": "Missões do Sr. Qi",
+      "(O)433": "Carrinho de Viagem ou Fadas da Poeira (minas)"
+    },
+    "nothing": "Nada cresce a tempo com os dias que restam. Tente outra estação ou a estufa.",
+    "planTotal": "Canteiros para planejar",
+    "useSave": "Usar do save ({{count}})",
+    "planFree": "{{free}} de {{total}} canteiros livres",
+    "tiles": "canteiros",
+    "notePlaceholder": "Anotação (ex.: para mel)",
+    "remove": "Remover",
+    "addRow": "Adicionar plantação",
+    "planProfit": "Lucro esperado nesta estação: {{profit}}g",
+    "shoppingTitle": "Lista de compras",
+    "shoppingHint": "Uma semente por canteiro planejado para o próximo plantio, na loja mais barata.",
+    "shoppingEmpty": "Adicione plantações aos planos para montar a lista.",
+    "shoppingTotal": "Total: {{total}}g",
+    "shop": {
+      "SeedShop": "Pierre",
+      "Joja": "JojaMart",
+      "Sandy": "Oásis (Sandy)",
+      "Traveler": "Carrinho de Viagem",
+      "IslandTrade": "Comerciante da Ilha",
+      "Raccoon": "Guaxinim",
+      "Festival_EggFestival_Pierre": "Festival do Ovo",
+      "Festival_FlowerDance_Pierre": "Festival das Flores",
+      "Festival_Luau_Pierre": "Luau",
+      "Festival_DanceOfTheMoonlightJellies_Pierre": "Medusas-da-Lua",
+      "Festival_StardewValleyFair_StarTokens": "Feira",
+      "Festival_SpiritsEve_Pierre": "Dia dos Espíritos",
+      "Festival_FeastOfTheWinterStar_Pierre": "Estrela Invernal",
+      "Festival_NightMarket_MagicBoat_Day1": "Mercado Noturno",
+      "Festival_NightMarket_MagicBoat_Day2": "Mercado Noturno",
+      "Festival_NightMarket_MagicBoat_Day3": "Mercado Noturno",
+      "AnimalShop": "Rancho da Marnie",
+      "VolcanoShop": "Anão do Vulcão",
+      "QiGemShop": "Sala das Nozes do Qi"
+    }
   }
 }

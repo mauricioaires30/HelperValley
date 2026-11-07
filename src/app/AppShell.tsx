@@ -11,6 +11,7 @@ const NAV = [
   { to: '/', key: 'home', icon: '(O)392' },
   { to: '/calendar', key: 'calendar', icon: '(O)221' },
   { to: '/relationships', key: 'relationships', icon: '(O)458' },
+  { to: '/farm', key: 'farm', icon: '(O)472' },
   { to: '/cc', key: 'cc', icon: '(O)24' },
   { to: '/museum', key: 'museum', icon: '(O)96' },
   { to: '/achievements', key: 'achievements', icon: '(O)74' },

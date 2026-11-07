@@ -1,4 +1,5 @@
 import type { Season } from '@/data/gameData';
+import { readFarm } from './farm';
 import type { CommunityCenter, Container, Friendship, ItemStack, Player, SaveData, SaveSummary } from './model';
 import {
   arr,
@@ -250,6 +251,7 @@ export function normalizeSave(xml: string, folder: string): SaveData {
     containers: collectContainers(locations, save.globalInventories),
     broadcastedMail: strings(save.broadcastedMail),
     completedSpecialOrders: dictEntries(save.completedSpecialOrders).map(([k]) => text(k) ?? '').filter(Boolean),
+    farm: readFarm(locations),
   };
 }
 

@@ -37,3 +37,22 @@ describe.skipIf(folders.length === 0)('real saves', () => {
     });
   }
 });
+
+describe.skipIf(folders.length === 0)('farm on real saves', () => {
+  for (const folder of folders) {
+    it(`reads planting areas and animals in ${folder}`, () => {
+      const save = normalizeSave(readFileSync(path.join(dir, folder, folder), 'utf8'), folder);
+      const farm = save.farm.areas.find((a) => a.location === 'Farm');
+      expect(farm).toBeDefined();
+      expect(farm!.tilled).toBeGreaterThan(0);
+      for (const crop of farm!.crops) expect(crop.daysToHarvest).toBeGreaterThanOrEqual(-1);
+      console.log(folder, {
+        areas: save.farm.areas.map((a) => [a.location, a.tilled, a.pots, a.crops.length, a.sprinklerTiles, a.beeHouses]),
+        animals: save.farm.animals.length,
+        silos: save.farm.silos,
+        hay: save.farm.hay,
+        sample: farm!.crops.slice(0, 2),
+      });
+    });
+  }
+});

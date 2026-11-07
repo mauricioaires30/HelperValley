@@ -128,4 +128,47 @@ export interface SaveData {
   /** Mail flags shared by the whole farm (team), e.g. "ccBoilerRoom" for Joja. */
   broadcastedMail: string[];
   completedSpecialOrders: string[];
+  farm: FarmState;
+}
+
+/** A crop growing on a tile or in a garden pot. */
+export interface CropState {
+  seed: string;
+  harvest: string;
+  /** 0 = ready to harvest today; -1 for dead crops. */
+  daysToHarvest: number;
+  dead: boolean;
+  /** Harvested before and now regrowing. */
+  regrowing: boolean;
+  fertilizer?: string;
+  inPot: boolean;
+}
+
+/** A planting area: the farm, the greenhouse or the island farm. */
+export interface FarmArea {
+  location: string;
+  /** Hoed tiles, planted or not (garden pots counted separately). */
+  tilled: number;
+  pots: number;
+  crops: CropState[];
+  sprinklers: { basic: number; quality: number; iridium: number; nozzles: number };
+  /** Tiles watered by sprinklers (overlaps not removed). */
+  sprinklerTiles: number;
+  beeHouses: number;
+  machines: Record<string, number>;
+}
+
+export interface FarmAnimalState {
+  type: string;
+  name: string;
+  friendship: number;
+  /** Building it lives in, e.g. "Deluxe Barn". */
+  building: string;
+}
+
+export interface FarmState {
+  areas: FarmArea[];
+  animals: FarmAnimalState[];
+  silos: number;
+  hay: number;
 }

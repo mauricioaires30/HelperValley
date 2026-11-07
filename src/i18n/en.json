@@ -13,7 +13,8 @@
     "achievements": "Achievements",
     "calendar": "Calendar",
     "relationships": "Relationships",
-    "today": "Today"
+    "today": "Today",
+    "farm": "Farm"
   },
   "common": {
     "language": "Language",
@@ -348,5 +349,130 @@
     "giftable_other": "{{count}} villagers can still get a gift this week",
     "previous": "Previous",
     "next": "Next"
+  },
+  "farm": {
+    "title": "Farm",
+    "view": {
+      "overview": "Overview",
+      "recommendations": "What to plant",
+      "planner": "Plans & shopping"
+    },
+    "area": {
+      "Farm": "Farm",
+      "Greenhouse": "Greenhouse",
+      "IslandWest": "Island farm"
+    },
+    "tilled": "{{count}} tilled tiles",
+    "pots_one": "{{count}} garden pot",
+    "pots_other": "{{count}} garden pots",
+    "planted": "{{count}} planted · {{empty}} empty",
+    "sprinklers": "Sprinklers water ~{{tiles}} tiles ({{percent}}% of tilled)",
+    "beeHouses_one": "{{count}} bee house",
+    "beeHouses_other": "{{count}} bee houses",
+    "machine": {
+      "keg_one": "{{count}} keg",
+      "keg_other": "{{count}} kegs",
+      "jar_one": "{{count}} preserves jar",
+      "jar_other": "{{count}} preserves jars",
+      "seedMaker_one": "{{count}} seed maker",
+      "seedMaker_other": "{{count}} seed makers",
+      "tapper_one": "{{count}} tapper",
+      "tapper_other": "{{count}} tappers",
+      "cask_one": "{{count}} cask",
+      "cask_other": "{{count}} casks"
+    },
+    "readyNow_one": "{{count}} ready to harvest",
+    "readyNow_other": "{{count}} ready to harvest",
+    "readyIn_one": "Next harvest tomorrow",
+    "readyIn_other": "Next harvest in {{count}} days",
+    "dead_one": "{{count}} dead crop",
+    "dead_other": "{{count}} dead crops",
+    "animalsTitle": "Animals ({{count}})",
+    "hay": "{{hay}} / {{capacity}} hay in {{silos}} silo(s)",
+    "hayDays": "Animals eat {{perDay}} hay per day indoors: enough for {{days}} days",
+    "hayWinter": "Buy {{count}} hay to get through winter (~{{cost}}g at Marnie)",
+    "hayFill": "{{count}} hay fills your silos (~{{cost}}g)",
+    "fertilizer": "Fertilizer",
+    "fert": {
+      "none": "None",
+      "speedGro": "Speed-Gro",
+      "deluxe": "Deluxe Speed-Gro",
+      "hyper": "Hyper Speed-Gro"
+    },
+    "useMachines": "Process in kegs/jars",
+    "includeUnbuyable": "Include seeds you can't buy",
+    "onlyFlowers": "Flowers for honey",
+    "assumptions": "Planting today: {{days}} growing days. Farming level {{level}}; professions: {{professions}}. Prices are base quality.",
+    "prof": {
+      "tiller": "Tiller",
+      "agriculturist": "Agriculturist",
+      "artisan": "Artisan",
+      "none": "none"
+    },
+    "col": {
+      "crop": "Crop",
+      "seed": "Seed",
+      "grow": "Grows in",
+      "harvests": "Harvests",
+      "price": "Sells for",
+      "profit": "Profit / tile",
+      "perDay": "/ day"
+    },
+    "daysShort_one": "{{count}} day",
+    "daysShort_other": "{{count}} days",
+    "regrows": "regrows {{count}}d",
+    "trellis": "trellis",
+    "paddy": "paddy",
+    "honey": "honey {{price}}g",
+    "method": {
+      "raw": "Sold raw: {{price}}g",
+      "keg": "In a keg (wine/juice): {{price}}g",
+      "jar": "In a preserves jar: {{price}}g"
+    },
+    "trade": "{{shop}}: trade {{count}}× {{item}}",
+    "random": "{{shop}} (random stock)",
+    "starTokens": "star tokens",
+    "unbuyable": {
+      "default": "Not sold: seed maker or rewards",
+      "(O)499": "Museum reward, Traveling Cart or seed maker",
+      "(O)347": "Traveling Cart (Rare Seed) or seed maker",
+      "(O)885": "Craft from Fiber; or seed maker",
+      "(O)890": "Mr. Qi's quests",
+      "(O)433": "Traveling Cart or Dust Sprites (mines)"
+    },
+    "nothing": "Nothing grows in time with the days left. Try another season or the greenhouse.",
+    "planTotal": "Tiles to plan",
+    "useSave": "Use save ({{count}})",
+    "planFree": "{{free}} of {{total}} tiles free",
+    "tiles": "tiles",
+    "notePlaceholder": "Note (e.g. for honey)",
+    "remove": "Remove",
+    "addRow": "Add crop",
+    "planProfit": "Expected profit this season: {{profit}}g",
+    "shoppingTitle": "Shopping list",
+    "shoppingHint": "One seed per planned tile for the next planting, cheapest place first.",
+    "shoppingEmpty": "Add crops to your plans to build the list.",
+    "shoppingTotal": "Total: {{total}}g",
+    "shop": {
+      "SeedShop": "Pierre's",
+      "Joja": "JojaMart",
+      "Sandy": "Oasis (Sandy)",
+      "Traveler": "Traveling Cart",
+      "IslandTrade": "Island Trader",
+      "Raccoon": "Raccoon",
+      "Festival_EggFestival_Pierre": "Egg Festival",
+      "Festival_FlowerDance_Pierre": "Flower Dance",
+      "Festival_Luau_Pierre": "Luau",
+      "Festival_DanceOfTheMoonlightJellies_Pierre": "Moonlight Jellies",
+      "Festival_StardewValleyFair_StarTokens": "Fair",
+      "Festival_SpiritsEve_Pierre": "Spirit's Eve",
+      "Festival_FeastOfTheWinterStar_Pierre": "Winter Star",
+      "Festival_NightMarket_MagicBoat_Day1": "Night Market",
+      "Festival_NightMarket_MagicBoat_Day2": "Night Market",
+      "Festival_NightMarket_MagicBoat_Day3": "Night Market",
+      "AnimalShop": "Marnie's Ranch",
+      "VolcanoShop": "Volcano Dwarf",
+      "QiGemShop": "Qi's Walnut Room"
+    }
   }
 }
