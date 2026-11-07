@@ -253,6 +253,15 @@ export function normalizeSave(xml: string, folder: string): SaveData {
     broadcastedMail: strings(save.broadcastedMail),
     completedSpecialOrders: dictEntries(save.completedSpecialOrders).map(([k]) => text(k) ?? '').filter(Boolean),
     farm: readFarm(locations),
+    fieldOffice: (() => {
+      const office = locations.map(node).find((l) => xsiType(l) === 'IslandFieldOffice');
+      if (!office) return null;
+      return {
+        pieces: arr(office.piecesDonated).flatMap((v) => (node(v)?.boolean ? arr(node(v)!.boolean) : [v])).map(bool),
+        plantsLeft: bool(office.plantsRestoredLeft),
+        plantsRight: bool(office.plantsRestoredRight),
+      };
+    })(),
     resort: (() => {
       const south = locations.map(node).find((l) => text(l?.name) === 'IslandSouth');
       return { restored: bool(south?.resortRestored), openToday: bool(south?.resortOpenToday) };

@@ -2,7 +2,7 @@ import { get, set, del, delMany, keys } from 'idb-keyval';
 import type { SaveData, SaveSummary } from './model';
 
 /** Bump when SaveData's shape changes so stale caches are ignored. */
-const CACHE_VERSION = 6;
+const CACHE_VERSION = 7;
 const INDEX_KEY = 'saves:index';
 const saveKey = (folder: string) => `saves:data:${folder}`;
 

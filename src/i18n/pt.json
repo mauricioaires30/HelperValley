@@ -14,8 +14,9 @@
     "calendar": "Calendário",
     "relationships": "Relacionamentos",
     "today": "Hoje",
-    "farm": "Fazenda",
-    "map": "Mapa"
+    "farm": "Produção",
+    "map": "Mapa",
+    "collections": "Coleções"
   },
   "common": {
     "language": "Idioma",
@@ -407,9 +408,10 @@
   "farm": {
     "title": "Fazenda",
     "view": {
-      "overview": "Visão geral",
+      "overview": "Plantações e animais",
       "recommendations": "O que plantar",
-      "planner": "Planos e compras"
+      "planner": "Planos e compras",
+      "production": "Produzindo agora"
     },
     "area": {
       "Farm": "Fazenda",
@@ -586,5 +588,45 @@
     "resortOpen": "No seu save: o resort está aberto hoje.",
     "resortClosed": "No seu save: o resort está fechado hoje.",
     "resortNotBuilt": "No seu save: o resort ainda não foi reconstruído."
+  },
+  "prod": {
+    "title": "Produção",
+    "machinesTitle": "Máquinas trabalhando ({{count}})",
+    "summary": "{{ready}} prontas para coletar · cerca de {{value}}g em produtos lá dentro (preço base)",
+    "col": {
+      "machine": "Máquina",
+      "making": "Fazendo",
+      "count": "Quantas",
+      "ready": "Prontas",
+      "next": "Próxima em"
+    },
+    "ready": "pronto",
+    "days": "{{days}}d {{hours}}h",
+    "hours": "{{hours}}h {{mins}}min",
+    "mins": "{{mins}}min",
+    "nothing": "Nenhuma máquina trabalhando agora.",
+    "pondsTitle": "Lagos de peixes ({{count}})",
+    "emptyPond": "Vazio",
+    "pondOutput": "Esperando coleta: {{item}}"
+  },
+  "collections": {
+    "tab": {
+      "cc": "Centro Comunitário",
+      "museum": "Museu",
+      "island": "Escritório de Campo (ilha)"
+    },
+    "office": {
+      "locked": "O Escritório de Campo da Ilha Gengibre ainda não foi aberto.",
+      "hint": "Leve fósseis ao Professor Caracol no escritório de campo do norte da ilha. Cada conjunto completo dá Nozes Douradas.",
+      "skeleton": "Animal grande",
+      "snake": "Cobra",
+      "bat": "Morcego mumificado",
+      "frog": "Sapo mumificado",
+      "reward_one": "Recompensa: {{count}} Noz Dourada",
+      "reward_other": "Recompensa: {{count}} Nozes Douradas",
+      "surveys": "Pesquisas de plantas",
+      "plantsLeft": "Pesquisa das plantas da esquerda",
+      "plantsRight": "Pesquisa das plantas da direita"
+    }
   }
 }

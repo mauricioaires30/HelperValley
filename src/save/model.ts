@@ -131,6 +131,7 @@ export interface SaveData {
   farm: FarmState;
   /** Ginger Island resort: built, and open to villagers today. */
   resort: { restored: boolean; openToday: boolean };
+  fieldOffice: FieldOfficeState | null;
 }
 
 /** A crop growing on a tile or in a garden pot. */
@@ -168,9 +169,38 @@ export interface FarmAnimalState {
   building: string;
 }
 
+/** A machine with something inside: kegs, jars, bee houses, crab pots, tappers... */
+export interface MachineState {
+  /** Qualified machine id, e.g. "(BC)12" for a keg or "(O)710" for a crab pot. */
+  machine: string;
+  /** Qualified id of what it's making. */
+  output: string;
+  ready: boolean;
+  /** Game minutes left until ready (0 when ready). */
+  minutes: number;
+  location: string;
+}
+
+export interface FishPondState {
+  fish: string;
+  count: number;
+  max: number;
+  /** Item waiting to be collected, if any. */
+  output: string | null;
+}
+
 export interface FarmState {
   areas: FarmArea[];
   animals: FarmAnimalState[];
   silos: number;
   hay: number;
+  machines: MachineState[];
+  ponds: FishPondState[];
+}
+
+/** Ginger Island field office: 11 fossil pieces and the two plant surveys. */
+export interface FieldOfficeState {
+  pieces: boolean[];
+  plantsLeft: boolean;
+  plantsRight: boolean;
 }

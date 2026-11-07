@@ -1,5 +1,5 @@
-import type { CropState, FarmAnimalState, FarmArea, FarmState } from './model';
-import { arr, bool, dictEntries, node, num, numbers, text, xsiType, type XmlNode, type XmlValue } from './xml';
+import type { CropState, FarmAnimalState, FarmArea, FarmState, FishPondState, MachineState } from './model';
+import { arr, bool, dictEntries, inner, node, num, numbers, text, xsiType, type XmlNode, type XmlValue } from './xml';
 
 /** Locations whose tilled soil we track. */
 const AREAS = ['Farm', 'Greenhouse', 'IslandWest'];
@@ -100,9 +100,65 @@ function readAnimals(location: XmlNode, building: string): FarmAnimalState[] {
   });
 }
 
-/** Planting areas, animals, silos and hay for the farm planner. */
+/** Qualified id of a serialized item (enough for machines and their outputs). */
+function itemId(item: XmlNode): string {
+  const id = text(item.itemId) ?? text(item.parentSheetIndex) ?? '';
+  if (id.startsWith('(')) return id;
+  return `${bool(item.bigCraftable) ? '(BC)' : '(O)'}${id}`;
+}
+
+/** Every machine holding an item, across all locations and building interiors. */
+function readMachines(locations: XmlValue[]): MachineState[] {
+  const out: MachineState[] = [];
+  const visit = (location: XmlNode) => {
+    const name = text(location.name) ?? '';
+    for (const [, value] of dictEntries(location.objects)) {
+      const object = node(value);
+      const held = node(object?.heldObject);
+      // Chests and auto-grabbers also "hold" a chest; those are containers, not production.
+      if (!object || !held || xsiType(held) === 'Chest' || xsiType(object) === 'Chest') continue;
+      out.push({
+        machine: itemId(object),
+        output: itemId(held),
+        ready: bool(object.readyForHarvest),
+        minutes: num(object.minutesUntilReady),
+        location: name,
+      });
+    }
+    for (const b of arr(node(location.buildings)?.Building)) {
+      const indoors = node(node(b)?.indoors);
+      if (indoors) visit(indoors);
+    }
+  };
+  for (const value of locations) {
+    const location = node(value);
+    if (location) visit(location);
+  }
+  return out;
+}
+
+function readPonds(locations: XmlValue[]): FishPondState[] {
+  const out: FishPondState[] = [];
+  for (const value of locations) {
+    for (const b of arr(node(node(value)?.buildings)?.Building)) {
+      const building = node(b);
+      if (xsiType(building) !== 'FishPond' || !building) continue;
+      const fish = text(building.fishType) || text(inner(building.fishType)) || '';
+      const output = node(node(building.output)?.Item ?? building.output);
+      out.push({
+        fish: fish ? (fish.startsWith('(') ? fish : `(O)${fish}`) : '',
+        count: num(building.currentOccupants),
+        max: num(building.maxOccupants),
+        output: output && text(output.itemId) ? itemId(output) : null,
+      });
+    }
+  }
+  return out;
+}
+
+/** Planting areas, animals, silos, hay and everything being produced. */
 export function readFarm(locations: XmlValue[]): FarmState {
-  const state: FarmState = { areas: [], animals: [], silos: 0, hay: 0 };
+  const state: FarmState = { areas: [], animals: [], silos: 0, hay: 0, machines: readMachines(locations), ponds: readPonds(locations) };
   for (const value of locations) {
     const location = node(value);
     if (!location) continue;
