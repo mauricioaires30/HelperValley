@@ -17,38 +17,23 @@ const NAV = [
   { to: '/achievements', key: 'achievements', icon: '(O)74' },
 ];
 
+/** Fixed sidebar (brand, save, player, menu, language) and the page using the rest of the screen. */
 export function AppShell() {
   const { t, i18n } = useTranslation();
   return (
-    <div className="shell">
-      <header className="shell__header">
-        <div className="shell__brand">
-          <ItemIcon id="(O)24" scale={3} tooltip={false} />
-          <div>
-            <h1>{t('app.title')}</h1>
-            <p className="shell__tagline">{t('app.tagline')}</p>
-          </div>
+    <div className="app">
+      <aside className="sidebar">
+        <div className="sidebar__brand">
+          <ItemIcon id="(O)24" scale={2} tooltip={false} />
+          <h1>{t('app.title')}</h1>
         </div>
-        <div className="shell__controls">
-        <SaveDateChip />
-        <PlayerSwitcher />
-        <label className="shell__lang box">
-          <span className="visually-hidden">{t('common.language')}</span>
-          <select value={i18n.language} onChange={(e) => void i18n.changeLanguage(e.target.value)}>
-            {LANGUAGES.map((l) => (
-              <option key={l.code} value={l.code}>
-                {l.label}
-              </option>
-            ))}
-          </select>
-        </label>
-        </div>
-      </header>
 
-      <CachedBanner />
-      <div className="shell__body">
-        {/* Side tabs like the game's menus; they move to the top on narrow screens. */}
-        <nav className="shell__nav" aria-label="Main">
+        <div className="sidebar__save">
+          <SaveDateChip />
+          <PlayerSwitcher />
+        </div>
+
+        <nav className="sidebar__nav" aria-label="Main">
           <ul className="side-tabs">
             {NAV.map((item) => (
               <li key={item.to}>
@@ -61,12 +46,27 @@ export function AppShell() {
           </ul>
         </nav>
 
-        <main className="shell__main panel">
+        <div className="sidebar__footer">
+          <label className="shell__lang box">
+            <span className="visually-hidden">{t('common.language')}</span>
+            <select value={i18n.language} onChange={(e) => void i18n.changeLanguage(e.target.value)}>
+              {LANGUAGES.map((l) => (
+                <option key={l.code} value={l.code}>
+                  {l.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className="sidebar__disclaimer">{t('app.disclaimer')}</p>
+        </div>
+      </aside>
+
+      <div className="content">
+        <CachedBanner />
+        <main className="content__main panel">
           <Outlet />
         </main>
       </div>
-
-      <footer className="shell__footer">{t('app.disclaimer')}</footer>
       <SaveUpdatedToast />
     </div>
   );
