@@ -303,3 +303,37 @@
 .item-box .sprite {
   image-rendering: pixelated;
 }
+
+/* A card wrapped in a Tooltip fills its grid cell, so card grids line up. */
+.tooltip:has(> .inset),
+.tooltip:has(> .box) {
+  display: flex;
+}
+
+.tooltip > .inset,
+.tooltip > .box {
+  flex: 1;
+}
+
+/* Small game-style checkbox mark (read-only state). */
+.check {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: var(--px) solid var(--wood-dark);
+  background: var(--paper-light);
+  flex: none;
+  position: relative;
+}
+
+.check--on::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 0;
+  width: 4px;
+  height: 7px;
+  border: solid #3a8f2a;
+  border-width: 0 2px 2px 0;
+  rotate: 45deg;
+}

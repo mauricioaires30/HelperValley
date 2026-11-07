@@ -19,7 +19,8 @@
     "collections": "Collections",
     "quests": "Quests",
     "player": "Character",
-    "shops": "Shops"
+    "shops": "Shops",
+    "community": "Center & Museum"
   },
   "common": {
     "language": "Language",
@@ -857,24 +858,17 @@
     "petDaily": "pet it every day",
     "horse": "horse",
     "farmAnimals": "Farm animals ({{count}})",
-    "petN": "{{count}} without auto-petter",
-    "sad": "{{count}} unhappy",
-    "allTitle": "Every animal (fewest hearts first)",
-    "col": {
-      "name": "Name",
-      "type": "Type",
-      "hearts": "Hearts",
-      "mood": "Mood",
-      "home": "Lives in",
-      "care": "Care"
-    },
     "mood": {
       "happy": "happy",
       "fine": "ok",
       "sad": "unhappy"
     },
-    "needsPet": "pet it",
-    "cracker": "ate a golden cracker"
+    "needsPet": "pet today",
+    "cracker": "golden cracker",
+    "petted": "petted",
+    "requests": "Requests for animal products",
+    "noRequests": "No quest or special order asks for eggs, milk, wool or truffles right now.",
+    "daysLeft": "{{count}} days"
   },
   "player": {
     "skills": "Skills · farmer level {{level}}",
@@ -964,5 +958,13 @@
     "uncertainItem": "May differ in game (see the note above).",
     "nothing": "Nothing found.",
     "closed": "Closed or away today: {{names}}"
+  },
+  "community": {
+    "tab": {
+      "cc": "Community Center",
+      "joja": "Joja",
+      "museum": "Museum",
+      "island": "Island Field Office"
+    }
   }
 }

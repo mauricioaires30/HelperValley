@@ -19,7 +19,8 @@
     "collections": "Coleções",
     "quests": "Missões",
     "player": "Personagem",
-    "shops": "Lojas"
+    "shops": "Lojas",
+    "community": "Centro e Museu"
   },
   "common": {
     "language": "Idioma",
@@ -857,24 +858,17 @@
     "petDaily": "faça carinho todo dia",
     "horse": "cavalo",
     "farmAnimals": "Animais da fazenda ({{count}})",
-    "petN": "{{count}} sem afagador",
-    "sad": "{{count}} tristes",
-    "allTitle": "Cada animal (menos corações primeiro)",
-    "col": {
-      "name": "Nome",
-      "type": "Tipo",
-      "hearts": "Corações",
-      "mood": "Humor",
-      "home": "Mora em",
-      "care": "Cuidados"
-    },
     "mood": {
       "happy": "feliz",
       "fine": "ok",
       "sad": "triste"
     },
-    "needsPet": "fazer carinho",
-    "cracker": "comeu biscoito dourado"
+    "needsPet": "fazer carinho hoje",
+    "cracker": "biscoito dourado",
+    "petted": "carinho em dia",
+    "requests": "Pedidos de produtos de animais",
+    "noRequests": "Nenhuma missão ou pedido especial pedindo ovos, leite, lã ou trufas agora.",
+    "daysLeft": "{{count}} dias"
   },
   "player": {
     "skills": "Habilidades · nível {{level}} de fazendeiro",
@@ -964,5 +958,13 @@
     "uncertainItem": "Pode ser diferente no jogo (veja o aviso acima).",
     "nothing": "Nada encontrado.",
     "closed": "Fechadas ou ausentes hoje: {{names}}"
+  },
+  "community": {
+    "tab": {
+      "cc": "Centro Comunitário",
+      "joja": "Joja",
+      "museum": "Museu",
+      "island": "Pesquisa da Ilha"
+    }
   }
 }

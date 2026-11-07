@@ -13,6 +13,7 @@ import { PlayerPage } from '@/features/player/PlayerPage';
 import { ShopsPage } from '@/features/shops/ShopsPage';
 import { CalendarPage } from '@/features/calendar/CalendarPage';
 import { CollectionsPage } from '@/features/collections/CollectionsPage';
+import { CommunityPage } from '@/features/community-center/CommunityPage';
 import '@/i18n';
 import '@/ui';
 
@@ -49,8 +50,12 @@ export function App() {
           <Route path="shops/:shop?" element={<ShopsPage />} />
           <Route path="farm" element={<Navigate to="/production" replace />} />
           <Route path="collections/:tab?" element={<CollectionsPage />} />
-          <Route path="cc" element={<Navigate to="/collections/cc" replace />} />
-          <Route path="museum" element={<Navigate to="/collections/museum" replace />} />
+          <Route path="community/:tab?" element={<CommunityPage />} />
+          <Route path="cc" element={<Navigate to="/community/cc" replace />} />
+          <Route path="museum" element={<Navigate to="/community/museum" replace />} />
+          <Route path="collections/cc" element={<Navigate to="/community/cc" replace />} />
+          <Route path="collections/museum" element={<Navigate to="/community/museum" replace />} />
+          <Route path="collections/island" element={<Navigate to="/community/island" replace />} />
           <Route path="achievements" element={<Navigate to="/collections/achievements" replace />} />
           <Route path="kit" element={<KitPage />} />
         </Route>

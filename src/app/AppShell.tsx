@@ -22,6 +22,7 @@ const NAV: Array<{ to: string; key: string; icon: NavIcon }> = [
   { to: '/quests', key: 'quests', icon: { item: '(O)842' } },
   { to: '/shops', key: 'shops', icon: { item: '(O)472' } },
   { to: '/production', key: 'farm', icon: { item: '(BC)12' } },
+  { to: '/community', key: 'community', icon: { item: '(O)96' } },
   { to: '/collections', key: 'collections', icon: { ui: 'junimo', w: 16, h: 16, scale: 2, className: 'nav-junimo' } },
 ];
 

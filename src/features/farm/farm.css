@@ -235,14 +235,27 @@
 
 .prod-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  grid-auto-rows: 1fr;
   gap: 8px;
+}
+
+/* Cards are wrapped in a tooltip: let the wrapper fill its cell so every card is the same size. */
+.prod-grid > .tooltip {
+  display: flex;
+}
+
+.prod-grid > .tooltip > .prod-card,
+.prod-grid > .prod-card {
+  flex: 1;
 }
 
 .prod-card {
   display: grid;
   justify-items: center;
+  align-content: start;
   gap: 2px;
+  min-width: 0;
   text-align: center;
 }
 
@@ -263,4 +276,42 @@
 .farm-subtitle {
   margin: 4px 0;
   font-size: var(--fs-sm);
+}
+
+.animal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+}
+
+.animal-card {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 3px;
+  text-align: center;
+  font-size: var(--fs-sm);
+}
+
+.animal-card__pic {
+  display: grid;
+  place-items: end center;
+  height: 64px;
+}
+
+.animal-card__name {
+  display: grid;
+  line-height: 1.1;
+}
+
+.animal-card__name small {
+  font-size: var(--fs-xs);
+  opacity: 0.75;
+}
+
+.animal-card__check {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--fs-xs);
 }
