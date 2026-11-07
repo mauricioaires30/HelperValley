@@ -25,10 +25,17 @@ export function buildGameCollections() {
 
   // Which machine makes each item (kegs → wine, jars → jelly...).
   const madeBy = {};
+  // "FLAVORED_ITEM Wine DROP_IN_ID" → the base Wine object (by id or name).
+  const flavored = (type) => {
+    if (objects[type]) return `(O)${type}`;
+    const match = Object.entries(objects).find(([, o]) => o.Name === type || o.Name === type.replace(/([a-z])([A-Z])/g, '$1 $2'));
+    return match ? `(O)${match[0]}` : null;
+  };
   for (const [machine, data] of Object.entries(readRaw('Data/Machines'))) {
     for (const rule of data.OutputRules ?? []) {
       for (const out of rule.OutputItem ?? []) {
-        const id = out.ItemId?.startsWith('(') ? out.ItemId : out.ItemId ? `(O)${out.ItemId}` : null;
+        const raw = out.ItemId ?? '';
+        const id = raw.startsWith('FLAVORED_ITEM ') ? flavored(raw.split(' ')[1]) : raw.startsWith('(') ? raw : raw ? `(O)${raw}` : null;
         if (!id || id.includes('DROP_IN')) continue;
         (madeBy[id] ??= []).includes(machine) || madeBy[id].push(machine);
       }
