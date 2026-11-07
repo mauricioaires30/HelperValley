@@ -8,10 +8,21 @@
   gap: 8px;
 }
 
-.shops__days {
+.shops__tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
+}
+
+.shops__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.shops__tab em {
+  font-style: normal;
+  opacity: 0.8;
 }
 
 .shops__search {
@@ -92,4 +103,16 @@
 .shop-row__maybe {
   margin-left: 4px;
   font-weight: bold;
+}
+
+
+.shop__head h2 {
+  margin: 0;
+}
+
+.shop__head > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
 }

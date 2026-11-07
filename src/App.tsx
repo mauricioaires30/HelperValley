@@ -46,7 +46,7 @@ export function App() {
           <Route path="map" element={<MapPage />} />
           <Route path="quests" element={<QuestsPage />} />
           <Route path="production" element={<FarmPage />} />
-          <Route path="shops" element={<ShopsPage />} />
+          <Route path="shops/:shop?" element={<ShopsPage />} />
           <Route path="farm" element={<Navigate to="/production" replace />} />
           <Route path="collections/:tab?" element={<CollectionsPage />} />
           <Route path="cc" element={<Navigate to="/collections/cc" replace />} />
