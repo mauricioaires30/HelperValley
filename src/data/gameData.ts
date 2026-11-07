@@ -66,6 +66,8 @@ export interface AchievementGoals {
   /** Recipe name → qualified output item. */
   cookingOutputs: Record<string, string>;
   craftingOutputs: Record<string, string>;
+  /** Recipe name → how it's learned, as [kind, ...args] (see tools/extract/lib/collections.mjs). */
+  recipeSources: { cooking: Record<string, Array<Array<string | number | null>>>; crafting: Record<string, Array<Array<string | number | null>>> };
 }
 
 export interface Festival {

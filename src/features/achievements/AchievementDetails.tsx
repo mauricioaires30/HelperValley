@@ -1,24 +1,72 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { gameData, qualifyItemId } from '@/data/gameData';
+import type { ReactNode } from 'react';
+import { gameData, getItem, qualifyItemId } from '@/data/gameData';
 import { useGameName } from '@/i18n';
 import type { Player } from '@/save/model';
-import { Hearts, ItemIcon, NpcHead } from '@/ui';
+import { Hearts, ItemIcon, NpcHead, Tooltip } from '@/ui';
 
 const POLYCULTURE_GOAL = 15;
 const MONOCULTURE_GOAL = 300;
 
 /** A grid of items with an optional "n/goal" badge; faded ones aren't unlocked yet. */
-function ItemGrid({ items }: { items: Array<{ id: string; label?: string; faded?: boolean }> }) {
+function ItemGrid({ items }: { items: Array<{ id: string; label?: string; faded?: boolean; tip?: ReactNode }> }) {
   return (
     <div className="slot-grid ach-details__grid">
-      {items.map(({ id, label, faded }) => (
+      {items.map(({ id, label, faded, tip }) => (
         <span key={id} className="ach-details__item">
-          <ItemIcon id={id} slot faded={faded} />
+          {tip ? (
+            <Tooltip text={tip}>
+              <ItemIcon id={id} slot faded={faded} tooltip={false} />
+            </Tooltip>
+          ) : (
+            <ItemIcon id={id} slot faded={faded} />
+          )}
           {label && <span className="ach-details__badge">{label}</span>}
         </span>
       ))}
     </div>
+  );
+}
+
+const SEASON_KEYS = ['spring', 'summer', 'fall', 'winter'];
+
+/** Name of the dish/item plus how its recipe is learned, for a slot tooltip. */
+function RecipeTip({ id, sources, known }: { id: string; sources: Array<Array<string | number | null>>; known: boolean }) {
+  const { t } = useTranslation();
+  const name = useGameName();
+  const npcs = gameData().npcs;
+  const line = ([kind, ...args]: Array<string | number | null>) => {
+    switch (kind) {
+      case 'tv': {
+        // The Queen of Sauce airs a new recipe every Sunday for 32 weeks, then reruns.
+        const week = Number(args[0]);
+        const season = SEASON_KEYS[Math.floor(((week - 1) % 16) / 4)];
+        return t('ach.recipe.tv', { day: (((week - 1) % 4) + 1) * 7, season: t(`common.seasons.${season}`), year: week <= 16 ? 1 : 2 });
+      }
+      case 'f':
+        return t('ach.recipe.friend', { name: name(npcs[String(args[0])]?.n) || args[0], hearts: args[1] });
+      case 's':
+        return t('ach.recipe.skill', { skill: t(`common.skills.${String(args[0]).toLowerCase()}`), level: args[1] });
+      case 'l':
+        return t('ach.recipe.level', { level: args[0] });
+      case 'shop':
+        return t('ach.recipe.shop', {
+          shop: t(`farm.shop.${args[0]}`, { defaultValue: String(args[0]) }),
+          price: args[1] ? `${Number(args[1]).toLocaleString()}${args[2] ? ` ${t(`ach.recipe.currency.${args[2]}`)}` : 'g'}` : '',
+        });
+      case 'default':
+        return t('ach.recipe.default');
+      default:
+        return null;
+    }
+  };
+  return (
+    <span className="slot-tooltip">
+      <strong>{name(getItem(id)?.n)}</strong>
+      <em>{known ? t('ach.recipe.known') : t('ach.recipe.unknown')}</em>
+      {!known && (sources.length ? sources.map((s, i) => <span key={i}>{line(s)}</span>) : <span>{t('ach.recipe.other')}</span>)}
+    </span>
   );
 }
 
@@ -67,7 +115,10 @@ export function AchievementDetails({ id, player }: { id: string; player: Player 
     case '17': {
       const missing = Object.entries(goals.cookingOutputs)
         .filter(([, item]) => !player.recipesCooked[item.replace('(O)', '')])
-        .map(([recipe, item]) => ({ id: item, faded: !(recipe in player.cookingRecipes) }));
+        .map(([recipe, item]) => {
+          const known = recipe in player.cookingRecipes;
+          return { id: item, faded: !known, tip: <RecipeTip id={item} known={known} sources={goals.recipeSources.cooking[recipe] ?? []} /> };
+        });
       return (
         <>
           <p className="cc-summary__hint">{t('ach.details.cooking', { count: missing.length })}</p>
@@ -81,7 +132,11 @@ export function AchievementDetails({ id, player }: { id: string; player: Player 
     case '22': {
       const missing = goals.crafting
         .filter((recipe) => !(player.craftingRecipes[recipe] > 0))
-        .map((recipe) => ({ id: goals.craftingOutputs[recipe], faded: !(recipe in player.craftingRecipes) }))
+        .map((recipe) => {
+          const known = recipe in player.craftingRecipes;
+          const id = goals.craftingOutputs[recipe];
+          return { id, faded: !known, tip: <RecipeTip id={id} known={known} sources={goals.recipeSources.crafting[recipe] ?? []} /> };
+        })
         .filter((m) => m.id);
       return (
         <>

@@ -129,9 +129,6 @@
   animation: festival-flag 600ms steps(6) infinite;
 }
 
-.festival-flag--passive {
-  filter: hue-rotate(160deg) saturate(0.8);
-}
 
 @keyframes festival-flag {
   to {

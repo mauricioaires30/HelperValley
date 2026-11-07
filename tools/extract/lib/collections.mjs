@@ -39,6 +39,52 @@ function recipeOutputs(recipes, isBigCraftable) {
 }
 
 /**
+ * How each recipe is learned, as [kind, ...args]:
+ * ["tv", week], ["f", npc, hearts], ["s", skill, level], ["l", level], ["shop", shopId, price], ["default"].
+ */
+function recipeSources() {
+  const tv = Object.fromEntries(Object.entries(readRaw('Data/TV/CookingChannel')).map(([week, v]) => [v.split('/')[0], Number(week)]));
+  const outputs = (recipes, isBig) =>
+    Object.fromEntries(Object.entries(recipes).map(([name, raw]) => {
+      const fields = raw.split('/');
+      const id = fields[2].split(' ')[0];
+      return [name, id.startsWith('(') ? id : `${isBig(fields) ? '(BC)' : '(O)'}${id}`];
+    }));
+
+  // Recipes sold in shops are listed by their output item with IsRecipe.
+  const sold = {};
+  for (const [shopId, shop] of Object.entries(readRaw('Data/Shops'))) {
+    for (const item of shop.Items ?? []) {
+      if (!item.IsRecipe || !item.ItemId) continue;
+      const base = readRaw('Data/Objects')[item.ItemId.replace('(O)', '')];
+      const price = item.Price >= 0 ? item.Price : base ? base.Price * 2 : null;
+      // Currency: 0 gold, 1 star tokens, 2 Qi coins, 4 Qi gems.
+      (sold[item.ItemId] ??= []).push(['shop', shopId, price, shop.Currency ?? 0]);
+    }
+  }
+
+  const build = (recipes, unlockField, isBig) => {
+    const out = {};
+    const outputIds = outputs(recipes, isBig);
+    for (const [name, raw] of Object.entries(recipes)) {
+      const [code, ...args] = (raw.split('/')[unlockField] ?? '').split(' ');
+      const list = [];
+      if (tv[name]) list.push(['tv', tv[name]]);
+      if (code === 'f' || code === 's') list.push([code, ...args]);
+      else if (code === 'l' && !tv[name]) list.push(['l', args[0]]);
+      else if (code === 'default') list.push(['default']);
+      list.push(...(sold[outputIds[name]] ?? []));
+      out[name] = list;
+    }
+    return out;
+  };
+  return {
+    cooking: build(readRaw('Data/CookingRecipes'), 3, () => false),
+    crafting: build(readRaw('Data/CraftingRecipes'), 4, (fields) => fields[3] === 'true'),
+  };
+}
+
+/**
  * Inputs for achievement progress: recipe totals, the fish collection and the crops that
  * count for Polyculture/Monoculture.
  */
@@ -57,6 +103,7 @@ export function buildAchievementGoals() {
     // Recipe name → qualified output item, to show which dishes/items are still missing.
     cookingOutputs: recipeOutputs(readRaw('Data/CookingRecipes'), () => false),
     craftingOutputs: recipeOutputs(readRaw('Data/CraftingRecipes'), (fields) => fields[3] === 'true'),
+    recipeSources: recipeSources(),
   };
 }
 
