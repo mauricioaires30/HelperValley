@@ -106,10 +106,29 @@ export function buildFarm(textures) {
     ]),
   );
 
+  // Pet breeds and the horse: overworld sprites (first frame is 32x32).
+  const pets = Object.fromEntries(
+    Object.entries(readRaw('Data/Pets')).map(([type, p]) => [
+      type,
+      {
+        n: localize(p.DisplayName, type),
+        breeds: Object.fromEntries(
+          p.Breeds.map((b) => {
+            const sheet = b.Texture.split(String.fromCharCode(92)).join('/');
+            textures.add(sheet);
+            return [b.Id, sheet];
+          }),
+        ),
+      },
+    ]),
+  );
+  textures.add('Animals/horse');
+
   return {
     crops,
     fruitTrees,
     animals,
+    pets,
     hay: sources['(O)178'] ?? [],
     shopNames: Object.fromEntries(SEED_SHOPS.map((s) => [s, s])),
   };

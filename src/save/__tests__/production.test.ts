@@ -12,6 +12,9 @@ describe.skipIf(!existsSync(file))('production on a real save', () => {
     expect(machines.some((m) => m.machine === '(BC)12')).toBe(true); // kegs
     expect(machines.some((m) => m.machine === '(BC)10')).toBe(true); // bee houses
     expect(ponds.length).toBe(7);
+    expect(save.farm.pets.map((p) => p.name)).toContain('Eclipse');
+    expect(save.farm.horses.length).toBe(1);
+    expect(save.farm.bowls.length).toBe(1);
     // 11 fossils: snake (6-8) and frog (10) restored in this save, bat (9) not.
     expect(save.fieldOffice?.pieces).toHaveLength(11);
     expect(save.fieldOffice?.pieces.slice(6, 9)).toEqual([true, true, true]);

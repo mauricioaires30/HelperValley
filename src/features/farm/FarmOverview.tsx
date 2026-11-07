@@ -1,8 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { gameData } from '@/data/gameData';
-import { useGameName } from '@/i18n';
 import type { FarmArea, SaveData } from '@/save/model';
-import { ItemIcon, Sprite, Tooltip } from '@/ui';
+import { ItemIcon, Tooltip } from '@/ui';
 import { addDays } from '@/features/calendar/calendar';
 
 const SILO_CAPACITY = 240;
@@ -20,6 +19,47 @@ function cropGroups(area: FarmArea) {
     groups.set(c.harvest, g);
   }
   return [...groups.values()].sort((a, b) => b.ready - a.ready || a.nextIn - b.nextIn);
+}
+
+/** Fruit trees by kind: how many, fruit hanging now, and the youngest still growing. */
+function FruitTrees({ area }: { area: FarmArea }) {
+  const { t } = useTranslation();
+  const fruitOf = (sapling: string) => gameData().farm.fruitTrees.find((x) => x.sapling === sapling)?.fruit ?? sapling;
+  const kinds = new Map<string, { count: number; fruits: number; growing: number; minDays: number }>();
+  for (const tree of area.trees) {
+    const k = kinds.get(tree.sapling) ?? { count: 0, fruits: 0, growing: 0, minDays: Infinity };
+    k.count++;
+    k.fruits += tree.fruits;
+    if (tree.daysToMature > 0) {
+      k.growing++;
+      k.minDays = Math.min(k.minDays, tree.daysToMature);
+    }
+    kinds.set(tree.sapling, k);
+  }
+  return (
+    <div>
+      <h4 className="farm-subtitle">{t('farm.trees', { count: area.trees.length })}</h4>
+      <div className="slot-grid">
+        {[...kinds].map(([sapling, k]) => (
+          <Tooltip
+            key={sapling}
+            text={
+              <span className="slot-tooltip">
+                <span>{t('farm.treeCount', { count: k.count })}</span>
+                {k.fruits > 0 && <span>{t('farm.treeFruits', { count: k.fruits })}</span>}
+                {k.growing > 0 && <span>{t('farm.treeGrowing', { count: k.growing, days: k.minDays })}</span>}
+              </span>
+            }
+          >
+            <span className={k.fruits ? 'slot-state slot-state--ready' : 'slot-state'}>
+              <ItemIcon id={fruitOf(sapling)} slot count={k.count} tooltip={false} />
+              <span className="farm-days">{k.fruits ? `+${k.fruits}` : k.growing ? `${k.minDays}d` : '—'}</span>
+            </span>
+          </Tooltip>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function AreaCard({ area }: { area: FarmArea }) {
@@ -61,19 +101,15 @@ function AreaCard({ area }: { area: FarmArea }) {
           ))}
         </div>
       )}
+      {area.trees.length > 0 && <FruitTrees area={area} />}
     </section>
   );
 }
 
-function AnimalsCard({ save }: { save: SaveData }) {
+/** Hay in the silos and when to buy more (animals eat 1 a day when they can't graze). */
+export function HayCard({ save }: { save: SaveData }) {
   const { t } = useTranslation();
-  const name = useGameName();
-  const { animals } = gameData().farm;
   const { farm, date } = save;
-  const byType = new Map<string, number>();
-  for (const a of farm.animals) byType.set(a.type, (byType.get(a.type) ?? 0) + 1);
-
-  // Each animal eats one hay a day when it can't graze (winter, rain, no grass).
   const perDay = farm.animals.length;
   const capacity = farm.silos * SILO_CAPACITY;
   const toFill = Math.max(0, capacity - farm.hay);
@@ -83,39 +119,19 @@ function AnimalsCard({ save }: { save: SaveData }) {
     const d = addDays(date, days);
     return t('saves.day', { day: d.day, season: t(`common.seasons.${d.season}`), year: d.year });
   };
+  if (!perDay && !farm.silos) return null;
 
   return (
     <section className="box farm-area">
-      <h3>{t('farm.animalsTitle', { count: farm.animals.length })}</h3>
-      <div className="farm-animals">
-        {[...byType].map(([type, count]) => {
-          const sprite = animals[type]?.sprite;
-          return (
-            <Tooltip key={type} text={name(animals[type]?.n) || type}>
-              <span className="farm-animal">
-                {sprite && <Sprite sheet={sprite[0]} x={0} y={0} w={sprite[1]} h={sprite[2]} scale={sprite[1] > 16 ? 1 : 2} />}
-                <strong>×{count}</strong>
-              </span>
-            </Tooltip>
-          );
-        })}
-      </div>
-      {/* Hay in one line; the refill plan sits in the tooltip. */}
-      <Tooltip
-        text={
-          <span className="slot-tooltip">
-            {perDay > 0 && <span>{t('farm.hayStock', { perDay, days: stockDays, date: when(stockDays) })}</span>}
-            {toFill > 0 && <span>{t('farm.hayFill', { count: toFill.toLocaleString(), cost: (toFill * HAY_PRICE).toLocaleString() })}</span>}
-            {capacity > 0 && perDay > 0 && <span>{t('farm.hayCycle', { days: fullDays, date: when(fullDays) })}</span>}
-            <em>{t('farm.hayNote')}</em>
-          </span>
-        }
-      >
-        <span className={perDay > 0 && stockDays < 7 ? 'farm-hay farm-warn' : 'farm-hay'}>
-          <ItemIcon id="(O)178" tooltip={false} />
-          {t('farm.hayShort', { hay: farm.hay.toLocaleString(), capacity: capacity.toLocaleString(), days: perDay ? stockDays : '∞' })}
-        </span>
-      </Tooltip>
+      <h3>
+        <ItemIcon id="(O)178" tooltip={false} /> {t('farm.hayShort', { hay: farm.hay.toLocaleString(), capacity: capacity.toLocaleString(), days: perDay ? stockDays : '∞' })}
+      </h3>
+      <ul className="farm-facts">
+        {perDay > 0 && <li className={stockDays < 7 ? 'farm-warn' : undefined}>{t('farm.hayStock', { perDay, days: stockDays, date: when(stockDays) })}</li>}
+        {toFill > 0 && <li>{t('farm.hayFill', { count: toFill.toLocaleString(), cost: (toFill * HAY_PRICE).toLocaleString() })}</li>}
+        {capacity > 0 && perDay > 0 && <li>{t('farm.hayCycle', { days: fullDays, date: when(fullDays) })}</li>}
+        <li className="cc-summary__hint">{t('farm.hayNote')}</li>
+      </ul>
     </section>
   );
 }
@@ -125,11 +141,10 @@ export function FarmOverview({ save }: { save: SaveData }) {
   return (
     <div className="farm-grid">
       {save.farm.areas
-        .filter((a) => a.tilled + a.pots > 0)
+        .filter((a) => a.tilled + a.pots + a.trees.length > 0)
         .map((area) => (
           <AreaCard key={area.location} area={area} />
         ))}
-      <AnimalsCard save={save} />
     </div>
   );
 }

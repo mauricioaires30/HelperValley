@@ -3,12 +3,20 @@ import { getItem } from '@/data/gameData';
 import { useGameName } from '@/i18n';
 import type { SaveData } from '@/save/model';
 import { ItemIcon, Tooltip } from '@/ui';
+import { useLocationName } from '@/features/fish/FishInfo';
+
+interface Group {
+  output: string;
+  machines: Map<string, number>;
+  count: number;
+  ready: number;
+  next: number;
+}
 
 /** "2h 30min", "3d 4h" from game minutes. */
 function useDuration() {
   const { t } = useTranslation();
   return (minutes: number) => {
-    if (minutes <= 0) return t('prod.ready');
     const days = Math.floor(minutes / 1440);
     const hours = Math.floor((minutes % 1440) / 60);
     const mins = minutes % 60;
@@ -16,90 +24,106 @@ function useDuration() {
   };
 }
 
-/** Everything the farm is producing right now: machines, bee houses, crab pots and fish ponds. */
-export function ProductionView({ save }: { save: SaveData }) {
+/** One product: big icon with how many, what makes it (tooltip) and when the next is done. */
+function ProductCard({ g, ready }: { g: Group; ready: boolean }) {
   const { t } = useTranslation();
   const name = useGameName();
   const duration = useDuration();
+  const place = useLocationName();
+  return (
+    <Tooltip
+      text={
+        <span className="slot-tooltip">
+          {[...g.machines].map(([key, n]) => {
+            const [id, location] = key.split('|');
+            return (
+              <span key={key}>
+                {n}× {name(getItem(id)?.n)} · {place(location)}
+              </span>
+            );
+          })}
+        </span>
+      }
+    >
+      <div className={ready ? 'prod-card inset prod-card--ready' : 'prod-card inset'}>
+        <ItemIcon id={g.output} slot count={ready ? g.ready : g.count - g.ready} tooltip={false} />
+        <span className="prod-card__name">{name(getItem(g.output)?.n) || g.output}</span>
+        <span className="prod-card__when">{ready ? t('prod.readyNow') : t('prod.nextIn', { time: duration(g.next) })}</span>
+      </div>
+    </Tooltip>
+  );
+}
 
-  // Group by machine and output: 12 kegs making Starfruit Wine, 4 ready, next in 2h.
-  const groups = new Map<string, { machine: string; output: string; count: number; ready: number; next: number }>();
+/** What the farm is producing, split into "ready to collect" and "in progress". */
+export function ProductionView({ save }: { save: SaveData }) {
+  const { t } = useTranslation();
+  const name = useGameName();
+
+  const groups = new Map<string, Group>();
   for (const m of save.farm.machines) {
-    const key = `${m.machine}|${m.output}`;
-    const g = groups.get(key) ?? { machine: m.machine, output: m.output, count: 0, ready: 0, next: Infinity };
+    const g = groups.get(m.output) ?? { output: m.output, machines: new Map(), count: 0, ready: 0, next: Infinity };
     g.count++;
+    const key = `${m.machine}|${m.location}`;
+    g.machines.set(key, (g.machines.get(key) ?? 0) + 1);
     if (m.ready) g.ready++;
     else g.next = Math.min(g.next, m.minutes);
-    groups.set(key, g);
+    groups.set(m.output, g);
   }
-  const rows = [...groups.values()].sort((a, b) => b.ready - a.ready || a.next - b.next);
-  const totalReady = rows.reduce((n, g) => n + g.ready, 0);
-  const value = rows.reduce((n, g) => n + (getItem(g.output)?.p ?? 0) * g.count, 0);
+  const all = [...groups.values()];
+  const ready = all.filter((g) => g.ready > 0).sort((a, b) => b.ready - a.ready);
+  const working = all.filter((g) => g.count > g.ready).sort((a, b) => a.next - b.next);
+  const readyCount = ready.reduce((n, g) => n + g.ready, 0);
 
   return (
-    <div className="farm-grid farm-grid--wide">
-      <section className="box">
-        <h3>{t('prod.machinesTitle', { count: save.farm.machines.length })}</h3>
-        <p className="cc-summary__hint">{t('prod.summary', { ready: totalReady, value: value.toLocaleString() })}</p>
-        <div className="farm-table-wrap">
-          <table className="farm-table">
-            <thead>
-              <tr>
-                <th>{t('prod.col.machine')}</th>
-                <th>{t('prod.col.making')}</th>
-                <th className="num">{t('prod.col.count')}</th>
-                <th className="num">{t('prod.col.ready')}</th>
-                <th className="num">{t('prod.col.next')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((g) => (
-                <tr key={`${g.machine}|${g.output}`} className={g.ready ? 'prod-row--ready' : undefined}>
-                  <td>
-                    <span className="farm-crop">
-                      <ItemIcon id={g.machine} scale={1} tooltip={false} />
-                      {name(getItem(g.machine)?.n)}
-                    </span>
-                  </td>
-                  <td>
-                    <span className="farm-crop">
-                      <ItemIcon id={g.output} tooltip={false} />
-                      {name(getItem(g.output)?.n) || g.output}
-                    </span>
-                  </td>
-                  <td className="num">{g.count}</td>
-                  <td className="num">{g.ready || '—'}</td>
-                  <td className="num">{g.next === Infinity ? '—' : duration(g.next)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {rows.length === 0 && <p>{t('prod.nothing')}</p>}
-        </div>
-      </section>
+    <div className="prod">
+      <div className="prod-summary">
+        <span className="box">{t('prod.readyCount', { count: readyCount })}</span>
+        <span className="box">{t('prod.workingCount', { count: save.farm.machines.length - readyCount })}</span>
+        {save.farm.ponds.length > 0 && <span className="box">{t('prod.pondCount', { count: save.farm.ponds.length })}</span>}
+      </div>
 
-      {save.farm.ponds.length > 0 && (
-        <section className="box">
-          <h3>{t('prod.pondsTitle', { count: save.farm.ponds.length })}</h3>
-          <div className="prod-ponds">
-            {save.farm.ponds.map((p, i) => (
-              <div key={i} className="prod-pond inset">
-                {p.fish ? <ItemIcon id={p.fish} /> : <span>{t('prod.emptyPond')}</span>}
-                <span>
-                  {p.fish && name(getItem(p.fish)?.n)} {p.count}/{p.max}
-                </span>
-                {p.output && (
-                  <Tooltip text={t('prod.pondOutput', { item: name(getItem(p.output)?.n) })}>
-                    <span className="slot-state slot-state--ready">
-                      <ItemIcon id={p.output} slot tooltip={false} />
-                    </span>
-                  </Tooltip>
-                )}
-              </div>
+      {ready.length > 0 && (
+        <section>
+          <h3>{t('prod.readyTitle')}</h3>
+          <div className="prod-grid">
+            {ready.map((g) => (
+              <ProductCard key={g.output} g={g} ready />
             ))}
           </div>
         </section>
       )}
+
+      {working.length > 0 && (
+        <section>
+          <h3>{t('prod.workingTitle')}</h3>
+          <div className="prod-grid">
+            {working.map((g) => (
+              <ProductCard key={g.output} g={g} ready={false} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {save.farm.ponds.length > 0 && (
+        <section>
+          <h3>{t('prod.pondsTitle', { count: save.farm.ponds.length })}</h3>
+          <div className="prod-grid">
+            {save.farm.ponds.map((p, i) => (
+              <Tooltip key={i} text={p.output ? t('prod.pondOutput', { item: name(getItem(p.output)?.n) }) : t('prod.pondNothing')}>
+                <div className={p.output ? 'prod-card inset prod-card--ready' : 'prod-card inset'}>
+                  {p.fish ? <ItemIcon id={p.fish} slot tooltip={false} /> : <span>{t('prod.emptyPond')}</span>}
+                  <span className="prod-card__name">{p.fish ? name(getItem(p.fish)?.n) : ''}</span>
+                  <span className="prod-card__when">
+                    {p.count}/{p.max}
+                  </span>
+                </div>
+              </Tooltip>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {save.farm.machines.length === 0 && <p>{t('prod.nothing')}</p>}
     </div>
   );
 }

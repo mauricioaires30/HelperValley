@@ -199,12 +199,29 @@ export interface FarmArea {
   sprinklerTiles: number;
   beeHouses: number;
   machines: Record<string, number>;
+  trees: FruitTreeState[];
+}
+
+export interface FruitTreeState {
+  /** Sapling id, e.g. "(O)633" for an apple tree. */
+  sapling: string;
+  /** Days left to grow up (0 when mature). */
+  daysToMature: number;
+  /** Fruit hanging on the tree right now. */
+  fruits: number;
+  fruit?: string;
 }
 
 export interface FarmAnimalState {
   type: string;
   name: string;
+  /** 0–1000; 200 per heart. */
   friendship: number;
+  /** 0–255. */
+  happiness: number;
+  /** An auto-petter covers it: no need to pet by hand. */
+  autoPet: boolean;
+  ateAnimalCracker: boolean;
   /** Building it lives in, e.g. "Deluxe Barn". */
   building: string;
 }
@@ -236,6 +253,10 @@ export interface FarmState {
   hay: number;
   machines: MachineState[];
   ponds: FishPondState[];
+  pets: Array<{ name: string; type: string; breed: string; friendship: number }>;
+  horses: string[];
+  /** Pet bowls and whether each has water today. */
+  bowls: boolean[];
 }
 
 /** Ginger Island field office: 11 fossil pieces and the two plant surveys. */
