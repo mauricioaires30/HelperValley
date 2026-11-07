@@ -57,10 +57,21 @@ function readArea(location: XmlNode): FarmArea {
     sprinklerTiles: 0,
     beeHouses: 0,
     machines: {},
+    trees: [],
   };
 
   for (const [, value] of dictEntries(location.terrainFeatures)) {
     const feature = node(value);
+    if (xsiType(feature) === 'FruitTree' && feature) {
+      const fruits = arr(feature.fruit).map(node).filter(Boolean) as XmlNode[];
+      area.trees.push({
+        sapling: `(O)${text(feature.treeId) ?? ''}`,
+        daysToMature: Math.max(0, num(feature.daysUntilMature)),
+        fruits: fruits.length,
+        fruit: fruits[0] ? itemId(fruits[0]) : undefined,
+      });
+      continue;
+    }
     if (xsiType(feature) !== 'HoeDirt' || !feature) continue;
     area.tilled++;
     const crop = cropState(feature, false);
@@ -96,7 +107,17 @@ function readAnimals(location: XmlNode, building: string): FarmAnimalState[] {
   return dictEntries(location.animals).flatMap(([, value]) => {
     const animal = node(node(value)?.FarmAnimal ?? value);
     if (!animal) return [];
-    return [{ type: text(animal.type) ?? '', name: text(animal.name) ?? '', friendship: num(animal.friendshipTowardFarmer), building }];
+    return [
+      {
+        type: text(animal.type) ?? '',
+        name: text(animal.name) ?? '',
+        friendship: num(animal.friendshipTowardFarmer),
+        happiness: num(animal.happiness),
+        autoPet: bool(animal.wasAutoPet),
+        ateAnimalCracker: bool(animal.hasEatenAnimalCracker),
+        building,
+      },
+    ];
   });
 }
 
@@ -158,7 +179,17 @@ function readPonds(locations: XmlValue[]): FishPondState[] {
 
 /** Planting areas, animals, silos, hay and everything being produced. */
 export function readFarm(locations: XmlValue[]): FarmState {
-  const state: FarmState = { areas: [], animals: [], silos: 0, hay: 0, machines: readMachines(locations), ponds: readPonds(locations) };
+  const state: FarmState = {
+    areas: [],
+    animals: [],
+    silos: 0,
+    hay: 0,
+    machines: readMachines(locations),
+    ponds: readPonds(locations),
+    pets: [],
+    horses: [],
+    bowls: [],
+  };
   for (const value of locations) {
     const location = node(value);
     if (!location) continue;
@@ -170,8 +201,18 @@ export function readFarm(locations: XmlValue[]): FarmState {
       const building = node(b);
       const type = text(building?.buildingType) ?? '';
       if (type === 'Silo') state.silos++;
+      if (type === 'Pet Bowl') state.bowls.push(bool(building?.watered));
       const indoors = node(building?.indoors);
       if (indoors) state.animals.push(...readAnimals(indoors, type));
+    }
+    // Pets and horses are characters on the farm or in the house.
+    for (const c of arr(node(location.characters)?.NPC)) {
+      const npc = node(c);
+      if (xsiType(npc) === 'Pet') {
+        state.pets.push({ name: text(npc!.name) ?? '', type: text(npc!.petType) ?? 'Cat', breed: text(npc!.whichBreed) ?? '0', friendship: num(npc!.friendshipTowardFarmer) });
+      } else if (xsiType(npc) === 'Horse') {
+        state.horses.push(text(npc!.name) ?? '');
+      }
     }
     // Animals currently outside on the farm.
     if (name === 'Farm') state.animals.push(...readAnimals(location, 'Farm'));

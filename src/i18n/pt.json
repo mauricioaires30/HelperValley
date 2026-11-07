@@ -418,10 +418,11 @@
   "farm": {
     "title": "Fazenda",
     "view": {
-      "overview": "Plantações e animais",
+      "overview": "Plantações",
       "recommendations": "O que plantar",
       "planner": "Planos e compras",
-      "production": "Produzindo agora"
+      "production": "Produzindo",
+      "animals": "Animais"
     },
     "area": {
       "Farm": "Fazenda",
@@ -554,7 +555,14 @@
     "hayStock": "{{perDay}}/dia · dura {{days}} dias (até {{date}})",
     "hayCycle": "Silos cheios duram {{days}} dias (até {{date}})",
     "hayNote": "Conta como se comessem feno todo dia.",
-    "hayShort": "Feno {{hay}}/{{capacity}} · dura {{days}} dias"
+    "hayShort": "Feno {{hay}}/{{capacity}} · dura {{days}} dias",
+    "trees": "Árvores frutíferas ({{count}})",
+    "treeCount_one": "1 árvore",
+    "treeCount_other": "{{count}} árvores",
+    "treeFruits_one": "1 fruta para colher",
+    "treeFruits_other": "{{count}} frutas para colher",
+    "treeGrowing_one": "1 crescendo · adulta em {{days}}d",
+    "treeGrowing_other": "{{count}} crescendo · a primeira em {{days}}d"
   },
   "map": {
     "title": "Mapa dos moradores",
@@ -635,7 +643,15 @@
     "nothing": "Nenhuma máquina trabalhando agora.",
     "pondsTitle": "Lagos de peixes ({{count}})",
     "emptyPond": "Vazio",
-    "pondOutput": "Esperando coleta: {{item}}"
+    "pondOutput": "Esperando coleta: {{item}}",
+    "readyCount": "{{count}} prontos",
+    "workingCount": "{{count}} em andamento",
+    "pondCount": "{{count}} lagos",
+    "readyTitle": "Pronto para coletar",
+    "workingTitle": "Em andamento",
+    "readyNow": "pronto",
+    "nextIn": "próximo em {{time}}",
+    "pondNothing": "Nada para coletar"
   },
   "collections": {
     "tab": {
@@ -756,5 +772,33 @@
       "IslandBatRestored": "Escritório de campo: morcego mumificado",
       "IslandCenterSkeletonRestored": "Escritório de campo: esqueleto grande"
     }
+  },
+  "animals": {
+    "fillBowl": "Encha a tigela do pet hoje",
+    "bowlOk": "Tigela do pet ok",
+    "toPet": "{{count}} animais para fazer carinho",
+    "allAutoPet": "Afagadores cuidam de todos",
+    "companions": "Pet e cavalo",
+    "petDaily": "faça carinho todo dia",
+    "horse": "cavalo",
+    "farmAnimals": "Animais da fazenda ({{count}})",
+    "petN": "{{count}} sem afagador",
+    "sad": "{{count}} tristes",
+    "allTitle": "Cada animal (menos corações primeiro)",
+    "col": {
+      "name": "Nome",
+      "type": "Tipo",
+      "hearts": "Corações",
+      "mood": "Humor",
+      "home": "Mora em",
+      "care": "Cuidados"
+    },
+    "mood": {
+      "happy": "feliz",
+      "fine": "ok",
+      "sad": "triste"
+    },
+    "needsPet": "fazer carinho",
+    "cracker": "comeu biscoito dourado"
   }
 }

@@ -418,10 +418,11 @@
   "farm": {
     "title": "Farm",
     "view": {
-      "overview": "Crops & animals",
+      "overview": "Crops",
       "recommendations": "What to plant",
       "planner": "Plans & shopping",
-      "production": "Producing now"
+      "production": "Producing",
+      "animals": "Animals"
     },
     "area": {
       "Farm": "Farm",
@@ -554,7 +555,14 @@
     "hayStock": "{{perDay}}/day · lasts {{days}} days (until {{date}})",
     "hayCycle": "Full silos last {{days}} days (until {{date}})",
     "hayNote": "Assumes they eat hay every day.",
-    "hayShort": "Hay {{hay}}/{{capacity}} · lasts {{days}} days"
+    "hayShort": "Hay {{hay}}/{{capacity}} · lasts {{days}} days",
+    "trees": "Fruit trees ({{count}})",
+    "treeCount_one": "1 tree",
+    "treeCount_other": "{{count}} trees",
+    "treeFruits_one": "1 fruit to pick",
+    "treeFruits_other": "{{count}} fruits to pick",
+    "treeGrowing_one": "1 growing · grown in {{days}}d",
+    "treeGrowing_other": "{{count}} growing · first in {{days}}d"
   },
   "map": {
     "title": "Villager map",
@@ -635,7 +643,15 @@
     "nothing": "No machine is working right now.",
     "pondsTitle": "Fish ponds ({{count}})",
     "emptyPond": "Empty",
-    "pondOutput": "Waiting to collect: {{item}}"
+    "pondOutput": "Waiting to collect: {{item}}",
+    "readyCount": "{{count}} ready",
+    "workingCount": "{{count}} working",
+    "pondCount": "{{count}} ponds",
+    "readyTitle": "Ready to collect",
+    "workingTitle": "In progress",
+    "readyNow": "ready",
+    "nextIn": "next in {{time}}",
+    "pondNothing": "Nothing to collect"
   },
   "collections": {
     "tab": {
@@ -756,5 +772,33 @@
       "IslandBatRestored": "Field office: mummified bat",
       "IslandCenterSkeletonRestored": "Field office: large skeleton"
     }
+  },
+  "animals": {
+    "fillBowl": "Fill the pet's bowl today",
+    "bowlOk": "Pet bowl ok",
+    "toPet": "{{count}} animals to pet",
+    "allAutoPet": "Auto-petters cover everyone",
+    "companions": "Pet and horse",
+    "petDaily": "pet it every day",
+    "horse": "horse",
+    "farmAnimals": "Farm animals ({{count}})",
+    "petN": "{{count}} without auto-petter",
+    "sad": "{{count}} unhappy",
+    "allTitle": "Every animal (fewest hearts first)",
+    "col": {
+      "name": "Name",
+      "type": "Type",
+      "hearts": "Hearts",
+      "mood": "Mood",
+      "home": "Lives in",
+      "care": "Care"
+    },
+    "mood": {
+      "happy": "happy",
+      "fine": "ok",
+      "sad": "unhappy"
+    },
+    "needsPet": "pet it",
+    "cracker": "ate a golden cracker"
   }
 }
