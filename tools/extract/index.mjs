@@ -66,7 +66,7 @@ const datasets = {
   walnuts: buildWalnutSpots(gameDir),
   gameCollections: buildGameCollections(),
   player: buildPlayer(textures),
-  shops: buildShops(),
+  shops: buildShops(textures),
 };
 
 await rm(DATA_OUT, { recursive: true, force: true });

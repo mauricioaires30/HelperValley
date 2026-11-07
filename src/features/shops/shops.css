@@ -136,3 +136,62 @@
 .shop__group .shop__items {
   margin-top: 0;
 }
+
+.shops__tab--closed {
+  opacity: 0.55;
+}
+
+.shop__tag--closed {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.build-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 8px;
+}
+
+.build-card {
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  gap: 8px;
+  align-items: start;
+}
+
+.build-card__pic {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+}
+
+.build-card__pic .sprite {
+  image-rendering: pixelated;
+}
+
+.build-card__body {
+  display: grid;
+  gap: 3px;
+  font-size: var(--fs-sm);
+}
+
+.build-card__price {
+  font-weight: bold;
+}
+
+.build-card__materials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+}
+
+.build-card__material {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.build-card__desc {
+  opacity: 0.8;
+}

@@ -40,6 +40,7 @@ export const SHOPS: ShopInfo[] = [
   { id: 'DesertTrade', icon: '(O)60', rotates: true },
   // The cart comes Fridays and Sundays, and to the Night Market and the Desert Festival.
   { id: 'Traveler', icon: '(O)347', rotates: true, open: (d) => [4, 6].includes(weekday(d)) || on('winter', 15, 16, 17)(d) || on('spring', 15, 16, 17)(d) },
+  { id: 'Wizard', npc: 'Wizard' },
   { id: 'Dwarf', npc: 'Dwarf' },
   { id: 'AdventureShop', npc: 'Marlon' },
   { id: 'IslandTrade', icon: '(O)830', rotates: true },

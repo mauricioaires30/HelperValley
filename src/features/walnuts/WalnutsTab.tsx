@@ -40,10 +40,15 @@ function Walnuts({ save }: { save: SaveData }) {
   const drops = DROPS.map((d) => ({ ...d, got: save.walnutDrops[d.key] ?? 0 }));
   const dropsLeft = drops.filter((d) => d.max !== undefined && d.got < d.max);
   const puzzlesLeft = ONE_TIME_GUIDE.filter((g) => !collected.has(g.key));
+  const spotsLeft = missingSpots.length;
+  const puzzleNuts = puzzlesLeft.reduce((n, g) => n + g.total, 0);
+  const remaining = Math.max(0, TOTAL_WALNUTS - save.goldenWalnutsFound);
+  // Repeatable sources: whatever's left after spots and puzzles, so the three numbers add up to the total
+  // (some sources, like volcano chests, have no fixed count in the save).
   const left = {
-    spots: missingSpots.length,
-    drops: dropsLeft.reduce((n, d) => n + (d.max! - d.got), 0),
-    puzzles: puzzlesLeft.reduce((n, g) => n + g.total, 0),
+    spots: spotsLeft,
+    puzzles: puzzleNuts,
+    drops: Math.max(dropsLeft.reduce((n, d) => n + (d.max! - d.got), 0), remaining - spotsLeft - puzzleNuts),
   };
 
   // Missing spots grouped by island area.

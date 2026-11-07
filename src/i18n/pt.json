@@ -270,7 +270,7 @@
     "sortBirthday": "Próximo aniversário",
     "sortName": "Nome",
     "toNext": "Faltam {{points}} pontos para o próximo coração",
-    "bouquet": "Dê um buquê para passar de 8 ♥",
+    "bouquet": "Dê um buquê para namorar",
     "giftsLeft_one": "Resta 1 presente nesta semana",
     "giftsLeft_other": "Restam {{count}} presentes nesta semana",
     "giftedToday": "Já recebeu presente hoje",
@@ -993,7 +993,8 @@
       "Festival_NightMarket_MagicBoat_Day1": "Mercado Noturno: barco mágico",
       "Festival_NightMarket_MagicBoat_Day2": "Mercado Noturno: barco mágico",
       "Festival_NightMarket_MagicBoat_Day3": "Mercado Noturno: barco mágico",
-      "Festival_FeastOfTheWinterStar_Pierre": "Festa da Estrela Invernal"
+      "Festival_FeastOfTheWinterStar_Pierre": "Festa da Estrela Invernal",
+      "Wizard": "Torre do Mago"
     },
     "dayLabel": "{{day}} de {{season}}, ano {{year}}",
     "how": "O estoque sorteado é calculado com a mesma semente do jogo, então deve bater com o que aparece lá.",
@@ -1007,7 +1008,6 @@
     "uncertain": "Uma rolagem escondida aconteceu antes destes itens; os marcados com ? podem ser diferentes no jogo.",
     "uncertainItem": "Pode ser diferente no jogo (veja o aviso acima).",
     "nothing": "Nada encontrado.",
-    "closed": "Fechadas ou ausentes hoje: {{names}}",
     "group": {
       "seeds": "Sementes",
       "saplings": "Mudas de árvore",
@@ -1031,7 +1031,26 @@
       "books": "Livros",
       "recipes": "Receitas",
       "other": "Outros",
-      "ingredients": "Ingredientes"
+      "ingredients": "Ingredientes",
+      "buildings": "Construções",
+      "animals": "Animais",
+      "upgrades": "Melhorias de ferramentas"
+    },
+    "closedToday": "fechada hoje",
+    "closedNote": "Esta loja está fechada ou ausente hoje; o estoque abaixo é o que ela teria hoje.",
+    "build": {
+      "days": "{{count}} dias de obra",
+      "instant": "pronta no dia seguinte",
+      "upgradeOf": "melhora: {{name}}",
+      "needs": "precisa de: {{name}}",
+      "upgradeHint": "Cada melhoria vale para qualquer ferramenta (machado, picareta, enxada, regador, lixeira).",
+      "upgradeDays": "2 dias com o Clint",
+      "level": {
+        "copper": "Cobre",
+        "steel": "Aço",
+        "gold": "Ouro",
+        "iridium": "Irídio"
+      }
     }
   },
   "community": {
@@ -1061,5 +1080,16 @@
       "Tiger Slime": "Slime tigre",
       "Prismatic Slime": "Slime prismático"
     }
+  },
+  "intro": {
+    "player": "Seu personagem: habilidades, profissões, maestria e o que falta para o vovô acender as 4 velas.",
+    "calendar": "O dia de hoje, aniversários e festivais. Use as setas para ver outros dias e anos.",
+    "relationships": "Corações de cada morador. Passe o mouse nos botões para ver presentes e eventos.",
+    "map": "Onde cada morador está a cada 10 minutos. Arraste para mover, use a roda do mouse para dar zoom e ligue as camadas ao lado.",
+    "quests": "Missões do diário, pedidos especiais, lagos de peixe e metas do caçador. Use \"Marcar\" para ver no mapa.",
+    "shops": "O estoque de hoje de cada loja, inclusive o que é sorteado. Lojas apagadas estão fechadas hoje.",
+    "production": "Tudo que a fazenda está produzindo, animais, slimes, plantações e o que plantar.",
+    "community": "Pacotes do Centro Comunitário (ou Joja), doações do museu e da pesquisa da ilha.",
+    "collections": "As coleções do jogo. Passe o mouse num item para ver como conseguir."
   }
 }

@@ -107,9 +107,9 @@ function AnimalRequests({ save }: { save: SaveData }) {
     <section>
       <h3>{t('animals.requests')}</h3>
       {quests.length === 0 && orders.length === 0 && <p className="cc-summary__hint">{t('animals.noRequests')}</p>}
-      <ul className="map-list">
+      <ul className="map-list dashed-list">
         {quests.map((q) => (
-          <li key={q.id} className="inset">
+          <li key={q.id}>
             <ItemIcon id={q.item!} />
             <span>
               <strong>{q.title}</strong> · {q.npc ?? ''} {q.count ? `×${q.count}` : ''} {q.daysLeft > 0 ? t('animals.daysLeft', { count: q.daysLeft }) : ''}
@@ -117,7 +117,7 @@ function AnimalRequests({ save }: { save: SaveData }) {
           </li>
         ))}
         {orders.map((o) => (
-          <li key={o.key} className="inset">
+          <li key={o.key}>
             <span>
               <strong>{o.requester}</strong>: {o.objectives.map((ob) => `${ob.description} (${ob.current}/${ob.max})`).join(' · ')}
             </span>

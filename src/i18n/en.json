@@ -270,7 +270,7 @@
     "sortBirthday": "Next birthday",
     "sortName": "Name",
     "toNext": "{{points}} points to the next heart",
-    "bouquet": "Give a bouquet to go past 8 ♥",
+    "bouquet": "Give a bouquet to start dating",
     "giftsLeft_one": "1 gift left this week",
     "giftsLeft_other": "{{count}} gifts left this week",
     "giftedToday": "Already gifted today",
@@ -993,7 +993,8 @@
       "Festival_NightMarket_MagicBoat_Day1": "Night Market: magic boat",
       "Festival_NightMarket_MagicBoat_Day2": "Night Market: magic boat",
       "Festival_NightMarket_MagicBoat_Day3": "Night Market: magic boat",
-      "Festival_FeastOfTheWinterStar_Pierre": "Feast of the Winter Star"
+      "Festival_FeastOfTheWinterStar_Pierre": "Feast of the Winter Star",
+      "Wizard": "Wizard's Tower"
     },
     "dayLabel": "{{season}} {{day}}, year {{year}}",
     "how": "Random stock is computed with the game's own seed, so it should match what you see in game.",
@@ -1007,7 +1008,6 @@
     "uncertain": "A hidden roll happened before these items; the ones marked ? may differ in game.",
     "uncertainItem": "May differ in game (see the note above).",
     "nothing": "Nothing found.",
-    "closed": "Closed or away today: {{names}}",
     "group": {
       "seeds": "Seeds",
       "saplings": "Saplings",
@@ -1031,7 +1031,26 @@
       "books": "Books",
       "recipes": "Recipes",
       "other": "Other",
-      "ingredients": "Cooking ingredients"
+      "ingredients": "Cooking ingredients",
+      "buildings": "Buildings",
+      "animals": "Animals",
+      "upgrades": "Tool upgrades"
+    },
+    "closedToday": "closed today",
+    "closedNote": "This shop is closed or away today; below is what it would sell today.",
+    "build": {
+      "days": "{{count}} days to build",
+      "instant": "ready the next day",
+      "upgradeOf": "upgrades: {{name}}",
+      "needs": "needs: {{name}}",
+      "upgradeHint": "Each upgrade works for any tool (axe, pickaxe, hoe, watering can, trash can).",
+      "upgradeDays": "2 days with Clint",
+      "level": {
+        "copper": "Copper",
+        "steel": "Steel",
+        "gold": "Gold",
+        "iridium": "Iridium"
+      }
     }
   },
   "community": {
@@ -1061,5 +1080,16 @@
       "Tiger Slime": "Tiger slime",
       "Prismatic Slime": "Prismatic slime"
     }
+  },
+  "intro": {
+    "player": "Your character: skills, professions, mastery and what's left for Grandpa to light all 4 candles.",
+    "calendar": "Today, birthdays and festivals. Use the arrows to look at other days and years.",
+    "relationships": "Hearts with each villager. Hover the buttons for gifts and events.",
+    "map": "Where every villager is, every 10 minutes. Drag to move, scroll to zoom and turn on layers on the side.",
+    "quests": "Journal quests, special orders, fish ponds and slayer goals. Use \"Mark\" to see them on the map.",
+    "shops": "Each shop's stock today, random picks included. Faded shops are closed today.",
+    "production": "Everything the farm is making, animals, slimes, crops and what to plant.",
+    "community": "Community Center bundles (or Joja), museum and island field office donations.",
+    "collections": "The game's collections. Hover an item to see how to get it."
   }
 }

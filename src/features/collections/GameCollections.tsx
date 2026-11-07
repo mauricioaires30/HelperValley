@@ -146,9 +146,9 @@ function Letters({ received }: { received: string[] }) {
   return (
     <div>
       <p className="cc-summary__hint">{t('collections.lettersHint', { count: received.length })}</p>
-      <ul className="letters">
+      <ul className="letters dashed-list">
         {received.map((k) => (
-          <li key={k} className="inset">
+          <li key={k}>
             {name(letters[k])}
           </li>
         ))}

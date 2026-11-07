@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useSaveStore } from '@/store/saveStore';
 import { ConnectPanel, SaveList } from '@/features/saves/SavePicker';
-import { SaveOverview } from './SaveOverview';
 import { LiveSetupGuide } from '@/features/saves/LiveSetupGuide';
 import { supportsDirectoryAccess } from '@/save/sources';
 
@@ -37,7 +36,6 @@ export function HomePage() {
       )}
       {source || summaries.length > 0 ? <SaveList /> : <ConnectPanel />}
       {status === 'loading' && <p>{t('saves.loading')}</p>}
-      <SaveOverview />
       <HowItWorks />
     </div>
   );
