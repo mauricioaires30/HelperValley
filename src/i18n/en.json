@@ -223,6 +223,12 @@
         "linusTrashCleanup": "Linus's special order",
         "carolineSO": "Caroline's special order",
         "guntherBones": "Gunther's special order (fossils)"
+      },
+      "category": {
+        "-4": "any fish",
+        "-5": "any egg",
+        "-6": "any milk",
+        "-777": "wild seeds (any)"
       }
     }
   },
@@ -672,7 +678,8 @@
       "cooking": "Cooking",
       "achievements": "Achievements",
       "letters": "Letters",
-      "notes": "Secret Notes"
+      "notes": "Secret Notes",
+      "crafting": "Crafting"
     },
     "office": {
       "locked": "The Field Office on Ginger Island hasn't been opened yet.",
@@ -704,7 +711,8 @@
       "fish": "Caught {{count}}×",
       "artifacts": "Found {{count}}×",
       "minerals": "Found {{count}}×",
-      "cooking": "Cooked {{count}}×"
+      "cooking": "Cooked {{count}}×",
+      "crafting": "Crafted {{count}}×"
     },
     "how": {
       "crop": "Grow in: {{seasons}}",

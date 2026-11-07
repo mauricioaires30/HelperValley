@@ -171,6 +171,8 @@ export interface GameData {
     secretNotes: number[];
     /** Item → machines that make it. */
     madeBy: Record<string, string[]>;
+    /** Recipe name → [item id or negative category, count]. */
+    ingredients: { cooking: Record<string, Array<[string, number]>>; crafting: Record<string, Array<[string, number]>> };
   };
   player: PlayerData;
   /** Data/Shops and item pools; typed in features/shops/stock.ts. */

@@ -6,11 +6,11 @@ import { GameCollectionTab, LettersTab, NotesTab, type GameTab } from './GameCol
 import './collections.css';
 
 /** Same tabs as the game's collections menu, then the bigger trackers. */
-const GAME_TABS = ['shipped', 'fish', 'artifacts', 'minerals', 'cooking', 'achievements', 'letters', 'notes'] as const;
+const GAME_TABS = ['shipped', 'fish', 'artifacts', 'minerals', 'cooking', 'crafting', 'achievements', 'letters', 'notes'] as const;
 const EXTRA_TABS = ['walnuts'] as const;
 type Tab = (typeof GAME_TABS)[number] | (typeof EXTRA_TABS)[number];
 
-const isGrid = (tab: Tab): tab is GameTab => ['shipped', 'fish', 'artifacts', 'minerals', 'cooking'].includes(tab);
+const isGrid = (tab: Tab): tab is GameTab => ['shipped', 'fish', 'artifacts', 'minerals', 'cooking', 'crafting'].includes(tab);
 
 export function CollectionsPage() {
   const { t } = useTranslation();

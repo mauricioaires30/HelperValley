@@ -223,6 +223,12 @@
         "linusTrashCleanup": "Pedido especial do Linus",
         "carolineSO": "Pedido especial da Caroline",
         "guntherBones": "Pedido especial do Gunther (fósseis)"
+      },
+      "category": {
+        "-4": "qualquer peixe",
+        "-5": "qualquer ovo",
+        "-6": "qualquer leite",
+        "-777": "sementes silvestres (qualquer)"
       }
     }
   },
@@ -672,7 +678,8 @@
       "cooking": "Culinária",
       "achievements": "Conquistas",
       "letters": "Cartas",
-      "notes": "Notas Secretas"
+      "notes": "Notas Secretas",
+      "crafting": "Artesanato"
     },
     "office": {
       "locked": "O Escritório de Campo da Ilha Gengibre ainda não foi aberto.",
@@ -704,7 +711,8 @@
       "fish": "Pescado {{count}}×",
       "artifacts": "Achado {{count}}×",
       "minerals": "Achado {{count}}×",
-      "cooking": "Cozinhado {{count}}×"
+      "cooking": "Cozinhado {{count}}×",
+      "crafting": "Fabricado {{count}}×"
     },
     "how": {
       "crop": "Plante em: {{seasons}}",

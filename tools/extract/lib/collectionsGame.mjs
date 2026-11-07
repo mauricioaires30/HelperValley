@@ -43,5 +43,21 @@ export function buildGameCollections() {
     }
   }
 
-  return { shipped, letters, secretNotes: Object.keys(readRaw('Data/SecretNotes')).map(Number), madeBy };
+  // Recipe ingredients: "id count id count/..."; negative ids are categories (-4 any fish, -5 egg, -6 milk...).
+  const ingredientsOf = (asset) =>
+    Object.fromEntries(
+      Object.entries(readRaw(asset) ?? {}).map(([name, raw]) => {
+        const parts = raw.split('/')[0].split(' ');
+        const list = [];
+        for (let i = 0; i + 1 < parts.length; i += 2) {
+          const id = parts[i];
+          const category = /^-\d+$/.test(id);
+          list.push([category || id.startsWith('(') ? id : `(O)${id}`, Number(parts[i + 1])]);
+        }
+        return [name, list];
+      }),
+    );
+  const ingredients = { cooking: ingredientsOf('Data/CookingRecipes'), crafting: ingredientsOf('Data/CraftingRecipes') };
+
+  return { shipped, letters, secretNotes: Object.keys(readRaw('Data/SecretNotes')).map(Number), madeBy, ingredients };
 }
