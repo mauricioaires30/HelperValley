@@ -6,6 +6,8 @@ import { useCurrentSave } from '@/store/saveStore';
 import type { Player } from '@/save/model';
 import { ItemIcon, NpcHead, SeasonIcon, Tooltip, UiIcon } from '@/ui';
 import { usePinStore } from '@/store/pinStore';
+import { FishPicker } from './FishPicker';
+import { ONE_TIME_GUIDE } from '@/features/walnuts/walnutGuide';
 import { SEASONS } from '@/features/calendar/calendar';
 import { describeEvent } from '@/features/relationships/eventConditions';
 import { formatTime, resolveSchedule, WEEKDAYS, type ScheduleData, type ScheduleResult, type Stop } from './schedule';
@@ -263,6 +265,11 @@ export function MapPage() {
       const p = pinAt(w.location, w.tile);
       return p ? [{ key: w.id, ...p, w }] : [];
     });
+  // Puzzles and rewards not done yet, pinned at their area.
+  const puzzlePins = ONE_TIME_GUIDE.filter((g) => g.pin && !collectedNuts.has(g.key)).flatMap((g) => {
+    const p = pinAt(g.pin!.location);
+    return p ? [{ key: g.key, ...p }] : [];
+  });
   // Pins keep their size while the map zooms.
   const unscale = `scale(${1 / view.zoom})`;
 
@@ -360,6 +367,23 @@ export function MapPage() {
                     </Tooltip>
                   </span>
                 ))}
+              {layers.walnuts &&
+                puzzlePins.map((p, i) => (
+                  <span key={p.key} className="map-pin" style={{ left: pct(p.px, mapW), top: pct(p.py, mapH), transform: `translate(-50%, -100%) ${unscale} translate(${(i % 3) * 14}px, 0)` }}>
+                    <Tooltip
+                      text={
+                        <span className="slot-tooltip">
+                          <strong>{t(`walnuts.once.${p.key}`)}</strong>
+                          <span>{t(`walnuts.how.${p.key}`)}</span>
+                        </span>
+                      }
+                    >
+                      <span className="map-pin__icon map-pin__icon--quest">
+                        <ItemIcon id="(O)73" tooltip={false} />
+                      </span>
+                    </Tooltip>
+                  </span>
+                ))}
               {layers.fish &&
                 fishPins.map((p) => (
                   <span key={p.key} className="map-pin" style={{ left: pct(p.px, mapW), top: pct(p.py, mapH), transform: `translate(-50%, -100%) ${unscale}` }}>
@@ -431,6 +455,7 @@ export function MapPage() {
             <input type="checkbox" checked={layers.fish} onChange={(e) => setLayers({ ...layers, fish: e.target.checked })} />
             {t('map.layer.fish')} ({fishIds.size})
           </label>
+          <FishPicker />
           <label className="cc__filter">
             <input type="checkbox" checked={layers.walnuts} onChange={(e) => setLayers({ ...layers, walnuts: e.target.checked })} />
             {t('map.layer.walnuts')} ({walnutPins.length || gameData().walnuts.filter((w) => !collectedNuts.has(w.id)).length})
