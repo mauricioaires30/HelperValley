@@ -34,7 +34,7 @@
 
 .sidebar__brand h1 {
   margin: 0;
-  font-size: 28px;
+  font-size: var(--fs-xl);
   color: #fff;
   text-shadow:
     var(--px) var(--px) 0 var(--wood-dark),
@@ -66,6 +66,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-height: 52px;
+  font-size: var(--fs-sm);
   padding: 2px 8px 2px 4px;
   color: var(--text);
   text-decoration: none;
@@ -103,7 +105,7 @@
 
 .sidebar__disclaimer {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-xs);
   line-height: 1.3;
   color: var(--paper-light);
   text-shadow: var(--px) var(--px) 0 #2e1208;
@@ -177,6 +179,7 @@
   width: 32px;
   height: 32px;
   flex: none;
+  overflow: hidden;
 }
 
 /* The Junimo sprite is grayscale; the game tints it at runtime. */

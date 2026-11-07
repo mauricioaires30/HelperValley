@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type PointerEvent, type WheelEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { gameData, spriteUrl, type Season } from '@/data/gameData';
 import { useGameName } from '@/i18n';
@@ -121,11 +121,20 @@ function usePanZoom() {
       return clamp(zoom, x, y);
     });
 
-  const handlers = {
-    onWheel: (e: WheelEvent) => {
-      const rect = viewport.current!.getBoundingClientRect();
+  // React wheel listeners are passive; a native one can stop the page from scrolling.
+  useEffect(() => {
+    const el = viewport.current;
+    if (!el) return;
+    const onWheel = (e: globalThis.WheelEvent) => {
+      e.preventDefault();
+      const rect = el.getBoundingClientRect();
       zoomAt(e.deltaY < 0 ? 1.25 : 0.8, e.clientX - rect.left, e.clientY - rect.top);
-    },
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  });
+
+  const handlers = {
     onPointerDown: (e: PointerEvent) => {
       if (view.zoom === 1) return;
       drag.current = { x: e.clientX, y: e.clientY, startX: view.x, startY: view.y };
@@ -279,8 +288,9 @@ export function MapPage() {
         </label>
         <div className="calendar__nav">
           {SEASONS.map((s) => (
-            <button key={s} className={s === season ? 'button button--primary' : 'button'} onClick={() => setSeason(s)} aria-label={t(`common.seasons.${s}`)}>
+            <button key={s} className={s === season ? 'button button--primary' : 'button'} onClick={() => setSeason(s)}>
               <SeasonIcon season={s} />
+              {t(`common.seasons.${s}`)}
             </button>
           ))}
           <label className="cc__filter">

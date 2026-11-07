@@ -20,6 +20,15 @@
  */
 :root {
   --px: 2px; /* one game pixel */
+
+  /* Type and control sizes shared by every page. */
+  --fs-xs: 13px;
+  --fs-sm: 15px;
+  --fs-md: 18px;
+  --fs-lg: 22px;
+  --fs-xl: 28px;
+  --btn-h: 40px;
+  --gap: 10px;
   --font: 'HV Digits', 'Pixelify Sans', ui-monospace, monospace;
 
   --text: #561608; /* Game1.textColor */
@@ -48,7 +57,7 @@ body {
 
 body {
   font-family: var(--font);
-  font-size: 18px;
+  font-size: var(--fs-md);
   line-height: 1.35;
   color: var(--text);
   background-color: #6b3d1f;
@@ -73,15 +82,15 @@ h3 {
 }
 
 h1 {
-  font-size: 34px;
+  font-size: var(--fs-xl);
 }
 
 h2 {
-  font-size: 26px;
+  font-size: var(--fs-xl);
 }
 
 h3 {
-  font-size: 21px;
+  font-size: var(--fs-lg);
 }
 
 a {

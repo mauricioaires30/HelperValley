@@ -33,14 +33,14 @@
 }
 
 .cc-summary h3 {
-  font-size: 19px;
+  font-size: var(--fs-lg);
   margin-top: 4px;
 }
 
 .cc-summary__hint {
   margin: -4px 0 8px;
   color: var(--text-soft);
-  font-size: 15px;
+  font-size: var(--fs-sm);
 }
 
 .cc-room {
@@ -54,7 +54,7 @@
 }
 
 .cc-room__count {
-  font-size: 16px;
+  font-size: var(--fs-sm);
   color: var(--text-soft);
   text-shadow: none;
 }
@@ -85,21 +85,21 @@
 
 .cc-bundle__header h4 {
   margin: 0;
-  font-size: 17px;
+  font-size: var(--fs-md);
 }
 
 .cc-bundle__reward {
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--text-soft);
   white-space: nowrap;
 }
 
 .cc-bundle__pick {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--text-soft);
 }
 
@@ -133,7 +133,7 @@
 .slot-tooltip {
   display: grid;
   gap: 2px;
-  font-size: 15px;
+  font-size: var(--fs-sm);
 }
 
 .collections__tabs {
