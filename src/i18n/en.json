@@ -14,8 +14,9 @@
     "calendar": "Calendar",
     "relationships": "Relationships",
     "today": "Today",
-    "farm": "Farm",
-    "map": "Map"
+    "farm": "Production",
+    "map": "Map",
+    "collections": "Collections"
   },
   "common": {
     "language": "Language",
@@ -407,9 +408,10 @@
   "farm": {
     "title": "Farm",
     "view": {
-      "overview": "Overview",
+      "overview": "Crops & animals",
       "recommendations": "What to plant",
-      "planner": "Plans & shopping"
+      "planner": "Plans & shopping",
+      "production": "Producing now"
     },
     "area": {
       "Farm": "Farm",
@@ -586,5 +588,45 @@
     "resortOpen": "Your save: the resort is open today.",
     "resortClosed": "Your save: the resort is closed today.",
     "resortNotBuilt": "Your save: the resort hasn't been rebuilt yet."
+  },
+  "prod": {
+    "title": "Production",
+    "machinesTitle": "Machines working ({{count}})",
+    "summary": "{{ready}} ready to collect · about {{value}}g of goods inside (base price)",
+    "col": {
+      "machine": "Machine",
+      "making": "Making",
+      "count": "How many",
+      "ready": "Ready",
+      "next": "Next in"
+    },
+    "ready": "ready",
+    "days": "{{days}}d {{hours}}h",
+    "hours": "{{hours}}h {{mins}}min",
+    "mins": "{{mins}}min",
+    "nothing": "No machine is working right now.",
+    "pondsTitle": "Fish ponds ({{count}})",
+    "emptyPond": "Empty",
+    "pondOutput": "Waiting to collect: {{item}}"
+  },
+  "collections": {
+    "tab": {
+      "cc": "Community Center",
+      "museum": "Museum",
+      "island": "Island Field Office"
+    },
+    "office": {
+      "locked": "The Field Office on Ginger Island hasn't been opened yet.",
+      "hint": "Bring fossils to Professor Snail in the Island North field office. Each finished set pays Golden Walnuts.",
+      "skeleton": "Large animal",
+      "snake": "Snake",
+      "bat": "Mummified bat",
+      "frog": "Mummified frog",
+      "reward_one": "Reward: {{count}} Golden Walnut",
+      "reward_other": "Reward: {{count}} Golden Walnuts",
+      "surveys": "Plant surveys",
+      "plantsLeft": "Survey of the left plants",
+      "plantsRight": "Survey of the right plants"
+    }
   }
 }

@@ -135,3 +135,11 @@
   gap: 2px;
   font-size: 15px;
 }
+
+.collections__tabs {
+  margin-bottom: 12px;
+}
+
+.collections__tabs a {
+  text-decoration: none;
+}

@@ -10,8 +10,7 @@ import { FarmPage } from '@/features/farm/FarmPage';
 import { RelationshipsPage } from '@/features/relationships/RelationshipsPage';
 import { CalendarPage } from '@/features/calendar/CalendarPage';
 import { AchievementsPage } from '@/features/achievements/AchievementsPage';
-import { MuseumPage } from '@/features/museum/MuseumPage';
-import { CommunityCenterPage } from '@/features/community-center/CommunityCenterPage';
+import { CollectionsPage } from '@/features/collections/CollectionsPage';
 import '@/i18n';
 import '@/ui';
 
@@ -42,9 +41,11 @@ export function App() {
           <Route path="calendar" element={<CalendarPage />} />
           <Route path="relationships" element={<RelationshipsPage />} />
           <Route path="map" element={<MapPage />} />
-          <Route path="farm" element={<FarmPage />} />
-          <Route path="cc" element={<CommunityCenterPage />} />
-          <Route path="museum" element={<MuseumPage />} />
+          <Route path="production" element={<FarmPage />} />
+          <Route path="farm" element={<Navigate to="/production" replace />} />
+          <Route path="collections/:tab?" element={<CollectionsPage />} />
+          <Route path="cc" element={<Navigate to="/collections/cc" replace />} />
+          <Route path="museum" element={<Navigate to="/collections/museum" replace />} />
           <Route path="achievements" element={<AchievementsPage />} />
           <Route path="kit" element={<KitPage />} />
         </Route>

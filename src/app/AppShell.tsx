@@ -15,9 +15,8 @@ const NAV: Array<{ to: string; key: string; icon: NavIcon }> = [
   { to: '/calendar', key: 'calendar', icon: { ui: 'nav-calendar', w: 14, h: 12, scale: 2 } },
   { to: '/relationships', key: 'relationships', icon: { ui: 'heart-full', w: 7, h: 6, scale: 4 } },
   { to: '/map', key: 'map', icon: { item: '(O)102' } },
-  { to: '/farm', key: 'farm', icon: { item: '(T)Hoe' } },
-  { to: '/cc', key: 'cc', icon: { ui: 'junimo', w: 16, h: 16, scale: 2, className: 'nav-junimo' } },
-  { to: '/museum', key: 'museum', icon: { item: '(O)103' } },
+  { to: '/production', key: 'farm', icon: { item: '(BC)12' } },
+  { to: '/collections', key: 'collections', icon: { ui: 'junimo', w: 16, h: 16, scale: 2, className: 'nav-junimo' } },
   { to: '/achievements', key: 'achievements', icon: { ui: 'star-gold', w: 8, h: 8, scale: 4 } },
 ];
 
@@ -50,7 +49,7 @@ export function AppShell() {
           <ul className="side-tabs">
             {NAV.map((item) => (
               <li key={item.to}>
-                <NavLink to={item.to} end className="side-tab">
+                <NavLink to={item.to} end={item.to === '/'} className="side-tab">
                   <NavIconView icon={item.icon} />
                   <span>{t(`nav.${item.key}`)}</span>
                 </NavLink>
