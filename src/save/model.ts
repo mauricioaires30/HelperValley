@@ -129,6 +129,33 @@ export interface Player {
   monstersKilled: Record<string, number>;
   inventory: ItemStack[];
   quests: QuestState[];
+  /** What the farmer wears and looks like, to draw them like the game. */
+  look: PlayerLook;
+  hasRustyKey: boolean;
+  hasSkullKey: boolean;
+}
+
+/** A piece of clothing: item id, sprite index, dye color (#rrggbb) and prismatic flag. */
+export interface Clothing {
+  id: string;
+  index: number;
+  color: string;
+  prismatic: boolean;
+}
+
+export interface PlayerLook {
+  male: boolean;
+  skin: number;
+  hair: number;
+  hairColor: string;
+  prismaticHair: boolean;
+  eyeColor: string;
+  accessory: number;
+  shirt?: Clothing;
+  pants?: Clothing;
+  hat?: string;
+  /** Shoe color row in shoeColors (12 = default brown). */
+  shoeColor: number;
 }
 
 export interface CommunityCenter {
@@ -166,6 +193,8 @@ export interface SaveData {
   farm: FarmState;
   /** Ginger Island resort: built, and open to villagers today. */
   resort: { restored: boolean; openToday: boolean };
+  /** Candles Grandpa lit at his evaluation (0 = not evaluated yet) and the score behind them. */
+  grandpaScore: number;
   fieldOffice: FieldOfficeState | null;
   specialOrders: SpecialOrderState[];
   /** Golden walnut ids already collected (e.g. "Bush_IslandEast_17_37"). */

@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { setGameData, type GameData } from '@/data/gameData';
 
-const NAMES = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents', 'farm', 'worldMap', 'schedules', 'fish', 'walnuts', 'gameCollections'];
+const NAMES = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents', 'farm', 'worldMap', 'schedules', 'fish', 'walnuts', 'gameCollections', 'player'];
 
 /** Loads public/data into the game data module for tests. */
 export function loadTestGameData() {

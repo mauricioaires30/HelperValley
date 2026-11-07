@@ -9,6 +9,7 @@ import { MapPage } from '@/features/map/MapPage';
 import { QuestsPage } from '@/features/quests/QuestsPage';
 import { FarmPage } from '@/features/farm/FarmPage';
 import { RelationshipsPage } from '@/features/relationships/RelationshipsPage';
+import { PlayerPage } from '@/features/player/PlayerPage';
 import { CalendarPage } from '@/features/calendar/CalendarPage';
 import { CollectionsPage } from '@/features/collections/CollectionsPage';
 import '@/i18n';
@@ -38,6 +39,7 @@ export function App() {
         <Route element={<AppShell />}>
           <Route index element={<HomePage />} />
           <Route path="today" element={<Navigate to="/calendar" replace />} />
+          <Route path="player" element={<PlayerPage />} />
           <Route path="calendar" element={<CalendarPage />} />
           <Route path="relationships" element={<RelationshipsPage />} />
           <Route path="map" element={<MapPage />} />

@@ -1,0 +1,132 @@
+.player {
+  display: grid;
+  gap: var(--gap);
+}
+
+.player__card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.player__card h1 {
+  margin: 0 0 4px;
+}
+
+.player__card p {
+  margin: 2px 0;
+  font-size: var(--fs-sm);
+}
+
+.farmer-sprite {
+  image-rendering: pixelated;
+  flex: none;
+}
+
+.player__section h2 {
+  margin-top: 0;
+}
+
+.skills {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.skills__row {
+  display: grid;
+  grid-template-columns: 30px 110px auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.skills__name {
+  font-size: var(--fs-md);
+}
+
+.skills__pips {
+  display: flex;
+  gap: 2px;
+  align-items: flex-end;
+}
+
+.skills__xp {
+  font-size: var(--fs-sm);
+  opacity: 0.8;
+}
+
+.skills__professions,
+.skills__branch {
+  display: flex;
+  gap: 4px;
+}
+
+.skills__professions {
+  gap: 10px;
+}
+
+.profession--missing .sprite {
+  filter: grayscale(1) opacity(0.35);
+}
+
+.mastery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 6px;
+  margin: 8px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mastery__skill {
+  display: grid;
+  gap: 4px;
+  font-size: var(--fs-sm);
+}
+
+.mastery__skill--missing {
+  opacity: 0.6;
+}
+
+.mastery__rewards {
+  display: flex;
+  gap: 4px;
+}
+
+.grandpa {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2px 12px;
+  margin: 8px 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-sm);
+}
+
+.grandpa__point {
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  gap: 6px;
+  opacity: 0.65;
+}
+
+.grandpa__point--done {
+  opacity: 1;
+}
+
+.grandpa__pts {
+  font-weight: bold;
+}
+
+@media (max-width: 640px) {
+  .skills__row {
+    grid-template-columns: 30px 1fr auto;
+  }
+
+  .skills__xp,
+  .skills__professions {
+    grid-column: 2 / -1;
+  }
+}

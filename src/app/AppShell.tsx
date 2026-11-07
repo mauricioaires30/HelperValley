@@ -1,7 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGES } from '@/i18n';
-import { ItemIcon, UiIcon } from '@/ui';
+import { ItemIcon, Sprite, UiIcon } from '@/ui';
 import { getItem } from '@/data/gameData';
 import { PlayerSwitcher } from '@/features/saves/PlayerSwitcher';
 import { SaveDateChip, SaveUpdatedToast } from '@/features/saves/LiveStatus';
@@ -9,10 +9,14 @@ import { CachedBanner } from '@/features/saves/CachedBanner';
 import './shell.css';
 
 /** Menu icon: a game item, or a UI crop from public/sprites/ui. */
-type NavIcon = { item: string } | { ui: string; w: number; h: number; scale: number; className?: string };
+type NavIcon =
+  | { item: string }
+  | { ui: string; w: number; h: number; scale: number; className?: string }
+  | { sheet: string; x: number; y: number; w: number; h: number; scale: number };
 
 const NAV: Array<{ to: string; key: string; icon: NavIcon }> = [
   { to: '/', key: 'home', icon: { item: '(BC)130' } },
+  { to: '/player', key: 'player', icon: { sheet: 'Characters/Farmer/hats', x: 2, y: 3, w: 16, h: 14, scale: 2 } },
   { to: '/calendar', key: 'calendar', icon: { ui: 'nav-calendar', w: 14, h: 12, scale: 2 } },
   { to: '/relationships', key: 'relationships', icon: { ui: 'heart-full', w: 7, h: 6, scale: 4 } },
   { to: '/map', key: 'map', icon: { item: '(O)102' } },
@@ -22,6 +26,13 @@ const NAV: Array<{ to: string; key: string; icon: NavIcon }> = [
 ];
 
 function NavIconView({ icon }: { icon: NavIcon }) {
+  if ('sheet' in icon) {
+    return (
+      <span className="nav-icon">
+        <Sprite sheet={icon.sheet} x={icon.x} y={icon.y} w={icon.w} h={icon.h} scale={icon.scale} />
+      </span>
+    );
+  }
   if ('item' in icon) {
     // Every menu icon fits one 32px box; tall items (16x32 machines, chests) draw at 1x.
     const tall = (getItem(icon.item)?.s[3] ?? 16) > 16;

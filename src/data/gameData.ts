@@ -166,6 +166,25 @@ export interface GameData {
     /** Item → machines that make it. */
     madeBy: Record<string, string[]>;
   };
+  player: PlayerData;
+}
+
+/** Skills, professions, mastery and the farmer sprite parts (see tools/extract/lib/player.mjs). */
+export interface PlayerData {
+  skills: Array<{ id: string; n: LocalizedName }>;
+  professions: Array<{ n: LocalizedName; d: LocalizedName }>;
+  mastery: Array<{ title: LocalizedName; perk: LocalizedName; rewards: string[] }>;
+  look: {
+    /** Hair id → [sheet, tileX, tileY, uniqueLeftSprite, coveredIndex]. */
+    hair: Record<string, [string, number, number, boolean, number]>;
+    /** Shirt id → [texture or null, sprite index, has sleeves, default color, prismatic]. */
+    shirts: Record<string, [string | null, number, boolean, string | null, boolean]>;
+    /** Pants id → [texture or null, sprite index, default color, prismatic]. */
+    pants: Record<string, [string | null, number, string | null, boolean]>;
+    /** Hat id → [hair draw type (0 full, 1 obscured, 2 hidden), ignore hairstyle offset, texture or null, sprite index]. */
+    hats: Record<string, [number, boolean, string | null, number]>;
+    boots: Record<string, number>;
+  };
 }
 
 export interface FishData {
@@ -185,7 +204,7 @@ export interface WalnutSpot {
   tile: [number, number];
 }
 
-const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents', 'farm', 'worldMap', 'schedules', 'fish', 'walnuts', 'gameCollections'] as const;
+const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents', 'farm', 'worldMap', 'schedules', 'fish', 'walnuts', 'gameCollections', 'player'] as const;
 
 export const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 export const spriteUrl = (sheet: string) => assetUrl(`sprites/${sheet}.png`);
