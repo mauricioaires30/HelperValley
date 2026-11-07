@@ -175,7 +175,8 @@
       "museum": "Abrir o acompanhamento do museu",
       "quests": "Complete os pedidos de \"Precisa-se de ajuda\" do quadro em frente ao armazém do Pierre.",
       "house": "Nível atual da reforma da casa: {{level}}. Fale com a Robin para reformar.",
-      "money": "Total ganho até agora: {{money}}g."
+      "money": "Total ganho até agora: {{money}}g.",
+      "allDone": "Tudo completo ✓"
     },
     "recipe": {
       "tv": "A Rainha do Molho (TV): domingo, dia {{day}} de {{season}}, ano {{year}} (reprises depois às quartas)",
@@ -552,9 +553,6 @@
     "day": "Dia",
     "raining": "Chovendo",
     "resort": "Resort da ilha aberto",
-    "fromSave": "Corações e casamento vêm do seu save (cônjuge: {{spouse}}).",
-    "single": "ninguém",
-    "noSave": "Carregue um save para usar seus corações e casamento.",
     "since": "lá desde {{time}}",
     "listTitle": "Todo mundo às {{time}}",
     "resortTitle": "Quem pode estar no resort",
@@ -573,6 +571,20 @@
       "Railroad": "Ferrovia",
       "BusStop": "Ponto de ônibus",
       "Desert": "Deserto de Calico"
-    }
+    },
+    "zoomIn": "Aproximar",
+    "zoomOut": "Afastar",
+    "zoomReset": "Resetar",
+    "show": "Mostrar no mapa",
+    "layer": {
+      "npcs": "Moradores",
+      "events_one": "Eventos de coração disponíveis agora ({{count}})",
+      "events_other": "Eventos de coração disponíveis agora ({{count}})"
+    },
+    "eventPin": "Evento de {{hearts}} corações de {{name}}",
+    "walkingTo": "andando até {{place}}",
+    "resortOpen": "No seu save: o resort está aberto hoje.",
+    "resortClosed": "No seu save: o resort está fechado hoje.",
+    "resortNotBuilt": "No seu save: o resort ainda não foi reconstruído."
   }
 }

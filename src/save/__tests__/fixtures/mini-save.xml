@@ -16,6 +16,7 @@
     </items>
     <achievements><int>0</int><int>5</int></achievements>
     <mailReceived><string>ccPantry</string></mailReceived>
+    <eventsSeen><int>60367</int><int>festival_spring13</int></eventsSeen>
     <basicShipped><item><key><string>24</string></key><value><int>40</int></value></item></basicShipped>
     <fishCaught><item><key><string>(O)145</string></key><value><ArrayOfInt><int>3</int><int>12</int></ArrayOfInt></value></item></fishCaught>
     <friendshipData>

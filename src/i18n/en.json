@@ -175,7 +175,8 @@
       "museum": "Open the museum tracker",
       "quests": "Complete \"Help Wanted\" requests from the board outside Pierre's shop.",
       "house": "Current house upgrade level: {{level}}. Talk to Robin to upgrade.",
-      "money": "Total earned so far: {{money}}g."
+      "money": "Total earned so far: {{money}}g.",
+      "allDone": "Everything done ✓"
     },
     "recipe": {
       "tv": "The Queen of Sauce (TV): Sunday, day {{day}} of {{season}}, year {{year}} (reruns later on Wednesdays)",
@@ -552,9 +553,6 @@
     "day": "Day",
     "raining": "Raining",
     "resort": "Island resort open",
-    "fromSave": "Hearts and marriage come from your save (spouse: {{spouse}}).",
-    "single": "none",
-    "noSave": "Load a save to use your hearts and marriage.",
     "since": "there since {{time}}",
     "listTitle": "Everyone at {{time}}",
     "resortTitle": "Who may be at the resort",
@@ -573,6 +571,20 @@
       "Railroad": "Railroad",
       "BusStop": "Bus stop",
       "Desert": "Calico Desert"
-    }
+    },
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "zoomReset": "Reset",
+    "show": "Show on the map",
+    "layer": {
+      "npcs": "Villagers",
+      "events_one": "Heart events available now ({{count}})",
+      "events_other": "Heart events available now ({{count}})"
+    },
+    "eventPin": "{{name}}'s {{hearts}}-heart event",
+    "walkingTo": "walking to {{place}}",
+    "resortOpen": "Your save: the resort is open today.",
+    "resortClosed": "Your save: the resort is closed today.",
+    "resortNotBuilt": "Your save: the resort hasn't been rebuilt yet."
   }
 }
