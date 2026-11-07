@@ -1,0 +1,95 @@
+.shops {
+  display: grid;
+  gap: var(--gap);
+}
+
+.shops__bar {
+  display: grid;
+  gap: 8px;
+}
+
+.shops__days {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.shops__search {
+  font: inherit;
+  font-size: var(--fs-md);
+  padding: 4px 8px;
+  max-width: 360px;
+}
+
+.shop__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.shop__head::-webkit-details-marker {
+  display: none;
+}
+
+.shop__count {
+  font-size: var(--fs-sm);
+  opacity: 0.75;
+}
+
+.shop__tag {
+  font-size: var(--fs-xs);
+  padding: 0 6px;
+  border: var(--px) solid currentColor;
+  opacity: 0.8;
+}
+
+.shop__warn {
+  font-size: var(--fs-sm);
+  margin: 6px 0;
+}
+
+.shop__items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2px 12px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shop-row {
+  display: grid;
+  grid-template-columns: 36px 1fr auto auto;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  font-size: var(--fs-sm);
+}
+
+.shop-row > .sprite {
+  justify-self: center;
+}
+
+.shop-row--maybe {
+  opacity: 0.65;
+}
+
+.shop-row__price {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.shop-row__stock {
+  font-size: var(--fs-xs);
+  opacity: 0.8;
+  white-space: nowrap;
+}
+
+.shop-row__maybe {
+  margin-left: 4px;
+  font-weight: bold;
+}

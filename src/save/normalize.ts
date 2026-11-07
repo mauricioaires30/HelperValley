@@ -345,6 +345,14 @@ export function normalizeSave(xml: string, folder: string): SaveData {
       };
     })(),
     grandpaScore: num(locations.map(node).find((l) => xsiType(l) === 'Farm' || text(l?.name) === 'Farm')?.grandpaScore),
+    world: {
+      profitMargin: num(node(save.player)?.difficultyModifier, 1),
+      dishOfTheDay: node(save.dishOfTheDay) && text(node(save.dishOfTheDay)!['@_xsi:nil']) !== 'true' ? qualifiedId(node(save.dishOfTheDay)!) : undefined,
+      timesFedRaccoons: num(save.timesFedRaccoons),
+      goldenCoconutCracked: bool(save.goldenCoconutCracked),
+      visitsUntilY1Guarantee: num(save.visitsUntilY1Guarantee, -1),
+      legacyRandom: bool(save.useLegacyRandom),
+    },
     resort: (() => {
       const south = locations.map(node).find((l) => text(l?.name) === 'IslandSouth');
       return { restored: bool(south?.resortRestored), openToday: bool(south?.resortOpenToday) };

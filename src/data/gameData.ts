@@ -22,6 +22,12 @@ export interface ItemData {
   wt?: number;
   dmg?: [number, number];
   lvl?: number;
+  /** Explicit source position in the sheet (shirts, pants, wallpaper). */
+  r?: [number, number];
+  /** Furniture: the index counts 16px tiles across the sheet. */
+  f?: 1;
+  /** Extra zoom for tiny icons (8x8 shirts). */
+  z?: number;
 }
 
 export type GiftTaste = 'love' | 'like' | 'dislike' | 'hate' | 'neutral';
@@ -167,6 +173,8 @@ export interface GameData {
     madeBy: Record<string, string[]>;
   };
   player: PlayerData;
+  /** Data/Shops and item pools; typed in features/shops/stock.ts. */
+  shops: unknown;
 }
 
 /** Skills, professions, mastery and the farmer sprite parts (see tools/extract/lib/player.mjs). */
@@ -204,7 +212,7 @@ export interface WalnutSpot {
   tile: [number, number];
 }
 
-const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents', 'farm', 'worldMap', 'schedules', 'fish', 'walnuts', 'gameCollections', 'player'] as const;
+const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents', 'farm', 'worldMap', 'schedules', 'fish', 'walnuts', 'gameCollections', 'player', 'shops'] as const;
 
 export const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 export const spriteUrl = (sheet: string) => assetUrl(`sprites/${sheet}.png`);
