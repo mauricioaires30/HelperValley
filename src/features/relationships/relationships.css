@@ -81,3 +81,29 @@
   color: var(--text);
   background: transparent;
 }
+
+.rel__tastes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.taste--love .popover__trigger {
+  color: #b3264a;
+}
+
+.taste--hate .popover__trigger,
+.taste--dislike .popover__trigger {
+  color: #6b4a3a;
+}
+
+.taste__groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.taste__group {
+  font-size: 14px;
+}

@@ -239,3 +239,38 @@
   flex-wrap: wrap;
   gap: 4px;
 }
+
+/* ---------- Popover (opens on hover/focus) ---------- */
+
+.popover {
+  position: relative;
+  display: inline-flex;
+}
+
+.popover__trigger {
+  min-height: calc(16 * var(--px));
+  padding: 0 calc(2 * var(--px));
+  font-size: 14px;
+}
+
+.popover__panel {
+  position: absolute;
+  z-index: 30;
+  bottom: 100%;
+  left: 0;
+  /* Invisible bridge so moving the pointer up doesn't close the panel. */
+  padding-bottom: calc(2 * var(--px));
+  display: none;
+}
+
+.popover:hover .popover__panel,
+.popover:focus-within .popover__panel {
+  display: block;
+}
+
+.popover__content {
+  display: grid;
+  gap: 6px;
+  width: max-content;
+  max-width: min(380px, 80vw);
+}
