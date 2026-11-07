@@ -63,6 +63,9 @@ export interface AchievementGoals {
   /** Harvest item ids counting for Polyculture / Monoculture. */
   polyculture: string[];
   monoculture: string[];
+  /** Recipe name → qualified output item. */
+  cookingOutputs: Record<string, string>;
+  craftingOutputs: Record<string, string>;
 }
 
 export interface Festival {

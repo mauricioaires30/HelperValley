@@ -46,3 +46,49 @@
   margin: 0;
   background: var(--accent);
 }
+
+.ach__toggle {
+  justify-self: start;
+  min-height: calc(16 * var(--px));
+  font-size: 14px;
+}
+
+/* An open card spans the full row so the item grid has room. */
+.ach:has(.ach-details) {
+  grid-column: 1 / -1;
+}
+
+.ach-details {
+  display: grid;
+  gap: 6px;
+}
+
+.ach-details__grid {
+  gap: 6px;
+}
+
+.ach-details__item {
+  position: relative;
+  display: inline-grid;
+  justify-items: center;
+}
+
+.ach-details__badge {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ach-details__friends {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 4px 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ach-details__friends li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

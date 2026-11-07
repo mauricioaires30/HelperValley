@@ -20,7 +20,7 @@ export function Progress({ value, max, label }: ProgressProps) {
         <div className="progress__fill" style={{ width: `${ratio * 100}%` }} />
       </div>
       <span className="progress__label">
-        {value}/{max}
+        {value.toLocaleString()}/{max.toLocaleString()}
       </span>
     </div>
   );
