@@ -69,3 +69,22 @@
   color: #9a6a00;
   font-weight: 600;
 }
+
+.quest-card--done {
+  opacity: 0.7;
+}
+
+.quest-card__reward {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--fs-sm);
+}
+
+.map-tip {
+  margin: 4px 0;
+  padding: 4px 6px;
+  font-size: var(--fs-xs);
+  background: rgb(255 255 255 / 0.35);
+  border-left: calc(2 * var(--px)) solid var(--accent);
+}

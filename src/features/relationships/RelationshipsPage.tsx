@@ -37,14 +37,6 @@ function RelationshipCard({ rel, owned }: { rel: Relationship; owned: string[] }
           {rel.birthdayIn !== null && rel.birthdayIn <= 7 && (
             <li className="rel__birthday">{rel.birthdayIn === 0 ? t('rel.birthdayToday') : t('rel.birthdayIn', { count: rel.birthdayIn })}</li>
           )}
-          {rel.nextEvent && (
-            <li className={rel.nextEvent.unlocked ? 'rel__event rel__event--ready' : 'rel__event'}>
-              {rel.nextEvent.unlocked ? t('rel.eventReady', { hearts: rel.nextEvent.hearts }) : t('rel.eventAt', { hearts: rel.nextEvent.hearts })}
-              <span className="rel__how">
-                {t('rel.how')} {describeEvent(rel.nextEvent, t, name).join(' · ')}
-              </span>
-            </li>
-          )}
         </ul>
         <div className="rel__tastes">
           <TasteButtons npc={rel.npc} owned={owned} />

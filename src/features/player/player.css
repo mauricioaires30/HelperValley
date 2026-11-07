@@ -130,3 +130,28 @@
     grid-column: 2 / -1;
   }
 }
+
+.grandpa__todo-title {
+  margin: 10px 0 4px;
+  color: var(--danger);
+}
+
+.grandpa--todo {
+  grid-template-columns: 1fr;
+  gap: 4px;
+}
+
+.grandpa__point--todo {
+  opacity: 1;
+  font-size: var(--fs-md);
+  align-items: center;
+}
+
+.grandpa__all {
+  font-weight: bold;
+}
+
+.grandpa__done summary {
+  cursor: pointer;
+  font-size: var(--fs-sm);
+}

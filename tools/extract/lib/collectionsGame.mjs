@@ -1,5 +1,6 @@
 import { readRaw } from './raw.mjs';
 import { LANGUAGES } from './paths.mjs';
+import { localize } from './strings.mjs';
 
 /**
  * Categories the game leaves out of the shipping collection (fertilizer, bait, tackle, saplings,
@@ -59,5 +60,15 @@ export function buildGameCollections() {
     );
   const ingredients = { cooking: ingredientsOf('Data/CookingRecipes'), crafting: ingredientsOf('Data/CraftingRecipes') };
 
-  return { shipped, letters, secretNotes: Object.keys(readRaw('Data/SecretNotes')).map(Number), madeBy, ingredients };
+  // Adventurer's Guild monster eradication goals; monster names localized from Data/Monsters (last field).
+  const monsterName = (id) => LANGUAGES.map(([, suffix]) => (readRaw('Data/Monsters' + suffix) ?? readRaw('Data/Monsters'))?.[id]?.split('/').at(-1) || id);
+  const slayer = Object.entries(readRaw('Data/MonsterSlayerQuests') ?? {}).map(([id, q]) => ({
+    id,
+    n: localize(q.DisplayName, id),
+    targets: q.Targets.map((m) => [m, monsterName(m)]),
+    count: q.Count,
+    reward: q.RewardItemId ?? null,
+  }));
+
+  return { shipped, letters, secretNotes: Object.keys(readRaw('Data/SecretNotes')).map(Number), madeBy, ingredients, slayer };
 }

@@ -751,7 +751,11 @@
       "socialize": "Converse com todos os moradores.",
       "go": "Vá até {{place}}."
     },
-    "pinFish": "Marcar o peixe"
+    "pinFish": "Marcar o peixe",
+    "slayerTitle": "Metas do caçador (Guilda) · {{done}}/{{total}}",
+    "slayerHint": "Elimine monstros nas minas para o Marlon. Cada meta completa dá um prêmio na Guilda dos Aventureiros.",
+    "slayerCollect": "pegue o prêmio com o Gil",
+    "pinTip": "Dica: use \"Marcar\" numa missão para ela aparecer no mapa (aba Mapa)."
   },
   "fish": {
     "title": "Coleção de peixes",
@@ -915,7 +919,10 @@
       "rustyKey": "Chave Enferrujada (60 itens no museu)",
       "friends": "{{count}} amigos com 8 corações ({{have}} agora)",
       "level": "Nível de fazendeiro {{count}} ({{have}} agora)",
-      "pet": "Amizade máxima com o animal de estimação"
+      "pet": "Amizade máxima com o animal de estimação",
+      "todo": "Falta fazer (+{{count}} pontos possíveis)",
+      "allDone": "Tudo feito! O vovô acende as 4 velas.",
+      "doneList": "Já feito ({{count}})"
     }
   },
   "shops": {
