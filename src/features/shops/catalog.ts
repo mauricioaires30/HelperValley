@@ -20,8 +20,6 @@ const on = (season: Season, ...days: number[]) => (d: ShopDay) => d.season === s
 const ccDone = (save: SaveData) => save.players.some((p) => p.mailReceived.includes('ccIsComplete')) || save.broadcastedMail.includes('ccIsComplete');
 
 export const SHOPS: ShopInfo[] = [
-  // The cart comes Fridays and Sundays, and to the Night Market and the Desert Festival.
-  { id: 'Traveler', icon: '(O)347', rotates: true, open: (d) => [4, 6].includes(weekday(d)) || on('winter', 15, 16, 17)(d) || on('spring', 15, 16, 17)(d) },
   { id: 'SeedShop', npc: 'Pierre', rotates: true, open: (d, save) => weekday(d) !== 2 || ccDone(save) },
   { id: 'Joja', npc: 'Morris', rotates: true },
   { id: 'AnimalShop', npc: 'Marnie', open: (d) => ![0, 1].includes(weekday(d)) },
@@ -33,6 +31,8 @@ export const SHOPS: ShopInfo[] = [
   { id: 'ShadowShop', npc: 'Krobus', rotates: true },
   { id: 'Sandy', npc: 'Sandy', rotates: true },
   { id: 'DesertTrade', icon: '(O)60', rotates: true },
+  // The cart comes Fridays and Sundays, and to the Night Market and the Desert Festival.
+  { id: 'Traveler', icon: '(O)347', rotates: true, open: (d) => [4, 6].includes(weekday(d)) || on('winter', 15, 16, 17)(d) || on('spring', 15, 16, 17)(d) },
   { id: 'Dwarf', npc: 'Dwarf' },
   { id: 'AdventureShop', npc: 'Marlon' },
   { id: 'IslandTrade', icon: '(O)830', rotates: true },

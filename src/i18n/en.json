@@ -965,7 +965,6 @@
     "dayLabel": "{{season}} {{day}}, year {{year}}",
     "how": "Random stock is computed with the game's own seed, so it should match what you see in game.",
     "search": "Where do I buy…? (item name)",
-    "closed": "Closed or away this day: {{names}}",
     "items": "{{count}} items",
     "rotates": "changes daily",
     "recipe": "recipe",
@@ -973,6 +972,9 @@
     "qiCoins": "Qi coins",
     "maybe": "Depends on a roll the save doesn't show; it may not appear.",
     "uncertain": "A hidden roll happened before these items; the ones marked ? may differ in game.",
-    "uncertainItem": "May differ in game (see the note above)."
+    "uncertainItem": "May differ in game (see the note above).",
+    "closedToday": "closed this day",
+    "closedShort": "closed",
+    "nothing": "Nothing found."
   }
 }

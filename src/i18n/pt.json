@@ -965,7 +965,6 @@
     "dayLabel": "{{day}} de {{season}}, ano {{year}}",
     "how": "O estoque sorteado é calculado com a mesma semente do jogo, então deve bater com o que aparece lá.",
     "search": "Onde compro…? (nome do item)",
-    "closed": "Fechado/ausente neste dia: {{names}}",
     "items": "{{count}} itens",
     "rotates": "muda todo dia",
     "recipe": "receita",
@@ -973,6 +972,9 @@
     "qiCoins": "moedas Qi",
     "maybe": "Depende de uma rolagem que o save não mostra; pode não aparecer.",
     "uncertain": "Uma rolagem escondida aconteceu antes destes itens; os marcados com ? podem ser diferentes no jogo.",
-    "uncertainItem": "Pode ser diferente no jogo (veja o aviso acima)."
+    "uncertainItem": "Pode ser diferente no jogo (veja o aviso acima).",
+    "closedToday": "fechada neste dia",
+    "closedShort": "fechada",
+    "nothing": "Nada encontrado."
   }
 }
