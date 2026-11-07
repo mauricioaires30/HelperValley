@@ -38,11 +38,16 @@ export function ItemIcon({ id, scale = 2, slot, quality = 0, count, faded, toolt
   const [sheet, , w, h] = item.s;
   const rect = itemRect(item);
   const label = name(item.n);
-  // Big craftables are 16x32 and furniture can be larger; shrink them to fit a slot like the game does.
-  const big = Math.max(w, h);
-  const fit = big > 32 ? Math.max(1, Math.floor((scale * 16) / big)) : slot && h > 16 ? Math.max(1, scale / 2) : scale;
-  const drawScale = fit * (item.z ?? 1);
-  const sprite = <Sprite sheet={sheet} x={rect.x} y={rect.y} w={w} h={h} scale={drawScale} label={label} />;
+  // Every icon fits the same square (16px × scale), like inventory slots in the game:
+  // big craftables, furniture and wallpaper shrink, tiny shirt icons grow.
+  const box = 16 * scale;
+  const ratio = box / Math.max(w, h);
+  const drawScale = ratio >= 1 ? Math.floor(ratio) : ratio;
+  const sprite = (
+    <span className="item-box" style={{ width: box, height: box }}>
+      <Sprite sheet={sheet} x={rect.x} y={rect.y} w={w} h={h} scale={drawScale} label={label} />
+    </span>
+  );
 
   const content = slot ? (
     <span className={faded ? 'slot slot--faded' : 'slot'}>

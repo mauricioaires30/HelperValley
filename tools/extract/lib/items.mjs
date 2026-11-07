@@ -94,6 +94,14 @@ export function buildItems(textures) {
   const floorName = localize('[LocalizedText Strings\\StringsFromCSFiles:Wallpaper.cs.13203]');
   for (let i = 0; i < 112; i++) addRect(`(WP)${i}`, wallName.map((n) => `${n} #${i}`), 'Maps/walls_and_floors', (i % 16) * 16, Math.floor(i / 16) * 48, 16, 48);
   for (let i = 0; i < 88; i++) addRect(`(FL)${i}`, floorName.map((n) => `${n} #${i}`), 'Maps/walls_and_floors', (i % 8) * 32, 336 + Math.floor(i / 8) * 32, 32, 32);
+  // Extra wallpaper/flooring sets (Data/AdditionalWallpaperFlooring): same cell sizes, numbered within the set.
+  for (const set of readRaw('Data/AdditionalWallpaperFlooring') ?? []) {
+    const texture = normTexture(set.Texture);
+    for (let i = 0; i < set.Count; i++) {
+      if (set.IsFlooring) add(`(FL)${set.Id}:${i}`, floorName.map((n) => `${n} extra #${i + 1}`), texture, i, 32, 32);
+      else add(`(WP)${set.Id}:${i}`, wallName.map((n) => `${n} extra #${i + 1}`), texture, i, 16, 48);
+    }
+  }
   // Mannequins: 16x32 cells.
   for (const [id, m] of Object.entries(readRaw('Data/Mannequins') ?? {})) {
     add(`(M)${id}`, localize(m.DisplayName, id), normTexture(m.Texture, 'TileSheets/Mannequins'), m.SheetIndex, 16, 32);

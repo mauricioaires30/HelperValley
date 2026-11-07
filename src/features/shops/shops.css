@@ -63,8 +63,8 @@
 
 .shop__items {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 2px 12px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 4px 16px;
   margin: 8px 0 0;
   padding: 0;
   list-style: none;
@@ -72,14 +72,14 @@
 
 .shop-row {
   display: grid;
-  grid-template-columns: 36px 1fr auto auto;
+  grid-template-columns: 36px 1fr auto;
   align-items: center;
   gap: 6px;
   min-height: 36px;
   font-size: var(--fs-sm);
 }
 
-.shop-row > .sprite {
+.shop-row > .item-box {
   justify-self: center;
 }
 
@@ -115,4 +115,9 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
+}
+
+.shop-row__name {
+  display: grid;
+  line-height: 1.15;
 }

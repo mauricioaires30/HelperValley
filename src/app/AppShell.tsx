@@ -2,7 +2,6 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGES } from '@/i18n';
 import { ItemIcon, Sprite, UiIcon } from '@/ui';
-import { getItem } from '@/data/gameData';
 import { PlayerSwitcher } from '@/features/saves/PlayerSwitcher';
 import { SaveDateChip, SaveUpdatedToast } from '@/features/saves/LiveStatus';
 import { CachedBanner } from '@/features/saves/CachedBanner';
@@ -35,11 +34,10 @@ function NavIconView({ icon }: { icon: NavIcon }) {
     );
   }
   if ('item' in icon) {
-    // Every menu icon fits one 32px box; tall items (16x32 machines, chests) draw at 1x.
-    const tall = (getItem(icon.item)?.s[3] ?? 16) > 16;
+    // ItemIcon fits every item in a 32px box.
     return (
       <span className="nav-icon">
-        <ItemIcon id={icon.item} scale={tall ? 1 : 2} tooltip={false} />
+        <ItemIcon id={icon.item} scale={2} tooltip={false} />
       </span>
     );
   }

@@ -39,8 +39,3 @@
   color: var(--text-soft);
 }
 
-/* Wide tooltips need a width to wrap within. */
-.museum .tooltip__bubble {
-  width: max-content;
-  max-width: 340px;
-}

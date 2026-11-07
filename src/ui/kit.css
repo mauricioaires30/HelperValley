@@ -117,7 +117,7 @@
   background: url('/sprites/ui/item-slot.png') 0 0 / 100% 100%;
 }
 
-.slot--faded > .sprite {
+.slot--faded .sprite {
   opacity: 0.35;
   filter: grayscale(1);
 }
@@ -188,20 +188,13 @@
 }
 
 .tooltip__bubble {
-  position: absolute;
-  z-index: 20;
-  bottom: calc(100% + 2 * var(--px));
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
+  /* Placed by Tooltip.tsx in the page layer, clamped to the window. */
+  position: fixed;
+  z-index: 1000;
+  width: max-content;
+  max-width: min(360px, calc(100vw - 16px));
+  white-space: normal;
   pointer-events: none;
-  /* Hidden bubbles must not take part in layout, or they cause horizontal scrolling. */
-  display: none;
-}
-
-.tooltip:hover .tooltip__bubble,
-.tooltip:focus-within .tooltip__bubble {
-  display: block;
 }
 
 /* ---------- Slot states (collections) ---------- */
@@ -264,9 +257,17 @@
   display: none;
 }
 
+/* Keyboard focus opens it too, but a mouse click doesn't keep it open. */
 .popover:hover .popover__panel,
-.popover:focus-within .popover__panel {
+.popover:has(:focus-visible) .popover__panel {
   display: block;
+}
+
+.popover__panel--below {
+  bottom: auto;
+  top: 100%;
+  padding-bottom: 0;
+  padding-top: calc(2 * var(--px));
 }
 
 .popover__content {
@@ -288,4 +289,17 @@
 /* Hearts that need dating or marriage first: still possible, so only faded. */
 .heart--soft {
   opacity: 0.4;
+}
+
+/* ItemIcon: every icon sits in the same square, centered (see ItemIcon). */
+.item-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  vertical-align: middle;
+}
+
+.item-box .sprite {
+  image-rendering: pixelated;
 }

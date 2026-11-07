@@ -169,7 +169,7 @@
   border-color: #e8892b;
 }
 
-.map-pin__icon .sprite {
+.map-pin__icon .item-box {
   rotate: 45deg;
 }
 
@@ -219,7 +219,7 @@
   gap: 6px;
 }
 
-.fish-picker__list span {
+.fish-picker__list li > span:not(.item-box) {
   flex: 1;
 }
 

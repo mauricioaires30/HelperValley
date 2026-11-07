@@ -63,19 +63,19 @@ function ShopView({ info, save, player, day, query }: { info: ShopInfo; save: Sa
             <li key={`${entry.id}-${i}`} className={['shop-row', entry.maybe || late ? 'shop-row--maybe' : ''].join(' ')}>
               <ItemIcon id={entry.id} tooltip={false} />
               <span className="shop-row__name">
-                {item ? name(item.n) : entry.id}
-                {entry.recipe && <em> · {t('shops.recipe')}</em>}
-                {entry.stack > 1 && <em> ×{entry.stack}</em>}
+                <span>
+                  {item ? name(item.n) : entry.id}
+                  {entry.recipe && <em> · {t('shops.recipe')}</em>}
+                  {entry.stack > 1 && <em> ×{entry.stack}</em>}
+                  {(entry.maybe || late) && (
+                    <Tooltip text={t(entry.maybe ? 'shops.maybe' : 'shops.uncertainItem')}>
+                      <span className="shop-row__maybe">?</span>
+                    </Tooltip>
+                  )}
+                </span>
+                {entry.stock !== null && entry.stock < 100 && <small className="shop-row__stock">{t('shops.stock', { count: entry.stock })}</small>}
               </span>
               <Price entry={entry} currency={shopCurrency(info.id)} />
-              <span className="shop-row__stock">
-                {entry.stock !== null && entry.stock < 100 ? t('shops.stock', { count: entry.stock }) : ''}
-                {(entry.maybe || late) && (
-                  <Tooltip text={t(entry.maybe ? 'shops.maybe' : 'shops.uncertainItem')}>
-                    <span className="shop-row__maybe">?</span>
-                  </Tooltip>
-                )}
-              </span>
             </li>
           );
         })}
