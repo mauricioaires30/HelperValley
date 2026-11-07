@@ -28,7 +28,8 @@ export function buildGameCollections() {
   // "FLAVORED_ITEM Wine DROP_IN_ID" → the base Wine object (by id or name).
   const flavored = (type) => {
     if (objects[type]) return `(O)${type}`;
-    const match = Object.entries(objects).find(([, o]) => o.Name === type || o.Name === type.replace(/([a-z])([A-Z])/g, '$1 $2'));
+    const spaced = type.replace(/([a-z])([A-Z])/g, "$1 $2");
+    const match = Object.entries(objects).find(([, o]) => [type, spaced, `${type}s`].includes(o.Name));
     return match ? `(O)${match[0]}` : null;
   };
   for (const [machine, data] of Object.entries(readRaw('Data/Machines'))) {
