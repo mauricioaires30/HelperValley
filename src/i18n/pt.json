@@ -190,7 +190,7 @@
     "birthdayToday": "Aniversário hoje! Presentes valem 8×",
     "birthdayIn_one": "Aniversário amanhã",
     "birthdayIn_other": "Aniversário em {{count}} dias",
-    "eventReady": "Evento de {{hearts}} corações disponível",
+    "eventReady": "Evento de {{hearts}} corações disponível!",
     "eventAt": "Próximo evento com {{hearts}} corações",
     "gifts": {
       "love": "Ama, e você tem:",
@@ -251,6 +251,45 @@
       "toy_item": "Brinquedos",
       "forage_item_beach": "Coletáveis da praia",
       "category_trinket": "Bugigangas"
+    },
+    "how": "Como:",
+    "events": "Eventos {{seen}}/{{total}}",
+    "eventsTitle": "Eventos de coração (✓ = visto)",
+    "eventHearts_one": "{{count}} coração:",
+    "eventHearts_other": "{{count}} corações:",
+    "place": {
+      "Farm": "Sua fazenda",
+      "FarmHouse": "Sua casa",
+      "IslandWest": "Ilha Gengibre (oeste)",
+      "IslandNorth": "Ilha Gengibre (norte)",
+      "IslandSouth": "Ilha Gengibre (sul)",
+      "SebastianRoom": "Quarto do Sebastian"
+    },
+    "when": {
+      "place": "vá até {{place}}",
+      "time": "entre {{from}} e {{to}}",
+      "weather": {
+        "sunny": "em dia de sol",
+        "rainy": "em dia de chuva"
+      },
+      "notSeason": "fora do {{seasons}}",
+      "notDays": "exceto {{days}}",
+      "firstYear": "só no ano 1",
+      "fromYear": "a partir do ano {{year}}",
+      "present": "{{name}} precisa estar lá",
+      "friend": "{{hearts}} corações com {{name}}",
+      "married": "casado(a) com {{name}}",
+      "notMarried": "sem estar casado(a) com {{names}}",
+      "single": "estando solteiro(a)",
+      "dating": "namorando {{name}}",
+      "house": "casa com reforma nível {{level}}",
+      "money": "ter {{money}}g",
+      "daysPlayed_one": "depois de {{count}} dia jogado",
+      "daysPlayed_other": "depois de {{count}} dias jogados",
+      "item": "levar {{item}} na mochila",
+      "mail": "depois de uma carta ou etapa da história",
+      "priorEvents_one": "depois de ver 1 evento anterior",
+      "priorEvents_other": "depois de ver {{count}} eventos anteriores"
     }
   },
   "today": {
