@@ -44,7 +44,6 @@ export function SlimesView({ save }: { save: SaveData }) {
                 </div>
               ))}
             </div>
-            <p className="cc-summary__hint">{t('slimes.hint')}</p>
           </section>
         );
       })}

@@ -130,7 +130,6 @@ export function HayCard({ save }: { save: SaveData }) {
         {perDay > 0 && <li className={stockDays < 7 ? 'farm-warn' : undefined}>{t('farm.hayStock', { perDay, days: stockDays, date: when(stockDays) })}</li>}
         {toFill > 0 && <li>{t('farm.hayFill', { count: toFill.toLocaleString(), cost: (toFill * HAY_PRICE).toLocaleString() })}</li>}
         {capacity > 0 && perDay > 0 && <li>{t('farm.hayCycle', { days: fullDays, date: when(fullDays) })}</li>}
-        <li className="cc-summary__hint">{t('farm.hayNote')}</li>
       </ul>
     </section>
   );

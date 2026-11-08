@@ -112,7 +112,6 @@ function Mastery({ player }: { player: Player }) {
           </li>
         ))}
       </ul>
-      <p className="cc-summary__hint">{t('player.mastery.how')}</p>
     </section>
   );
 }
@@ -168,7 +167,7 @@ function Grandpa({ save, player }: { save: SaveData; player: Player }) {
           ))}
         </ul>
       </details>
-      <p className="cc-summary__hint">{t('player.grandpa.how')}</p>
+      {candles < 4 && <p className="cc-summary__hint">{t('player.grandpa.how')}</p>}
     </section>
   );
 }

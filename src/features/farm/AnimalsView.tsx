@@ -133,10 +133,10 @@ function AnimalRequests({ save }: { save: SaveData }) {
     .filter((q) => q.item && ANIMAL_CATEGORIES.has(getItem(q.item)?.c ?? 0) && !seen.has(q.id) && seen.add(q.id));
   const productNames = [...new Set(Object.values(gameData().items).filter((i) => ANIMAL_CATEGORIES.has(i.c ?? 0)).map((i) => name(i.n).toLowerCase()))];
   const orders = save.specialOrders.filter((o) => o.objectives.some((ob) => productNames.some((n) => n && ob.description.toLowerCase().includes(n))));
+  if (quests.length === 0 && orders.length === 0) return null;
   return (
     <section>
       <h3>{t('animals.requests')}</h3>
-      {quests.length === 0 && orders.length === 0 && <p className="cc-summary__hint">{t('animals.noRequests')}</p>}
       <ul className="map-list dashed-list">
         {quests.map((q) => (
           <li key={q.id}>

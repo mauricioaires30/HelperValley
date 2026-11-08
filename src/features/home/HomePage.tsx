@@ -12,12 +12,7 @@ function HowItWorks() {
   const { t } = useTranslation();
   return (
     <section className="how-it-works">
-      <h2>{t('saves.how.title')}</h2>
-      <ul className="farm-facts">
-        <li>{t('saves.how.local')}</li>
-        <li>{t('saves.how.copy')}</li>
-        <li>{t('saves.how.live')}</li>
-      </ul>
+      <p className="cc-summary__hint">{t('saves.how.local')}</p>
       <NotifyToggle />
       {supportsDirectoryAccess() && <LiveSetupGuide />}
     </section>

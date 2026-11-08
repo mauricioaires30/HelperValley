@@ -95,10 +95,7 @@
     "quickHint": "Select {{path}}. The browser keeps a copy.",
     "quickButton": "Select Saves folder",
     "how": {
-      "title": "How it works",
-      "local": "The site reads your save files right on your PC; nothing is uploaded.",
-      "copy": "Each save it reads is kept in the browser, so the site opens even without the folder.",
-      "live": "With the folder connected (Chrome, Edge, Brave or Opera), the site updates on its own when the game saves."
+      "local": "The site reads your saves right from your PC; nothing is uploaded."
     },
     "hidden": {
       "mac": "It's a hidden folder: in the picker press Cmd+Shift+. to show hidden folders, or Cmd+Shift+G and paste the path.",
@@ -188,7 +185,6 @@
     "secret": "Hidden",
     "close": "Almost there!",
     "hideEarned": "Hide earned",
-    "perPlayer": "Per player. Switch players at the top.",
     "showDetails": "See what is missing",
     "hideDetails": "Hide",
     "details": {
@@ -457,7 +453,7 @@
     "pots_one": "{{count}} garden pot",
     "pots_other": "{{count}} garden pots",
     "planted": "{{count}} planted · {{empty}} empty",
-    "sprinklers": "Sprinklers water ~{{tiles}} tiles ({{percent}}% of tilled)",
+    "sprinklers": "Sprinklers: {{percent}}%",
     "beeHouses_one": "{{count}} bee house",
     "beeHouses_other": "{{count}} bee houses",
     "machine": {
@@ -480,7 +476,7 @@
     "dead_other": "{{count}} dead crops",
     "animalsTitle": "Animals ({{count}})",
     "hay": "{{hay}} / {{capacity}} hay in {{silos}} silo(s)",
-    "hayFill": "Buy {{count}} hay to fill the silos (~{{cost}}g at Marnie)",
+    "hayFill": "Fill the silos: {{count}} (~{{cost}}g)",
     "fertilizer": "Fertilizer",
     "fert": {
       "none": "None",
@@ -539,7 +535,6 @@
     "addRow": "Add crop",
     "planProfit": "Expected profit this season: {{profit}}g",
     "shoppingTitle": "Shopping list",
-    "shoppingHint": "1 seed per tile, at the cheapest shop.",
     "shoppingEmpty": "Add crops to your plans to build the list.",
     "shoppingTotal": "Total: {{total}}g",
     "shop": {
@@ -576,9 +571,8 @@
       "ShadowShop": "Krobus"
     },
     "late": "won't make it ({{need}}d, {{left}} left)",
-    "hayStock": "{{perDay}}/day · lasts {{days}} days (until {{date}})",
-    "hayCycle": "Full silos last {{days}} days (until {{date}})",
-    "hayNote": "Assumes they eat hay every day.",
+    "hayStock": "{{perDay}}/day, until {{date}}",
+    "hayCycle": "Full, they last {{days}} days",
     "hayShort": "Hay {{hay}}/{{capacity}} · lasts {{days}} days",
     "trees": "Fruit trees ({{count}})",
     "treeCount_one": "1 tree",
@@ -631,8 +625,8 @@
     "show": "Show on the map",
     "layer": {
       "npcs": "Villagers",
-      "events_one": "Heart events available now ({{count}})",
-      "events_other": "Heart events available now ({{count}})",
+      "events_one": "Heart events ({{count}})",
+      "events_other": "Heart events ({{count}})",
       "quests": "Marked quests",
       "fish": "Marked fish",
       "walnuts": "Missing walnut spots",
@@ -649,7 +643,6 @@
     "fishAdd": "Mark",
     "shopClick": "Click to see today's stock.",
     "donationPin": "{{place}}: {{count}} to donate",
-    "tip": "Tip: mark fish here or in Collections → Fish, and quests on the Quests page (\"Mark\" button). Everything shows on this map.",
     "weather": {
       "rain": "Raining",
       "sun": "Sunny",
@@ -662,7 +655,8 @@
       "rain": "Resort closed: rain on the island",
       "festival": "Resort closed: festival day"
     },
-    "visitors": "On the island today"
+    "visitors": "On the island today",
+    "listHint": "click to see on the map"
   },
   "prod": {
     "title": "Production",
@@ -715,7 +709,7 @@
     },
     "office": {
       "locked": "The Field Office on Ginger Island hasn't been opened yet.",
-      "hint": "Bring fossils to Professor Snail (island north). Each set pays walnuts.",
+      "hint": "Bring fossils to Professor Snail, north of the island.",
       "skeleton": "Large animal",
       "snake": "Snake",
       "bat": "Mummified bat",
@@ -755,10 +749,10 @@
     "fishClick": "Click a fish to mark it on the map.",
     "lettersHint": "{{count}} letters received.",
     "notesHint": "Notes turn up when digging, cutting weeds and fishing after the first one.",
-    "recipeLegend": "Color: made it · Faded: recipe known, not made yet · Silhouette: recipe not learned. Hover for ingredients.",
+    "recipeLegend": "Colored: made · Faded: known · Silhouette: not learned",
     "family": {
       "title": "Extended Family",
-      "hint": "Optional: they only exist during Mr. Qi's \"Extended Family\" order, from the Walnut Room on the island. They're in the original legendaries' spots and don't count for the collection. Click to mark on the map."
+      "hint": "Optional: only during Mr. Qi's order, in the original legendaries' spots. They don't count for the collection."
     }
   },
   "quests": {
@@ -785,11 +779,10 @@
     },
     "pinFish": "Mark the fish",
     "slayerTitle": "Monster slayer goals (Guild) · {{done}}/{{total}}",
-    "slayerHint": "Slay monsters in the mines for Marlon. Each finished goal gives a reward at the Adventurer's Guild.",
     "slayerCollect": "collect it from Gil",
     "pinTip": "Tip: use \"Mark\" on a quest to show it on the map (Map tab).",
     "pondsTitle": "Fish pond requests ({{count}})",
-    "pondsNone": "No pond is asking for an item right now. When a pond fills up, the fish ask for something to grow.",
+    "pondsNone": "No ponds asking for an item.",
     "pondOf": "{{fish}} pond",
     "pondHow": "Bring it to the pond to unlock more room ({{count}}/{{max}} fish)."
   },
@@ -928,7 +921,6 @@
     "cracker": "golden cracker",
     "petted": "petted",
     "requests": "Requests for animal products",
-    "noRequests": "No quest or special order asks for eggs, milk, wool or truffles right now.",
     "daysLeft": "{{count}} days",
     "sort": {
       "type": "Type",
@@ -952,7 +944,6 @@
       "level": "Mastery level {{level}} of 5",
       "toClaim": "{{count}} to claim at the pedestals",
       "max": "Mastery complete.",
-      "how": "With every skill at 10, extra XP becomes Mastery XP (Farming counts half). Each level lets you claim one pedestal in the cave: items, recipes and a perk.",
       "claimed": "claimed"
     },
     "grandpa": {
@@ -993,8 +984,7 @@
         "4": "iridium"
       },
       "max": "max",
-      "nextRod": "Next: {{name}} ({{price}}g from Willy)",
-      "hint": "Clint's upgrades take 2 days and cost the price + 5 bars. Fishing rods are bought from Willy."
+      "nextRod": "Next: {{name}} ({{price}}g from Willy)"
     }
   },
   "shops": {
@@ -1121,7 +1111,6 @@
     "balls": "{{count}} slime balls to break",
     "statue": "Wicked Statue: no witch",
     "noStatue": "No Wicked Statue (the witch may visit)",
-    "hint": "Each full trough lets 5 slimes make a slime ball overnight.",
     "machines": "Incubators and presses",
     "kind": {
       "Green Slime": "Green slime",
@@ -1210,7 +1199,7 @@
   },
   "perfection": {
     "title": "Perfection: {{pct}}%",
-    "hint": "The game's own formula. In multiplayer each part counts the best player. Click a part to see what's missing.",
+    "hint": "In multiplayer, the best player of each part counts.",
     "done": "Complete!",
     "part": {
       "shipping": "Items shipped",
@@ -1285,12 +1274,12 @@
       "mushroom-tree": "Mushroom tree"
     },
     "loading": "Loading…",
-    "empty": "Paste a stardew.info/planner link to compare it with what you have built.",
+    "empty": "Paste the link of a stardew.info plan.",
     "copyHow": "stardew.info doesn't let other sites read plans directly. Click below, copy everything on the page that opens (Ctrl+A, Ctrl+C) and come back to this tab: the site reads it on its own.",
     "openData": "Open plan data",
     "pasteManual": "Paste manually",
     "bookmark": "★ Send to HelperValley",
-    "bookmarkHint": "Drag the \"Send to HelperValley\" button to your bookmarks bar. Then click it on any stardew.info plan and the plan arrives here.",
+    "bookmarkHint": "Drag to your bookmarks and click it on a stardew.info plan.",
     "ignore": "Ignore:",
     "cat": {
       "crops": "Crops",
@@ -1321,7 +1310,7 @@
   "share": {
     "title": "Play together (multiplayer)",
     "host": "Share this save",
-    "hostHint": "Makes a code so the other players can see this farm live, while the site is open here.",
+    "hostHint": "Other players see this farm live with a code.",
     "needSave": "Open a save first.",
     "yourCode": "Room code:",
     "copy": "Copy code",
@@ -1346,7 +1335,7 @@
     "peers_zero": "Live · nobody connected yet"
   },
   "stardrops": {
-    "hint": "Each Stardrop raises your max energy by 34. Mark on the map the ones found at a place.",
+    "hint": "Each gives +34 max energy.",
     "eaten": "Already eaten",
     "pin": "Mark on map",
     "pinned": "Marked",

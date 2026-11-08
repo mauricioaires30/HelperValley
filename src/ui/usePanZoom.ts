@@ -58,6 +58,12 @@ export function usePanZoom() {
     },
   };
 
-  return { view, viewport, handlers, zoomIn: () => zoomAt(1.5), zoomOut: () => zoomAt(1 / 1.5), reset: () => setView({ zoom: 1, x: 0, y: 0 }) };
+  /** Centers a point (as fractions of the map) at this zoom. */
+  const focus = (fx: number, fy: number, zoom: number) => {
+    const rect = viewport.current?.getBoundingClientRect();
+    if (rect) setView(clamp(zoom, rect.width / 2 - fx * rect.width * zoom, rect.height / 2 - fy * rect.height * zoom));
+  };
+
+  return { view, viewport, handlers, focus, zoomIn: () => zoomAt(1.5), zoomOut: () => zoomAt(1 / 1.5), reset: () => setView({ zoom: 1, x: 0, y: 0 }) };
 }
 

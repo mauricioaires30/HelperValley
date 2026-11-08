@@ -75,7 +75,7 @@ export function perfection(save: SaveData): PerfectionPart[] {
     part('slayer', 10, best('slayer'), all(best('slayer')), '/quests'),
     part('friends', 11, best('friends'), ratio(best('friends')), '/relationships'),
     part('level', 5, best('level'), ratio(best('level')), '/player'),
-    part('stardrops', 10, best('stardrops'), all(best('stardrops')), '/collections/perfection'),
+    part('stardrops', 10, best('stardrops'), all(best('stardrops')), '/collections/stardrops'),
     part('cooking', 10, best('cooking'), ratio(best('cooking')), '/collections/cooking'),
     part('crafting', 10, best('crafting'), ratio(best('crafting')), '/collections/crafting'),
     part('fish', 10, best('fish'), ratio(best('fish')), '/collections/fish'),

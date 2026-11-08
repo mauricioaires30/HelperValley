@@ -20,8 +20,9 @@
 }
 
 .farm-facts {
-  display: grid;
-  gap: 2px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 14px;
   margin: 0;
   padding: 0;
   list-style: none;

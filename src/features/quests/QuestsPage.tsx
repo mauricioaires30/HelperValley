@@ -119,7 +119,6 @@ function SlayerGoals({ player }: { player: Player }) {
   return (
     <>
       <h2 className="quest-section">{t('quests.slayerTitle', { done: goals.filter((g) => g.done).length, total: goals.length })}</h2>
-      <p className="cc-summary__hint">{t('quests.slayerHint')}</p>
       <div className="quest-grid">
         {goals.map((g) => (
           <div key={g.id} className={g.done ? 'quest box quest-card--done' : 'quest box'}>

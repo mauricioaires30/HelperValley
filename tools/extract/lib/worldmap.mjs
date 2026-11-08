@@ -70,6 +70,19 @@ async function mapSize(gameDir, location) {
 const rect = (r) => (r && !r.IsEmpty ? [r.X, r.Y, r.Width, r.Height] : null);
 
 /**
+ * The game shows the whole desert as one pixel (36,20), but the map draws a wide sand area. Its tiles
+ * go on that sand, with the bus stop tile (18,26) on the drawn road; buildings sit at their door tile (6,51).
+ */
+const DESERT_PIXELS = {
+  Desert: [6, 4, 46, 36],
+  DesertFestival: [6, 4, 46, 36],
+  SkullCave: [12, 8, 2, 2],
+  SandyHouse: [11, 34, 2, 2],
+  SandyShop: [11, 34, 2, 2],
+  Club: [14, 34, 2, 2],
+};
+
+/**
  * The in-game world maps (Valley and Ginger Island) and how each location's tiles land on
  * them, from Data/WorldMap. Outdoor locations without a tile area are scaled by map size.
  */
@@ -89,7 +102,7 @@ export async function buildWorldMap(gameDir, textures) {
             location,
             tiles: rect(p.TileArea),
             // Without its own pixel area, a position covers the whole map area.
-            pixels: rect(p.MapPixelArea) ?? rect(area.PixelArea),
+            pixels: DESERT_PIXELS[location] ?? rect(p.MapPixelArea) ?? rect(area.PixelArea),
             n: p.ScrollText ? localize(p.ScrollText, location) : null,
           });
         }
