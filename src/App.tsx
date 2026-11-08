@@ -40,9 +40,9 @@ export function App() {
       <Routes>
         <Route element={<AppShell />}>
           <Route index element={<HomePage />} />
-          <Route path="today" element={<Navigate to="/calendar" replace />} />
+          <Route path="today" element={<Navigate to="/calendar/hoje" replace />} />
           <Route path="player" element={<PlayerPage />} />
-          <Route path="calendar" element={<CalendarPage />} />
+          <Route path="calendar/:tab?" element={<CalendarPage />} />
           <Route path="relationships" element={<RelationshipsPage />} />
           <Route path="map" element={<MapPage />} />
           <Route path="quests" element={<QuestsPage />} />

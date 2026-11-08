@@ -270,7 +270,11 @@
     "seasonYear": "{{season}}, Ano {{year}}",
     "previous": "Estação anterior",
     "next": "Próxima estação",
-    "backToToday": "Voltar para hoje"
+    "backToToday": "Voltar para hoje",
+    "tab": {
+      "hoje": "Hoje",
+      "geral": "Geral"
+    }
   },
   "rel": {
     "title": "Relacionamentos de {{name}}",
@@ -1092,7 +1096,7 @@
   },
   "intro": {
     "player": "Seu personagem: habilidades, profissões, maestria e o que falta para o vovô acender as 4 velas.",
-    "calendar": "O dia de hoje, aniversários e festivais. Use as setas para ver outros dias e anos.",
+    "calendar": "Hoje: o que fazer agora e os próximos 7 dias. Geral: o calendário da estação, com aniversários e festivais.",
     "relationships": "Corações de cada morador. Passe o mouse nos botões para ver presentes e eventos.",
     "map": "Onde cada morador está a cada 10 minutos. Arraste para mover, use a roda do mouse para dar zoom e ligue as camadas ao lado.",
     "quests": "Missões do diário, pedidos especiais, lagos de peixe e metas do caçador. Use \"Marcar\" para ver no mapa.",
@@ -1106,5 +1110,26 @@
     "auto": "Tema: automático",
     "day": "Tema: dia",
     "night": "Tema: noite"
+  },
+  "todo": {
+    "title": "Para fazer hoje",
+    "goodToKnow": "Bom saber",
+    "nothing": "Nada urgente hoje. Aproveite o dia!",
+    "machines": "{{count}} máquinas com produto pronto para coletar",
+    "pet": "{{count}} animais precisam de carinho",
+    "bowl": "Encha a tigela de água do pet",
+    "slimeWater": "Encha os bebedouros da casa de slimes",
+    "slimeBalls": "{{count}} bolas de slime para quebrar",
+    "ponds": "{{count}} lagos de peixe com produto pronto",
+    "pondAsks": "{{count}} lagos de peixe pedindo um item",
+    "birthday": "Aniversário de {{name}} hoje: presente vale 8×",
+    "festival": "Festival hoje: {{name}}",
+    "events": "{{count}} eventos de coração disponíveis ({{names}})",
+    "kids": "Converse com {{names}}",
+    "quests": "{{count}} missões vencem em até 2 dias",
+    "orders": "{{count}} pedidos especiais vencem em até 2 dias",
+    "cart": "O Carrinho de Viagem está na floresta hoje",
+    "tv": "A Rainha do Molho passa na TV hoje (receita nova)",
+    "seasonEnd": "Último dia da estação: as plantações que não são de {{next}} morrem amanhã"
   }
 }

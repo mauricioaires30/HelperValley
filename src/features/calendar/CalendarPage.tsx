@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
+import { NavLink, Navigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { gameData, type Festival, type Season } from '@/data/gameData';
 import { useGameName } from '@/i18n';
 import { useCurrentSave } from '@/store/saveStore';
 import { TodayHero, TodayLists } from '@/features/today/TodayPage';
+import { TodayChecklist } from '@/features/today/TodayChecklist';
+import { RequireSave } from '@/features/saves/RequireSave';
 import { NpcHead, SeasonIcon, Tooltip } from '@/ui';
 import { SEASONS, seasonDays } from './calendar';
 import './calendar.css';
@@ -24,8 +27,41 @@ export function FestivalIcon({ festival }: { festival: Festival }) {
 /** Order of a (year, season) pair, to compare and step through seasons. */
 const seasonIndex = (year: number, season: Season) => (year - 1) * 4 + SEASONS.indexOf(season);
 
-/** Calendar with today's summary on top; works without a save as a plain calendar. */
+const TABS = ['hoje', 'geral'] as const;
+
+/** Two tabs: "Hoje" (the day, what to do, the next 7 days) and "Geral" (the season calendar). */
 export function CalendarPage() {
+  const { t } = useTranslation();
+  const { tab } = useParams<{ tab?: string }>();
+  if (!tab || !(TABS as readonly string[]).includes(tab)) return <Navigate to="/calendar/hoje" replace />;
+  return (
+    <div className="calendar">
+      <nav className="calendar__nav calendar__tabs" aria-label={t('nav.calendar')}>
+        {TABS.map((id) => (
+          <NavLink key={id} to={`/calendar/${id}`} className={({ isActive }) => (isActive ? 'button button--primary' : 'button')}>
+            {t(`calendar.tab.${id}`)}
+          </NavLink>
+        ))}
+      </nav>
+      {tab === 'hoje' ? (
+        <RequireSave>
+          {(save, player) => (
+            <>
+              <TodayHero />
+              <TodayChecklist save={save} player={player} />
+              <TodayLists />
+            </>
+          )}
+        </RequireSave>
+      ) : (
+        <SeasonCalendar />
+      )}
+    </div>
+  );
+}
+
+/** The season grid; works without a save as a plain calendar. */
+function SeasonCalendar() {
   const { t } = useTranslation();
   const name = useGameName();
   const festivalName = useFestivalName();
@@ -50,9 +86,7 @@ export function CalendarPage() {
   const isPast = (day: number) => shown < current || (shown === current && day < (today?.day ?? 0));
 
   return (
-    <div className="calendar">
-      <TodayHero />
-
+    <div>
       <header className="calendar__header">
         <h2>{t('calendar.title')}</h2>
         <div className="calendar__nav">
@@ -105,8 +139,6 @@ export function CalendarPage() {
           </div>
         ))}
       </div>
-
-      <TodayLists />
     </div>
   );
 }

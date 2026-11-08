@@ -110,7 +110,7 @@ function placeAt(data: ScheduleData, schedule: ScheduleResult, time: number, mar
 }
 
 /** Heart events this player can trigger on the chosen day and time, from their preconditions. */
-function availableEvents(player: Player | null, season: Season, day: number, time: number, raining: boolean) {
+export function availableEvents(player: Player | null, season: Season, day: number, time: number, raining: boolean) {
   if (!player) return [];
   const { heartEvents } = gameData();
   const seen = new Set(player.eventsSeen);
