@@ -70,5 +70,9 @@ export function buildGameCollections() {
     reward: q.RewardItemId ?? null,
   }));
 
-  return { shipped, letters, secretNotes: Object.keys(readRaw('Data/SecretNotes')).map(Number), madeBy, ingredients, slayer };
+  // Flavored goods names by Object.preserve value (Strings/Objects "<Kind>_Flavored_Name": "{0} Wine").
+  const FLAVOR_KEYS = { Wine: 'Wine', Jelly: 'Jelly', Pickle: 'Pickles', Juice: 'Juice', Roe: 'Roe', AgedRoe: 'AgedRoe', Honey: 'Honey', DriedFruit: 'DriedFruit', DriedMushroom: 'DriedFruit', SmokedFish: 'SmokedFish', Bait: 'SpecificBait' };
+  const flavorNames = Object.fromEntries(Object.entries(FLAVOR_KEYS).map(([kind, key]) => [kind, localize(`[LocalizedText Strings\\Objects:${key}_Flavored_Name]`, '{0}')]));
+
+  return { shipped, letters, secretNotes: Object.keys(readRaw('Data/SecretNotes')).map(Number), madeBy, ingredients, slayer, flavorNames };
 }

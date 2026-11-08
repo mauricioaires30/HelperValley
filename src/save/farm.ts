@@ -144,6 +144,7 @@ function readMachines(locations: XmlValue[]): MachineState[] {
         ready: bool(object.readyForHarvest),
         minutes: num(object.minutesUntilReady),
         location: name,
+        flavor: text(held.preserve) && text(held.preservedParentSheetIndex) ? { kind: text(held.preserve)!, of: `(O)${text(held.preservedParentSheetIndex)}` } : undefined,
       });
     }
     for (const b of arr(node(location.buildings)?.Building)) {

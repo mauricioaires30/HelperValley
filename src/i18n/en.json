@@ -914,7 +914,13 @@
     "petted": "petted",
     "requests": "Requests for animal products",
     "noRequests": "No quest or special order asks for eggs, milk, wool or truffles right now.",
-    "daysLeft": "{{count}} days"
+    "daysLeft": "{{count}} days",
+    "sort": {
+      "type": "Type",
+      "name": "Name",
+      "hearts": "Hearts",
+      "pet": "Needs petting"
+    }
   },
   "player": {
     "skills": "Skills · farmer level {{level}}",

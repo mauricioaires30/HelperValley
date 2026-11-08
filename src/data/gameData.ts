@@ -175,6 +175,8 @@ export interface GameData {
     ingredients: { cooking: Record<string, Array<[string, number]>>; crafting: Record<string, Array<[string, number]>> };
     /** Adventurer's Guild monster eradication goals; targets are [monster id, names]. */
     slayer: Array<{ id: string; n: LocalizedName; targets: Array<[string, LocalizedName]>; count: number; reward: string | null }>;
+    /** Object.preserve kind → name format with {0} for the ingredient ("Vinho de {0}"). */
+    flavorNames: Record<string, LocalizedName>;
   };
   player: PlayerData;
   /** Data/Shops and item pools; typed in features/shops/stock.ts. */

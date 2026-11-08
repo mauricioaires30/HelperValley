@@ -324,6 +324,8 @@ export interface MachineState {
   /** Game minutes left until ready (0 when ready). */
   minutes: number;
   location: string;
+  /** Flavored goods: the kind (Wine, Jelly, Pickle, Honey, Roe...) and what it was made from. */
+  flavor?: { kind: string; of: string };
 }
 
 export interface FishPondState {
