@@ -714,7 +714,8 @@
       "achievements": "Conquistas",
       "letters": "Cartas",
       "notes": "Notas Secretas",
-      "crafting": "Artesanato"
+      "crafting": "Artesanato",
+      "perfection": "Perfeição"
     },
     "office": {
       "locked": "O Escritório de Campo da Ilha Gengibre ainda não foi aberto.",
@@ -1183,5 +1184,36 @@
     "have": "Você tem {{count}}",
     "plannerTitle": "Stardew Planner",
     "plannerSoon": "Em breve: importar um layout do Stardew Planner (V3) e comparar com a sua fazenda."
+  },
+  "perfection": {
+    "title": "Perfeição: {{pct}}%",
+    "hint": "O mesmo cálculo do jogo. Em multiplayer, cada parte conta o melhor jogador. Clique numa parte para ver o que falta.",
+    "done": "Completo!",
+    "part": {
+      "shipping": "Itens enviados",
+      "obelisks": "Obeliscos",
+      "goldClock": "Relógio Dourado",
+      "slayer": "Metas do caçador",
+      "friends": "Grandes amigos",
+      "level": "Nível de fazendeiro",
+      "stardrops": "Frutas estelares",
+      "cooking": "Receitas cozinhadas",
+      "crafting": "Itens fabricados",
+      "fish": "Peixes pescados",
+      "walnuts": "Nozes douradas"
+    },
+    "how": {
+      "shipping": "Envie pelo menos um de cada item da coleção de envio.",
+      "obelisks": "Construa os 4 obeliscos na Torre do Mago (só valem os que estão prontos).",
+      "goldClock": "Compre o Relógio Dourado do Mago (10 milhões).",
+      "slayer": "Complete todas as metas do Marlon na Guilda (só conta com todas).",
+      "friends": "Todos os moradores com corações máximos (8 para solteiros, 10 para os outros).",
+      "level": "Chegue ao nível 25 de fazendeiro (todas as habilidades no 10).",
+      "stardrops": "Coma as 7 frutas estelares (só conta com todas).",
+      "cooking": "Cozinhe cada receita pelo menos uma vez.",
+      "crafting": "Fabrique cada receita de artesanato pelo menos uma vez.",
+      "fish": "Pesque cada peixe da coleção.",
+      "walnuts": "Encontre as 130 nozes douradas da ilha."
+    }
   }
 }
