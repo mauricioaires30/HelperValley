@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { Navigate, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGES } from '@/i18n';
 import { ItemIcon, Sprite, UiIcon } from '@/ui';
@@ -9,6 +9,8 @@ import { useSaveNotifications } from '@/features/saves/Notifications';
 import { ThemeToggle } from './ThemeToggle';
 import { CachedChip } from '@/features/saves/CachedBanner';
 import { ShareChip } from '@/features/share/SharePanel';
+import { useShareStore } from '@/features/share/liveShare';
+import { useSaveStore } from '@/store/saveStore';
 import './shell.css';
 
 /** Menu icon: a game item, or a UI crop from public/sprites/ui. */
@@ -56,6 +58,13 @@ function NavIconView({ icon }: { icon: NavIcon }) {
 export function AppShell() {
   const { t, i18n } = useTranslation();
   useSaveNotifications();
+  const hasSave = useSaveStore((s) => !!s.save);
+  const initialized = useSaveStore((s) => s.initialized);
+  const inRoom = useShareStore((s) => !!s.role);
+  const { pathname } = useLocation();
+  // Without a save every other page is empty: only the Saves page is available.
+  if (initialized && !hasSave && !inRoom && pathname !== '/' && pathname !== '/kit') return <Navigate to="/" replace />;
+
   return (
     <div className="app">
       <aside className="sidebar">
@@ -65,20 +74,22 @@ export function AppShell() {
         </div>
 
         <SaveCard />
-        <Search />
+        {hasSave && <Search />}
 
-        <nav className="sidebar__nav" aria-label="Main">
-          <ul className="side-tabs">
-            {NAV.map((item) => (
-              <li key={item.to}>
-                <NavLink to={item.to} end={item.to === '/'} className="side-tab">
-                  <NavIconView icon={item.icon} />
-                  <span>{t(`nav.${item.key}`)}</span>
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        {hasSave && (
+          <nav className="sidebar__nav" aria-label="Main">
+            <ul className="side-tabs">
+              {NAV.map((item) => (
+                <li key={item.to}>
+                  <NavLink to={item.to} end={item.to === '/'} className="side-tab">
+                    <NavIconView icon={item.icon} />
+                    <span>{t(`nav.${item.key}`)}</span>
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
 
         <div className="sidebar__footer">
           <p className="sidebar__disclaimer">{t('app.disclaimer')}</p>
