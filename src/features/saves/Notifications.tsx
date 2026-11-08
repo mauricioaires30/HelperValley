@@ -42,12 +42,15 @@ export function NotifyToggle() {
     }
   };
   return (
-    <div className="saves__quick box">
+    <div className="home-fold home-fold--row box">
       <strong>{t('notify.title')}</strong>
-      <span className="saves__hint">{Notification.permission === 'denied' ? t('notify.denied') : t('notify.hint')}</span>
-      <button className={enabled ? 'button' : 'button button--primary'} onClick={() => void toggle()} disabled={Notification.permission === 'denied'}>
-        {enabled ? t('notify.off') : t('notify.on')}
-      </button>
+      {Notification.permission === 'denied' ? (
+        <span className="saves__hint">{t('notify.denied')}</span>
+      ) : (
+        <button className={enabled ? 'button' : 'button button--primary'} onClick={() => void toggle()}>
+          {enabled ? t('notify.off') : t('notify.on')}
+        </button>
+      )}
     </div>
   );
 }

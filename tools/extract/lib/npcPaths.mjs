@@ -37,11 +37,14 @@ export function parseTbin(buf) {
   str(); // description
   const properties = props();
   const sheets = {};
+  const images = {};
   const sheetCount = int();
   for (let i = 0; i < sheetCount; i++) {
     const id = str();
     str(); // description
-    str(); // image source
+    // Relative to Content, without extension: "Maps/spring_town".
+    const source = str().replace(/\\/g, '/').replace(/\.png$/i, '');
+    images[id] = source.includes('/') ? source : `Maps/${source}`;
     o += 8 * 4; // sheet size, tile size, margin, spacing
     sheets[id] = props();
   }
@@ -88,7 +91,7 @@ export function parseTbin(buf) {
     }
     layers[id] = { w, h, tiles };
   }
-  return { properties, sheets, layers };
+  return { properties, sheets, images, layers };
 }
 
 // GameLocation.loadPathsLayerObjectsInArea: trees (TryGetTreeIdForTile) and bushes with their widths.

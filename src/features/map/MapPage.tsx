@@ -5,7 +5,7 @@ import { gameData, getItem, spriteUrl, type Season } from '@/data/gameData';
 import { useGameName } from '@/i18n';
 import { useCurrentSave } from '@/store/saveStore';
 import type { Player } from '@/save/model';
-import { ItemIcon, NpcHead, SeasonIcon, Tooltip, UiIcon } from '@/ui';
+import { ItemIcon, NpcHead, SeasonIcon, Tooltip, UiIcon, Sprite } from '@/ui';
 import { usePinStore } from '@/store/pinStore';
 import { FishPicker } from './FishPicker';
 import { ONE_TIME_GUIDE } from '@/features/walnuts/walnutGuide';
@@ -15,6 +15,8 @@ import { describeEvent } from '@/features/relationships/eventConditions';
 import { formatTime, resolveSchedule, WEEKDAYS, type ScheduleData, type ScheduleResult, type Stop } from './schedule';
 import { layoutPins } from './pinLayout';
 import { islandDay } from './islandVisitors';
+import { PlacePicture } from './PlacePicture';
+import shopLocations from './shopLocations.json';
 import { STARDROP_ITEM, STARDROPS } from '@/features/collections/stardrops';
 import { npcRoute, routeMinutes, TILES_PER_MINUTE, type RouteTile } from './npcRoute';
 import { isOpenArea, isWater, snapToMap, toMapPixel, type RegionId } from './worldMap';
@@ -39,31 +41,8 @@ const PIN_LIFT = 15;
 /** 6:00 to 2:00 in 10-minute steps, like the game clock. */
 const STEPS = Array.from({ length: 20 * 6 + 1 }, (_, i) => 600 + Math.floor(i / 6) * 100 + (i % 6) * 10);
 
-/** Where each shop is on the world map (Data/Shops id → location, plus the tile for shops outdoors; see the game's location code). */
-const SHOP_LOCATIONS: Record<string, string | [string, [number, number]]> = {
-  SeedShop: 'SeedShop',
-  Joja: 'JojaMart',
-  AnimalShop: 'AnimalShop',
-  Carpenter: 'ScienceHouse',
-  Blacksmith: 'Blacksmith',
-  FishShop: 'FishShop',
-  Saloon: 'Saloon',
-  Hospital: 'Hospital',
-  ShadowShop: 'Sewer',
-  Sandy: 'SandyShop',
-  DesertTrade: ['Desert', [38, 22]],
-  Traveler: ['Forest', [27, 11]],
-  Dwarf: 'Mines',
-  AdventureShop: 'AdventureGuild',
-  IslandTrade: ['IslandNorth', [36, 70]],
-  ResortBar: ['IslandSouth', [14, 22]],
-  VolcanoShop: 'Caldera',
-  Casino: 'Club',
-  HatMouse: ['Forest', [32, 94]],
-  Raccoon: ['Forest', [56, 6]],
-  Bookseller: ['Town', [110, 25]],
-  BooksellerTrade: ['Town', [110, 25]],
-};
+/** Where each shop is on the world map (Data/Shops id → location, plus the tile for shops outdoors). */
+const SHOP_LOCATIONS = shopLocations as unknown as Record<string, string | [string, [number, number]]>;
 
 /** Where to look for each island fossil (see collections.fossil texts). */
 const FOSSIL_LOCATIONS: Record<string, string> = {
@@ -214,8 +193,6 @@ export function MapPage() {
   const pinnedFish = usePinStore((s) => s.fish);
   const pinnedStardrops = usePinStore((s) => s.stardrops);
   const { view, viewport, handlers, focus, zoomIn, zoomOut, reset } = usePanZoom();
-  // The person picked in the list, shown up close on the map.
-  const [focused, setFocused] = useState<string | null>(null);
   // The map's width on screen decides which pins would overlap.
   const [mapWidth, setMapWidth] = useState(900);
   useEffect(() => {
@@ -315,10 +292,10 @@ export function MapPage() {
         const pixel = toMapPixel(worldMap, place, tile[0], tile[1]);
         if (!pixel || pixel.region !== region) return [];
         // Buildings and caves show at their door; real water goes on the drawn water.
-        if (!isOpenArea(worldMap, pixel.region, place)) return [{ key: `f-${id}-${l.location}-${l.area ?? ''}-${i}`, ...pixel, id }];
+        if (!isOpenArea(worldMap, pixel.region, place)) return [{ key: `f-${id}-${l.location}-${l.area ?? ''}-${i}`, ...pixel, id, place: l.location, tile }];
         const onWater = snapToMap(worldMap, pixel, 'water', 15);
         // Water the map doesn't draw (the backwoods' pond): no pin on dry land. The desert is all drawn blank.
-        return place === 'Desert' || isWater(worldMap, onWater.region, onWater.px, onWater.py) ? [{ key: `f-${id}-${l.location}-${l.area ?? ''}-${i}`, ...onWater, id }] : [];
+        return place === 'Desert' || isWater(worldMap, onWater.region, onWater.px, onWater.py) ? [{ key: `f-${id}-${l.location}-${l.area ?? ''}-${i}`, ...onWater, id, place: l.location, tile }] : [];
       });
     }),
   );
@@ -333,7 +310,7 @@ export function MapPage() {
   // Puzzles and rewards not done yet, pinned at their area.
   const puzzlePins = ONE_TIME_GUIDE.filter((g) => g.pin && !collectedNuts.has(g.key)).flatMap((g) => {
     const p = pinAt(g.pin!.location);
-    return p ? [{ key: g.key, ...p }] : [];
+    return p ? [{ key: g.key, ...p, location: g.pin!.location }] : [];
   });
   // Shops around on the chosen day; clicking one opens its tab on the Shops page.
   const shopDay = { season, day, year: save?.date.year ?? 1, daysPlayed: 0 };
@@ -347,7 +324,7 @@ export function MapPage() {
   // Stardrops marked in Collections, until they're eaten.
   const stardropPins = STARDROPS.filter((s) => s.place && pinnedStardrops.includes(s.id) && !player?.mailReceived.includes(s.flag)).flatMap((s) => {
     const p = pinAt(s.place!.location, s.place!.tile);
-    return p ? [{ key: `sd-${s.id}`, ...p, id: s.id }] : [];
+    return p ? [{ key: `sd-${s.id}`, ...p, id: s.id, location: s.place!.location, tile: s.place!.tile }] : [];
   });
 
   // Missing donations: museum pieces you can dig up somewhere, and island fossils for Professor Snail.
@@ -400,18 +377,12 @@ export function MapPage() {
     return { left: pct(at.px, mapW), top: pct(at.py, mapH), transformOrigin: '50% 50%', transform: `translate(-50%, -50%) ${unscale} translate(${at.dx}px, ${at.dy}px)` };
   };
 
-  /** Shows someone from the list up close: their region, their spot, their name. */
+  /** Shows someone from the list up close on the map. */
   const showPerson = (p: Placed) => {
     if (!p.region) return;
-    if (focused === p.npc) {
-      setFocused(null);
-      reset();
-      return;
-    }
     const [, , w, h] = worldMap.regions[p.region].source;
     setRegion(p.region);
     setLayers((l) => ({ ...l, npcs: true }));
-    setFocused(p.npc);
     focus(p.px / w, p.py / h, 4);
     viewport.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
@@ -420,10 +391,18 @@ export function MapPage() {
     <div className="map-page">
       <header className="cc__header">
         <h2>{t('map.title')}</h2>
-        <span className="map-status">
-          {isToday || isTomorrow ? (raining ? t('map.weather.rain') : t('map.weather.sun')) : t('map.weather.unknown')}
-          {island && ` · ${t(`map.resortState.${island.state}`)}`}
-        </span>
+        <div className="map-status">
+          <span className="map-status__chip box">
+            {(isToday || isTomorrow) && <Sprite sheet="LooseSprites/Cursors" x={raining ? 365 : 341} y={421} w={12} h={8} scale={3} />}
+            {isToday || isTomorrow ? (raining ? t('map.weather.rain') : t('map.weather.sun')) : t('map.weather.unknown')}
+          </span>
+          {island && (
+            <span className={island.state === 'open' ? 'map-status__chip map-status__chip--open box' : 'map-status__chip box'}>
+              <ItemIcon id="(O)832" scale={2} tooltip={false} />
+              {t(`map.resortState.${island.state}`)}
+            </span>
+          )}
+        </div>
         <div className="calendar__nav">
           {(['Valley', 'GingerIsland'] as RegionId[]).map((r) => (
             <button key={r} className={r === region ? 'button button--primary' : 'button'} onClick={() => setRegion(r)}>
@@ -465,13 +444,7 @@ export function MapPage() {
               −
             </button>
             {view.zoom > 1 && (
-              <button
-            className="button"
-            onClick={() => {
-              reset();
-              setFocused(null);
-            }}
-          >
+              <button className="button" onClick={reset}>
                 {t('map.zoomReset')}
               </button>
             )}
@@ -499,6 +472,7 @@ export function MapPage() {
                         <span className="slot-tooltip">
                           <strong>{t('map.eventPin', { name: name(npcs[e.npc]?.n), hearts: e.hearts })}</strong>
                           <span>{describeEvent(e, t, name).join(' · ')}</span>
+                          <PlacePicture location={e.location} />
                         </span>
                       }
                     >
@@ -511,7 +485,14 @@ export function MapPage() {
               {layers.walnuts &&
                 walnutPins.map((p) => (
                   <span key={p.key} className="map-pin" style={pinStyle(p.key, p.px, p.py, '-50%')}>
-                    <Tooltip text={`${t(`walnuts.kind.${p.w.kind}`)} (${p.w.tile[0]}, ${p.w.tile[1]})`}>
+                    <Tooltip
+                      text={
+                        <span className="slot-tooltip">
+                          <strong>{t(`walnuts.kind.${p.w.kind}`)}</strong>
+                          <PlacePicture location={p.w.location} tile={p.w.tile} />
+                        </span>
+                      }
+                    >
                       <ItemIcon id="(O)73" tooltip={false} />
                     </Tooltip>
                   </span>
@@ -524,6 +505,7 @@ export function MapPage() {
                         <span className="slot-tooltip">
                           <strong>{t(`walnuts.once.${p.key}`)}</strong>
                           <span>{t(`walnuts.how.${p.key}`)}</span>
+                          <PlacePicture location={p.location} />
                         </span>
                       }
                     >
@@ -536,7 +518,14 @@ export function MapPage() {
               {layers.fish &&
                 fishPins.map((p) => (
                   <span key={p.key} className="map-pin" style={pinStyle(p.key, p.px, p.py, '-100%')}>
-                    <Tooltip text={t('map.fishPin', { name: name(gameData().items[p.id]?.n) })}>
+                    <Tooltip
+                      text={
+                        <span className="slot-tooltip">
+                          <strong>{name(gameData().items[p.id]?.n)}</strong>
+                          <PlacePicture location={p.place} tile={p.tile} />
+                        </span>
+                      }
+                    >
                       <span className="map-pin__icon map-pin__icon--fish">
                         <ItemIcon id={p.id} tooltip={false} />
                       </span>
@@ -546,7 +535,14 @@ export function MapPage() {
               {layers.quests &&
                 questPins.map((p) => (
                   <span key={p.key} className="map-pin" style={pinStyle(p.key, p.px, p.py, '-100%')}>
-                    <Tooltip text={t('map.questPin', { title: p.q.title })}>
+                    <Tooltip
+                      text={
+                        <span className="slot-tooltip">
+                          <strong>{t('map.questPin', { title: p.q.title })}</strong>
+                          {p.q.location && <PlacePicture location={p.q.location} tile={p.q.tile} />}
+                        </span>
+                      }
+                    >
                       <span className="map-pin__icon map-pin__icon--quest">
                         <ItemIcon id={p.q.item ?? '(O)842'} tooltip={false} />
                       </span>
@@ -561,6 +557,7 @@ export function MapPage() {
                         <span className="slot-tooltip">
                           <strong>{t(`stardrops.${p.id}.title`)}</strong>
                           <span>{t(`stardrops.${p.id}.how`)}</span>
+                          <PlacePicture location={p.location} tile={p.tile} />
                         </span>
                       }
                     >
@@ -577,7 +574,10 @@ export function MapPage() {
                       text={
                         <span className="slot-tooltip">
                           <strong>{t(`shops.name.${p.shop.id}`)}</strong>
-                          <span>{t('map.shopClick')}</span>
+                          <PlacePicture
+                            location={Array.isArray(SHOP_LOCATIONS[p.shop.id]) ? SHOP_LOCATIONS[p.shop.id][0] : (SHOP_LOCATIONS[p.shop.id] as string)}
+                            tile={Array.isArray(SHOP_LOCATIONS[p.shop.id]) ? (SHOP_LOCATIONS[p.shop.id][1] as [number, number]) : undefined}
+                          />
                         </span>
                       }
                     >
@@ -600,6 +600,7 @@ export function MapPage() {
                             ))}
                           </span>
                           <span>{p.ids.map((id) => name(getItem(id)?.n)).join(', ')}</span>
+                          <PlacePicture location={p.place} />
                         </span>
                       }
                     >
@@ -614,7 +615,7 @@ export function MapPage() {
                     return (
                       <span
                         key={p.npc}
-                        className={['map-npc', p.walking ? 'map-npc--walking' : '', focused === p.npc ? 'map-npc--focus' : ''].join(' ')}
+                        className={p.walking ? 'map-npc map-npc--walking' : 'map-npc'}
                         style={pinStyle(p.npc, p.px, p.py, '-50%')}
                       >
                         <Tooltip
@@ -629,7 +630,6 @@ export function MapPage() {
                           <span className="map-npc__face">
                             <NpcHead npc={p.npc} scale={2} />
                           </span>
-                          {focused === p.npc && <span className="map-npc__name box">{name(npcs[p.npc]?.n)}</span>}
                         </Tooltip>
                       </span>
                     );
@@ -691,19 +691,23 @@ export function MapPage() {
       </div>
 
       <section className="box map-list-box">
-        <h3>
-          {t('map.listTitle', { time: formatTime(time) })} <small className="cc-summary__hint">{t('map.listHint')}</small>
-        </h3>
-        <ul className="map-list dashed-list">
+        <h3>{t('map.listTitle', { time: formatTime(time) })}</h3>
+        <ul className="map-list">
           {[...places]
             .sort((a, b) => name(npcs[a.npc]?.n).localeCompare(name(npcs[b.npc]?.n)))
             .map((p) => (
-              <li key={p.npc} className={p.region === region ? undefined : 'rel__muted'}>
-                <button type="button" className="map-person" aria-pressed={focused === p.npc} disabled={!p.region} onClick={() => showPerson(p)}>
+              <li key={p.npc}>
+                <button type="button" className="map-person button" onClick={() => showPerson(p)}>
                   <NpcHead npc={p.npc} />
-                  <span>
-                    <strong>{name(npcs[p.npc]?.n)}</strong> · {p.walking ? t('map.walkingTo', { place: locationName(p.location) }) : locationName(p.location)}
-                    {p.region && p.region !== region && ` (${t(`map.region.${p.region}`)})`}
+                  <span className="map-person__text">
+                    <strong>{name(npcs[p.npc]?.n)}</strong>
+                    <small>
+                      {p.walking ? t('map.walkingTo', { place: locationName(p.location) }) : locationName(p.location)}
+                      {p.region && p.region !== region && ` (${t(`map.region.${p.region}`)})`}
+                    </small>
+                  </span>
+                  <span className="map-person__go" aria-hidden="true">
+                    ›
                   </span>
                 </button>
               </li>

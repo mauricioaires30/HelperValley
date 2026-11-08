@@ -84,18 +84,17 @@ function Mastery({ player }: { player: Player }) {
   const m = masteryState(player);
   return (
     <section className="panel player__section">
-      <h2>{t('player.mastery.title')}</h2>
-      {!m.unlocked ? (
-        <p className="cc-summary__hint">{t('player.mastery.locked')}</p>
-      ) : (
-        <>
-          <p className="cc-summary__hint">
-            {t('player.mastery.level', { level: m.level })}
-            {m.toClaim > 0 && <strong> · {t('player.mastery.toClaim', { count: m.toClaim })}</strong>}
-          </p>
-          {m.next ? <Progress value={m.next.into} max={m.next.of} /> : <p>{t('player.mastery.max')}</p>}
-        </>
+      <h2>
+        {t('player.mastery.title')}
+        {m.unlocked && ` ${m.level}/5`}
+      </h2>
+      {!m.unlocked && <p className="cc-summary__hint">{t('player.mastery.locked')}</p>}
+      {m.unlocked && m.toClaim > 0 && (
+        <p>
+          <strong>{t('player.mastery.toClaim', { count: m.toClaim })}</strong>
+        </p>
       )}
+      {m.unlocked && m.next && <Progress value={m.next.into} max={m.next.of} />}
       <ul className="mastery">
         {data.mastery.map((entry, i) => (
           <li key={i} className={m.claimed[i] ? 'mastery__skill inset' : 'mastery__skill inset mastery__skill--missing'}>

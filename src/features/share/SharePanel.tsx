@@ -18,8 +18,9 @@ export function SharePanel() {
     });
 
   return (
-    <section className="share box">
-      <h3>{t('share.title')}</h3>
+    <details className="home-fold box" open={role ? true : undefined}>
+      <summary>{t('share.title')}</summary>
+      <div className="share">
       {role === 'host' ? (
         <div className="share__row">
           <span>{t('share.yourCode')}</span>
@@ -48,7 +49,7 @@ export function SharePanel() {
             <button className="button button--primary" onClick={host} disabled={!hasSave}>
               {t('share.host')}
             </button>
-            <span className="saves__hint">{hasSave ? t('share.hostHint') : t('share.needSave')}</span>
+            {!hasSave && <span className="saves__hint">{t('share.needSave')}</span>}
           </div>
           <div className="share__row">
             <input className="shops__search share__input" placeholder={t('share.codePlaceholder')} value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && join(input)} />
@@ -59,7 +60,8 @@ export function SharePanel() {
           </div>
         </div>
       )}
-    </section>
+      </div>
+    </details>
   );
 }
 

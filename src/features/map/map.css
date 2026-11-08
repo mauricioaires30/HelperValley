@@ -257,11 +257,6 @@
   border-left: calc(2 * var(--px)) solid var(--accent);
 }
 
-.map-status {
-  flex: 1;
-  font-size: var(--fs-sm);
-}
-
 .map-pin__icon--stardrop {
   border-color: #d9a520;
 }
@@ -285,47 +280,59 @@
   font-size: var(--fs-sm);
 }
 
-.map-npc--focus {
-  z-index: 6;
+
+.map-status {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 16px;
 }
 
-.map-npc--focus .map-npc__face {
-  box-shadow:
-    0 0 0 3px #fff,
-    0 0 0 6px var(--accent);
+.map-status__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  font-size: var(--fs-md, 1rem);
+  font-weight: 600;
 }
 
-.map-npc__name {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-top: 8px;
-  padding: 2px 6px;
-  font-size: var(--fs-xs);
-  white-space: nowrap;
-  transform: translateX(-50%);
-  pointer-events: none;
+.map-status__chip--open {
+  color: #2b6e1e;
 }
 
-.map-person {
+.map-person.button {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   width: 100%;
-  padding: 0;
-  font: inherit;
-  color: inherit;
+  padding: 4px 8px;
   text-align: left;
-  background: none;
-  border: 0;
-  cursor: pointer;
 }
 
-.map-person:hover:not(:disabled) strong,
-.map-person[aria-pressed='true'] strong {
-  text-decoration: underline;
+.map-person__text {
+  display: grid;
+  flex: 1;
+  min-width: 0;
 }
 
-.map-person:disabled {
-  cursor: default;
+.map-person__text small {
+  font-size: var(--fs-xs);
+  opacity: 0.8;
+}
+
+.map-person__go {
+  font-size: var(--fs-lg);
+  opacity: 0.6;
+}
+
+.place-picture {
+  display: block;
+  width: 336px;
+  height: 216px;
+  margin-top: 4px;
+  object-fit: cover;
+  image-rendering: pixelated;
+  border: 2px solid #5b2b15;
 }

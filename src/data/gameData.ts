@@ -165,6 +165,8 @@ export interface GameData {
   schedules: Record<string, ScheduleData>;
   /** Walking grids, warps and doors per location, for NPC routes. */
   npcPaths: Record<string, NpcPathMap>;
+  /** Pictures of places under public/places: the ones that exist, and each building's door. */
+  places: { spots: string[]; doors: Record<string, string> };
   fish: Record<string, FishData>;
   walnuts: WalnutSpot[];
   gameCollections: {
@@ -222,7 +224,7 @@ export interface WalnutSpot {
   tile: [number, number];
 }
 
-const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents', 'farm', 'worldMap', 'schedules', 'npcPaths', 'fish', 'walnuts', 'gameCollections', 'player', 'shops'] as const;
+const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents', 'farm', 'worldMap', 'schedules', 'npcPaths', 'places', 'fish', 'walnuts', 'gameCollections', 'player', 'shops'] as const;
 
 export const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 export const spriteUrl = (sheet: string) => assetUrl(`sprites/${sheet}.png?v=${__BUILD_ID__}`);

@@ -46,53 +46,45 @@
     }
   },
   "saves": {
-    "intro": "Lê os saves do seu PC. Nada vai para a internet.",
-    "where": "Seus saves ficam em:",
+    "where": "Os saves ficam em:",
     "copy": "Copiar caminho",
     "copied": "Copiado!",
     "open": "Abrir pasta Saves",
     "openHint": "O site atualiza sozinho quando o jogo salva.",
     "fallback": "Selecionar pasta Saves",
-    "fallbackHint": "Sem atualização ao vivo neste navegador. Use Chrome, Edge, Brave ou Opera.",
     "reconnect": "Reconectar aos saves",
     "reconnectHint": "Clique em qualquer lugar e escolha \"Permitir em todas as visitas\".",
     "change": "Trocar pasta",
     "none": "Nenhum save encontrado nessa pasta.",
     "list": "Suas fazendas",
-    "live": "Ao vivo: atualiza quando o jogo salva",
-    "snapshot": "Cópia: selecione a pasta de novo para atualizar",
+    "live": "Ao vivo",
+    "snapshot": "Cópia salva",
     "loading": "Lendo o save...",
     "player": "Jogador",
     "day": "Dia {{day}} de {{season}}, Ano {{year}}",
     "playtime": "{{hours}}h jogadas",
-    "version": "v{{version}}",
     "host": "Anfitrião",
     "farmhand": "Ajudante",
     "error": "Não foi possível ler este save: {{message}}",
     "required": "Abra a pasta de saves para ver esta página.",
     "updated": "O jogo salvou! Mostrando o novo dia",
-    "cached": "Mostrando a cópia salva no navegador (lida {{time}}).",
     "cachedLive": "Reconectar para atualizar ao vivo",
     "cachedOpen": "Conectar pasta Saves",
-    "cachedMode": "Salvo neste navegador: reconecte para atualizar ao vivo",
     "cachedHintReconnect": "Clique em qualquer lugar e escolha \"Permitir em todas as visitas\".",
     "cachedHintPick": "Conecte a pasta para atualizar ao vivo.",
     "cachedHintUnsupported": "Para atualizar ao vivo, use Chrome, Edge, Brave ou Opera.",
     "guide": {
-      "title": "Deixar o site ao vivo",
+      "title": "Atualizar sozinho quando o jogo salvar",
       "close": "Feche o Stardew Valley.",
       "copy": "Copiar comando",
       "pick": "Escolha a pasta Documentos/StardewValley Saves:",
       "allow": "Na próxima visita, escolha \"Permitir em todas as visitas\".",
-      "noLive": "Sem mudar nada (sem ao vivo):",
       "terminal": {
         "windows": "Abra o PowerShell (menu Iniciar → \"PowerShell\") e rode isto uma vez:",
         "mac": "Abra o Terminal (Spotlight → \"Terminal\") e rode isto uma vez:",
         "linux": "Abra o terminal e rode isto uma vez:"
       }
     },
-    "quickTitle": "Ver sua fazenda agora",
-    "quickHint": "Selecione {{path}}. O navegador guarda uma cópia.",
     "quickButton": "Selecionar pasta Saves",
     "how": {
       "local": "O site lê os saves direto do seu PC; nada é enviado."
@@ -617,7 +609,10 @@
       "Mine": "Minas",
       "Woods": "Bosque Secreto",
       "Backwoods": "Bosque",
-      "Submarine": "Submarino do Mercado Noturno"
+      "Submarine": "Submarino do Mercado Noturno",
+      "LeoTreeHouse": "Casa na árvore do Leo",
+      "SandyHouse": "Oásis",
+      "Sunroom": "Solário da Caroline"
     },
     "zoomIn": "Aproximar",
     "zoomOut": "Afastar",
@@ -655,8 +650,7 @@
       "rain": "Resort fechado: chuva na ilha",
       "festival": "Resort fechado: dia de festival"
     },
-    "visitors": "Na ilha hoje",
-    "listHint": "clique para ver no mapa"
+    "visitors": "Na ilha hoje"
   },
   "prod": {
     "title": "Produção",
@@ -939,11 +933,9 @@
     "earned": "{{amount}}g ganhos no total",
     "wearing": "Usando: {{hat}}",
     "mastery": {
-      "title": "Maestria (sala secreta do vovô)",
+      "title": "Maestria",
       "locked": "A Caverna da Maestria abre quando Cultivo, Pesca, Coleta, Mineração e Combate chegam ao nível 10.",
-      "level": "Nível de maestria {{level}} de 5",
       "toClaim": "{{count}} para resgatar nos pedestais",
-      "max": "Maestria completa.",
       "claimed": "resgatada"
     },
     "grandpa": {
@@ -1242,7 +1234,6 @@
   },
   "notify": {
     "title": "Avisos do jogo",
-    "hint": "Receba um aviso quando o jogo salvar (novo dia), com o que fazer. Só funciona com a aba aberta e a pasta conectada.",
     "denied": "O navegador bloqueou avisos deste site. Libere nas configurações do site para ativar.",
     "on": "Ativar avisos",
     "off": "Desativar avisos",
@@ -1308,9 +1299,8 @@
     "nothing": "nada"
   },
   "share": {
-    "title": "Jogar junto (multiplayer)",
+    "title": "Jogar junto",
     "host": "Compartilhar este save",
-    "hostHint": "Os outros jogadores veem esta fazenda ao vivo com um código.",
     "needSave": "Abra um save primeiro.",
     "yourCode": "Código da sala:",
     "copy": "Copiar código",
