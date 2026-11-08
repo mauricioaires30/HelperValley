@@ -30,18 +30,18 @@ export function TodayChecklist({ save, player }: { save: SaveData; player: Playe
 
   // Farm chores.
   const ready = save.farm.machines.filter((m) => m.ready).length;
-  if (ready) todos.push({ key: 'machines', icon: <ItemIcon id="(BC)12" scale={2} tooltip={false} />, text: t('todo.machines', { count: ready }), to: '/production', urgent: true });
+  if (ready) todos.push({ key: 'machines', icon: <ItemIcon id="(BC)12" scale={2} tooltip={false} />, text: t('todo.machines', { count: ready }), to: '/farm/producing', urgent: true });
   const toPet = save.farm.animals.filter((a) => !a.autoPet).length;
-  if (toPet) todos.push({ key: 'pet', icon: <ItemIcon id="(O)176" tooltip={false} />, text: t('todo.pet', { count: toPet }), to: '/production', urgent: true });
+  if (toPet) todos.push({ key: 'pet', icon: <ItemIcon id="(O)176" tooltip={false} />, text: t('todo.pet', { count: toPet }), to: '/farm/animals', urgent: true });
   if (save.farm.pets.length && save.farm.bowls.some((w) => !w) && !save.isRaining)
-    todos.push({ key: 'bowl', icon: <ItemIcon id="(T)WateringCan" tooltip={false} />, text: t('todo.bowl'), to: '/production', urgent: true });
+    todos.push({ key: 'bowl', icon: <ItemIcon id="(T)WateringCan" tooltip={false} />, text: t('todo.bowl'), to: '/farm/animals', urgent: true });
   for (const [i, h] of save.slimeHutches.entries()) {
     const needed = Math.min(h.water.length || 4, Math.ceil(h.slimes.length / 5));
-    if (!h.sprinkler && h.water.filter(Boolean).length < needed) todos.push({ key: `slime-water-${i}`, icon: <ItemIcon id="(O)766" tooltip={false} />, text: t('todo.slimeWater'), to: '/production', urgent: true });
-    if (h.balls) todos.push({ key: `slime-balls-${i}`, icon: <ItemIcon id="(BC)56" tooltip={false} />, text: t('todo.slimeBalls', { count: h.balls }), to: '/production' });
+    if (!h.sprinkler && h.water.filter(Boolean).length < needed) todos.push({ key: `slime-water-${i}`, icon: <ItemIcon id="(O)766" tooltip={false} />, text: t('todo.slimeWater'), to: '/farm/slimes', urgent: true });
+    if (h.balls) todos.push({ key: `slime-balls-${i}`, icon: <ItemIcon id="(BC)56" tooltip={false} />, text: t('todo.slimeBalls', { count: h.balls }), to: '/farm/slimes' });
   }
   const pondsReady = save.farm.ponds.filter((p) => p.output).length;
-  if (pondsReady) todos.push({ key: 'ponds', icon: <ItemIcon id="(O)812" tooltip={false} />, text: t('todo.ponds', { count: pondsReady }), to: '/production' });
+  if (pondsReady) todos.push({ key: 'ponds', icon: <ItemIcon id="(O)812" tooltip={false} />, text: t('todo.ponds', { count: pondsReady }), to: '/farm/ponds' });
   const pondAsks = save.farm.ponds.filter((p) => p.request).length;
   if (pondAsks) todos.push({ key: 'pond-asks', icon: <ItemIcon id="(O)812" tooltip={false} />, text: t('todo.pondAsks', { count: pondAsks }), to: '/quests' });
 

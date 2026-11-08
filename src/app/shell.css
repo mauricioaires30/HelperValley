@@ -280,3 +280,37 @@ html[data-theme='night'] body::before {
   background: rgb(10 14 40 / 0.35);
   z-index: -1;
 }
+
+/* ---------- Top bar (right side): cached copy, language, theme ---------- */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.topbar__spacer {
+  flex: 1;
+}
+
+.topbar__select select {
+  font: inherit;
+  font-size: var(--fs-sm);
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.cached-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-sm);
+}
+
+.cached-chip .button {
+  min-height: 28px;
+  font-size: var(--fs-xs);
+}

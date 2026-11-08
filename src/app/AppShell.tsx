@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGES } from '@/i18n';
 import { ItemIcon, Sprite, UiIcon } from '@/ui';
@@ -7,7 +7,7 @@ import { SaveCard } from '@/features/saves/SaveCard';
 import { Search } from '@/features/search/Search';
 import { useSaveNotifications } from '@/features/saves/Notifications';
 import { ThemeToggle } from './ThemeToggle';
-import { CachedBanner } from '@/features/saves/CachedBanner';
+import { CachedChip } from '@/features/saves/CachedBanner';
 import './shell.css';
 
 /** Menu icon: a game item, or a UI crop from public/sprites/ui. */
@@ -24,7 +24,6 @@ const NAV: Array<{ to: string; key: string; icon: NavIcon }> = [
   { to: '/quests', key: 'quests', icon: { item: '(O)842' } },
   { to: '/shops', key: 'shops', icon: { item: '(O)472' } },
   { to: '/farm', key: 'farmPlan', icon: { sheet: 'Buildings/Big Barn', x: 0, y: 0, w: 112, h: 112, scale: 0.3 } },
-  { to: '/production', key: 'farm', icon: { item: '(BC)12' } },
   { to: '/community', key: 'community', icon: { item: '(O)96' } },
   { to: '/collections', key: 'collections', icon: { ui: 'junimo', w: 16, h: 16, scale: 2, className: 'nav-junimo' } },
 ];
@@ -50,17 +49,6 @@ function NavIconView({ icon }: { icon: NavIcon }) {
       <UiIcon name={icon.ui} w={icon.w} h={icon.h} scale={icon.scale} />
     </span>
   );
-}
-
-/** Pages that get a one-line "what's here / what you can do" intro, by first path segment. */
-const INTRO_PAGES = new Set(['farm', 'player', 'calendar', 'relationships', 'map', 'quests', 'shops', 'production', 'community', 'collections']);
-
-/** A short friendly line at the top of each page. */
-function PageIntro() {
-  const { t } = useTranslation();
-  const page = useLocation().pathname.split('/')[1] ?? '';
-  if (!INTRO_PAGES.has(page)) return null;
-  return <p className="page-intro">{t(`intro.${page}`)}</p>;
 }
 
 /** Fixed sidebar (brand, save, player, menu, language) and the page using the rest of the screen. */
@@ -92,7 +80,15 @@ export function AppShell() {
         </nav>
 
         <div className="sidebar__footer">
-          <label className="shell__lang box">
+          <p className="sidebar__disclaimer">{t('app.disclaimer')}</p>
+        </div>
+      </aside>
+
+      <div className="content">
+        <header className="topbar">
+          <CachedChip />
+          <span className="topbar__spacer" />
+          <label className="topbar__select box">
             <span className="visually-hidden">{t('common.language')}</span>
             <select value={i18n.language} onChange={(e) => void i18n.changeLanguage(e.target.value)}>
               {LANGUAGES.map((l) => (
@@ -103,14 +99,8 @@ export function AppShell() {
             </select>
           </label>
           <ThemeToggle />
-          <p className="sidebar__disclaimer">{t('app.disclaimer')}</p>
-        </div>
-      </aside>
-
-      <div className="content">
-        <CachedBanner />
+        </header>
         <main className="content__main panel">
-          <PageIntro />
           <Outlet />
         </main>
       </div>

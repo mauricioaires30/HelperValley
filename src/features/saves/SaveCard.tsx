@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCurrentSave, useSaveStore } from '@/store/saveStore';
-import { ItemIcon, SeasonIcon } from '@/ui';
+import { ItemIcon } from '@/ui';
 
 /**
  * One sidebar card for the save: chest, farm and player names, and the date.
@@ -11,7 +11,6 @@ export function SaveCard() {
   const { t } = useTranslation();
   const { save, player } = useCurrentSave();
   const live = useSaveStore((s) => s.source?.live ?? false);
-  const lastUpdate = useSaveStore((s) => s.lastUpdate);
   const selectPlayer = useSaveStore((s) => s.selectPlayer);
 
   return (
@@ -23,12 +22,7 @@ export function SaveCard() {
             <>
               <strong className="save-side__farm">{t('saves.farmName', { name: player.farmName || save.players[0]?.farmName })}</strong>
               {save.players.length === 1 && <span className="save-side__player">{player.name}</span>}
-              {/* Re-keyed on every update so the "pop" animation replays. */}
-              <span key={lastUpdate?.at ?? 0} className={lastUpdate ? 'save-side__date date-chip--updated' : 'save-side__date'}>
-                <SeasonIcon season={save.date.season} />
-                {t('saves.dayShort', { day: save.date.day, season: t(`common.seasons.${save.date.season}`), year: save.date.year })}
-                {live && <span className="live-dot" title={t('saves.live')} />}
-              </span>
+              {live && <span className="live-dot" title={t('saves.live')} />}
             </>
           ) : (
             <strong>{t('nav.home')}</strong>

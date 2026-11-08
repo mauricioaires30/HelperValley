@@ -4,6 +4,7 @@ import { ConnectPanel, SaveList } from '@/features/saves/SavePicker';
 import { LiveSetupGuide } from '@/features/saves/LiveSetupGuide';
 import { supportsDirectoryAccess } from '@/save/sources';
 import { NotifyToggle } from '@/features/saves/Notifications';
+import { CachedBanner } from '@/features/saves/CachedBanner';
 
 /** Always at the bottom: what the site does with saves and how to keep it live. */
 function HowItWorks() {
@@ -31,6 +32,7 @@ export function HomePage() {
 
   return (
     <div className="home">
+      <CachedBanner />
       {error && (
         <p className="box" role="alert">
           {t('saves.error', { message: error })}

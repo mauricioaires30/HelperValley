@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { gameData } from '@/data/gameData';
 import { useGameName } from '@/i18n';
 import type { Player, SaveData } from '@/save/model';
-import { ItemIcon } from '@/ui';
 import { buildingRect, Materials, Picture, type BuildingData } from '@/features/shops/Constructions';
 import { useLocationName } from '@/features/fish/FishInfo';
 
@@ -12,9 +11,6 @@ const HOUSE_UPGRADES: Array<{ level: number; price: number; materials: Array<[st
   { level: 2, price: 65000, materials: [['(O)709', 100]] },
   { level: 3, price: 100000, materials: [] },
 ];
-
-/** Wizard buildings that only make sense once (obelisks, the Gold Clock). */
-const UNIQUE = new Set(['Earth Obelisk', 'Water Obelisk', 'Desert Obelisk', 'Island Obelisk', 'Gold Clock']);
 
 function BuildingCard({ b, title, extra }: { b: BuildingData; title?: string; extra?: string }) {
   const { t } = useTranslation();
@@ -51,7 +47,7 @@ export function FarmBuildings({ save, player }: { save: SaveData; player: Player
   const upgrades = [...counts].flatMap(([type, n]) => all.filter((b) => b.upgradeOf === type).map((next) => ({ next, from: type, n })));
   // Never built, from either builder (base buildings, not upgrades).
   const missingRobin = all.filter((b) => b.builder === 'Robin' && !b.upgradeOf && !counts.has(b.id) && !isUpgradeBuilt(b.id, counts, all));
-  const missingWizard = all.filter((b) => b.builder === 'Wizard' && (UNIQUE.has(b.id) ? !counts.has(b.id) : true));
+  const missingWizard = all.filter((b) => b.builder === 'Wizard' && !counts.has(b.id));
 
   const house = player.houseUpgradeLevel;
   const nextHouse = HOUSE_UPGRADES.find((u) => u.level === house + 1);
@@ -62,9 +58,8 @@ export function FarmBuildings({ save, player }: { save: SaveData; player: Player
         <h3 className="shop__group-title">{t('farmPlan.house')}</h3>
         <div className="build-grid">
           <article className="build-card inset">
-            <span className="build-card__pic">
-              <ItemIcon id="(BC)130" scale={3} tooltip={false} />
-            </span>
+            {/* Buildings/houses stacks the farmhouse levels 0, 1 and 2+ in 144px rows. */}
+            <Picture sheet="Buildings/houses" rect={[0, Math.min(house, 2) * 144, 160, 144]} />
             <div className="build-card__body">
               <strong>{t('farmPlan.houseLevel', { level: house })}</strong>
               {player.daysUntilHouseUpgrade > 0 && <small>{t('farmPlan.houseUpgrading', { count: player.daysUntilHouseUpgrade })}</small>}
@@ -145,7 +140,7 @@ export function FarmBuildings({ save, player }: { save: SaveData; player: Player
         <h3 className="shop__group-title">{t('farmPlan.wizard')}</h3>
         <div className="build-grid">
           {missingWizard.map((b) => (
-            <BuildingCard key={b.id} b={b} extra={counts.has(b.id) ? t('farmPlan.have', { count: counts.get(b.id) }) : name(b.d)} />
+            <BuildingCard key={b.id} b={b} extra={name(b.d)} />
           ))}
         </div>
       </section>
