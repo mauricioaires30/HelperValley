@@ -36,7 +36,13 @@ const FIRST_FRAME: Record<string, [number, number, number, number]> = {
 };
 
 /** A sheet rect scaled down (or up) to fit a square picture box. */
-function Picture({ sheet, rect }: { sheet: string; rect: [number, number, number, number] }) {
+/** Where a building's picture is in its sheet. Without a source rect: the first frame, as wide as its footprint. */
+export function buildingRect(b: BuildingData): [number, number, number, number] {
+  const [sheetW, sheetH] = gameData().sheets[b.texture] ?? [b.size[0] * 16, 64];
+  return b.rect ?? FIRST_FRAME[b.id] ?? [0, 0, Math.min(sheetW, b.size[0] * 16), sheetH];
+}
+
+export function Picture({ sheet, rect }: { sheet: string; rect: [number, number, number, number] }) {
   const [x, y, w, h] = rect;
   const ratio = PICTURE / Math.max(w, h);
   const scale = ratio >= 1 ? Math.floor(ratio) : ratio;
@@ -48,7 +54,7 @@ function Picture({ sheet, rect }: { sheet: string; rect: [number, number, number
 }
 
 /** Materials as icons with amounts. */
-function Materials({ list }: { list: Array<[string, number]> }) {
+export function Materials({ list }: { list: Array<[string, number]> }) {
   const name = useGameName();
   return (
     <span className="build-card__materials">
@@ -73,9 +79,7 @@ export function Constructions({ builder }: { builder: 'Robin' | 'Wizard' }) {
       <h3 className="shop__group-title">{t('shops.group.buildings')}</h3>
       <div className="build-grid">
         {list.map((b) => {
-          // Buildings without a source rect use the first frame: width from the footprint, full height.
-          const [sheetW, sheetH] = gameData().sheets[b.texture] ?? [b.size[0] * 16, 64];
-          const rect = b.rect ?? FIRST_FRAME[b.id] ?? [0, 0, Math.min(sheetW, b.size[0] * 16), sheetH];
+          const rect = buildingRect(b);
           return (
             <article key={b.id} className="build-card inset">
               <Picture sheet={b.texture} rect={rect} />

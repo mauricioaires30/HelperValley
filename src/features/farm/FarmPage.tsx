@@ -2,15 +2,13 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Player, SaveData } from '@/save/model';
 import { RequireSave } from '@/features/saves/RequireSave';
-import { FarmOverview } from './FarmOverview';
 import { PondsView, ProductionView } from './ProductionView';
 import { AnimalsView } from './AnimalsView';
 import { SlimesView } from './SlimesView';
 import { Recommendations } from './Recommendations';
-import { Planner } from './Planner';
 import './farm.css';
 
-const VIEWS = ['production', 'ponds', 'animals', 'slimes', 'overview', 'recommendations', 'planner'] as const;
+const VIEWS = ['production', 'ponds', 'animals', 'slimes', 'recommendations'] as const;
 type View = (typeof VIEWS)[number];
 
 function Farm({ save, player }: { save: SaveData; player: Player }) {
@@ -32,9 +30,7 @@ function Farm({ save, player }: { save: SaveData; player: Player }) {
       {view === 'ponds' && <PondsView save={save} />}
       {view === 'animals' && <AnimalsView save={save} />}
       {view === 'slimes' && <SlimesView save={save} />}
-      {view === 'overview' && <FarmOverview save={save} />}
       {view === 'recommendations' && <Recommendations save={save} player={player} />}
-      {view === 'planner' && <Planner save={save} player={player} />}
     </div>
   );
 }

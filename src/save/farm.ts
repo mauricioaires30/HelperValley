@@ -183,6 +183,7 @@ function readPonds(locations: XmlValue[]): FishPondState[] {
 /** Planting areas, animals, silos, hay and everything being produced. */
 export function readFarm(locations: XmlValue[]): FarmState {
   const state: FarmState = {
+    buildings: [],
     areas: [],
     animals: [],
     silos: 0,
@@ -203,6 +204,7 @@ export function readFarm(locations: XmlValue[]): FarmState {
     for (const b of arr(node(location.buildings)?.Building)) {
       const building = node(b);
       const type = text(building?.buildingType) ?? '';
+      if (type) state.buildings.push({ type, location: name, building: num(building?.daysOfConstructionLeft), upgrading: num(building?.daysUntilUpgrade) });
       if (type === 'Silo') state.silos++;
       if (type === 'Pet Bowl') state.bowls.push(bool(building?.watered));
       const indoors = node(building?.indoors);

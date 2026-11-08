@@ -101,6 +101,8 @@ export interface Player {
   professions: number[];
   spouse?: string;
   houseUpgradeLevel: number;
+  /** Days until Robin finishes the house upgrade (-1 = none in progress). */
+  daysUntilHouseUpgrade: number;
   deepestMineLevel: number;
   qiGems: number;
   millisecondsPlayed: number;
@@ -321,7 +323,19 @@ export interface FishPondState {
   request?: { item: string; count: number };
 }
 
+/** A building placed on the farm (or the island farm). */
+export interface BuildingState {
+  /** Data/Buildings id, e.g. "Coop", "Big Barn", "Junimo Hut". */
+  type: string;
+  location: string;
+  /** Days of construction left (0 = built). */
+  building: number;
+  /** Days left on an upgrade in progress (0 = none). */
+  upgrading: number;
+}
+
 export interface FarmState {
+  buildings: BuildingState[];
   areas: FarmArea[];
   animals: FarmAnimalState[];
   silos: number;

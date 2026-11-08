@@ -20,7 +20,8 @@
     "quests": "Missões",
     "player": "Personagem",
     "shops": "Lojas",
-    "community": "Centro e Museu"
+    "community": "Centro e Museu",
+    "farmPlan": "Fazenda"
   },
   "common": {
     "language": "Idioma",
@@ -1103,7 +1104,8 @@
     "shops": "O estoque de hoje de cada loja, inclusive o que é sorteado. Lojas apagadas estão fechadas hoje.",
     "production": "Tudo que a fazenda está produzindo, animais, slimes, plantações e o que plantar.",
     "community": "Pacotes do Centro Comunitário (ou Joja), doações do museu e da pesquisa da ilha.",
-    "collections": "As coleções do jogo. Passe o mouse num item para ver como conseguir."
+    "collections": "As coleções do jogo. Passe o mouse num item para ver como conseguir.",
+    "farm": "Construções da fazenda, o que dá para melhorar, o que está plantado e seus planos."
   },
   "theme": {
     "label": "Tema",
@@ -1131,5 +1133,34 @@
     "cart": "O Carrinho de Viagem está na floresta hoje",
     "tv": "A Rainha do Molho passa na TV hoje (receita nova)",
     "seasonEnd": "Último dia da estação: as plantações que não são de {{next}} morrem amanhã"
+  },
+  "farmPlan": {
+    "tab": {
+      "buildings": "Construções",
+      "crops": "Plantações",
+      "plans": "Planos e compras",
+      "planner": "Stardew Planner"
+    },
+    "house": "Casa",
+    "houseLevel": "Casa nível {{level}}",
+    "houseUpgrading": "Reforma pronta em {{count}} dias",
+    "houseNext": {
+      "1": "Próxima: cozinha",
+      "2": "Próxima: quartos (para filhos)",
+      "3": "Próxima: porão (envelhecer em barris)"
+    },
+    "houseMax": "Casa no nível máximo.",
+    "inProgress": "Em obras",
+    "daysBuild": "{{count}} dias para terminar",
+    "daysUpgrade": "melhoria em {{count}} dias",
+    "built": "Na fazenda ({{count}})",
+    "upgrades": "Melhorias possíveis",
+    "upgradeFrom": "Melhora {{count}}× {{name}}",
+    "missingRobin": "Ainda não construído com a Robin ({{count}})",
+    "allBuilt": "Você já tem tudo que a Robin constrói!",
+    "wizard": "Torre do Mago",
+    "have": "Você tem {{count}}",
+    "plannerTitle": "Stardew Planner",
+    "plannerSoon": "Em breve: importar um layout do Stardew Planner (V3) e comparar com a sua fazenda."
   }
 }

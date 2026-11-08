@@ -323,3 +323,7 @@
   border: var(--px) solid rgb(0 0 0 / 0.35);
   box-shadow: inset -4px -4px 0 rgb(0 0 0 / 0.15), inset 3px 3px 0 rgb(255 255 255 / 0.35);
 }
+
+.farm-planner-soon {
+  margin-top: 12px;
+}

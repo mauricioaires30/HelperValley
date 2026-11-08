@@ -71,7 +71,7 @@ export function TodayChecklist({ save, player }: { save: SaveData; player: Playe
   // Season change.
   if (day === DAYS_IN_SEASON) {
     const next = SEASONS[(SEASONS.indexOf(season) + 1) % 4];
-    todos.push({ key: 'season', icon: <ItemIcon id="(O)24" tooltip={false} />, text: t('todo.seasonEnd', { next: t(`common.seasons.${next}`) }), to: '/production', urgent: true });
+    todos.push({ key: 'season', icon: <ItemIcon id="(O)24" tooltip={false} />, text: t('todo.seasonEnd', { next: t(`common.seasons.${next}`) }), to: '/farm/crops', urgent: true });
   }
 
   const urgent = todos.filter((x) => x.urgent);

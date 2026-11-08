@@ -11,6 +11,7 @@ import { FarmPage } from '@/features/farm/FarmPage';
 import { RelationshipsPage } from '@/features/relationships/RelationshipsPage';
 import { PlayerPage } from '@/features/player/PlayerPage';
 import { ShopsPage } from '@/features/shops/ShopsPage';
+import { FarmPlanPage } from '@/features/farm-plan/FarmPlanPage';
 import { CalendarPage } from '@/features/calendar/CalendarPage';
 import { CollectionsPage } from '@/features/collections/CollectionsPage';
 import { CommunityPage } from '@/features/community-center/CommunityPage';
@@ -48,7 +49,7 @@ export function App() {
           <Route path="quests" element={<QuestsPage />} />
           <Route path="production" element={<FarmPage />} />
           <Route path="shops/:shop?" element={<ShopsPage />} />
-          <Route path="farm" element={<Navigate to="/production" replace />} />
+          <Route path="farm/:tab?" element={<FarmPlanPage />} />
           <Route path="collections/:tab?" element={<CollectionsPage />} />
           <Route path="community/:tab?" element={<CommunityPage />} />
           <Route path="cc" element={<Navigate to="/community/cc" replace />} />

@@ -20,7 +20,8 @@
     "quests": "Quests",
     "player": "Character",
     "shops": "Shops",
-    "community": "Center & Museum"
+    "community": "Center & Museum",
+    "farmPlan": "Farm"
   },
   "common": {
     "language": "Language",
@@ -1103,7 +1104,8 @@
     "shops": "Each shop's stock today, random picks included. Faded shops are closed today.",
     "production": "Everything the farm is making, animals, slimes, crops and what to plant.",
     "community": "Community Center bundles (or Joja), museum and island field office donations.",
-    "collections": "The game's collections. Hover an item to see how to get it."
+    "collections": "The game's collections. Hover an item to see how to get it.",
+    "farm": "The farm's buildings, what you can upgrade, what's planted and your plans."
   },
   "theme": {
     "label": "Theme",
@@ -1131,5 +1133,34 @@
     "cart": "The Traveling Cart is in the forest today",
     "tv": "The Queen of Sauce is on TV today (new recipe)",
     "seasonEnd": "Last day of the season: crops that aren't {{next}} crops die tomorrow"
+  },
+  "farmPlan": {
+    "tab": {
+      "buildings": "Buildings",
+      "crops": "Crops",
+      "plans": "Plans & shopping",
+      "planner": "Stardew Planner"
+    },
+    "house": "House",
+    "houseLevel": "House level {{level}}",
+    "houseUpgrading": "Renovation ready in {{count}} days",
+    "houseNext": {
+      "1": "Next: kitchen",
+      "2": "Next: bedrooms (for children)",
+      "3": "Next: cellar (age in casks)"
+    },
+    "houseMax": "House fully upgraded.",
+    "inProgress": "Under construction",
+    "daysBuild": "{{count}} days to finish",
+    "daysUpgrade": "upgrade in {{count}} days",
+    "built": "On the farm ({{count}})",
+    "upgrades": "Possible upgrades",
+    "upgradeFrom": "Upgrades {{count}}× {{name}}",
+    "missingRobin": "Not built yet with Robin ({{count}})",
+    "allBuilt": "You have everything Robin builds!",
+    "wizard": "Wizard's Tower",
+    "have": "You have {{count}}",
+    "plannerTitle": "Stardew Planner",
+    "plannerSoon": "Coming soon: import a Stardew Planner (V3) layout and compare it with your farm."
   }
 }
