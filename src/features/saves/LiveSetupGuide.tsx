@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useSaveStore } from '@/store/saveStore';
 import { ItemIcon } from '@/ui';
 import { FolderInput } from './SavePicker';
-import { detectPlatform, SAVES_PATH, type Platform } from '@/save/platform';
+import { detectPlatform, type Platform } from '@/save/platform';
 
 /**
  * Windows: Chrome and Edge refuse to open folders inside AppData ("contains system files"), which is
@@ -70,34 +70,18 @@ export function LiveSetupGuide() {
         ))}
       </div>
 
-      {platform === 'windows' ? (
-        <ol>
-          <li>{t('saves.guide.close')}</li>
-          <li>
-            {t('saves.guide.run')}
-            <Command command={JUNCTION_COMMAND} />
-          </li>
-          <li>
-            {t('saves.guide.pick')} {openButton}
-          </li>
-          <li>{t('saves.guide.allow')}</li>
-        </ol>
-      ) : (
-        <ol>
-          <li>
-            {t(`saves.guide.terminal.${platform}`)}
-            <Command command={LINK_COMMAND[platform]} />
-          </li>
-          <li>
-            {t('saves.guide.pick')} {openButton}
-            <span className="saves__hint"> {t('saves.guide.orHidden', { path: SAVES_PATH[platform] })}</span>
-          </li>
-          <li>{t('saves.guide.allow')}</li>
-        </ol>
-      )}
-
-      <p className="saves__hint">{t(platform === 'windows' ? 'saves.guide.safe' : 'saves.guide.safeLink')}</p>
-      <p className="saves__hint">{t('saves.guide.browsers')}</p>
+      {/* The same steps on every system; only the command and where to run it change. */}
+      <ol>
+        <li>{t('saves.guide.close')}</li>
+        <li>
+          {t(`saves.guide.terminal.${platform}`)}
+          <Command command={platform === 'windows' ? JUNCTION_COMMAND : LINK_COMMAND[platform]} />
+        </li>
+        <li>
+          {t('saves.guide.pick')} {openButton}
+        </li>
+        <li>{t('saves.guide.allow')}</li>
+      </ol>
       <div className="live-guide__fallback">
         <span>{t('saves.guide.noLive')}</span>
         <FolderInput label={t('saves.fallback')} />

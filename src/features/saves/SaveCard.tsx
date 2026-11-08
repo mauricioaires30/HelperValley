@@ -10,7 +10,6 @@ import { ItemIcon } from '@/ui';
 export function SaveCard() {
   const { t } = useTranslation();
   const { save, player } = useCurrentSave();
-  const live = useSaveStore((s) => s.source?.live ?? false);
   const selectPlayer = useSaveStore((s) => s.selectPlayer);
 
   return (
@@ -22,7 +21,6 @@ export function SaveCard() {
             <>
               <strong className="save-side__farm">{t('saves.farmName', { name: player.farmName || save.players[0]?.farmName })}</strong>
               {save.players.length === 1 && <span className="save-side__player">{player.name}</span>}
-              {live && <span className="live-dot" title={t('saves.live')} />}
             </>
           ) : (
             <strong>{t('nav.home')}</strong>

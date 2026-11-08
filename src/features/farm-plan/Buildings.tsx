@@ -114,7 +114,7 @@ export function FarmBuildings({ save, player }: { save: SaveData; player: Player
 
       {upgrades.length > 0 && (
         <section className="shop__group">
-          <h3 className="shop__group-title">{t('farmPlan.upgrades')}</h3>
+          <h3 className="shop__group-title">{t('farmPlan.upgrades', { count: upgrades.length })}</h3>
           <div className="build-grid">
             {upgrades.map(({ next, from, n }) => (
               <BuildingCard key={next.id} b={next} extra={t('farmPlan.upgradeFrom', { count: n, name: name(byId.get(from)?.n) })} />
@@ -137,7 +137,7 @@ export function FarmBuildings({ save, player }: { save: SaveData; player: Player
       </section>
 
       <section className="shop__group">
-        <h3 className="shop__group-title">{t('farmPlan.wizard')}</h3>
+        <h3 className="shop__group-title">{t('farmPlan.wizard', { count: missingWizard.length })}</h3>
         <div className="build-grid">
           {missingWizard.map((b) => (
             <BuildingCard key={b.id} b={b} extra={name(b.d)} />

@@ -314,3 +314,36 @@ html[data-theme='night'] body::before {
   min-height: 28px;
   font-size: var(--fs-xs);
 }
+
+.theme-toggle {
+  min-width: var(--btn-h);
+  justify-content: center;
+}
+
+.theme-toggle__sun,
+.theme-toggle__moon {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+}
+
+.theme-toggle__sun {
+  background: #ffd23f;
+  box-shadow:
+    0 0 0 3px #ffb02e,
+    0 -9px 0 -6px #ffb02e,
+    0 9px 0 -6px #ffb02e,
+    9px 0 0 -6px #ffb02e,
+    -9px 0 0 -6px #ffb02e;
+}
+
+.theme-toggle__moon {
+  background: #2b3a6b;
+  box-shadow: inset -6px -3px 0 0 #f4e7a1, 0 0 0 2px #2b3a6b;
+}
+
+/* The save card is a plain link: no underline, no status dot (the top bar says if it's live). */
+.save-side__link.active .save-side__farm {
+  text-decoration: none;
+}

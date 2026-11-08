@@ -80,22 +80,16 @@
     "cachedHintUnsupported": "For live updates, use Chrome, Edge, Brave or Opera.",
     "guide": {
       "title": "Make the site live",
-      "why": "On Windows, Chrome won't open folders in AppData. Move the saves to Documents and leave a link in their place: the game won't notice.",
       "close": "Close Stardew Valley.",
-      "run": "Open PowerShell (Start menu → \"PowerShell\") and run this once:",
       "copy": "Copy command",
       "pick": "Choose the Documents/StardewValley Saves folder:",
       "allow": "On your next visit, choose \"Allow on every visit\".",
-      "safe": "Same files; Steam Cloud keeps working.",
       "noLive": "Without changing anything (not live):",
-      "pickHidden": "Choose the {{path}} folder.",
-      "browsers": "Works in Chrome, Edge, Brave and Opera (Windows, Mac and Linux). Firefox and Safari only read a copy.",
       "terminal": {
-        "mac": "Open Terminal (Spotlight → \"Terminal\") and run this once to make a visible link in Documents:",
-        "linux": "Open a terminal and run this once to make a visible link in Documents:"
-      },
-      "orHidden": "(or open {{path}} directly, it is a hidden folder)",
-      "safeLink": "It's just a link: the game keeps saving in the same place and Steam Cloud works as usual."
+        "windows": "Open PowerShell (Start menu → \"PowerShell\") and run this once:",
+        "mac": "Open Terminal (Spotlight → \"Terminal\") and run this once:",
+        "linux": "Open a terminal and run this once:"
+      }
     },
     "quickTitle": "See your farm now",
     "quickHint": "Select {{path}}. The browser keeps a copy.",
@@ -333,37 +327,14 @@
     },
     "tasteOwned": "Glowing items are in your chests or backpacks.",
     "group": {
-      "-2": "Gems",
-      "-4": "Fish",
-      "-5": "Eggs",
-      "-6": "Milk",
-      "-7": "Cooked dishes",
-      "-8": "Crafted items",
-      "-12": "Minerals",
-      "-15": "Metal resources",
-      "-16": "Building resources",
-      "-19": "Fertilizers",
-      "-20": "Trash",
-      "-21": "Bait",
-      "-22": "Fishing tackle",
-      "-24": "Decor",
-      "-25": "Cooking ingredients",
-      "-26": "Artisan goods",
-      "-27": "Tapper products",
-      "-28": "Monster loot",
-      "-74": "Seeds",
-      "-75": "Vegetables",
-      "-79": "Fruits",
-      "-80": "Flowers",
-      "-81": "Forage",
-      "-260": "Bombs",
-      "book_item": "Books",
-      "edible_mushroom": "Edible mushrooms",
-      "ancient_item": "Ancient items",
-      "doll_item": "Dolls",
-      "toy_item": "Toys",
-      "forage_item_beach": "Beach forage",
-      "category_trinket": "Trinkets"
+      "family": "Family",
+      "town": "Town",
+      "mountain": "Mountain",
+      "forest": "Forest",
+      "beach": "Beach",
+      "desert": "Desert",
+      "island": "Ginger Island",
+      "other": "Magic & underground"
     },
     "how": "How:",
     "eventsTitle": "Heart events",
@@ -420,7 +391,9 @@
       "days": "{{count}} days old",
       "talk": "Talk today (+friendship)",
       "talked": "Talked today"
-    }
+    },
+    "sortGroups": "By area",
+    "clearSort": "Back to groups"
   },
   "today": {
     "luck": {
@@ -1141,7 +1114,9 @@
     "label": "Theme",
     "auto": "Theme: automatic",
     "day": "Theme: day",
-    "night": "Theme: night"
+    "night": "Theme: night",
+    "toDay": "Switch to day theme",
+    "toNight": "Switch to night theme"
   },
   "todo": {
     "title": "To do today",
@@ -1189,11 +1164,11 @@
     "daysBuild": "{{count}} days to finish",
     "daysUpgrade": "upgrade in {{count}} days",
     "built": "On the farm ({{count}})",
-    "upgrades": "Possible upgrades",
+    "upgrades": "Possible upgrades ({{count}})",
     "upgradeFrom": "Upgrades {{count}}× {{name}}",
     "missingRobin": "Not built yet with Robin ({{count}})",
     "allBuilt": "You have everything Robin builds!",
-    "wizard": "Not built yet with the Wizard",
+    "wizard": "Not built yet with the Wizard ({{count}})",
     "have": "You have {{count}}",
     "plannerTitle": "Stardew Planner",
     "plannerSoon": "Coming soon: import a Stardew Planner (V3) layout and compare it with your farm.",
@@ -1264,15 +1239,10 @@
     "load": "Load plan",
     "remove": "Remove",
     "bad": "I didn't recognize that link or text. Paste a stardew.info/planner link or the plan's data.",
-    "pasteStep1": "stardew.info doesn't let other sites read plans. Open this link:",
-    "pasteStep2": "Copy all the text it shows (Ctrl+A, Ctrl+C) and paste it here:",
     "usePasted": "Use this plan",
-    "summary": "{{done}} of {{total}} planned items are already in place ({{pct}}%).",
-    "buildings": "Buildings",
-    "items": "Plan items",
+    "summary": "{{done}} of {{total}} items in place ({{pct}}%)",
+    "buildings": "Buildings ({{count}})",
     "count": "{{have}}/{{planned}}",
-    "inPlace": "{{inPlace}}/{{planned}} in place · you have {{have}}",
-    "legend": "On the map: green = in place, red = still to do, dots = your things outside the plan. The plan is lined up with your farm automatically.",
     "names": {
       "house": "Farmhouse",
       "greenhouse-repaired": "Greenhouse",
@@ -1283,6 +1253,39 @@
       "mahogany-tree": "Mahogany tree",
       "palm-tree": "Palm tree",
       "mushroom-tree": "Mushroom tree"
-    }
+    },
+    "loading": "Loading…",
+    "empty": "Paste a stardew.info/planner link to compare it with what you have built.",
+    "copyHow": "stardew.info doesn't let other sites read plans directly. Click below, copy everything on the page that opens (Ctrl+A, Ctrl+C) and come back to this tab: the site reads it on its own.",
+    "openData": "Open plan data",
+    "pasteManual": "Paste manually",
+    "bookmark": "★ Send to HelperValley",
+    "bookmarkHint": "Drag the \"Send to HelperValley\" button to your bookmarks bar. Then click it on any stardew.info plan and the plan arrives here.",
+    "ignore": "Ignore:",
+    "cat": {
+      "crops": "Crops",
+      "fences": "Fences",
+      "grass": "Grass",
+      "floors": "Floors & paths",
+      "trees": "Trees",
+      "decor": "Decoration",
+      "machines": "Machines & objects"
+    },
+    "anyCrop": "Planting area only (any crop counts)",
+    "plantingArea": "Planting area",
+    "show": "Show:",
+    "showOpt": {
+      "all": "Everything",
+      "missing": "Only missing",
+      "done": "Only done"
+    },
+    "missing": "Still to do ({{count}})",
+    "left": "{{count}} left · you have {{have}}",
+    "doneList": "Already complete ({{count}})",
+    "tipPlanned": "Plan: {{name}}",
+    "tipDone": "Already in place",
+    "tipHas": "In the save: {{name}}",
+    "tipExtra": "Outside the plan: {{name}}",
+    "nothing": "nothing"
   }
 }

@@ -73,7 +73,9 @@ function ShopView({ info, open, save, player, day, query }: { info: ShopInfo; op
       {!open && <p className="cc-summary__hint">{t('shops.closedNote')}</p>}
       {groupStock(shown).map(([group, entries]) => (
         <section key={group} className="shop__group">
-          <h3 className="shop__group-title">{t(`shops.group.${group}`)}</h3>
+          <h3 className="shop__group-title">
+            {t(`shops.group.${group}`)} ({entries.length})
+          </h3>
           <ul className="shop__items dashed-list">
             {entries.map((entry, i) => {
               const item = getItem(entry.id);

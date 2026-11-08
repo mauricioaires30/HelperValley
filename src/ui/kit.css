@@ -339,20 +339,19 @@
 }
 
 /*
- * Lists laid out in columns get dashed separators between rows and columns, like the game's
- * ledger menus. Each item draws its top and left edge; the container clips the outer ones.
+ * Lists laid out in columns get dashed lines around every item, like the game's ledger menus.
+ * Each item draws its full box; the negative margins make neighbouring borders overlap into one line.
  */
 .dashed-list {
   gap: 0 !important;
-  overflow: hidden;
+  padding: 0 2px 2px 0 !important;
 }
 
 .dashed-list > li,
 .dashed-list > * {
-  margin: -1px 0 0 -1px;
+  margin: 0 -2px -2px 0;
   padding: 4px 10px;
-  border-top: 2px dashed rgb(91 43 21 / 0.28);
-  border-left: 2px dashed rgb(91 43 21 / 0.28);
+  border: 2px dashed rgb(91 43 21 / 0.28);
 }
 
 /* Section headings inside pages share the shop look: a dashed rule under the title. */
