@@ -13,10 +13,14 @@ import { SHOPS } from '@/features/shops/catalog';
 import { SEASONS } from '@/features/calendar/calendar';
 import { describeEvent } from '@/features/relationships/eventConditions';
 import { formatTime, resolveSchedule, WEEKDAYS, type ScheduleData, type ScheduleResult, type Stop } from './schedule';
+import { layoutPins } from './pinLayout';
 import { pointAlong, roadRoute, routeLength, type Point } from './roads';
 import { toMapPixel, type RegionId } from './worldMap';
 import { usePanZoom } from '@/ui/usePanZoom';
 import './map.css';
+
+/** Screen pixels from a teardrop pin's tip to its middle. */
+const PIN_LIFT = 15;
 
 /** 6:00 to 2:00 in 10-minute steps, like the game clock. */
 const STEPS = Array.from({ length: 20 * 6 + 1 }, (_, i) => 600 + Math.floor(i / 6) * 100 + (i % 6) * 10);
@@ -162,6 +166,15 @@ export function MapPage() {
   const pinnedQuests = usePinStore((s) => s.quests);
   const pinnedFish = usePinStore((s) => s.fish);
   const { view, viewport, handlers, zoomIn, zoomOut, reset } = usePanZoom();
+  // The map's width on screen decides which pins would overlap.
+  const [mapWidth, setMapWidth] = useState(900);
+  useEffect(() => {
+    const element = viewport.current;
+    if (!element) return;
+    const observer = new ResizeObserver(() => setMapWidth(element.clientWidth));
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [viewport]);
   const time = STEPS[step];
 
   // Follow the save when it changes (new day, other save).
@@ -202,12 +215,7 @@ export function MapPage() {
     return known ? name(known) : t(`map.location.${location}`, { defaultValue: location });
   };
 
-  // NPCs standing still in the same building share a spot; fan them out in a small grid.
-  const groups = new Map<string, Placed[]>();
-  for (const p of places.filter((x) => x.region === region)) {
-    const key = p.walking ? p.npc : `${Math.round(p.px)}:${Math.round(p.py)}`;
-    groups.set(key, [...(groups.get(key) ?? []), p]);
-  }
+  const regionPlaces = places.filter((x) => x.region === region);
   const eventPins = events
     .map((e) => ({ e, pixel: toMapPixel(worldMap, e.location, ...(worldMap.sizes[e.location]?.map((n) => n / 2) as [number, number] ?? [0, 0])) }))
     .filter((x) => x.pixel?.region === region);
@@ -269,19 +277,6 @@ export function MapPage() {
         return p ? [{ key: `s-${s.id}`, ...p, shop: s }] : [];
       })
     : [];
-  // Shops next to each other (Pierre and Harvey, the desert's three...) sit side by side instead of overlapping.
-  const shopClusters: Array<typeof shopPins> = [];
-  for (const p of shopPins) {
-    const near = shopClusters.find(([first]) => Math.abs(first.px - p.px) < 7 && Math.abs(first.py - p.py) < 7);
-    if (near) near.push(p);
-    else shopClusters.push([p]);
-  }
-  const shopSpread = new Map(shopClusters.flatMap((c) => [...c].sort((a, b) => a.px - b.px).map((p, i) => [p.key, { i, n: c.length }] as const)));
-  const spreadX = (key: string) => {
-    const s = shopSpread.get(key);
-    return s ? (s.i - (s.n - 1) / 2) * 30 : 0;
-  };
-
   // Missing donations: museum pieces you can dig up somewhere, and island fossils for Professor Snail.
   const donated = new Set(Object.values(save?.museum ?? {}).map((id) => (id.startsWith('(') ? id : `(O)${id}`)));
   const museumData = gameData().museum;
@@ -303,6 +298,33 @@ export function MapPage() {
 
   // Pins keep their size while the map zooms.
   const unscale = `scale(${1 / view.zoom})`;
+
+  // Everything standing at one spot gathers into a small grid there. Walking NPCs pass by on their own.
+  const mapScale = (mapWidth / mapW) * view.zoom;
+  // Teardrop pins hang above their point, so the layout works with where they really show.
+  const lifted = ({ key, px, py }: { key: string; px: number; py: number }) => ({ key, px, py: py - PIN_LIFT / mapScale });
+  const pinLayout = layoutPins(
+    [
+      ...(layers.events ? eventPins.map(({ e, pixel }) => lifted({ key: e.id, px: pixel!.px, py: pixel!.py })) : []),
+      ...(layers.walnuts ? walnutPins.map(({ key, px, py }) => ({ key, px, py })) : []),
+      ...(layers.walnuts ? puzzlePins.map(lifted) : []),
+      ...(layers.fish ? fishPins.map(lifted) : []),
+      ...(layers.quests ? questPins.map(lifted) : []),
+      ...(layers.shops ? shopPins.map(lifted) : []),
+      ...(layers.donations ? donationPins.map(lifted) : []),
+      ...(layers.npcs ? regionPlaces.filter((p) => !p.walking).map((p) => ({ key: p.npc, px: p.px, py: p.py })) : []),
+    ],
+    mapScale,
+  );
+  /** Position of a pin; alone it hangs from its point (`anchor`), in a group it's centered on its cell. */
+  const pinStyle = (key: string, px: number, py: number, anchor: '-100%' | '-50%') => {
+    const at = pinLayout.get(key);
+    if (!at?.grouped) {
+      const y = at ? at.py + (anchor === '-100%' ? PIN_LIFT / mapScale : 0) : py;
+      return { left: pct(at?.px ?? px, mapW), top: pct(y, mapH), transform: `translate(-50%, ${anchor}) ${unscale}` };
+    }
+    return { left: pct(at.px, mapW), top: pct(at.py, mapH), transformOrigin: '50% 50%', transform: `translate(-50%, -50%) ${unscale} translate(${at.dx}px, ${at.dy}px)` };
+  };
 
   return (
     <div className="map-page">
@@ -375,7 +397,7 @@ export function MapPage() {
             >
               {layers.events &&
                 eventPins.map(({ e, pixel }) => (
-                  <span key={e.id} className="map-pin" style={{ left: pct(pixel!.px, mapW), top: pct(pixel!.py, mapH), transform: `translate(-50%, -100%) ${unscale}` }}>
+                  <span key={e.id} className="map-pin" style={pinStyle(e.id, pixel!.px, pixel!.py, '-100%')}>
                     <Tooltip
                       text={
                         <span className="slot-tooltip">
@@ -392,15 +414,15 @@ export function MapPage() {
                 ))}
               {layers.walnuts &&
                 walnutPins.map((p) => (
-                  <span key={p.key} className="map-pin" style={{ left: pct(p.px, mapW), top: pct(p.py, mapH), transform: `translate(-50%, -50%) ${unscale}` }}>
+                  <span key={p.key} className="map-pin" style={pinStyle(p.key, p.px, p.py, '-50%')}>
                     <Tooltip text={`${t(`walnuts.kind.${p.w.kind}`)} (${p.w.tile[0]}, ${p.w.tile[1]})`}>
                       <ItemIcon id="(O)73" tooltip={false} />
                     </Tooltip>
                   </span>
                 ))}
               {layers.walnuts &&
-                puzzlePins.map((p, i) => (
-                  <span key={p.key} className="map-pin" style={{ left: pct(p.px, mapW), top: pct(p.py, mapH), transform: `translate(-50%, -100%) ${unscale} translate(${(i % 3) * 14}px, 0)` }}>
+                puzzlePins.map((p) => (
+                  <span key={p.key} className="map-pin" style={pinStyle(p.key, p.px, p.py, '-100%')}>
                     <Tooltip
                       text={
                         <span className="slot-tooltip">
@@ -417,7 +439,7 @@ export function MapPage() {
                 ))}
               {layers.fish &&
                 fishPins.map((p) => (
-                  <span key={p.key} className="map-pin" style={{ left: pct(p.px, mapW), top: pct(p.py, mapH), transform: `translate(-50%, -100%) ${unscale}` }}>
+                  <span key={p.key} className="map-pin" style={pinStyle(p.key, p.px, p.py, '-100%')}>
                     <Tooltip text={t('map.fishPin', { name: name(gameData().items[p.id]?.n) })}>
                       <span className="map-pin__icon map-pin__icon--fish">
                         <ItemIcon id={p.id} tooltip={false} />
@@ -427,7 +449,7 @@ export function MapPage() {
                 ))}
               {layers.quests &&
                 questPins.map((p) => (
-                  <span key={p.key} className="map-pin" style={{ left: pct(p.px, mapW), top: pct(p.py, mapH), transform: `translate(-50%, -100%) ${unscale}` }}>
+                  <span key={p.key} className="map-pin" style={pinStyle(p.key, p.px, p.py, '-100%')}>
                     <Tooltip text={t('map.questPin', { title: p.q.title })}>
                       <span className="map-pin__icon map-pin__icon--quest">
                         <ItemIcon id={p.q.item ?? '(O)842'} tooltip={false} />
@@ -437,7 +459,7 @@ export function MapPage() {
                 ))}
               {layers.shops &&
                 shopPins.map((p) => (
-                  <span key={p.key} className="map-pin" style={{ left: pct(p.px, mapW), top: pct(p.py, mapH), transform: `translate(-50%, -100%) ${unscale} translate(${spreadX(p.key)}px, 0)` }}>
+                  <span key={p.key} className="map-pin" style={pinStyle(p.key, p.px, p.py, '-100%')}>
                     <Tooltip
                       text={
                         <span className="slot-tooltip">
@@ -454,7 +476,7 @@ export function MapPage() {
                 ))}
               {layers.donations &&
                 donationPins.map((p) => (
-                  <span key={p.key} className="map-pin" style={{ left: pct(p.px, mapW), top: pct(p.py, mapH), transform: `translate(-50%, -100%) ${unscale}` }}>
+                  <span key={p.key} className="map-pin" style={pinStyle(p.key, p.px, p.py, '-100%')}>
                     <Tooltip
                       text={
                         <span className="slot-tooltip">
@@ -475,16 +497,12 @@ export function MapPage() {
                   </span>
                 ))}
               {layers.npcs &&
-                [...groups.values()].flatMap((group) =>
-                  group.map((p, i) => {
-                    const cols = Math.ceil(Math.sqrt(group.length));
-                    const dx = (i % cols) - (cols - 1) / 2;
-                    const dy = Math.floor(i / cols) - (Math.ceil(group.length / cols) - 1) / 2;
+                regionPlaces.map((p) => {
                     return (
                       <span
                         key={p.npc}
                         className={p.walking ? 'map-npc map-npc--walking' : 'map-npc'}
-                        style={{ left: pct(p.px, mapW), top: pct(p.py, mapH), transform: `translate(-50%, -50%) ${unscale} translate(${dx * 34}px, ${dy * 34}px)` }}
+                        style={pinStyle(p.npc, p.px, p.py, '-50%')}
                       >
                         <Tooltip
                           text={
@@ -501,8 +519,7 @@ export function MapPage() {
                         </Tooltip>
                       </span>
                     );
-                  }),
-                )}
+                  })}
             </div>
           </div>
         </div>
