@@ -2,8 +2,9 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGES } from '@/i18n';
 import { ItemIcon, Sprite, UiIcon } from '@/ui';
-import { PlayerSwitcher } from '@/features/saves/PlayerSwitcher';
-import { SaveDateChip, SaveUpdatedToast } from '@/features/saves/LiveStatus';
+import { SaveUpdatedToast } from '@/features/saves/LiveStatus';
+import { SaveCard } from '@/features/saves/SaveCard';
+import { ThemeToggle } from './ThemeToggle';
 import { CachedBanner } from '@/features/saves/CachedBanner';
 import './shell.css';
 
@@ -14,7 +15,6 @@ type NavIcon =
   | { sheet: string; x: number; y: number; w: number; h: number; scale: number };
 
 const NAV: Array<{ to: string; key: string; icon: NavIcon }> = [
-  { to: '/', key: 'home', icon: { item: '(BC)130' } },
   { to: '/player', key: 'player', icon: { sheet: 'Characters/Farmer/hats', x: 2, y: 3, w: 16, h: 14, scale: 2 } },
   { to: '/calendar', key: 'calendar', icon: { ui: 'nav-calendar', w: 14, h: 12, scale: 2 } },
   { to: '/relationships', key: 'relationships', icon: { ui: 'heart-full', w: 7, h: 6, scale: 4 } },
@@ -71,10 +71,7 @@ export function AppShell() {
           <h1>{t('app.title')}</h1>
         </div>
 
-        <div className="sidebar__save">
-          <SaveDateChip />
-          <PlayerSwitcher />
-        </div>
+        <SaveCard />
 
         <nav className="sidebar__nav" aria-label="Main">
           <ul className="side-tabs">
@@ -100,6 +97,7 @@ export function AppShell() {
               ))}
             </select>
           </label>
+          <ThemeToggle />
           <p className="sidebar__disclaimer">{t('app.disclaimer')}</p>
         </div>
       </aside>

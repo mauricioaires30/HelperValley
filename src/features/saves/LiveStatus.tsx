@@ -7,23 +7,6 @@ import './live.css';
 const TOAST_MS = 6000;
 
 /** Current in-game date of the loaded save, shown in the header. */
-export function SaveDateChip() {
-  const { t } = useTranslation();
-  const save = useSaveStore((s) => s.save);
-  const live = useSaveStore((s) => s.source?.live ?? false);
-  const lastUpdate = useSaveStore((s) => s.lastUpdate);
-  if (!save) return null;
-  const { season, day, year } = save.date;
-  return (
-    // Re-keyed on every update so the "pop" animation replays.
-    <span key={lastUpdate?.at ?? 0} className={lastUpdate ? 'date-chip box date-chip--updated' : 'date-chip box'}>
-      <SeasonIcon season={season} />
-      {t('saves.day', { day, season: t(`common.seasons.${season}`), year })}
-      {live && <span className="live-dot" title={t('saves.live')} />}
-    </span>
-  );
-}
-
 /** Toast announcing that the game saved and the page now shows the new day. */
 export function SaveUpdatedToast() {
   const { t } = useTranslation();

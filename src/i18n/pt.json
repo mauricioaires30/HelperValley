@@ -103,7 +103,9 @@
       "mac": "É uma pasta oculta: no seletor, aperte Cmd+Shift+. para ver pastas ocultas, ou Cmd+Shift+G e cole o caminho.",
       "linux": "É uma pasta oculta: no seletor, aperte Ctrl+H para ver pastas ocultas."
     },
-    "flatpak": "Steam pelo Flatpak: {{path}}"
+    "flatpak": "Steam pelo Flatpak: {{path}}",
+    "farmName": "Fazenda {{name}}",
+    "dayShort": "{{day}} de {{season}}, ano {{year}}"
   },
   "locations": {
     "Farm": "Fazenda",
@@ -1098,5 +1100,11 @@
     "production": "Tudo que a fazenda está produzindo, animais, slimes, plantações e o que plantar.",
     "community": "Pacotes do Centro Comunitário (ou Joja), doações do museu e da pesquisa da ilha.",
     "collections": "As coleções do jogo. Passe o mouse num item para ver como conseguir."
+  },
+  "theme": {
+    "label": "Tema",
+    "auto": "Tema: automático",
+    "day": "Tema: dia",
+    "night": "Tema: noite"
   }
 }
