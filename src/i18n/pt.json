@@ -1215,5 +1215,17 @@
       "fish": "Pesque cada peixe da coleção.",
       "walnuts": "Encontre as 130 nozes douradas da ilha."
     }
+  },
+  "search": {
+    "placeholder": "Buscar item, morador, loja…",
+    "none": "Nada encontrado.",
+    "soldAt": "À venda hoje: {{shops}}",
+    "usedIn": "Usado em {{count}} receitas ({{list}})",
+    "bundles": "Pedido no pacote: {{list}}",
+    "group": {
+      "items": "Itens",
+      "people": "Moradores",
+      "shops": "Lojas"
+    }
   }
 }
