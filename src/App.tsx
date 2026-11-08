@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { loadGameData } from '@/data/gameData';
 import { useSaveStore } from '@/store/saveStore';
+import { resumeShare } from '@/features/share/liveShare';
 import { AppShell } from '@/app/AppShell';
 import { HomePage } from '@/features/home/HomePage';
 import { KitPage } from '@/features/kit/KitPage';
@@ -26,7 +27,7 @@ export function App() {
       () => {
         setReady(true);
         // Reopen the remembered saves folder, if any.
-        void useSaveStore.getState().init();
+        void useSaveStore.getState().init().then(resumeShare);
       },
       (e: unknown) => setError(String(e)),
     );

@@ -5,6 +5,7 @@ import { LiveSetupGuide } from '@/features/saves/LiveSetupGuide';
 import { supportsDirectoryAccess } from '@/save/sources';
 import { NotifyToggle } from '@/features/saves/Notifications';
 import { CachedBanner } from '@/features/saves/CachedBanner';
+import { SharePanel } from '@/features/share/SharePanel';
 
 /** Always at the bottom: what the site does with saves and how to keep it live. */
 function HowItWorks() {
@@ -40,6 +41,7 @@ export function HomePage() {
       )}
       {source || summaries.length > 0 ? <SaveList /> : <ConnectPanel />}
       {status === 'loading' && <p>{t('saves.loading')}</p>}
+      <SharePanel />
       <HowItWorks />
     </div>
   );

@@ -315,9 +315,20 @@ html[data-theme='night'] body::before {
   font-size: var(--fs-xs);
 }
 
+/* Same frame and height as the language box next to it. */
+.topbar {
+  align-items: stretch;
+}
+
 .theme-toggle {
-  min-width: var(--btn-h);
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
+  min-width: 52px;
+  font: inherit;
+  color: var(--text);
+  background: none;
+  cursor: pointer;
 }
 
 .theme-toggle__sun,

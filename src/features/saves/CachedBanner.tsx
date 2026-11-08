@@ -20,7 +20,8 @@ export function CachedChip() {
   const pendingHandle = useSaveStore((s) => s.pendingHandle);
   const reconnect = useSaveStore((s) => s.reconnect);
   const connectDirectory = useSaveStore((s) => s.connectDirectory);
-  if (!cachedAt || source) return null;
+  const folder = useSaveStore((s) => s.folder);
+  if (!cachedAt || source || folder === 'shared') return null;
   return (
     <span className="cached-chip box" role="status" title={t(`saves.${pendingHandle ? 'cachedHintReconnect' : supportsDirectoryAccess() ? 'cachedHintPick' : 'cachedHintUnsupported'}`)}>
       {t('saves.cachedShort', { time: relativeTime(cachedAt, i18n.language) })}
