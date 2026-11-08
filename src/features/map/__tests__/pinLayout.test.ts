@@ -28,10 +28,10 @@ describe('layoutPins', () => {
     expect(placed.get('west')!.dx).toBeLessThan(placed.get('east')!.dx);
   });
 
-  it('keeps full groups from sitting on each other', () => {
-    const pins = [...points(12).map((p) => ({ ...p, key: `a${p.key}` })), ...points(12, 110).map((p) => ({ ...p, key: `b${p.key}` }))];
-    const placed = [...layoutPins(pins, 3).values()].map((p) => ({ x: p.px * 3 + p.dx, y: p.py * 3 + p.dy }));
-    for (let i = 0; i < placed.length; i++) for (let j = i + 1; j < placed.length; j++) expect(Math.hypot(placed[i].x - placed[j].x, placed[i].y - placed[j].y)).toBeGreaterThanOrEqual(PIN_SPACING - 1);
+  it('does not pull pins from far away', () => {
+    const placed = layoutPins([{ key: 'a', px: 100, py: 50 }, { key: 'b', px: 130, py: 50 }], 3);
+    expect(placed.get('a')).toEqual({ px: 100, py: 50, dx: 0, dy: 0, grouped: false });
+    expect(placed.get('b')?.grouped).toBe(false);
   });
 
   it('places every pin once', () => {

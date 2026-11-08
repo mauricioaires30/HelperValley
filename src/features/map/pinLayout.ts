@@ -18,6 +18,8 @@ export interface PinPlace {
 export const PIN_SPACING = 34;
 /** Past this many, a group stops absorbing neighbours: one huge block would hide where things are. */
 const MAX_GROUP = 12;
+/** Screen pixels: farther apart than this, pins stay at their own place even if their grids touch. */
+const MAX_REACH = 28;
 
 const gridOf = (n: number) => {
   const cols = Math.ceil(Math.sqrt(n));
@@ -38,6 +40,8 @@ export function layoutPins(pins: PinPoint[], scale: number): Map<string, PinPlac
       for (let j = i + 1; j < groups.length && !merged; j++) {
         const [a, b] = [groups[i], groups[j]];
         if (a.members.length + b.members.length > MAX_GROUP) continue;
+        // Every pin stays close to its real place, however the group grew.
+        if (a.members.some((p) => b.members.some((q) => Math.hypot(p.px - q.px, p.py - q.py) * scale > MAX_REACH))) continue;
         const [ga, gb] = [gridOf(a.members.length), gridOf(b.members.length)];
         const apartX = Math.abs(a.cx - b.cx) * scale;
         const apartY = Math.abs(a.cy - b.cy) * scale;
@@ -49,31 +53,6 @@ export function layoutPins(pins: PinPoint[], scale: number): Map<string, PinPlac
         }
       }
     }
-  }
-
-  // Full groups can't merge any further: they push each other apart instead.
-  for (let round = 0; round < 200; round++) {
-    let moved = false;
-    for (let i = 0; i < groups.length; i++) {
-      for (let j = i + 1; j < groups.length; j++) {
-        const [a, b] = [groups[i], groups[j]];
-        const [ga, gb] = [gridOf(a.members.length), gridOf(b.members.length)];
-        const overX = ((ga.cols + gb.cols) / 2) * PIN_SPACING - Math.abs(a.cx - b.cx) * scale;
-        const overY = ((ga.rows + gb.rows) / 2) * PIN_SPACING - Math.abs(a.cy - b.cy) * scale;
-        if (overX <= 0 || overY <= 0) continue;
-        moved = true;
-        if (overX < overY) {
-          const push = (overX / scale) * (a.cx <= b.cx ? 0.5 : -0.5);
-          a.cx -= push;
-          b.cx += push;
-        } else {
-          const push = (overY / scale) * (a.cy <= b.cy ? 0.5 : -0.5);
-          a.cy -= push;
-          b.cy += push;
-        }
-      }
-    }
-    if (!moved) break;
   }
 
   const out = new Map<string, PinPlace>();

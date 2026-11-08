@@ -211,7 +211,8 @@ export interface FishData {
   seasons?: Season[];
   weather?: 'sunny' | 'rainy' | 'both';
   level?: number;
-  locations: Array<{ location: string; seasons?: Season[]; area?: string }>;
+  /** `spots`: tiles in the water where it bites, when the map has them. */
+  locations: Array<{ location: string; seasons?: Season[]; area?: string; spots?: Array<[number, number]> }>;
 }
 
 export interface WalnutSpot {
