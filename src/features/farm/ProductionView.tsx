@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { getItem } from '@/data/gameData';
+import { gameData, getItem, type LocalizedName } from '@/data/gameData';
 import { useGameName } from '@/i18n';
 import type { SaveData } from '@/save/model';
 import { ItemIcon, Tooltip } from '@/ui';
@@ -7,10 +7,18 @@ import { useLocationName } from '@/features/fish/FishInfo';
 
 interface Group {
   output: string;
+  flavor?: { kind: string; of: string };
   machines: Map<string, number>;
   count: number;
   ready: number;
   next: number;
+}
+
+/** "Vinho de Mirtilo" for flavored goods, using the game's own name formats; plain name otherwise. */
+export function flavoredName(id: string, flavor: { kind: string; of: string } | undefined, name: (n: LocalizedName | undefined) => string): string {
+  const format = flavor && gameData().gameCollections.flavorNames?.[flavor.kind];
+  const of = flavor && name(getItem(flavor.of)?.n);
+  return format && of ? name(format).replace('{0}', of) : name(getItem(id)?.n) || id;
 }
 
 /** "2h 30min", "3d 4h" from game minutes. */
@@ -47,7 +55,7 @@ function ProductCard({ g, ready }: { g: Group; ready: boolean }) {
     >
       <div className={ready ? 'prod-card inset prod-card--ready' : 'prod-card inset'}>
         <ItemIcon id={g.output} slot count={ready ? g.ready : g.count - g.ready} tooltip={false} />
-        <span className="prod-card__name">{name(getItem(g.output)?.n) || g.output}</span>
+        <span className="prod-card__name">{flavoredName(g.output, g.flavor, name)}</span>
         <span className="prod-card__when">{ready ? t('prod.readyNow') : t('prod.nextIn', { time: duration(g.next) })}</span>
       </div>
     </Tooltip>
@@ -60,13 +68,14 @@ export function ProductionView({ save }: { save: SaveData }) {
 
   const groups = new Map<string, Group>();
   for (const m of save.farm.machines) {
-    const g = groups.get(m.output) ?? { output: m.output, machines: new Map(), count: 0, ready: 0, next: Infinity };
+    const key = m.flavor ? `${m.output}|${m.flavor.of}` : m.output;
+    const g = groups.get(key) ?? { output: m.output, flavor: m.flavor, machines: new Map(), count: 0, ready: 0, next: Infinity };
     g.count++;
-    const key = `${m.machine}|${m.location}`;
-    g.machines.set(key, (g.machines.get(key) ?? 0) + 1);
+    const where = `${m.machine}|${m.location}`;
+    g.machines.set(where, (g.machines.get(where) ?? 0) + 1);
     if (m.ready) g.ready++;
     else g.next = Math.min(g.next, m.minutes);
-    groups.set(m.output, g);
+    groups.set(key, g);
   }
   const all = [...groups.values()];
   const ready = all.filter((g) => g.ready > 0).sort((a, b) => b.ready - a.ready);

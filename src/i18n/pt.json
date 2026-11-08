@@ -914,7 +914,13 @@
     "petted": "carinho em dia",
     "requests": "Pedidos de produtos de animais",
     "noRequests": "Nenhuma missão ou pedido especial pedindo ovos, leite, lã ou trufas agora.",
-    "daysLeft": "{{count}} dias"
+    "daysLeft": "{{count}} dias",
+    "sort": {
+      "type": "Tipo",
+      "name": "Nome",
+      "hearts": "Corações",
+      "pet": "Falta carinho"
+    }
   },
   "player": {
     "skills": "Habilidades · nível {{level}} de fazendeiro",

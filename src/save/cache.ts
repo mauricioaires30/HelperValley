@@ -5,7 +5,7 @@ import type { SaveData, SaveSummary } from './model';
  * Bump when SaveData's shape changes. Parsed copies from older versions are re-parsed from
  * the raw save kept next to them, so updating the site never loses a farm.
  */
-const CACHE_VERSION = 19;
+const CACHE_VERSION = 20;
 const INDEX_KEY = 'saves:index';
 const saveKey = (folder: string) => `saves:data:${folder}`;
 const xmlKey = (folder: string) => `saves:xml:${folder}`;
