@@ -744,7 +744,11 @@
     "fishClick": "Clique num peixe para marcar no mapa.",
     "lettersHint": "{{count}} cartas recebidas.",
     "notesHint": "Notas aparecem ao cavar, cortar mato e pescar depois de ler o primeiro diário.",
-    "recipeLegend": "Colorido: já fez · Apagado: receita conhecida, falta fazer · Silhueta: receita ainda não aprendida. Passe o mouse para ver ingredientes."
+    "recipeLegend": "Colorido: já fez · Apagado: receita conhecida, falta fazer · Silhueta: receita ainda não aprendida. Passe o mouse para ver ingredientes.",
+    "family": {
+      "title": "Família Extendida",
+      "hint": "Opcionais: só existem durante o pedido \"Família Extendida\" do Sr. Qi, no Quarto de Nozes da ilha. Ficam nos lugares dos lendários originais e não contam na coleção. Clique para marcar no mapa."
+    }
   },
   "quests": {
     "title": "Missões de {{name}}",

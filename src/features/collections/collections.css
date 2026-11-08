@@ -131,3 +131,17 @@ button.game-grid__cell[aria-label] {
 .perfection-card--done {
   opacity: 0.65;
 }
+
+.fish-family {
+  margin-top: 16px;
+  padding-top: 8px;
+  border-top: 2px dashed rgb(91 43 21 / 0.28);
+}
+
+.fish-family h3 {
+  margin: 0 0 4px;
+}
+
+.fish-family .game-grid {
+  margin-top: 8px;
+}

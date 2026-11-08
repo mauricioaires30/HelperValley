@@ -15,7 +15,7 @@ import { describeEvent } from '@/features/relationships/eventConditions';
 import { formatTime, resolveSchedule, WEEKDAYS, type ScheduleData, type ScheduleResult, type Stop } from './schedule';
 import { layoutPins } from './pinLayout';
 import { npcRoute, routeMinutes, TILES_PER_MINUTE, type RouteTile } from './npcRoute';
-import { toMapPixel, type RegionId } from './worldMap';
+import { isOpenArea, isWater, snapToMap, toMapPixel, type RegionId } from './worldMap';
 import { usePanZoom } from '@/ui/usePanZoom';
 import './map.css';
 
@@ -133,11 +133,11 @@ function placeAt(data: ScheduleData, schedule: ScheduleResult, time: number, mar
         const next = k === i && route[i + 1]?.location === route[i].location ? toMapPixel(map, route[i + 1].location, route[i + 1].x, route[i + 1].y) : null;
         const f = at - i;
         const pixel = next ? { region: here.region, px: here.px + (next.px - here.px) * f, py: here.py + (next.py - here.py) * f } : here;
-        return { location, since: leftAt, walking: true, pixel };
+        return { location, since: leftAt, walking: true, pixel: isOpenArea(map, pixel.region, route[k].location) ? snapToMap(map, pixel, 'land', 6) : pixel };
       }
     }
   }
-  return { location, since: leftAt, walking: false, pixel: end };
+  return { location, since: leftAt, walking: false, pixel: end && isOpenArea(map, end.region, location) ? snapToMap(map, end, 'land', 6) : end };
 }
 
 /** Heart events this player can trigger on the chosen day and time, from their preconditions. */
@@ -241,7 +241,10 @@ export function MapPage() {
 
   const regionPlaces = places.filter((x) => x.region === region);
   const eventPins = events
-    .map((e) => ({ e, pixel: toMapPixel(worldMap, e.location, ...(worldMap.sizes[e.location]?.map((n) => n / 2) as [number, number] ?? [0, 0])) }))
+    .map((e) => {
+      const middle = toMapPixel(worldMap, e.location, ...((worldMap.sizes[e.location]?.map((n) => n / 2) as [number, number]) ?? [0, 0]));
+      return { e, pixel: middle && isOpenArea(worldMap, middle.region, e.location) ? snapToMap(worldMap, middle, 'land', 30) : middle };
+    })
     .filter((x) => x.pixel?.region === region);
   const resortVisitors = Object.entries(schedules)
     .filter(([npc, s]) => npcs[npc] && s.island !== 'FALSE' && npcs[npc].social !== 3 && npcs[npc].region === 'Town')
@@ -253,7 +256,8 @@ export function MapPage() {
     const size = worldMap.sizes[location];
     const [x, y] = tile ?? (size ? [size[0] / 2, size[1] / 2] : [0, 0]);
     const pixel = toMapPixel(worldMap, location, x, y);
-    return pixel && pixel.region === region ? pixel : null;
+    if (!pixel || pixel.region !== region) return null;
+    return tile || !isOpenArea(worldMap, region, location) ? pixel : snapToMap(worldMap, pixel, 'land', 30);
   };
 
   // Marked quests: the lost item's spot, the place to go, or wherever the NPC is right now.
@@ -275,8 +279,18 @@ export function MapPage() {
   ]);
   const fishPins = [...fishIds].flatMap((id) =>
     (gameData().fish[id]?.locations ?? []).flatMap((l) => {
-      const p = pinAt(l.location);
-      return p ? [{ key: `f-${id}-${l.location}`, ...p, id }] : [];
+      const size = worldMap.sizes[l.location];
+      const tiles: Array<[number, number]> = l.spots ?? [size ? [size[0] / 2, size[1] / 2] : [0, 0]];
+      const place = l.location === 'UndergroundMine' ? 'Mines' : l.location;
+      return tiles.flatMap((tile, i) => {
+        const pixel = toMapPixel(worldMap, place, tile[0], tile[1]);
+        if (!pixel || pixel.region !== region) return [];
+        // Buildings and caves show at their door; real water goes on the drawn water.
+        if (!isOpenArea(worldMap, pixel.region, place)) return [{ key: `f-${id}-${l.location}-${l.area ?? ''}-${i}`, ...pixel, id }];
+        const onWater = snapToMap(worldMap, pixel, 'water', 15);
+        // Water the map doesn't draw (the backwoods' pond): no pin on dry land.
+        return isWater(worldMap, onWater.region, onWater.px, onWater.py) ? [{ key: `f-${id}-${l.location}-${l.area ?? ''}-${i}`, ...onWater, id }] : [];
+      });
     }),
   );
 
@@ -336,13 +350,13 @@ export function MapPage() {
       ...(layers.quests ? questPins.map(lifted) : []),
       ...(layers.shops ? shopPins.map(lifted) : []),
       ...(layers.donations ? donationPins.map(lifted) : []),
-      ...(layers.npcs ? regionPlaces.filter((p) => !p.walking).map((p) => ({ key: p.npc, px: p.px, py: p.py })) : []),
     ],
     mapScale,
   );
+  const faceLayout = layoutPins(layers.npcs ? regionPlaces.filter((p) => !p.walking).map((p) => ({ key: p.npc, px: p.px, py: p.py })) : [], mapScale);
   /** Position of a pin; alone it hangs from its point (`anchor`), in a group it's centered on its cell. */
   const pinStyle = (key: string, px: number, py: number, anchor: '-100%' | '-50%') => {
-    const at = pinLayout.get(key);
+    const at = pinLayout.get(key) ?? faceLayout.get(key);
     if (!at?.grouped) {
       const y = at ? at.py + (anchor === '-100%' ? PIN_LIFT / mapScale : 0) : py;
       return { left: pct(at?.px ?? px, mapW), top: pct(y, mapH), transform: `translate(-50%, ${anchor}) ${unscale}` };

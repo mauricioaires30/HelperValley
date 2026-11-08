@@ -744,7 +744,11 @@
     "fishClick": "Click a fish to mark it on the map.",
     "lettersHint": "{{count}} letters received.",
     "notesHint": "Notes turn up when digging, cutting weeds and fishing after the first one.",
-    "recipeLegend": "Color: made it · Faded: recipe known, not made yet · Silhouette: recipe not learned. Hover for ingredients."
+    "recipeLegend": "Color: made it · Faded: recipe known, not made yet · Silhouette: recipe not learned. Hover for ingredients.",
+    "family": {
+      "title": "Extended Family",
+      "hint": "Optional: they only exist during Mr. Qi's \"Extended Family\" order, from the Walnut Room on the island. They're in the original legendaries' spots and don't count for the collection. Click to mark on the map."
+    }
   },
   "quests": {
     "title": "{{name}}'s quests",

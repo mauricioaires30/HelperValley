@@ -85,17 +85,13 @@ function Grid({ tab, player }: { tab: GameTab; player: Player }) {
   const entries = entriesFor(tab, player).filter((e) => getItem(e.id));
   const done = entries.filter((e) => e.count > 0).length;
 
-  return (
-    <div>
-      <div className="museum__progress">
-        <Progress value={done} max={entries.length} />
-        {tab === 'fish' && <p className="cc-summary__hint">{t('collections.fishClick')}</p>}
-        {(tab === 'cooking' || tab === 'crafting') && <p className="cc-summary__hint">{t('collections.recipeLegend')}</p>}
-      </div>
-      <div className="game-grid">
-        {entries.map((e) => {
-          const pinned = tab === 'fish' && pinnedFish.includes(e.id);
-          return (
+  // Optional legendaries: their own group, outside the collection's count.
+  const caughtFish = Object.fromEntries(Object.entries(player.fishCaught).map(([k, v]) => [qualifyItemId(k), v[0]]));
+  const family = tab === 'fish' ? Object.entries(gameData().items).filter(([, item]) => item.tags?.includes('fish_legendary_family')).map(([id]) => ({ id, count: caughtFish[id] ?? 0 } as Entry)) : [];
+
+  const cell = (e: Entry) => {
+    const pinned = tab === 'fish' && pinnedFish.includes(e.id);
+    return (
             <Tooltip
               key={e.id}
               text={
@@ -116,9 +112,26 @@ function Grid({ tab, player }: { tab: GameTab; player: Player }) {
                 <ItemIcon id={e.id} tooltip={false} />
               </button>
             </Tooltip>
-          );
-        })}
+    );
+  };
+
+  return (
+    <div>
+      <div className="museum__progress">
+        <Progress value={done} max={entries.length} />
+        {tab === 'fish' && <p className="cc-summary__hint">{t('collections.fishClick')}</p>}
+        {(tab === 'cooking' || tab === 'crafting') && <p className="cc-summary__hint">{t('collections.recipeLegend')}</p>}
       </div>
+      <div className="game-grid">{entries.map(cell)}</div>
+      {family.length > 0 && (
+        <section className="fish-family">
+          <h3>
+            {t('collections.family.title')} ({family.filter((e) => e.count > 0).length}/{family.length})
+          </h3>
+          <p className="cc-summary__hint">{t('collections.family.hint')}</p>
+          <div className="game-grid">{family.map(cell)}</div>
+        </section>
+      )}
     </div>
   );
 }

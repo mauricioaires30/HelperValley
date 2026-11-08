@@ -1,4 +1,5 @@
 import { unpackToContent } from 'xnb';
+import { PNG } from 'pngjs';
 import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
@@ -94,7 +95,7 @@ export async function buildWorldMap(gameDir, textures) {
         }
       }
     }
-    regions[regionId] = { texture, source: rect(base.SourceRect), positions };
+    regions[regionId] = { texture, source: rect(base.SourceRect), positions, water: await waterMask(gameDir, texture, rect(base.SourceRect)) };
   }
 
   // Locations mapped as a whole need their size to place tiles inside the pixel area.
@@ -105,6 +106,47 @@ export async function buildWorldMap(gameDir, textures) {
     }
   }
   return { regions, sizes };
+}
+
+/** Which pixels of a map texture are water (blue, in patches big enough not to be a roof), as runs of # and . */
+async function waterMask(gameDir, texture, [sx, sy, w, h]) {
+  const { log, info } = console;
+  console.log = console.info = () => {};
+  let png;
+  try {
+    const result = await unpackToContent(await readFile(path.join(gameDir, 'Content', `${texture}.xnb`)));
+    png = PNG.sync.read(Buffer.from(await result.content.arrayBuffer()));
+  } finally {
+    Object.assign(console, { log, info });
+  }
+  const blue = new Uint8Array(w * h);
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const i = ((y + sy) * png.width + x + sx) * 4;
+      const [r, g, b] = [png.data[i], png.data[i + 1], png.data[i + 2]];
+      if (b >= 130 && b - r >= 50 && b >= g - 10) blue[y * w + x] = 1;
+    }
+  }
+  // Small blue patches are roofs and details, not water.
+  const seen = new Uint8Array(w * h);
+  const mask = new Uint8Array(w * h);
+  for (let start = 0; start < w * h; start++) {
+    if (!blue[start] || seen[start]) continue;
+    const patch = [start];
+    seen[start] = 1;
+    for (let k = 0; k < patch.length; k++) {
+      const p = patch[k];
+      for (const q of [p - 1, p + 1, p - w, p + w]) {
+        if (q < 0 || q >= w * h || seen[q] || !blue[q]) continue;
+        if (Math.abs((q % w) - (p % w)) > 1) continue;
+        seen[q] = 1;
+        patch.push(q);
+      }
+    }
+    if (patch.length >= 40) for (const p of patch) mask[p] = 1;
+  }
+  const cells = [...mask].map((v) => (v ? '#' : '.')).join('');
+  return { w, h, cells: cells.replace(/(.)\1*/g, (run, c) => `${run.length}${c}`) };
 }
 
 /** NPC schedules and home positions, stripped of dialogue text. */
