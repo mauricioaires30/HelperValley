@@ -1150,7 +1150,9 @@
     "hay_one": "Compre feno: falta {{count}} para amanhã",
     "hay_other": "Compre feno: faltam {{count}} para amanhã",
     "questSoon_one": "{{title}} (vence em {{count}} dia)",
-    "questSoon_other": "{{title}} (vence em {{count}} dias)"
+    "questSoon_other": "{{title}} (vence em {{count}} dias)",
+    "spouse": "Beije e converse com {{name}}",
+    "roommate": "Converse com {{name}}"
   },
   "farmPlan": {
     "tab": {

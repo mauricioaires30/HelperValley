@@ -16,7 +16,7 @@ describe('NPC schedules', () => {
   it('parses stops, including arrival times', () => {
     expect(parseStops('900 SeedShop 9 5 0/a1300 Town 47 87 2')).toEqual([
       { time: 900, location: 'SeedShop', x: 9, y: 5 },
-      { time: 1300, location: 'Town', x: 47, y: 87 },
+      { time: 1300, location: 'Town', x: 47, y: 87, arriveBy: true },
     ]);
   });
 

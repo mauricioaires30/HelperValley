@@ -1150,7 +1150,9 @@
     "hay_one": "Buy hay: {{count}} short for tomorrow",
     "hay_other": "Buy hay: {{count}} short for tomorrow",
     "questSoon_one": "{{title}} (ends in {{count}} day)",
-    "questSoon_other": "{{title}} (ends in {{count}} days)"
+    "questSoon_other": "{{title}} (ends in {{count}} days)",
+    "spouse": "Kiss and talk to {{name}}",
+    "roommate": "Talk to {{name}}"
   },
   "farmPlan": {
     "tab": {
