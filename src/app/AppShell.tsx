@@ -5,6 +5,7 @@ import { ItemIcon, Sprite, UiIcon } from '@/ui';
 import { SaveUpdatedToast } from '@/features/saves/LiveStatus';
 import { SaveCard } from '@/features/saves/SaveCard';
 import { Search } from '@/features/search/Search';
+import { useSaveNotifications } from '@/features/saves/Notifications';
 import { ThemeToggle } from './ThemeToggle';
 import { CachedBanner } from '@/features/saves/CachedBanner';
 import './shell.css';
@@ -65,6 +66,7 @@ function PageIntro() {
 /** Fixed sidebar (brand, save, player, menu, language) and the page using the rest of the screen. */
 export function AppShell() {
   const { t, i18n } = useTranslation();
+  useSaveNotifications();
   return (
     <div className="app">
       <aside className="sidebar">
