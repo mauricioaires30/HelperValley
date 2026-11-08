@@ -1227,5 +1227,14 @@
       "people": "Villagers",
       "shops": "Shops"
     }
+  },
+  "notify": {
+    "title": "Game alerts",
+    "hint": "Get a notification when the game saves (a new day), with what to do. Works while this tab is open and the folder is connected.",
+    "denied": "The browser blocked notifications for this site. Allow them in the site settings to turn this on.",
+    "on": "Turn on alerts",
+    "off": "Turn off alerts",
+    "newDay": "New day: {{date}}",
+    "nothing": "Nothing urgent today."
   }
 }

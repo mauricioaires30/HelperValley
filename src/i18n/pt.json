@@ -1227,5 +1227,14 @@
       "people": "Moradores",
       "shops": "Lojas"
     }
+  },
+  "notify": {
+    "title": "Avisos do jogo",
+    "hint": "Receba um aviso quando o jogo salvar (novo dia), com o que fazer. Só funciona com a aba aberta e a pasta conectada.",
+    "denied": "O navegador bloqueou avisos deste site. Libere nas configurações do site para ativar.",
+    "on": "Ativar avisos",
+    "off": "Desativar avisos",
+    "newDay": "Novo dia: {{date}}",
+    "nothing": "Nada urgente hoje."
   }
 }

@@ -3,6 +3,7 @@ import { useSaveStore } from '@/store/saveStore';
 import { ConnectPanel, SaveList } from '@/features/saves/SavePicker';
 import { LiveSetupGuide } from '@/features/saves/LiveSetupGuide';
 import { supportsDirectoryAccess } from '@/save/sources';
+import { NotifyToggle } from '@/features/saves/Notifications';
 
 /** Always at the bottom: what the site does with saves and how to keep it live. */
 function HowItWorks() {
@@ -15,6 +16,7 @@ function HowItWorks() {
         <li>{t('saves.how.copy')}</li>
         <li>{t('saves.how.live')}</li>
       </ul>
+      <NotifyToggle />
       {supportsDirectoryAccess() && <LiveSetupGuide />}
     </section>
   );
