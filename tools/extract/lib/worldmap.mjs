@@ -108,6 +108,8 @@ export async function buildWorldMap(gameDir, textures) {
         }
       }
     }
+    // Leo's tree house isn't on the game's map: it's up the mountain, where its warp leads (tile 16,8).
+    if (regionId === 'Valley') positions.push({ location: 'LeoTreeHouse', tiles: null, pixels: [176, 29, 2, 2], n: null });
     regions[regionId] = { texture, source: rect(base.SourceRect), positions, water: await waterMask(gameDir, texture, rect(base.SourceRect)) };
   }
 

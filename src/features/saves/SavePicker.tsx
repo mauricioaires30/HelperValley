@@ -72,15 +72,9 @@ export function ConnectPanel() {
 
   return (
     <div className="saves__connect">
-      <p>{t('saves.intro')}</p>
-      <CopyPath />
       {/* Works everywhere, even with the saves inside AppData: load once, the browser keeps a copy. */}
-      <div className="saves__quick box">
-        <strong>{t('saves.quickTitle')}</strong>
-        <span className="saves__hint">{t('saves.quickHint', { path: SAVES_PATH[detectPlatform()] })}</span>
-        <FolderInput label={t('saves.quickButton')} primary />
-      </div>
-      {!supportsDirectoryAccess() && <p className="saves__hint">{t('saves.fallbackHint')}</p>}
+      <FolderInput label={t('saves.quickButton')} primary />
+      <CopyPath />
     </div>
   );
 }
@@ -99,7 +93,6 @@ function SaveCard({ summary, selected, disabled, onSelect }: { summary: SaveSumm
       <span className="save-card__meta">
         <span>{summary.money.toLocaleString()}g</span>
         <span>{t('saves.playtime', { hours })}</span>
-        <span>{t('saves.version', { version: summary.gameVersion })}</span>
       </span>
     </button>
   );
@@ -122,7 +115,7 @@ export function SaveList() {
     <section>
       <div className="saves__header">
         <h2>{t('saves.list')}</h2>
-        <span className={mode === 'live' ? 'saves__mode saves__mode--live' : 'saves__mode'}>{t(mode === 'cached' ? 'saves.cachedMode' : `saves.${mode}`)}</span>
+        <span className={mode === 'live' ? 'saves__mode saves__mode--live' : 'saves__mode'}>{t(`saves.${mode === 'live' ? 'live' : 'snapshot'}`)}</span>
         {pendingHandle && !source ? (
           <button className="button button--primary" onClick={() => void reconnect()}>
             {t('saves.cachedLive')}

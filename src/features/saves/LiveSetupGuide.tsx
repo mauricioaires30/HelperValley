@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSaveStore } from '@/store/saveStore';
 import { ItemIcon } from '@/ui';
-import { FolderInput } from './SavePicker';
 import { detectPlatform, type Platform } from '@/save/platform';
 
 /**
@@ -60,8 +59,9 @@ export function LiveSetupGuide() {
   );
 
   return (
-    <section className="live-guide box">
-      <h3>{t('saves.guide.title')}</h3>
+    <details className="home-fold box">
+      <summary>{t('saves.guide.title')}</summary>
+      <div className="live-guide">
       <div className="calendar__nav" role="tablist">
         {PLATFORMS.map((p) => (
           <button key={p} role="tab" aria-selected={p === platform} className={p === platform ? 'button button--primary' : 'button'} onClick={() => setPlatform(p)}>
@@ -82,10 +82,7 @@ export function LiveSetupGuide() {
         </li>
         <li>{t('saves.guide.allow')}</li>
       </ol>
-      <div className="live-guide__fallback">
-        <span>{t('saves.guide.noLive')}</span>
-        <FolderInput label={t('saves.fallback')} />
       </div>
-    </section>
+    </details>
   );
 }

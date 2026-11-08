@@ -46,54 +46,46 @@
     }
   },
   "saves": {
-    "intro": "Reads saves from your PC. Nothing is uploaded.",
     "where": "Your saves are in:",
     "copy": "Copy path",
     "copied": "Copied!",
     "open": "Open Saves folder",
     "openHint": "The site updates itself when the game saves.",
     "fallback": "Select Saves folder",
-    "fallbackHint": "No live updates in this browser. Use Chrome, Edge, Brave or Opera.",
     "reconnect": "Reconnect to your saves",
     "reconnectHint": "Click anywhere and choose \"Allow on every visit\".",
     "change": "Change folder",
     "none": "No saves were found in that folder.",
     "list": "Your farms",
-    "live": "Live: updates when the game saves",
-    "snapshot": "Snapshot: select the folder again to update",
+    "live": "Live",
+    "snapshot": "Saved copy",
     "loading": "Reading save...",
     "player": "Player",
     "day": "Day {{day}} of {{season}}, Year {{year}}",
     "playtime": "{{hours}}h played",
-    "version": "v{{version}}",
     "host": "Host",
     "farmhand": "Farmhand",
     "error": "Couldn't read this save: {{message}}",
     "required": "Open your saves folder to see this page.",
     "updated": "The game saved! Showing the new day",
-    "cached": "Showing the copy saved in your browser (read {{time}}).",
     "cachedLive": "Reconnect to update live",
     "cachedOpen": "Connect Saves folder",
-    "cachedMode": "Saved in this browser: reconnect to update live",
     "cachedHintReconnect": "Click anywhere and choose \"Allow on every visit\".",
     "cachedHintPick": "Connect the folder for live updates.",
     "cachedHintUnsupported": "For live updates, use Chrome, Edge, Brave or Opera.",
     "guide": {
-      "title": "Make the site live",
+      "title": "Update by itself when the game saves",
       "close": "Close Stardew Valley.",
       "copy": "Copy command",
       "pick": "Choose the Documents/StardewValley Saves folder:",
       "allow": "On your next visit, choose \"Allow on every visit\".",
-      "noLive": "Without changing anything (not live):",
       "terminal": {
         "windows": "Open PowerShell (Start menu → \"PowerShell\") and run this once:",
         "mac": "Open Terminal (Spotlight → \"Terminal\") and run this once:",
         "linux": "Open a terminal and run this once:"
       }
     },
-    "quickTitle": "See your farm now",
-    "quickHint": "Select {{path}}. The browser keeps a copy.",
-    "quickButton": "Select Saves folder",
+    "quickButton": "Select the Saves folder",
     "how": {
       "local": "The site reads your saves right from your PC; nothing is uploaded."
     },
@@ -617,7 +609,10 @@
       "Mine": "The Mines",
       "Woods": "Secret Woods",
       "Backwoods": "Backwoods",
-      "Submarine": "Night Market submarine"
+      "Submarine": "Night Market submarine",
+      "LeoTreeHouse": "Leo's Treehouse",
+      "SandyHouse": "Oasis",
+      "Sunroom": "Caroline's Sunroom"
     },
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
@@ -655,8 +650,7 @@
       "rain": "Resort closed: rain on the island",
       "festival": "Resort closed: festival day"
     },
-    "visitors": "On the island today",
-    "listHint": "click to see on the map"
+    "visitors": "On the island today"
   },
   "prod": {
     "title": "Production",
@@ -939,11 +933,9 @@
     "earned": "{{amount}}g earned in total",
     "wearing": "Wearing: {{hat}}",
     "mastery": {
-      "title": "Mastery (Grandpa's secret room)",
+      "title": "Mastery",
       "locked": "The Mastery Cave opens once Farming, Fishing, Foraging, Mining and Combat all reach level 10.",
-      "level": "Mastery level {{level}} of 5",
       "toClaim": "{{count}} to claim at the pedestals",
-      "max": "Mastery complete.",
       "claimed": "claimed"
     },
     "grandpa": {
@@ -1242,7 +1234,6 @@
   },
   "notify": {
     "title": "Game alerts",
-    "hint": "Get a notification when the game saves (a new day), with what to do. Works while this tab is open and the folder is connected.",
     "denied": "The browser blocked notifications for this site. Allow them in the site settings to turn this on.",
     "on": "Turn on alerts",
     "off": "Turn off alerts",
@@ -1308,9 +1299,8 @@
     "nothing": "nothing"
   },
   "share": {
-    "title": "Play together (multiplayer)",
+    "title": "Play together",
     "host": "Share this save",
-    "hostHint": "Other players see this farm live with a code.",
     "needSave": "Open a save first.",
     "yourCode": "Room code:",
     "copy": "Copy code",

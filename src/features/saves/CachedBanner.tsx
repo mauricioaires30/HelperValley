@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useSaveStore } from '@/store/saveStore';
 import { supportsDirectoryAccess } from '@/save/sources';
-import { FolderInput } from './SavePicker';
 
 /** "x minutes ago" in the current language. */
 function relativeTime(at: number, lang: string) {
@@ -35,38 +34,5 @@ export function CachedChip() {
         </button>
       ) : null}
     </span>
-  );
-}
-
-/** Shown while the page displays the save cached in IndexedDB rather than the live folder. */
-export function CachedBanner() {
-  const { t, i18n } = useTranslation();
-  const cachedAt = useSaveStore((s) => s.cachedAt);
-  const source = useSaveStore((s) => s.source);
-  const pendingHandle = useSaveStore((s) => s.pendingHandle);
-  const reconnect = useSaveStore((s) => s.reconnect);
-  const connectDirectory = useSaveStore((s) => s.connectDirectory);
-  if (!cachedAt || source) return null;
-
-  // Three cases: a remembered folder waiting for a click, no folder chosen yet, or a browser
-  // that can't keep folder access at all (Firefox, Safari, Brave by default).
-  const hint = pendingHandle ? 'cachedHintReconnect' : supportsDirectoryAccess() ? 'cachedHintPick' : 'cachedHintUnsupported';
-  return (
-    <div className="cached-banner box" role="status">
-      <span>
-        {t('saves.cached', { time: relativeTime(cachedAt, i18n.language) })} {t(`saves.${hint}`)}
-      </span>
-      {pendingHandle ? (
-        <button className="button button--primary" onClick={() => void reconnect()}>
-          {t('saves.cachedLive')}
-        </button>
-      ) : supportsDirectoryAccess() ? (
-        <button className="button" onClick={() => void connectDirectory()}>
-          {t('saves.cachedOpen')}
-        </button>
-      ) : (
-        <FolderInput label={t('saves.cachedOpen')} />
-      )}
-    </div>
   );
 }

@@ -191,3 +191,31 @@
   padding-top: 12px;
   border-top: var(--px) dashed rgb(91 43 21 / 0.3);
 }
+
+.home__more {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.home-fold summary {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.home-fold .share,
+.home-fold .live-guide {
+  margin: 10px 0 0;
+}
+
+.home-fold--row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.home__privacy {
+  margin-top: 12px;
+}

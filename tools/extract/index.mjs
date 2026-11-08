@@ -20,6 +20,7 @@ import { buildCalendar, buildHeartEvents } from './lib/calendar.mjs';
 import { buildFarm } from './lib/farm.mjs';
 import { buildSchedules, buildWorldMap } from './lib/worldmap.mjs';
 import { buildNpcPaths } from './lib/npcPaths.mjs';
+import { buildPlacePictures } from './lib/placePictures.mjs';
 import { addFishSpots, buildFish } from './lib/fish.mjs';
 import { buildWalnutSpots } from './lib/walnuts.mjs';
 import { buildGameCollections } from './lib/collectionsGame.mjs';
@@ -70,6 +71,8 @@ const datasets = {
   player: buildPlayer(textures),
   shops: buildShops(textures),
 };
+
+datasets.places = await buildPlacePictures(gameDir, datasets);
 
 await rm(DATA_OUT, { recursive: true, force: true });
 await mkdir(DATA_OUT, { recursive: true });
