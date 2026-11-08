@@ -67,11 +67,27 @@ async function unpack(data: ArrayBuffer | Uint8Array): Promise<SaveData> {
 let peer: Peer | null = null;
 const connections = new Set<DataConnection>();
 let unsubscribe: (() => void) | null = null;
+/** Farmhands ping every few seconds; a closed tab often never closes its connection, so silence means gone. */
+const PING_MS = 4000;
+const GONE_MS = 13000;
+const lastSeen = new Map<DataConnection, number>();
+let timer: number | null = null;
+
+// Closing or leaving the page: say goodbye so the other side doesn't wait for a timeout.
+if (typeof window !== 'undefined') {
+  window.addEventListener('pagehide', () => {
+    for (const c of connections) if (c.open) c.send({ type: 'bye' });
+    peer?.destroy();
+  });
+}
 
 export const useShareStore = create<ShareState>((set, get) => {
   const teardown = () => {
     unsubscribe?.();
     unsubscribe = null;
+    if (timer !== null) window.clearInterval(timer);
+    timer = null;
+    lastSeen.clear();
     for (const c of connections) c.close();
     connections.clear();
     peer?.destroy();
@@ -102,16 +118,33 @@ export const useShareStore = create<ShareState>((set, get) => {
         }
       });
     });
+    const drop = (conn: DataConnection) => {
+      if (!connections.delete(conn)) return;
+      lastSeen.delete(conn);
+      conn.close();
+      set({ peers: connections.size });
+    };
+    timer = window.setInterval(() => {
+      const now = Date.now();
+      for (const c of connections) if (now - (lastSeen.get(c) ?? now) > GONE_MS) drop(c);
+    }, PING_MS);
     peer.on('connection', (conn) => {
       conn.on('open', () => {
         connections.add(conn);
+        lastSeen.set(conn, Date.now());
         set({ peers: connections.size });
         void sendTo([conn]);
+        // The browser noticed the other side vanished.
+        conn.peerConnection?.addEventListener('iceconnectionstatechange', () => {
+          if (['disconnected', 'failed', 'closed'].includes(conn.peerConnection.iceConnectionState)) drop(conn);
+        });
       });
-      conn.on('close', () => {
-        connections.delete(conn);
-        set({ peers: connections.size });
+      conn.on('data', (msg) => {
+        if ((msg as { type?: string }).type === 'bye') drop(conn);
+        else lastSeen.set(conn, Date.now());
       });
+      conn.on('close', () => drop(conn));
+      conn.on('error', () => drop(conn));
     });
     peer.on('error', (e) => {
       // Someone else already uses this code: pick another one.
@@ -127,14 +160,20 @@ export const useShareStore = create<ShareState>((set, get) => {
     peer.on('open', () => {
       const conn = peer!.connect(PREFIX + code, { reliable: true });
       conn.on('open', () => {
+        connections.add(conn);
         set({ status: 'joined' });
         remember(GUEST_KEY, code);
+        timer = window.setInterval(() => conn.open && conn.send({ type: 'ping' }), PING_MS);
       });
       conn.on('data', (msg) => {
         const m = msg as { type?: string; data?: ArrayBuffer | Uint8Array };
         if (m.type === 'save' && m.data) void unpack(m.data).then((save) => useSaveStore.getState().showShared(save));
+        else if (m.type === 'bye') set({ status: 'hostAway' });
       });
-      conn.on('close', () => set({ status: 'hostAway' }));
+      conn.on('close', () => {
+        connections.delete(conn);
+        set({ status: 'hostAway' });
+      });
     });
     peer.on('error', (e) => {
       const type = (e as { type?: string }).type;

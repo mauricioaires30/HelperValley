@@ -380,3 +380,15 @@
   transform: translateY(-2px);
   filter: brightness(1.04);
 }
+
+/* Flavored goods: base sprite with a tinted copy on top. */
+.tinted {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
+
+.tinted__over {
+  position: absolute;
+  inset: 0;
+}

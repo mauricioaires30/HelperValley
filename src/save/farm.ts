@@ -1,4 +1,4 @@
-import type { CropState, FarmAnimalState, FarmArea, FarmState, FishPondState, MachineState } from './model';
+import type { CropState, FarmAnimalState, FarmArea, FarmState, FishPondState, ItemTint, MachineState } from './model';
 import { arr, bool, dictEntries, inner, node, num, numbers, text, xsiType, type XmlNode, type XmlValue } from './xml';
 
 /** Locations whose tilled soil we track. */
@@ -128,6 +128,16 @@ function itemId(item: XmlNode): string {
   return `${bool(item.bigCraftable) ? '(BC)' : '(O)'}${id}`;
 }
 
+/** The color a ColoredObject is drawn with (wine, jelly, pickles, roe, dried fruit, smoked fish...). */
+function readTint(item: XmlNode): ItemTint | undefined {
+  const color = node(item.color);
+  if (xsiType(item) !== 'ColoredObject' || !color) return undefined;
+  const tint: ItemTint = { rgb: [num(color.R), num(color.G), num(color.B)] };
+  if (bool(item.colorSameIndexAsParentSheetIndex)) tint.same = true;
+  if (itemId(item) === '(O)SmokedFish' && text(item.preservedParentSheetIndex)) tint.smoked = `(O)${text(item.preservedParentSheetIndex)}`;
+  return tint;
+}
+
 /** Every machine holding an item, across all locations and building interiors. */
 function readMachines(locations: XmlValue[]): MachineState[] {
   const out: MachineState[] = [];
@@ -145,6 +155,7 @@ function readMachines(locations: XmlValue[]): MachineState[] {
         minutes: num(object.minutesUntilReady),
         location: name,
         flavor: text(held.preserve) && text(held.preservedParentSheetIndex) ? { kind: text(held.preserve)!, of: `(O)${text(held.preservedParentSheetIndex)}` } : undefined,
+        tint: readTint(held),
       });
     }
     for (const b of arr(node(location.buildings)?.Building)) {
