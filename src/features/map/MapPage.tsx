@@ -13,6 +13,7 @@ import { SHOPS } from '@/features/shops/catalog';
 import { SEASONS } from '@/features/calendar/calendar';
 import { describeEvent } from '@/features/relationships/eventConditions';
 import { formatTime, resolveSchedule, WEEKDAYS, type ScheduleData, type ScheduleResult, type Stop } from './schedule';
+import { pointAlong, roadRoute, routeLength, type Point } from './roads';
 import { toMapPixel, type RegionId } from './worldMap';
 import { usePanZoom } from '@/ui/usePanZoom';
 import './map.css';
@@ -81,8 +82,9 @@ function scheduledNpcs() {
 }
 
 /**
- * Where an NPC is at `time`. After leaving a stop they walk toward the next one, so the
- * position is interpolated for the minutes the trip takes (about one map pixel per minute).
+ * Where an NPC is at `time`. After leaving a stop they walk toward the next one along the map's roads,
+ * for the minutes the trip takes (about one map pixel per minute). Places without a road to them
+ * (the desert, the island's few trips) have no walking part on the Valley map.
  */
 function placeAt(data: ScheduleData, schedule: ScheduleResult, time: number, married: boolean) {
   const start: Stop | null = data.home ? { time: 600, location: data.home[0], x: data.home[1], y: data.home[2] } : null;
@@ -100,11 +102,11 @@ function placeAt(data: ScheduleData, schedule: ScheduleResult, time: number, mar
   if (!end) return { location, since: to.time, walking: false, pixel: null };
   const origin = from && from !== to ? toMapPixel(gameData().worldMap, from.location, from.x, from.y) : null;
   if (origin && origin.region === end.region) {
-    const distance = Math.hypot(end.px - origin.px, end.py - origin.py);
+    const route: readonly Point[] | null = end.region === 'Valley' ? roadRoute([origin.px, origin.py], [end.px, end.py]) : [[origin.px, origin.py], [end.px, end.py]];
     const elapsed = minutesBetween(to.time, time);
-    if (elapsed < distance) {
-      const k = elapsed / distance;
-      return { location, since: to.time, walking: true, pixel: { region: end.region, px: origin.px + (end.px - origin.px) * k, py: origin.py + (end.py - origin.py) * k } };
+    if (route && elapsed < routeLength(route)) {
+      const [px, py] = pointAlong(route, elapsed);
+      return { location, since: to.time, walking: true, pixel: { region: end.region, px, py } };
     }
   }
   return { location, since: to.time, walking: false, pixel: end };
