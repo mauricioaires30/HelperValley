@@ -52,7 +52,7 @@
     "open": "Open Saves folder",
     "openHint": "The site updates itself when the game saves.",
     "fallback": "Select Saves folder",
-    "fallbackHint": "No live updates in this browser. Use Chrome or Edge.",
+    "fallbackHint": "No live updates in this browser. Use Chrome, Edge, Brave or Opera.",
     "reconnect": "Reconnect to your saves",
     "reconnectHint": "Click anywhere and choose \"Allow on every visit\".",
     "change": "Change folder",
@@ -76,27 +76,34 @@
     "cachedMode": "Saved in this browser: reconnect to update live",
     "cachedHintReconnect": "Click anywhere and choose \"Allow on every visit\".",
     "cachedHintPick": "Connect the folder for live updates.",
-    "cachedHintUnsupported": "For live updates, use Chrome or Edge.",
+    "cachedHintUnsupported": "For live updates, use Chrome, Edge, Brave or Opera.",
     "guide": {
-      "title": "Keep the site live (Chrome / Edge)",
-      "why": "Chrome won't open folders in AppData. Move the saves to Documents and leave a link behind: the game won't notice.",
+      "title": "Make the site live",
+      "why": "On Windows, Chrome won't open folders in AppData. Move the saves to Documents and leave a link in their place: the game won't notice.",
       "close": "Close Stardew Valley.",
       "run": "Open PowerShell (Start menu → \"PowerShell\") and run this once:",
       "copy": "Copy command",
       "pick": "Choose Documents/StardewValley Saves:",
       "allow": "On your next visit, choose \"Allow on every visit\".",
       "safe": "Same files; Steam Cloud keeps working.",
-      "noLive": "Without changing anything (not live):"
+      "noLive": "Without changing anything (not live):",
+      "pickHidden": "Choose the {{path}} folder.",
+      "browsers": "Works in Chrome, Edge, Brave and Opera (Windows, Mac and Linux). Firefox and Safari only read a copy."
     },
     "quickTitle": "See your farm now",
-    "quickHint": "Select %AppData%\\StardewValley\\Saves. The browser keeps a copy.",
+    "quickHint": "Select {{path}}. The browser keeps a copy.",
     "quickButton": "Select Saves folder",
     "how": {
       "title": "How it works",
       "local": "The site reads your save files right on your PC; nothing is uploaded.",
       "copy": "Each save it reads is kept in the browser, so the site opens even without the folder.",
-      "live": "With the folder connected (Chrome/Edge), it updates itself when the game saves."
-    }
+      "live": "With the folder connected (Chrome, Edge, Brave or Opera), the site updates on its own when the game saves."
+    },
+    "hidden": {
+      "mac": "It's a hidden folder: in the picker press Cmd+Shift+. to show hidden folders, or Cmd+Shift+G and paste the path.",
+      "linux": "It's a hidden folder: in the picker press Ctrl+H to show hidden folders."
+    },
+    "flatpak": "Steam from Flatpak: {{path}}"
   },
   "locations": {
     "Farm": "Farm",

@@ -10,7 +10,7 @@ import { normalizeSave } from '@/save/normalize';
 import { loadTestGameData } from '@/test/gameData';
 import { shiftDay, shopStock, type ShopDay } from '../stock';
 
-const dir = process.env.STARDEW_SAVES_DIR ?? path.join(process.env.APPDATA ?? '', 'StardewValley', 'Saves');
+const dir = process.env.STARDEW_SAVES_DIR ?? (process.env.APPDATA ? path.join(process.env.APPDATA, 'StardewValley', 'Saves') : path.join(process.env.HOME ?? '', '.config', 'StardewValley', 'Saves'));
 const folders = existsSync(dir) ? readdirSync(dir).filter((f) => statSync(path.join(dir, f)).isDirectory()) : [];
 
 beforeAll(loadTestGameData);

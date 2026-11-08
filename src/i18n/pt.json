@@ -52,7 +52,7 @@
     "open": "Abrir pasta Saves",
     "openHint": "O site atualiza sozinho quando o jogo salva.",
     "fallback": "Selecionar pasta Saves",
-    "fallbackHint": "Sem atualização ao vivo neste navegador. Use Chrome ou Edge.",
+    "fallbackHint": "Sem atualização ao vivo neste navegador. Use Chrome, Edge, Brave ou Opera.",
     "reconnect": "Reconectar aos saves",
     "reconnectHint": "Clique em qualquer lugar e escolha \"Permitir em todas as visitas\".",
     "change": "Trocar pasta",
@@ -76,27 +76,34 @@
     "cachedMode": "Salvo neste navegador: reconecte para atualizar ao vivo",
     "cachedHintReconnect": "Clique em qualquer lugar e escolha \"Permitir em todas as visitas\".",
     "cachedHintPick": "Conecte a pasta para atualizar ao vivo.",
-    "cachedHintUnsupported": "Para atualizar ao vivo, use Chrome ou Edge.",
+    "cachedHintUnsupported": "Para atualizar ao vivo, use Chrome, Edge, Brave ou Opera.",
     "guide": {
-      "title": "Deixar o site ao vivo (Chrome / Edge)",
-      "why": "O Chrome não abre pastas em AppData. Mova os saves para Documentos e deixe um atalho no lugar: o jogo nem percebe.",
+      "title": "Deixar o site ao vivo",
+      "why": "No Windows, o Chrome não abre pastas em AppData. Mova os saves para Documentos e deixe um atalho no lugar: o jogo nem percebe.",
       "close": "Feche o Stardew Valley.",
       "run": "Abra o PowerShell (menu Iniciar → \"PowerShell\") e rode isto uma vez:",
       "copy": "Copiar comando",
       "pick": "Escolha a pasta Documentos/StardewValley Saves:",
       "allow": "Na próxima visita, escolha \"Permitir em todas as visitas\".",
       "safe": "Os arquivos são os mesmos e a Steam Cloud continua funcionando.",
-      "noLive": "Sem mudar nada (sem ao vivo):"
+      "noLive": "Sem mudar nada (sem ao vivo):",
+      "pickHidden": "Escolha a pasta {{path}}.",
+      "browsers": "Funciona no Chrome, Edge, Brave e Opera (Windows, Mac e Linux). Firefox e Safari só leem uma cópia."
     },
     "quickTitle": "Ver sua fazenda agora",
-    "quickHint": "Selecione %AppData%\\StardewValley\\Saves. O navegador guarda uma cópia.",
+    "quickHint": "Selecione {{path}}. O navegador guarda uma cópia.",
     "quickButton": "Selecionar pasta Saves",
     "how": {
       "title": "Como funciona",
       "local": "O site lê os arquivos de save direto do seu PC; nada é enviado.",
       "copy": "Cada save lido fica guardado no navegador, então o site abre mesmo sem a pasta.",
-      "live": "Com a pasta conectada (Chrome/Edge), o site atualiza sozinho quando o jogo salva."
-    }
+      "live": "Com a pasta conectada (Chrome, Edge, Brave ou Opera), o site atualiza sozinho quando o jogo salva."
+    },
+    "hidden": {
+      "mac": "É uma pasta oculta: no seletor, aperte Cmd+Shift+. para ver pastas ocultas, ou Cmd+Shift+G e cole o caminho.",
+      "linux": "É uma pasta oculta: no seletor, aperte Ctrl+H para ver pastas ocultas."
+    },
+    "flatpak": "Steam pelo Flatpak: {{path}}"
   },
   "locations": {
     "Farm": "Fazenda",

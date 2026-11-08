@@ -7,7 +7,7 @@ A Stardew Valley companion that reads your own save files in the browser. No acc
 **Open it:** [mauricioaires30.github.io/HelperValley](https://mauricioaires30.github.io/HelperValley/)
 
 ## Features
-- **Local saves:** pick the `%AppData%\StardewValley\Saves` folder once. In Chrome or Edge, choose "Allow on every visit" and the site always watches it.
+- **Local saves, on Windows, Mac and Linux:** pick the saves folder once (`%AppData%\StardewValley\Saves` on Windows, `~/.config/StardewValley/Saves` on Mac and Linux). In Chrome, Edge, Brave or Opera, choose "Allow on every visit" and the site always watches it.
 - **Live updates:** every time the game saves (when you sleep), the page shows the new day on its own.
 - **Remembers your farm:** the last save stays in the browser and opens instantly on your next visit.
 - **Multiplayer:** switch between the host and each farmhand.
