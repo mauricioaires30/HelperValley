@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { gameData, getItem, type LocalizedName } from '@/data/gameData';
 import { useGameName } from '@/i18n';
 import { ItemIcon, Sprite } from '@/ui';
+import { TOOL_UPGRADES } from './toolUpgrades';
 
 export interface BuildingData {
   id: string;
@@ -125,13 +126,6 @@ export function ShopAnimals() {
   );
 }
 
-/** Clint's tool upgrades: the same price and bars for every tool (ShopBuilder.GetToolUpgradeConventionalPrice). */
-const TOOL_UPGRADES: Array<{ level: string; price: number; bar: string }> = [
-  { level: 'copper', price: 2000, bar: '(O)334' },
-  { level: 'steel', price: 5000, bar: '(O)335' },
-  { level: 'gold', price: 10000, bar: '(O)336' },
-  { level: 'iridium', price: 25000, bar: '(O)337' },
-];
 
 export function ToolUpgrades() {
   const { t } = useTranslation();
