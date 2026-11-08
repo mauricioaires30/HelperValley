@@ -1125,7 +1125,6 @@
     "toNight": "Switch to night theme"
   },
   "todo": {
-    "title": "To do today",
     "goodToKnow": "Good to know",
     "nothing": "Nothing urgent today. Enjoy the day!",
     "machines": "{{count}} machines ready to collect",
@@ -1139,11 +1138,19 @@
     "festival": "Festival today: {{name}}",
     "events": "{{count}} heart events available ({{names}})",
     "kids": "Talk to {{names}}",
-    "quests": "{{count}} quests end within 2 days",
     "orders": "{{count}} special orders end within 2 days",
     "cart": "The Traveling Cart is in the forest today",
     "tv": "The Queen of Sauce is on TV today (new recipe)",
-    "seasonEnd": "Last day of the season: crops that aren't {{next}} crops die tomorrow"
+    "seasonEnd": "Last day of the season: crops that aren't {{next}} crops die tomorrow",
+    "farm": "For the farm (everyone)",
+    "player": "{{name}}'s",
+    "done": "Mark as done",
+    "harvest_one": "{{count}} crop ready to harvest",
+    "harvest_other": "{{count}} crops ready to harvest",
+    "hay_one": "Buy hay: {{count}} short for tomorrow",
+    "hay_other": "Buy hay: {{count}} short for tomorrow",
+    "questSoon_one": "{{title}} (ends in {{count}} day)",
+    "questSoon_other": "{{title}} (ends in {{count}} days)"
   },
   "farmPlan": {
     "tab": {

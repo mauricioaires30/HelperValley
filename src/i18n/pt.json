@@ -1125,7 +1125,6 @@
     "toNight": "Mudar para o tema de noite"
   },
   "todo": {
-    "title": "Para fazer hoje",
     "goodToKnow": "Bom saber",
     "nothing": "Nada urgente hoje. Aproveite o dia!",
     "machines": "{{count}} máquinas com produto pronto para coletar",
@@ -1139,11 +1138,19 @@
     "festival": "Festival hoje: {{name}}",
     "events": "{{count}} eventos de coração disponíveis ({{names}})",
     "kids": "Converse com {{names}}",
-    "quests": "{{count}} missões vencem em até 2 dias",
     "orders": "{{count}} pedidos especiais vencem em até 2 dias",
     "cart": "O Carrinho de Viagem está na floresta hoje",
     "tv": "A Rainha do Molho passa na TV hoje (receita nova)",
-    "seasonEnd": "Último dia da estação: as plantações que não são de {{next}} morrem amanhã"
+    "seasonEnd": "Último dia da estação: as plantações que não são de {{next}} morrem amanhã",
+    "farm": "Da fazenda (para todos)",
+    "player": "De {{name}}",
+    "done": "Marcar como feito",
+    "harvest_one": "{{count}} plantação pronta para colher",
+    "harvest_other": "{{count}} plantações prontas para colher",
+    "hay_one": "Compre feno: falta {{count}} para amanhã",
+    "hay_other": "Compre feno: faltam {{count}} para amanhã",
+    "questSoon_one": "{{title}} (vence em {{count}} dia)",
+    "questSoon_other": "{{title}} (vence em {{count}} dias)"
   },
   "farmPlan": {
     "tab": {

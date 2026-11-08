@@ -2,6 +2,7 @@ import Peer, { type DataConnection } from 'peerjs';
 import { create } from 'zustand';
 import type { SaveData } from '@/save/model';
 import { useSaveStore } from '@/store/saveStore';
+import { onLocalCheck, useChecks, type CheckMessage } from '@/features/today/checks';
 
 /**
  * Live multiplayer share: the host's browser sends its parsed save to the farmhands' browsers
@@ -73,6 +74,17 @@ const GONE_MS = 13000;
 const lastSeen = new Map<DataConnection, number>();
 let timer: number | null = null;
 
+// The Today list follows the save on screen, and a mark made here goes to the room:
+// a farmhand tells the host, the host tells everyone.
+const followDay = (save: SaveData | null) => {
+  if (save) useChecks.getState().syncDay(save.uniqueId, save.date);
+};
+followDay(useSaveStore.getState().save);
+useSaveStore.subscribe((s) => followDay(s.save));
+onLocalCheck((message) => {
+  for (const c of connections) if (c.open) c.send(message);
+});
+
 // Closing or leaving the page: say goodbye so the other side doesn't wait for a timeout.
 if (typeof window !== 'undefined') {
   window.addEventListener('pagehide', () => {
@@ -98,7 +110,12 @@ export const useShareStore = create<ShareState>((set, get) => {
     const save = useSaveStore.getState().save;
     if (!save || save.uniqueId === undefined) return;
     const data = await pack(save);
-    for (const c of conns) if (c.open) c.send({ type: 'save', data });
+    const { day, checked } = useChecks.getState();
+    for (const c of conns) {
+      if (!c.open) continue;
+      c.send({ type: 'save', data });
+      c.send({ type: 'checks', day, checked });
+    }
   };
 
   const startHost = (code: string, retries = 3) => {
@@ -140,8 +157,13 @@ export const useShareStore = create<ShareState>((set, get) => {
         });
       });
       conn.on('data', (msg) => {
-        if ((msg as { type?: string }).type === 'bye') drop(conn);
-        else lastSeen.set(conn, Date.now());
+        const m = msg as { type?: string } & Partial<Omit<CheckMessage, 'type'>>;
+        if (m.type === 'bye') return drop(conn);
+        lastSeen.set(conn, Date.now());
+        // A farmhand's mark: keep it and pass it on to the others.
+        if (m.type === 'check' && useChecks.getState().apply(m.day!, m.key!, m.on!)) {
+          for (const c of connections) if (c !== conn && c.open) c.send(msg);
+        }
       });
       conn.on('close', () => drop(conn));
       conn.on('error', () => drop(conn));
@@ -166,9 +188,11 @@ export const useShareStore = create<ShareState>((set, get) => {
         timer = window.setInterval(() => conn.open && conn.send({ type: 'ping' }), PING_MS);
       });
       conn.on('data', (msg) => {
-        const m = msg as { type?: string; data?: ArrayBuffer | Uint8Array };
+        const m = msg as { type?: string; data?: ArrayBuffer | Uint8Array; day?: string; checked?: Record<string, true> } & Partial<Omit<CheckMessage, 'type' | 'day'>>;
         if (m.type === 'save' && m.data) void unpack(m.data).then((save) => useSaveStore.getState().showShared(save));
         else if (m.type === 'bye') set({ status: 'hostAway' });
+        else if (m.type === 'check') useChecks.getState().apply(m.day!, m.key!, m.on!);
+        else if (m.type === 'checks' && m.day) useChecks.getState().adopt(m.day, m.checked ?? {});
       });
       conn.on('close', () => {
         connections.delete(conn);
