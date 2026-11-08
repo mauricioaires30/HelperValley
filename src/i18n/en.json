@@ -206,7 +206,10 @@
       "quests": "Do the requests on the board outside Pierre's.",
       "house": "House level {{level}}. Upgrade with Robin.",
       "money": "Total earned so far: {{money}}g.",
-      "allDone": "Everything done ✓"
+      "allDone": "Everything done ✓",
+      "shipmentLink": "See all shipped items",
+      "shipment_one": "{{count}} item left to ship. Hover to see how to get it.",
+      "shipment_other": "{{count}} items left to ship. Hover to see how to get them."
     },
     "recipe": {
       "tv": "Queen of Sauce TV: Sunday {{day}} {{season}}, year {{year}}",
@@ -593,12 +596,8 @@
     },
     "time": "Time",
     "day": "Day",
-    "raining": "Raining",
-    "resort": "Island resort open",
     "since": "there since {{time}}",
     "listTitle": "Everyone at {{time}}",
-    "resortTitle": "Who may be at the resort",
-    "resortHint": "The game picks a few of these each day.",
     "location": {
       "Farm": "Your farm",
       "FarmHouse": "Your house",
@@ -638,13 +637,11 @@
       "fish": "Marked fish",
       "walnuts": "Missing walnut spots",
       "shops": "Open shops",
-      "donations": "Missing donations"
+      "donations": "Missing donations",
+      "stardrops": "Marked Stardrops"
     },
     "eventPin": "{{name}}'s {{hearts}}-heart event",
     "walkingTo": "walking to {{place}}",
-    "resortOpen": "Your save: the resort is open today.",
-    "resortClosed": "Your save: the resort is closed today.",
-    "resortNotBuilt": "Your save: the resort hasn't been rebuilt yet.",
     "questPin": "Quest: {{title}}",
     "fishPin": "{{name}} bites here",
     "fishSearch": "Mark a fish…",
@@ -652,7 +649,20 @@
     "fishAdd": "Mark",
     "shopClick": "Click to see today's stock.",
     "donationPin": "{{place}}: {{count}} to donate",
-    "tip": "Tip: mark fish here or in Collections → Fish, and quests on the Quests page (\"Mark\" button). Everything shows on this map."
+    "tip": "Tip: mark fish here or in Collections → Fish, and quests on the Quests page (\"Mark\" button). Everything shows on this map.",
+    "weather": {
+      "rain": "Raining",
+      "sun": "Sunny",
+      "unknown": "No forecast for this day"
+    },
+    "resortState": {
+      "open": "Resort open",
+      "closed": "Resort closed",
+      "notBuilt": "Resort not built yet",
+      "rain": "Resort closed: rain on the island",
+      "festival": "Resort closed: festival day"
+    },
+    "visitors": "On the island today"
   },
   "prod": {
     "title": "Production",
@@ -700,7 +710,8 @@
       "letters": "Letters",
       "notes": "Secret Notes",
       "crafting": "Crafting",
-      "perfection": "Perfection"
+      "perfection": "Perfection",
+      "stardrops": "Stardrops"
     },
     "office": {
       "locked": "The Field Office on Ginger Island hasn't been opened yet.",
@@ -1333,5 +1344,40 @@
     "chipHost": "Sharing {{code}} · {{count}}",
     "chipGuest": "Host's save ({{code}})",
     "peers_zero": "Live · nobody connected yet"
+  },
+  "stardrops": {
+    "hint": "Each Stardrop raises your max energy by 34. Mark on the map the ones found at a place.",
+    "eaten": "Already eaten",
+    "pin": "Mark on map",
+    "pinned": "Marked",
+    "seeMap": "See on map",
+    "fair": {
+      "title": "Stardew Valley Fair",
+      "how": "Buy for 2,000 star tokens at the Fair (Fall 16, in the square)."
+    },
+    "mines": {
+      "title": "Bottom of the Mines",
+      "how": "In the chest on floor 100 of the Mines."
+    },
+    "krobus": {
+      "title": "Krobus",
+      "how": "Buy for 20,000g from Krobus, in the sewers."
+    },
+    "museum": {
+      "title": "Complete museum",
+      "how": "Donate all 95 items: Gunther gives it at the museum."
+    },
+    "cannoli": {
+      "title": "Secret Woods statue",
+      "how": "Give a Sweet Gem Berry to the Old Master Cannoli statue."
+    },
+    "fishing": {
+      "title": "Master Angler",
+      "how": "Catch every fish: Willy sends it by mail."
+    },
+    "spouse": {
+      "title": "Spouse",
+      "how": "Reach 12.5 hearts with your spouse: come into the house in the morning."
+    }
   }
 }

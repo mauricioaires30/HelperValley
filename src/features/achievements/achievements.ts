@@ -15,7 +15,7 @@ const heartsOf = (points: number) => Math.floor(points / 250);
  * Progress toward each achievement for one player. Thresholds mirror the game's checks
  * (Game1/Farmer achievement logic); museum and Community Center are farm-wide.
  */
-export function achievementProgress(save: SaveData, player: Player, goals: AchievementGoals, ids: string[]): AchievementProgress[] {
+export function achievementProgress(save: SaveData, player: Player, goals: AchievementGoals, ids: string[], shippedGoal: string[] = []): AchievementProgress[] {
   const hearts = Object.values(player.friendships).map((f) => heartsOf(f.points));
   const friendsAt = (h: number) => hearts.filter((x) => x >= h).length;
   const cooked = Object.keys(player.recipesCooked).length;
@@ -26,6 +26,7 @@ export function achievementProgress(save: SaveData, player: Player, goals: Achie
   const shipped = (id: string) => player.basicShipped[id] ?? 0;
   const polyculture = goals.polyculture.filter((id) => shipped(id) >= 15).length;
   const monoculture = Math.max(0, ...goals.monoculture.map(shipped));
+  const shippedKinds = shippedGoal.filter((id) => shipped(id.replace(/^\(O\)/, '')) > 0);
   const quests = player.stats.questsCompleted ?? 0;
   const totalFish = player.stats.fishCaught ?? 0;
 
@@ -58,6 +59,7 @@ export function achievementProgress(save: SaveData, player: Player, goals: Achie
     29: [quests, 10],
     30: [quests, 40],
     31: [polyculture, goals.polyculture.length],
+    34: [shippedKinds.length, shippedGoal.length],
     32: [monoculture, 300],
   };
 

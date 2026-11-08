@@ -206,7 +206,10 @@
       "quests": "Faça os pedidos do quadro em frente ao Pierre.",
       "house": "Casa nível {{level}}. Reforme com a Robin.",
       "money": "Total ganho até agora: {{money}}g.",
-      "allDone": "Tudo completo ✓"
+      "allDone": "Tudo completo ✓",
+      "shipmentLink": "Ver todos os itens enviados",
+      "shipment_one": "Falta enviar {{count}} item. Passe o mouse para ver como conseguir.",
+      "shipment_other": "Falta enviar {{count}} itens. Passe o mouse para ver como conseguir."
     },
     "recipe": {
       "tv": "TV Rainha do Molho: domingo {{day}} de {{season}}, ano {{year}}",
@@ -593,12 +596,8 @@
     },
     "time": "Horário",
     "day": "Dia",
-    "raining": "Chovendo",
-    "resort": "Resort da ilha aberto",
     "since": "lá desde {{time}}",
     "listTitle": "Todo mundo às {{time}}",
-    "resortTitle": "Quem pode estar no resort",
-    "resortHint": "O jogo sorteia alguns destes por dia.",
     "location": {
       "Farm": "Sua fazenda",
       "FarmHouse": "Sua casa",
@@ -638,13 +637,11 @@
       "fish": "Peixes marcados",
       "walnuts": "Nozes que faltam",
       "shops": "Lojas abertas",
-      "donations": "Doações que faltam"
+      "donations": "Doações que faltam",
+      "stardrops": "Frutas-estrela marcadas"
     },
     "eventPin": "Evento de {{hearts}} corações de {{name}}",
     "walkingTo": "andando até {{place}}",
-    "resortOpen": "No seu save: o resort está aberto hoje.",
-    "resortClosed": "No seu save: o resort está fechado hoje.",
-    "resortNotBuilt": "No seu save: o resort ainda não foi reconstruído.",
     "questPin": "Missão: {{title}}",
     "fishPin": "{{name}} aparece aqui",
     "fishSearch": "Marcar peixe…",
@@ -652,7 +649,20 @@
     "fishAdd": "Marcar",
     "shopClick": "Clique para ver o estoque de hoje.",
     "donationPin": "{{place}}: {{count}} para doar",
-    "tip": "Dica: marque peixes aqui ou em Coleções → Peixes, e missões na tela de Missões (botão \"Marcar\"). Tudo aparece neste mapa."
+    "tip": "Dica: marque peixes aqui ou em Coleções → Peixes, e missões na tela de Missões (botão \"Marcar\"). Tudo aparece neste mapa.",
+    "weather": {
+      "rain": "Chovendo",
+      "sun": "Sol",
+      "unknown": "Sem previsão do tempo para este dia"
+    },
+    "resortState": {
+      "open": "Resort aberto",
+      "closed": "Resort fechado",
+      "notBuilt": "Resort ainda não construído",
+      "rain": "Resort fechado: chuva na ilha",
+      "festival": "Resort fechado: dia de festival"
+    },
+    "visitors": "Na ilha hoje"
   },
   "prod": {
     "title": "Produção",
@@ -700,7 +710,8 @@
       "letters": "Cartas",
       "notes": "Notas Secretas",
       "crafting": "Artesanato",
-      "perfection": "Perfeição"
+      "perfection": "Perfeição",
+      "stardrops": "Frutas-estrela"
     },
     "office": {
       "locked": "O Escritório de Campo da Ilha Gengibre ainda não foi aberto.",
@@ -1333,5 +1344,40 @@
     "chipHost": "Compartilhando {{code}} · {{count}}",
     "chipGuest": "Save do anfitrião ({{code}})",
     "peers_zero": "Ao vivo · ninguém conectado ainda"
+  },
+  "stardrops": {
+    "hint": "Cada fruta-estrela aumenta sua energia máxima em 34. Marque no mapa as que ficam em um lugar.",
+    "eaten": "Já comida",
+    "pin": "Marcar no mapa",
+    "pinned": "Marcada",
+    "seeMap": "Ver no mapa",
+    "fair": {
+      "title": "Feira do Vale",
+      "how": "Compre por 2.000 estrelas na Feira (16 de outono, na praça)."
+    },
+    "mines": {
+      "title": "Fundo das Minas",
+      "how": "No baú do andar 100 das Minas."
+    },
+    "krobus": {
+      "title": "Krobus",
+      "how": "Compre por 20.000g do Krobus, no esgoto."
+    },
+    "museum": {
+      "title": "Museu completo",
+      "how": "Doe os 95 itens: Gunther entrega no museu."
+    },
+    "cannoli": {
+      "title": "Estátua da Floresta Secreta",
+      "how": "Dê uma baga-gema doce à estátua do Mestre Cannoli."
+    },
+    "fishing": {
+      "title": "Mestre Pescador",
+      "how": "Pesque todos os peixes: Willy manda pelo correio."
+    },
+    "spouse": {
+      "title": "Cônjuge",
+      "how": "Chegue a 12,5 corações com seu cônjuge: entre na casa pela manhã."
+    }
   }
 }

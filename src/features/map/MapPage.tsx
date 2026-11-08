@@ -14,10 +14,24 @@ import { SEASONS } from '@/features/calendar/calendar';
 import { describeEvent } from '@/features/relationships/eventConditions';
 import { formatTime, resolveSchedule, WEEKDAYS, type ScheduleData, type ScheduleResult, type Stop } from './schedule';
 import { layoutPins } from './pinLayout';
+import { islandDay } from './islandVisitors';
+import { STARDROP_ITEM, STARDROPS } from '@/features/collections/stardrops';
 import { npcRoute, routeMinutes, TILES_PER_MINUTE, type RouteTile } from './npcRoute';
 import { isOpenArea, isWater, snapToMap, toMapPixel, type RegionId } from './worldMap';
 import { usePanZoom } from '@/ui/usePanZoom';
 import './map.css';
+
+const LAYERS_KEY = 'hv-map-layers';
+const DEFAULT_LAYERS = { npcs: true, events: true, quests: true, fish: true, stardrops: true, walnuts: false, shops: false, donations: false };
+
+/** The layers chosen last time, so coming back to the map keeps them. */
+function loadLayers(): typeof DEFAULT_LAYERS {
+  try {
+    return { ...DEFAULT_LAYERS, ...(JSON.parse(localStorage.getItem(LAYERS_KEY) ?? '{}') as Partial<typeof DEFAULT_LAYERS>) };
+  } catch {
+    return DEFAULT_LAYERS;
+  }
+}
 
 /** Screen pixels from a teardrop pin's tip to its middle. */
 const PIN_LIFT = 15;
@@ -183,12 +197,22 @@ export function MapPage() {
   const [season, setSeason] = useState<Season>(save?.date.season ?? 'spring');
   const [day, setDay] = useState(save?.date.day ?? 1);
   const [step, setStep] = useState(0); // starts at 6:00, when the day begins
-  const [raining, setRaining] = useState(save?.isRaining ?? false);
-  const [resort, setResort] = useState(save?.resort.openToday ?? false);
-  const [layers, setLayers] = useState({ npcs: true, events: true, quests: true, fish: true, walnuts: showLayer === 'walnuts', shops: showLayer === 'shops', donations: showLayer === 'donations' });
+  const [layers, setLayers] = useState(() => {
+    const stored = loadLayers();
+    // A link that opens a layer (?show=) turns it on.
+    return showLayer && showLayer in stored ? { ...stored, [showLayer]: true } : stored;
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem(LAYERS_KEY, JSON.stringify(layers));
+    } catch {
+      // They just won't be remembered.
+    }
+  }, [layers]);
   const navigate = useNavigate();
   const pinnedQuests = usePinStore((s) => s.quests);
   const pinnedFish = usePinStore((s) => s.fish);
+  const pinnedStardrops = usePinStore((s) => s.stardrops);
   const { view, viewport, handlers, zoomIn, zoomOut, reset } = usePanZoom();
   // The map's width on screen decides which pins would overlap.
   const [mapWidth, setMapWidth] = useState(900);
@@ -206,9 +230,13 @@ export function MapPage() {
     if (!save) return;
     setSeason(save.date.season);
     setDay(save.date.day);
-    setRaining(save.isRaining);
-    setResort(save.resort.openToday);
   }, [save]);
+
+  // The weather comes from the save: today's, tomorrow's forecast, otherwise unknown (shown dry).
+  const isToday = !!save && season === save.date.season && day === save.date.day;
+  const isTomorrow = !!save && !isToday && (save.date.day < 28 ? season === save.date.season && day === save.date.day + 1 : false);
+  const raining = isToday ? !!save?.isRaining : isTomorrow && /rain|storm/i.test(save?.weatherTomorrow ?? '');
+  const island = useMemo(() => (save && isToday ? islandDay(save) : null), [save, isToday]);
 
   const { worldMap, schedules, npcs } = gameData();
   const places = useMemo(() => {
@@ -217,13 +245,15 @@ export function MapPage() {
       const friendship = player?.friendships[npc];
       const married = player?.spouse === npc;
       const conditions = { season, day, raining, hearts: friendship ? Math.floor(friendship.points / 250) : 0, married };
-      const schedule = resolveSchedule(schedules[npc], conditions, npc);
+      // Today's island visitors follow the schedule the game gave them.
+      const visit = island?.schedules[npc];
+      const schedule = visit ? { key: 'island', stops: visit } : resolveSchedule(schedules[npc], conditions, npc);
       const place = placeAt(schedules[npc], schedule, time, married);
       if (!place) continue;
       out.push({ npc, location: place.location, since: place.since, walking: place.walking, region: place.pixel?.region ?? null, px: place.pixel?.px ?? 0, py: place.pixel?.py ?? 0 });
     }
     return out;
-  }, [player, season, day, raining, time, schedules]);
+  }, [player, season, day, raining, time, schedules, island]);
 
   const events = useMemo(() => availableEvents(player, season, day, time, raining), [player, season, day, time, raining]);
 
@@ -246,9 +276,6 @@ export function MapPage() {
       return { e, pixel: middle && isOpenArea(worldMap, middle.region, e.location) ? snapToMap(worldMap, middle, 'land', 30) : middle };
     })
     .filter((x) => x.pixel?.region === region);
-  const resortVisitors = Object.entries(schedules)
-    .filter(([npc, s]) => npcs[npc] && s.island !== 'FALSE' && npcs[npc].social !== 3 && npcs[npc].region === 'Town')
-    .map(([npc]) => npc);
   const pct = (v: number, of: number) => `${(v / of) * 100}%`;
 
   /** Pin at a location's middle (or a given tile), on this region only. */
@@ -315,6 +342,12 @@ export function MapPage() {
         return p ? [{ key: `s-${s.id}`, ...p, shop: s }] : [];
       })
     : [];
+  // Stardrops marked in Collections, until they're eaten.
+  const stardropPins = STARDROPS.filter((s) => s.place && pinnedStardrops.includes(s.id) && !player?.mailReceived.includes(s.flag)).flatMap((s) => {
+    const p = pinAt(s.place!.location, s.place!.tile);
+    return p ? [{ key: `sd-${s.id}`, ...p, id: s.id }] : [];
+  });
+
   // Missing donations: museum pieces you can dig up somewhere, and island fossils for Professor Snail.
   const donated = new Set(Object.values(save?.museum ?? {}).map((id) => (id.startsWith('(') ? id : `(O)${id}`)));
   const museumData = gameData().museum;
@@ -350,6 +383,7 @@ export function MapPage() {
       ...(layers.quests ? questPins.map(lifted) : []),
       ...(layers.shops ? shopPins.map(lifted) : []),
       ...(layers.donations ? donationPins.map(lifted) : []),
+      ...(layers.stardrops ? stardropPins.map(lifted) : []),
     ],
     mapScale,
   );
@@ -397,10 +431,10 @@ export function MapPage() {
             <span className="cc-summary__hint">{t(`calendar.weekdays.${WEEKDAYS[(day - 1) % 7].toLowerCase()}`)}</span>
           </label>
         </div>
-        <label className="cc__filter">
-          <input type="checkbox" checked={raining} onChange={(e) => setRaining(e.target.checked)} />
-          {t('map.raining')}
-        </label>
+        <div className="map-status">
+          {isToday || isTomorrow ? <span className="box">{raining ? t('map.weather.rain') : t('map.weather.sun')}</span> : <span className="box">{t('map.weather.unknown')}</span>}
+          {island && <span className="box">{t(`map.resortState.${island.state}`)}</span>}
+        </div>
       </div>
 
       <div className="map-layout">
@@ -495,6 +529,23 @@ export function MapPage() {
                     </Tooltip>
                   </span>
                 ))}
+              {layers.stardrops &&
+                stardropPins.map((p) => (
+                  <span key={p.key} className="map-pin" style={pinStyle(p.key, p.px, p.py, '-100%')}>
+                    <Tooltip
+                      text={
+                        <span className="slot-tooltip">
+                          <strong>{t(`stardrops.${p.id}.title`)}</strong>
+                          <span>{t(`stardrops.${p.id}.how`)}</span>
+                        </span>
+                      }
+                    >
+                      <span className="map-pin__icon map-pin__icon--stardrop">
+                        <ItemIcon id={STARDROP_ITEM} scale={1} tooltip={false} />
+                      </span>
+                    </Tooltip>
+                  </span>
+                ))}
               {layers.shops &&
                 shopPins.map((p) => (
                   <span key={p.key} className="map-pin" style={pinStyle(p.key, p.px, p.py, '-100%')}>
@@ -574,7 +625,7 @@ export function MapPage() {
           </label>
           <label className="cc__filter">
             <input type="checkbox" checked={layers.quests} onChange={(e) => setLayers({ ...layers, quests: e.target.checked })} />
-            {t('map.layer.quests')} ({pinnedQuests.length})
+            {t('map.layer.quests')} ({(player?.quests ?? []).filter((q) => pinnedQuests.includes(q.id) && !q.completed && (q.location || q.npc)).length})
           </label>
           <label className="cc__filter">
             <input type="checkbox" checked={layers.fish} onChange={(e) => setLayers({ ...layers, fish: e.target.checked })} />
@@ -593,23 +644,24 @@ export function MapPage() {
             <input type="checkbox" checked={layers.donations} onChange={(e) => setLayers({ ...layers, donations: e.target.checked })} />
             {t('map.layer.donations')} ({[...needByPlace.values()].reduce((n, l) => n + l.length, 0)})
           </label>
+          {pinnedStardrops.length > 0 && (
+            <label className="cc__filter">
+              <input type="checkbox" checked={layers.stardrops} onChange={(e) => setLayers({ ...layers, stardrops: e.target.checked })} />
+              {t('map.layer.stardrops')} ({STARDROPS.filter((s) => pinnedStardrops.includes(s.id) && !player?.mailReceived.includes(s.flag)).length})
+            </label>
+          )}
           <p className="map-tip">{t('map.tip')}</p>
-          <label className="cc__filter">
-            <input type="checkbox" checked={resort} onChange={(e) => setResort(e.target.checked)} />
-            {t('map.resort')}
-          </label>
-          {save && <p className="cc-summary__hint">{save.resort.restored ? (save.resort.openToday ? t('map.resortOpen') : t('map.resortClosed')) : t('map.resortNotBuilt')}</p>}
-          {resort && (
-            <>
-              <p className="cc-summary__hint">{t('map.resortHint')}</p>
-              <div className="slot-grid">
-                {resortVisitors.map((npc) => (
-                  <Tooltip key={npc} text={name(npcs[npc]?.n)}>
-                    <NpcHead npc={npc} />
-                  </Tooltip>
+          {island && island.visitors.length > 0 && (
+            <div className="map-visitors">
+              <h4>{t('map.visitors')}</h4>
+              <ul>
+                {island.visitors.map((npc) => (
+                  <li key={npc}>
+                    <NpcHead npc={npc} /> {name(npcs[npc]?.n)}
+                  </li>
                 ))}
-              </div>
-            </>
+              </ul>
+            </div>
           )}
         </aside>
       </div>

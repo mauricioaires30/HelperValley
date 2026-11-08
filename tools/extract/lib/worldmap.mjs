@@ -165,6 +165,8 @@ export function buildSchedules() {
     out[npc] = {
       home: home ? [home.Location, home.Tile?.X ?? 0, home.Tile?.Y ?? 0] : null,
       island: c.CanVisitIsland ?? null,
+      social: c.CanSocialize ?? null,
+      female: c.Gender === 1,
       schedules,
     };
   }
