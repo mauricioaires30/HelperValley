@@ -967,6 +967,27 @@
       "todo": "Still to do (+{{count}} points available)",
       "allDone": "All done! Grandpa lights all 4 candles.",
       "doneList": "Done ({{count}})"
+    },
+    "tools": {
+      "title": "Tools",
+      "Axe": "Axe",
+      "Pickaxe": "Pickaxe",
+      "Hoe": "Hoe",
+      "WateringCan": "Watering can",
+      "Pan": "Pan",
+      "TrashCan": "Trash can",
+      "rod": "Fishing rod",
+      "none": "not found",
+      "level": {
+        "0": "basic",
+        "1": "copper",
+        "2": "steel",
+        "3": "gold",
+        "4": "iridium"
+      },
+      "max": "max",
+      "nextRod": "Next: {{name}} ({{price}}g from Willy)",
+      "hint": "Clint's upgrades take 2 days and cost the price + 5 bars. Fishing rods are bought from Willy."
     }
   },
   "shops": {

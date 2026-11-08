@@ -5,6 +5,7 @@ import type { Player, SaveData } from '@/save/model';
 import { RequireSave } from '@/features/saves/RequireSave';
 import { ItemIcon, Progress, Sprite, Tooltip } from '@/ui';
 import { FarmerSprite } from './FarmerSprite';
+import { ToolsSection } from './Tools';
 import { candlesFor, farmerLevel, grandpaPoints, masteryState, professionTree, skillProgress, SKILL_ORDER } from './progress';
 import './player.css';
 
@@ -197,6 +198,7 @@ export function PlayerPage() {
         <div className="player">
           <Profile save={save} player={player} />
           <Skills player={player} />
+          <ToolsSection save={save} player={player} />
           <Mastery player={player} />
           <Grandpa save={save} player={save.players.find((p) => p.isHost) ?? player} />
         </div>

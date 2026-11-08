@@ -134,6 +134,8 @@ export interface Player {
   /** What the farmer wears and looks like, to draw them like the game. */
   look: PlayerLook;
   hasRustyKey: boolean;
+  /** Trash can upgrade level (0 = basic). */
+  trashCanLevel: number;
   hasSkullKey: boolean;
 }
 

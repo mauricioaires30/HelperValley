@@ -967,6 +967,27 @@
       "todo": "Falta fazer (+{{count}} pontos possíveis)",
       "allDone": "Tudo feito! O vovô acende as 4 velas.",
       "doneList": "Já feito ({{count}})"
+    },
+    "tools": {
+      "title": "Ferramentas",
+      "Axe": "Machado",
+      "Pickaxe": "Picareta",
+      "Hoe": "Enxada",
+      "WateringCan": "Regador",
+      "Pan": "Bateia",
+      "TrashCan": "Lixeira",
+      "rod": "Vara de pesca",
+      "none": "não encontrada",
+      "level": {
+        "0": "básica",
+        "1": "cobre",
+        "2": "aço",
+        "3": "ouro",
+        "4": "irídio"
+      },
+      "max": "máximo",
+      "nextRod": "Próxima: {{name}} ({{price}}g com o Willy)",
+      "hint": "Melhorias com o Clint levam 2 dias e custam o preço + 5 barras. As varas de pesca são compradas com o Willy."
     }
   },
   "shops": {

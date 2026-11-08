@@ -196,6 +196,7 @@ export function normalizePlayer(value: XmlValue, isHost: boolean): Player {
     monstersKilled,
     inventory: itemList(p.items),
     look: look(p),
+    trashCanLevel: num(p.trashCanLevel),
     hasRustyKey: bool(p.hasRustyKey) || strings(p.mailReceived).includes('HasRustyKey'),
     hasSkullKey: bool(p.hasSkullKey) || strings(p.mailReceived).includes('HasSkullKey'),
     quests: arr(node(p.questLog)?.Quest).flatMap((q) => {
