@@ -714,7 +714,8 @@
       "achievements": "Achievements",
       "letters": "Letters",
       "notes": "Secret Notes",
-      "crafting": "Crafting"
+      "crafting": "Crafting",
+      "perfection": "Perfection"
     },
     "office": {
       "locked": "The Field Office on Ginger Island hasn't been opened yet.",
@@ -1183,5 +1184,36 @@
     "have": "You have {{count}}",
     "plannerTitle": "Stardew Planner",
     "plannerSoon": "Coming soon: import a Stardew Planner (V3) layout and compare it with your farm."
+  },
+  "perfection": {
+    "title": "Perfection: {{pct}}%",
+    "hint": "The game's own formula. In multiplayer each part counts the best player. Click a part to see what's missing.",
+    "done": "Complete!",
+    "part": {
+      "shipping": "Items shipped",
+      "obelisks": "Obelisks",
+      "goldClock": "Gold Clock",
+      "slayer": "Monster slayer goals",
+      "friends": "Great friends",
+      "level": "Farmer level",
+      "stardrops": "Stardrops",
+      "cooking": "Recipes cooked",
+      "crafting": "Items crafted",
+      "fish": "Fish caught",
+      "walnuts": "Golden walnuts"
+    },
+    "how": {
+      "shipping": "Ship at least one of each item in the shipping collection.",
+      "obelisks": "Build the 4 obelisks at the Wizard's tower (only finished ones count).",
+      "goldClock": "Buy the Wizard's Gold Clock (10 million).",
+      "slayer": "Finish every one of Marlon's goals at the Guild (counts only when all are done).",
+      "friends": "Every villager at max hearts (8 for singles, 10 for everyone else).",
+      "level": "Reach farmer level 25 (every skill at 10).",
+      "stardrops": "Eat all 7 stardrops (counts only when all are found).",
+      "cooking": "Cook every recipe at least once.",
+      "crafting": "Craft every recipe at least once.",
+      "fish": "Catch every fish in the collection.",
+      "walnuts": "Find all 130 of the island's golden walnuts."
+    }
   }
 }
