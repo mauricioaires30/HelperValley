@@ -103,7 +103,9 @@
       "mac": "It's a hidden folder: in the picker press Cmd+Shift+. to show hidden folders, or Cmd+Shift+G and paste the path.",
       "linux": "It's a hidden folder: in the picker press Ctrl+H to show hidden folders."
     },
-    "flatpak": "Steam from Flatpak: {{path}}"
+    "flatpak": "Steam from Flatpak: {{path}}",
+    "farmName": "{{name}} Farm",
+    "dayShort": "{{season}} {{day}}, year {{year}}"
   },
   "locations": {
     "Farm": "Farm",
@@ -1098,5 +1100,11 @@
     "production": "Everything the farm is making, animals, slimes, crops and what to plant.",
     "community": "Community Center bundles (or Joja), museum and island field office donations.",
     "collections": "The game's collections. Hover an item to see how to get it."
+  },
+  "theme": {
+    "label": "Theme",
+    "auto": "Theme: automatic",
+    "day": "Theme: day",
+    "night": "Theme: night"
   }
 }
