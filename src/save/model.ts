@@ -326,6 +326,20 @@ export interface MachineState {
   location: string;
   /** Flavored goods: the kind (Wine, Jelly, Pickle, Honey, Roe...) and what it was made from. */
   flavor?: { kind: string; of: string };
+  /** How the game colors this item's icon (wine, jelly, roe...), see ItemTint. */
+  tint?: ItemTint;
+}
+
+/**
+ * A ColoredObject's look (ColoredObject.drawInMenu): the base sprite plus the next sprite in the sheet
+ * tinted with `rgb`; or, with `same`, only the base sprite tinted; smoked fish draw the fish itself
+ * darkened.
+ */
+export interface ItemTint {
+  rgb: [number, number, number];
+  same?: boolean;
+  /** Smoked fish: the fish whose sprite is drawn. */
+  smoked?: string;
 }
 
 export interface FishPondState {

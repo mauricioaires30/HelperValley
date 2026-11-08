@@ -1,13 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { gameData, getItem, type LocalizedName } from '@/data/gameData';
 import { useGameName } from '@/i18n';
-import type { SaveData } from '@/save/model';
+import type { SaveData, ItemTint } from '@/save/model';
 import { ItemIcon, Tooltip } from '@/ui';
 import { useLocationName } from '@/features/fish/FishInfo';
 
 interface Group {
   output: string;
   flavor?: { kind: string; of: string };
+  tint?: ItemTint;
   machines: Map<string, number>;
   count: number;
   ready: number;
@@ -54,7 +55,7 @@ function ProductCard({ g, ready }: { g: Group; ready: boolean }) {
       }
     >
       <div className={ready ? 'prod-card inset prod-card--ready' : 'prod-card inset'}>
-        <ItemIcon id={g.output} slot count={ready ? g.ready : g.count - g.ready} tooltip={false} />
+        <ItemIcon id={g.output} slot count={ready ? g.ready : g.count - g.ready} tooltip={false} tint={g.tint} />
         <span className="prod-card__name">{flavoredName(g.output, g.flavor, name)}</span>
         <span className="prod-card__when">{ready ? t('prod.readyNow') : t('prod.nextIn', { time: duration(g.next) })}</span>
       </div>
@@ -69,7 +70,7 @@ export function ProductionView({ save }: { save: SaveData }) {
   const groups = new Map<string, Group>();
   for (const m of save.farm.machines) {
     const key = m.flavor ? `${m.output}|${m.flavor.of}` : m.output;
-    const g = groups.get(key) ?? { output: m.output, flavor: m.flavor, machines: new Map(), count: 0, ready: 0, next: Infinity };
+    const g = groups.get(key) ?? { output: m.output, flavor: m.flavor, tint: m.tint, machines: new Map(), count: 0, ready: 0, next: Infinity };
     g.count++;
     const where = `${m.machine}|${m.location}`;
     g.machines.set(where, (g.machines.get(where) ?? 0) + 1);
@@ -94,7 +95,7 @@ export function ProductionView({ save }: { save: SaveData }) {
           <h3>{t('prod.readyTitle')}</h3>
           <div className="prod-grid">
             {ready.map((g) => (
-              <ProductCard key={g.output} g={g} ready />
+              <ProductCard key={g.output + (g.flavor?.of ?? '')} g={g} ready />
             ))}
           </div>
         </section>
@@ -105,7 +106,7 @@ export function ProductionView({ save }: { save: SaveData }) {
           <h3>{t('prod.workingTitle')}</h3>
           <div className="prod-grid">
             {working.map((g) => (
-              <ProductCard key={g.output} g={g} ready={false} />
+              <ProductCard key={g.output + (g.flavor?.of ?? '')} g={g} ready={false} />
             ))}
           </div>
         </section>

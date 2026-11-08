@@ -54,7 +54,7 @@ export function SlimesView({ save }: { save: SaveData }) {
           <div className="prod-grid">
             {eggMachines.map((m, i) => (
               <div key={i} className={m.ready ? 'prod-card inset prod-card--ready' : 'prod-card inset'}>
-                <ItemIcon id={m.output} slot tooltip={false} />
+                <ItemIcon id={m.output} slot tooltip={false} tint={m.tint} />
                 <span className="prod-card__name">{name(getItem(m.output)?.n)}</span>
                 <span className="prod-card__when">{name(getItem(m.machine)?.n)}</span>
               </div>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { gameData, getItem } from '@/data/gameData';
 import { useGameName } from '@/i18n';
-import type { SaveData } from '@/save/model';
+import type { FarmAnimalState, SaveData } from '@/save/model';
 import { Hearts, ItemIcon, Sprite } from '@/ui';
 import { HayCard } from './FarmOverview';
 
@@ -13,9 +13,19 @@ import { HayCard } from './FarmOverview';
  */
 type AnimalSort = 'type' | 'name' | 'hearts' | 'pet';
 
+function animalOrder(sort: AnimalSort, a: FarmAnimalState, b: FarmAnimalState): number {
+  const byName = a.name.localeCompare(b.name);
+  if (sort === 'name') return byName;
+  if (sort === 'hearts') return b.friendship - a.friendship || byName;
+  // Animals still to pet today first.
+  if (sort === 'pet') return Number(a.autoPet) - Number(b.autoPet) || a.type.localeCompare(b.type) || byName;
+  return a.type.localeCompare(b.type) || byName;
+}
+
 export function AnimalsView({ save }: { save: SaveData }) {
   const { t } = useTranslation();
   const [sort, setSort] = useState<AnimalSort>('type');
+  const [reversed, setReversed] = useState(false);
   const name = useGameName();
   const { animals, pets } = gameData().farm;
   const { farm, isRaining } = save;
@@ -71,18 +81,14 @@ export function AnimalsView({ save }: { save: SaveData }) {
                 </option>
               ))}
             </select>
+            <button className="button" aria-pressed={reversed} onClick={() => setReversed(!reversed)} title={t('rel.reverse')}>
+              {reversed ? '▲' : '▼'}
+            </button>
           </label>
         </header>
         <div className="animal-grid">
           {[...farm.animals]
-            .sort((a, b) => {
-              const byName = a.name.localeCompare(b.name);
-              if (sort === 'name') return byName;
-              if (sort === 'hearts') return b.friendship - a.friendship || byName;
-              // Animals still to pet today first.
-              if (sort === 'pet') return Number(a.autoPet) - Number(b.autoPet) || a.type.localeCompare(b.type) || byName;
-              return a.type.localeCompare(b.type) || byName;
-            })
+            .sort((a, b) => (reversed ? -1 : 1) * animalOrder(sort, a, b))
             .map((a) => {
               const sprite = animals[a.type]?.sprite;
               const mood = a.happiness >= 200 ? 'happy' : a.happiness >= 150 ? 'fine' : 'sad';

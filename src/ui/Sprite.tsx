@@ -14,11 +14,25 @@ interface SpriteProps {
   label?: string;
   className?: string;
   style?: CSSProperties;
+  /** Multiplies the sprite by this color, like the game's draw color. */
+  tint?: [number, number, number];
 }
 
 /** Draws a rect of a game sprite sheet at an integer scale. */
-export function Sprite({ sheet, x, y, w, h, scale = 2, label, className, style }: SpriteProps) {
+export function Sprite({ sheet, x, y, w, h, scale = 2, label, className, style, tint }: SpriteProps) {
   const [sheetW, sheetH] = gameData().sheets[sheet] ?? [w, h];
+  const url = `url("${encodeURI(spriteUrl(sheet))}")`;
+  const position = `${-x * scale}px ${-y * scale}px`;
+  const size = `${sheetW * scale}px ${sheetH * scale}px`;
+  // Multiply blend with a solid color, then mask by the same sprite so the color stays inside it.
+  const tinted: CSSProperties | undefined = tint && {
+    backgroundColor: `rgb(${tint.join(' ')})`,
+    backgroundBlendMode: 'multiply',
+    maskImage: url,
+    maskPosition: position,
+    maskSize: size,
+    maskRepeat: 'no-repeat',
+  };
   return (
     <span
       className={className ? `sprite ${className}` : 'sprite'}
@@ -28,9 +42,10 @@ export function Sprite({ sheet, x, y, w, h, scale = 2, label, className, style }
       style={{
         width: w * scale,
         height: h * scale,
-        backgroundImage: `url("${encodeURI(spriteUrl(sheet))}")`,
-        backgroundPosition: `${-x * scale}px ${-y * scale}px`,
-        backgroundSize: `${sheetW * scale}px ${sheetH * scale}px`,
+        backgroundImage: url,
+        backgroundPosition: position,
+        backgroundSize: size,
+        ...tinted,
         ...style,
       }}
     />
