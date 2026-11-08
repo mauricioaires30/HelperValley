@@ -82,7 +82,7 @@ export function Constructions({ builder }: { builder: 'Robin' | 'Wizard' }) {
         {list.map((b) => {
           const rect = buildingRect(b);
           return (
-            <article key={b.id} className="build-card inset">
+            <article key={b.id} className="build-card inset" title={name(b.d)}>
               <Picture sheet={b.texture} rect={rect} />
               <div className="build-card__body">
                 <strong>{name(b.n)}</strong>
@@ -92,7 +92,6 @@ export function Constructions({ builder }: { builder: 'Robin' | 'Wizard' }) {
                   {b.days > 0 ? t('shops.build.days', { count: b.days }) : t('shops.build.instant')}
                   {b.upgradeOf && ` · ${t('shops.build.upgradeOf', { name: nameOf(b.upgradeOf) })}`}
                 </small>
-                <small className="build-card__desc">{name(b.d)}</small>
               </div>
             </article>
           );

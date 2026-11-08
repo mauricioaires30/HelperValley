@@ -87,7 +87,6 @@ export function ToolsSection({ save, player }: { save: SaveData; player: Player 
           </span>
         </li>
       </ul>
-      <p className="cc-summary__hint">{t('player.tools.hint')}</p>
     </section>
   );
 }

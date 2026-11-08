@@ -95,10 +95,7 @@
     "quickHint": "Selecione {{path}}. O navegador guarda uma cópia.",
     "quickButton": "Selecionar pasta Saves",
     "how": {
-      "title": "Como funciona",
-      "local": "O site lê os arquivos de save direto do seu PC; nada é enviado.",
-      "copy": "Cada save lido fica guardado no navegador, então o site abre mesmo sem a pasta.",
-      "live": "Com a pasta conectada (Chrome, Edge, Brave ou Opera), o site atualiza sozinho quando o jogo salva."
+      "local": "O site lê os saves direto do seu PC; nada é enviado."
     },
     "hidden": {
       "mac": "É uma pasta oculta: no seletor, aperte Cmd+Shift+. para ver pastas ocultas, ou Cmd+Shift+G e cole o caminho.",
@@ -188,7 +185,6 @@
     "secret": "Oculta",
     "close": "Quase lá!",
     "hideEarned": "Esconder conquistadas",
-    "perPlayer": "Por jogador. Troque o jogador no topo.",
     "showDetails": "Ver o que falta",
     "hideDetails": "Esconder",
     "details": {
@@ -457,7 +453,7 @@
     "pots_one": "{{count}} vaso de jardim",
     "pots_other": "{{count}} vasos de jardim",
     "planted": "{{count}} plantados · {{empty}} vazios",
-    "sprinklers": "Irrigadores regam ~{{tiles}} canteiros ({{percent}}% dos arados)",
+    "sprinklers": "Irrigadores: {{percent}}%",
     "beeHouses_one": "{{count}} colmeia",
     "beeHouses_other": "{{count}} colmeias",
     "machine": {
@@ -480,7 +476,7 @@
     "dead_other": "{{count}} plantas mortas",
     "animalsTitle": "Animais ({{count}})",
     "hay": "{{hay}} / {{capacity}} de feno em {{silos}} silo(s)",
-    "hayFill": "Compre {{count}} de feno para encher os silos (~{{cost}}g na Marnie)",
+    "hayFill": "Encher os silos: {{count}} (~{{cost}}g)",
     "fertilizer": "Fertilizante",
     "fert": {
       "none": "Nenhum",
@@ -539,7 +535,6 @@
     "addRow": "Adicionar plantação",
     "planProfit": "Lucro esperado nesta estação: {{profit}}g",
     "shoppingTitle": "Lista de compras",
-    "shoppingHint": "1 semente por canteiro, na loja mais barata.",
     "shoppingEmpty": "Adicione plantações aos planos para montar a lista.",
     "shoppingTotal": "Total: {{total}}g",
     "shop": {
@@ -576,9 +571,8 @@
       "ShadowShop": "Krobus"
     },
     "late": "não dá tempo ({{need}}d, restam {{left}})",
-    "hayStock": "{{perDay}}/dia · dura {{days}} dias (até {{date}})",
-    "hayCycle": "Silos cheios duram {{days}} dias (até {{date}})",
-    "hayNote": "Conta como se comessem feno todo dia.",
+    "hayStock": "{{perDay}}/dia, até {{date}}",
+    "hayCycle": "Cheios duram {{days}} dias",
     "hayShort": "Feno {{hay}}/{{capacity}} · dura {{days}} dias",
     "trees": "Árvores frutíferas ({{count}})",
     "treeCount_one": "1 árvore",
@@ -631,8 +625,8 @@
     "show": "Mostrar no mapa",
     "layer": {
       "npcs": "Moradores",
-      "events_one": "Eventos de coração disponíveis agora ({{count}})",
-      "events_other": "Eventos de coração disponíveis agora ({{count}})",
+      "events_one": "Eventos de coração ({{count}})",
+      "events_other": "Eventos de coração ({{count}})",
       "quests": "Missões marcadas",
       "fish": "Peixes marcados",
       "walnuts": "Nozes que faltam",
@@ -649,7 +643,6 @@
     "fishAdd": "Marcar",
     "shopClick": "Clique para ver o estoque de hoje.",
     "donationPin": "{{place}}: {{count}} para doar",
-    "tip": "Dica: marque peixes aqui ou em Coleções → Peixes, e missões na tela de Missões (botão \"Marcar\"). Tudo aparece neste mapa.",
     "weather": {
       "rain": "Chovendo",
       "sun": "Sol",
@@ -662,7 +655,8 @@
       "rain": "Resort fechado: chuva na ilha",
       "festival": "Resort fechado: dia de festival"
     },
-    "visitors": "Na ilha hoje"
+    "visitors": "Na ilha hoje",
+    "listHint": "clique para ver no mapa"
   },
   "prod": {
     "title": "Produção",
@@ -715,7 +709,7 @@
     },
     "office": {
       "locked": "O Escritório de Campo da Ilha Gengibre ainda não foi aberto.",
-      "hint": "Leve fósseis ao Professor Caracol (norte da ilha). Cada conjunto dá nozes.",
+      "hint": "Leve fósseis ao Professor Caracol, no norte da ilha.",
       "skeleton": "Animal grande",
       "snake": "Cobra",
       "bat": "Morcego mumificado",
@@ -755,10 +749,10 @@
     "fishClick": "Clique num peixe para marcar no mapa.",
     "lettersHint": "{{count}} cartas recebidas.",
     "notesHint": "Notas aparecem ao cavar, cortar mato e pescar depois de ler o primeiro diário.",
-    "recipeLegend": "Colorido: já fez · Apagado: receita conhecida, falta fazer · Silhueta: receita ainda não aprendida. Passe o mouse para ver ingredientes.",
+    "recipeLegend": "Colorido: feita · Apagada: conhecida · Silhueta: não aprendida",
     "family": {
       "title": "Família Extendida",
-      "hint": "Opcionais: só existem durante o pedido \"Família Extendida\" do Sr. Qi, no Quarto de Nozes da ilha. Ficam nos lugares dos lendários originais e não contam na coleção. Clique para marcar no mapa."
+      "hint": "Opcionais: só no pedido do Sr. Qi, nos lugares dos lendários originais. Não contam na coleção."
     }
   },
   "quests": {
@@ -785,11 +779,10 @@
     },
     "pinFish": "Marcar o peixe",
     "slayerTitle": "Metas do caçador (Guilda) · {{done}}/{{total}}",
-    "slayerHint": "Elimine monstros nas minas para o Marlon. Cada meta completa dá um prêmio na Guilda dos Aventureiros.",
     "slayerCollect": "pegue o prêmio com o Gil",
     "pinTip": "Dica: use \"Marcar\" numa missão para ela aparecer no mapa (aba Mapa).",
     "pondsTitle": "Pedidos dos lagos de peixe ({{count}})",
-    "pondsNone": "Nenhum lago pedindo item agora. Quando um lago enche, os peixes pedem algo para crescer.",
+    "pondsNone": "Nenhum lago pedindo item.",
     "pondOf": "Lago de {{fish}}",
     "pondHow": "Entregue no lago para liberar mais vagas ({{count}}/{{max}} peixes)."
   },
@@ -928,7 +921,6 @@
     "cracker": "biscoito dourado",
     "petted": "carinho em dia",
     "requests": "Pedidos de produtos de animais",
-    "noRequests": "Nenhuma missão ou pedido especial pedindo ovos, leite, lã ou trufas agora.",
     "daysLeft": "{{count}} dias",
     "sort": {
       "type": "Tipo",
@@ -952,7 +944,6 @@
       "level": "Nível de maestria {{level}} de 5",
       "toClaim": "{{count}} para resgatar nos pedestais",
       "max": "Maestria completa.",
-      "how": "Depois de tudo no nível 10, a XP extra vira XP de maestria (Cultivo conta metade). Cada nível deixa você resgatar um pedestal na caverna, que dá itens, receitas e um bônus.",
       "claimed": "resgatada"
     },
     "grandpa": {
@@ -993,8 +984,7 @@
         "4": "irídio"
       },
       "max": "máximo",
-      "nextRod": "Próxima: {{name}} ({{price}}g com o Willy)",
-      "hint": "Melhorias com o Clint levam 2 dias e custam o preço + 5 barras. As varas de pesca são compradas com o Willy."
+      "nextRod": "Próxima: {{name}} ({{price}}g com o Willy)"
     }
   },
   "shops": {
@@ -1121,7 +1111,6 @@
     "balls": "{{count}} bolas de slime para quebrar",
     "statue": "Estátua Maligna: sem bruxa",
     "noStatue": "Sem Estátua Maligna (a bruxa pode aparecer)",
-    "hint": "Cada bebedouro cheio deixa 5 slimes fazerem uma bola de slime durante a noite.",
     "machines": "Incubadoras e prensas",
     "kind": {
       "Green Slime": "Slime verde",
@@ -1210,7 +1199,7 @@
   },
   "perfection": {
     "title": "Perfeição: {{pct}}%",
-    "hint": "O mesmo cálculo do jogo. Em multiplayer, cada parte conta o melhor jogador. Clique numa parte para ver o que falta.",
+    "hint": "Em multiplayer, conta o melhor jogador de cada parte.",
     "done": "Completo!",
     "part": {
       "shipping": "Itens enviados",
@@ -1285,12 +1274,12 @@
       "mushroom-tree": "Árvore de cogumelo"
     },
     "loading": "Carregando…",
-    "empty": "Cole o link de um plano do stardew.info/planner para comparar com o que você já fez.",
+    "empty": "Cole o link de um plano do stardew.info.",
     "copyHow": "O stardew.info não deixa outros sites lerem o plano direto. Clique abaixo, copie tudo na página que abrir (Ctrl+A, Ctrl+C) e volte para esta aba: o site lê sozinho.",
     "openData": "Abrir dados do plano",
     "pasteManual": "Colar manualmente",
     "bookmark": "★ Enviar ao HelperValley",
-    "bookmarkHint": "Arraste o botão \"Enviar ao HelperValley\" para a barra de favoritos. Depois, em qualquer plano do stardew.info, clique nele e o plano chega aqui sozinho.",
+    "bookmarkHint": "Arraste para os favoritos e clique nele em um plano do stardew.info.",
     "ignore": "Ignorar:",
     "cat": {
       "crops": "Plantações",
@@ -1321,7 +1310,7 @@
   "share": {
     "title": "Jogar junto (multiplayer)",
     "host": "Compartilhar este save",
-    "hostHint": "Gera um código para os outros jogadores verem esta fazenda ao vivo, enquanto o site estiver aberto aqui.",
+    "hostHint": "Os outros jogadores veem esta fazenda ao vivo com um código.",
     "needSave": "Abra um save primeiro.",
     "yourCode": "Código da sala:",
     "copy": "Copiar código",
@@ -1346,7 +1335,7 @@
     "peers_zero": "Ao vivo · ninguém conectado ainda"
   },
   "stardrops": {
-    "hint": "Cada fruta-estrela aumenta sua energia máxima em 34. Marque no mapa as que ficam em um lugar.",
+    "hint": "Cada uma dá +34 de energia máxima.",
     "eaten": "Já comida",
     "pin": "Marcar no mapa",
     "pinned": "Marcada",

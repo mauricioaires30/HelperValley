@@ -16,14 +16,13 @@ function BuildingCard({ b, title, extra }: { b: BuildingData; title?: string; ex
   const { t } = useTranslation();
   const name = useGameName();
   return (
-    <article className="build-card inset">
+    <article className="build-card inset" title={extra}>
       <Picture sheet={b.texture} rect={buildingRect(b)} />
       <div className="build-card__body">
         <strong>{title ?? name(b.n)}</strong>
         <span className="build-card__price">{b.cost.toLocaleString()}g</span>
         {b.materials.length > 0 && <Materials list={b.materials} />}
         <small>{b.days > 0 ? t('shops.build.days', { count: b.days }) : t('shops.build.instant')}</small>
-        {extra && <small className="build-card__desc">{extra}</small>}
       </div>
     </article>
   );
@@ -97,14 +96,13 @@ export function FarmBuildings({ save, player }: { save: SaveData; player: Player
             const b = byId.get(type)!;
             const where = [...new Set(built.filter((x) => x.type === type).map((x) => x.location))];
             return (
-              <article key={type} className="build-card inset">
+              <article key={type} className="build-card inset" title={name(b.d)}>
                 <Picture sheet={b.texture} rect={buildingRect(b)} />
                 <div className="build-card__body">
                   <strong>
                     {name(b.n)} ×{n}
                   </strong>
                   <small>{where.map((w) => place(w)).join(', ')}</small>
-                  <small className="build-card__desc">{name(b.d)}</small>
                 </div>
               </article>
             );

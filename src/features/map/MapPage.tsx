@@ -213,7 +213,9 @@ export function MapPage() {
   const pinnedQuests = usePinStore((s) => s.quests);
   const pinnedFish = usePinStore((s) => s.fish);
   const pinnedStardrops = usePinStore((s) => s.stardrops);
-  const { view, viewport, handlers, zoomIn, zoomOut, reset } = usePanZoom();
+  const { view, viewport, handlers, focus, zoomIn, zoomOut, reset } = usePanZoom();
+  // The person picked in the list, shown up close on the map.
+  const [focused, setFocused] = useState<string | null>(null);
   // The map's width on screen decides which pins would overlap.
   const [mapWidth, setMapWidth] = useState(900);
   useEffect(() => {
@@ -315,8 +317,8 @@ export function MapPage() {
         // Buildings and caves show at their door; real water goes on the drawn water.
         if (!isOpenArea(worldMap, pixel.region, place)) return [{ key: `f-${id}-${l.location}-${l.area ?? ''}-${i}`, ...pixel, id }];
         const onWater = snapToMap(worldMap, pixel, 'water', 15);
-        // Water the map doesn't draw (the backwoods' pond): no pin on dry land.
-        return isWater(worldMap, onWater.region, onWater.px, onWater.py) ? [{ key: `f-${id}-${l.location}-${l.area ?? ''}-${i}`, ...onWater, id }] : [];
+        // Water the map doesn't draw (the backwoods' pond): no pin on dry land. The desert is all drawn blank.
+        return place === 'Desert' || isWater(worldMap, onWater.region, onWater.px, onWater.py) ? [{ key: `f-${id}-${l.location}-${l.area ?? ''}-${i}`, ...onWater, id }] : [];
       });
     }),
   );
@@ -384,13 +386,13 @@ export function MapPage() {
       ...(layers.shops ? shopPins.map(lifted) : []),
       ...(layers.donations ? donationPins.map(lifted) : []),
       ...(layers.stardrops ? stardropPins.map(lifted) : []),
+      ...(layers.npcs ? regionPlaces.filter((p) => !p.walking).map((p) => ({ key: p.npc, px: p.px, py: p.py })) : []),
     ],
     mapScale,
   );
-  const faceLayout = layoutPins(layers.npcs ? regionPlaces.filter((p) => !p.walking).map((p) => ({ key: p.npc, px: p.px, py: p.py })) : [], mapScale);
   /** Position of a pin; alone it hangs from its point (`anchor`), in a group it's centered on its cell. */
   const pinStyle = (key: string, px: number, py: number, anchor: '-100%' | '-50%') => {
-    const at = pinLayout.get(key) ?? faceLayout.get(key);
+    const at = pinLayout.get(key);
     if (!at?.grouped) {
       const y = at ? at.py + (anchor === '-100%' ? PIN_LIFT / mapScale : 0) : py;
       return { left: pct(at?.px ?? px, mapW), top: pct(y, mapH), transform: `translate(-50%, ${anchor}) ${unscale}` };
@@ -398,10 +400,30 @@ export function MapPage() {
     return { left: pct(at.px, mapW), top: pct(at.py, mapH), transformOrigin: '50% 50%', transform: `translate(-50%, -50%) ${unscale} translate(${at.dx}px, ${at.dy}px)` };
   };
 
+  /** Shows someone from the list up close: their region, their spot, their name. */
+  const showPerson = (p: Placed) => {
+    if (!p.region) return;
+    if (focused === p.npc) {
+      setFocused(null);
+      reset();
+      return;
+    }
+    const [, , w, h] = worldMap.regions[p.region].source;
+    setRegion(p.region);
+    setLayers((l) => ({ ...l, npcs: true }));
+    setFocused(p.npc);
+    focus(p.px / w, p.py / h, 4);
+    viewport.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
   return (
     <div className="map-page">
       <header className="cc__header">
         <h2>{t('map.title')}</h2>
+        <span className="map-status">
+          {isToday || isTomorrow ? (raining ? t('map.weather.rain') : t('map.weather.sun')) : t('map.weather.unknown')}
+          {island && ` · ${t(`map.resortState.${island.state}`)}`}
+        </span>
         <div className="calendar__nav">
           {(['Valley', 'GingerIsland'] as RegionId[]).map((r) => (
             <button key={r} className={r === region ? 'button button--primary' : 'button'} onClick={() => setRegion(r)}>
@@ -431,10 +453,6 @@ export function MapPage() {
             <span className="cc-summary__hint">{t(`calendar.weekdays.${WEEKDAYS[(day - 1) % 7].toLowerCase()}`)}</span>
           </label>
         </div>
-        <div className="map-status">
-          {isToday || isTomorrow ? <span className="box">{raining ? t('map.weather.rain') : t('map.weather.sun')}</span> : <span className="box">{t('map.weather.unknown')}</span>}
-          {island && <span className="box">{t(`map.resortState.${island.state}`)}</span>}
-        </div>
       </div>
 
       <div className="map-layout">
@@ -447,7 +465,13 @@ export function MapPage() {
               −
             </button>
             {view.zoom > 1 && (
-              <button className="button" onClick={reset}>
+              <button
+            className="button"
+            onClick={() => {
+              reset();
+              setFocused(null);
+            }}
+          >
                 {t('map.zoomReset')}
               </button>
             )}
@@ -590,7 +614,7 @@ export function MapPage() {
                     return (
                       <span
                         key={p.npc}
-                        className={p.walking ? 'map-npc map-npc--walking' : 'map-npc'}
+                        className={['map-npc', p.walking ? 'map-npc--walking' : '', focused === p.npc ? 'map-npc--focus' : ''].join(' ')}
                         style={pinStyle(p.npc, p.px, p.py, '-50%')}
                       >
                         <Tooltip
@@ -605,6 +629,7 @@ export function MapPage() {
                           <span className="map-npc__face">
                             <NpcHead npc={p.npc} scale={2} />
                           </span>
+                          {focused === p.npc && <span className="map-npc__name box">{name(npcs[p.npc]?.n)}</span>}
                         </Tooltip>
                       </span>
                     );
@@ -650,7 +675,6 @@ export function MapPage() {
               {t('map.layer.stardrops')} ({STARDROPS.filter((s) => pinnedStardrops.includes(s.id) && !player?.mailReceived.includes(s.flag)).length})
             </label>
           )}
-          <p className="map-tip">{t('map.tip')}</p>
           {island && island.visitors.length > 0 && (
             <div className="map-visitors">
               <h4>{t('map.visitors')}</h4>
@@ -667,17 +691,21 @@ export function MapPage() {
       </div>
 
       <section className="box map-list-box">
-        <h3>{t('map.listTitle', { time: formatTime(time) })}</h3>
+        <h3>
+          {t('map.listTitle', { time: formatTime(time) })} <small className="cc-summary__hint">{t('map.listHint')}</small>
+        </h3>
         <ul className="map-list dashed-list">
           {[...places]
             .sort((a, b) => name(npcs[a.npc]?.n).localeCompare(name(npcs[b.npc]?.n)))
             .map((p) => (
               <li key={p.npc} className={p.region === region ? undefined : 'rel__muted'}>
-                <NpcHead npc={p.npc} />
-                <span>
-                  <strong>{name(npcs[p.npc]?.n)}</strong> · {p.walking ? t('map.walkingTo', { place: locationName(p.location) }) : locationName(p.location)}
-                  {p.region && p.region !== region && ` (${t(`map.region.${p.region}`)})`}
-                </span>
+                <button type="button" className="map-person" aria-pressed={focused === p.npc} disabled={!p.region} onClick={() => showPerson(p)}>
+                  <NpcHead npc={p.npc} />
+                  <span>
+                    <strong>{name(npcs[p.npc]?.n)}</strong> · {p.walking ? t('map.walkingTo', { place: locationName(p.location) }) : locationName(p.location)}
+                    {p.region && p.region !== region && ` (${t(`map.region.${p.region}`)})`}
+                  </span>
+                </button>
               </li>
             ))}
         </ul>

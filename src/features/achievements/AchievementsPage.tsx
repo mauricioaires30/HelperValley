@@ -79,7 +79,7 @@ function Achievements({ save, player }: { save: SaveData; player: Player }) {
       </header>
       <div className="museum__progress">
         <Progress value={earned} max={progress.length} />
-        <p className="cc-summary__hint">{t('ach.perPlayer')}</p>
+        
       </div>
       <ul className="ach-list">
         {visible.map((p) => (

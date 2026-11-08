@@ -173,7 +173,7 @@ function ShoppingList({ save, plans }: { save: SaveData; plans: FarmPlans }) {
   return (
     <section className="box farm-plan">
       <h3>{t('farm.shoppingTitle')}</h3>
-      <p className="cc-summary__hint">{t('farm.shoppingHint')}</p>
+      
       <table className="farm-table">
         <tbody>
           {[...lines.values()].map((line) => {
