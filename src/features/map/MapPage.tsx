@@ -14,7 +14,7 @@ import { SEASONS } from '@/features/calendar/calendar';
 import { describeEvent } from '@/features/relationships/eventConditions';
 import { formatTime, resolveSchedule, WEEKDAYS, type ScheduleData, type ScheduleResult, type Stop } from './schedule';
 import { layoutPins } from './pinLayout';
-import { pointAlong, roadRoute, routeLength, type Point } from './roads';
+import { npcRoute, routeMinutes, TILES_PER_MINUTE, type RouteTile } from './npcRoute';
 import { toMapPixel, type RegionId } from './worldMap';
 import { usePanZoom } from '@/ui/usePanZoom';
 import './map.css';
@@ -85,35 +85,59 @@ function scheduledNpcs() {
   return Object.keys(schedules).filter((npc) => npcs[npc] && npcs[npc].social !== 3);
 }
 
+/** Adds game minutes to a time (1350 + 20 is 1410). */
+const addMinutes = (time: number, minutes: number) => {
+  const total = Math.floor(time / 100) * 60 + (time % 100) + minutes;
+  return Math.floor(total / 60) * 100 + (total % 60);
+};
+
 /**
- * Where an NPC is at `time`. After leaving a stop they walk toward the next one along the map's roads,
- * for the minutes the trip takes (about one map pixel per minute). Places without a road to them
- * (the desert, the island's few trips) have no walking part on the Valley map.
+ * Where an NPC is at `time`. At each stop's time they leave the previous one and walk the game's own
+ * route to it, tile by tile, at the game's speed. Stops marked "a" are arrival times: they leave
+ * early enough, rounded to 10 minutes like NPC.parseMasterSchedule does.
  */
 function placeAt(data: ScheduleData, schedule: ScheduleResult, time: number, married: boolean) {
+  const map = gameData().worldMap;
   const start: Stop | null = data.home ? { time: 600, location: data.home[0], x: data.home[1], y: data.home[2] } : null;
   let from = start;
   let to = start;
+  let leftAt = start?.time ?? 600;
+  let previousLeft = leftAt;
   for (const stop of schedule.stops) {
-    if (stop.time > time) break;
+    let leaves = stop.time;
+    if (stop.arriveBy && to) {
+      const trip = npcRoute(to, stop);
+      const tiles = trip ? Math.max(0, trip.length - 1) : 0;
+      leaves = Math.max(addMinutes(stop.time, -Math.round((tiles * 32) / 420) * 10), previousLeft);
+    }
+    if (leaves > time) break;
     from = to;
     to = stop;
+    leftAt = leaves;
+    previousLeft = leaves;
   }
   if (!to) return null;
   // A spouse without a schedule today stays at the farmhouse.
   const location = married && !schedule.key ? 'Farm' : to.location;
-  const end = toMapPixel(gameData().worldMap, location, to.x, to.y);
-  if (!end) return { location, since: to.time, walking: false, pixel: null };
-  const origin = from && from !== to ? toMapPixel(gameData().worldMap, from.location, from.x, from.y) : null;
-  if (origin && origin.region === end.region) {
-    const route: readonly Point[] | null = end.region === 'Valley' ? roadRoute([origin.px, origin.py], [end.px, end.py]) : [[origin.px, origin.py], [end.px, end.py]];
-    const elapsed = minutesBetween(to.time, time);
-    if (route && elapsed < routeLength(route)) {
-      const [px, py] = pointAlong(route, elapsed);
-      return { location, since: to.time, walking: true, pixel: { region: end.region, px, py } };
+  const end = toMapPixel(map, location, to.x, to.y);
+  if (from && from !== to) {
+    const route: RouteTile[] | null = npcRoute(from, to);
+    const elapsed = minutesBetween(leftAt, time);
+    if (route && elapsed < routeMinutes(route)) {
+      // Between two tiles of a map it glides; warps jump, as in the game.
+      const at = elapsed * TILES_PER_MINUTE;
+      const i = Math.floor(at);
+      for (let k = i; k >= 0; k--) {
+        const here = toMapPixel(map, route[k].location, route[k].x, route[k].y);
+        if (!here) continue; // Places missing from the world map: they still show at the last known spot.
+        const next = k === i && route[i + 1]?.location === route[i].location ? toMapPixel(map, route[i + 1].location, route[i + 1].x, route[i + 1].y) : null;
+        const f = at - i;
+        const pixel = next ? { region: here.region, px: here.px + (next.px - here.px) * f, py: here.py + (next.py - here.py) * f } : here;
+        return { location, since: leftAt, walking: true, pixel };
+      }
     }
   }
-  return { location, since: to.time, walking: false, pixel: end };
+  return { location, since: leftAt, walking: false, pixel: end };
 }
 
 /** Heart events this player can trigger on the chosen day and time, from their preconditions. */

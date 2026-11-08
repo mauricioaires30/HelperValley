@@ -40,7 +40,7 @@ export function TodayChecklist({ save, player }: { save: SaveData; player: Playe
   if (harvest) todos.push({ key: 'harvest', icon: <ItemIcon id="(O)24" tooltip={false} />, text: t('todo.harvest', { count: harvest }), to: '/farm/crops', urgent: true, scope: 'farm' });
   // Hay for tomorrow morning: one per animal.
   const hayShort = save.farm.animals.length - save.farm.hay;
-  if (hayShort > 0) todos.push({ key: 'hay', icon: <ItemIcon id="(O)178" tooltip={false} />, text: t('todo.hay', { count: hayShort }), to: '/shops/AnimalShop', urgent: true, scope: 'farm' });
+  if (hayShort > 0) todos.push({ key: 'hay', icon: <ItemIcon id="(O)178" tooltip={false} />, text: t('todo.hay', { count: hayShort }), to: '/farm/animals', urgent: true, scope: 'farm' });
   const toPet = save.farm.animals.filter((a) => !a.autoPet).length;
   if (toPet) todos.push({ key: 'pet', icon: <ItemIcon id="(O)176" tooltip={false} />, text: t('todo.pet', { count: toPet }), to: '/farm/animals', urgent: true, scope: 'farm' });
   if (save.farm.pets.length && save.farm.bowls.some((w) => !w) && !save.isRaining)
@@ -63,6 +63,10 @@ export function TodayChecklist({ save, player }: { save: SaveData; player: Playe
   const events = availableEvents(player, season, day, 1200, save.isRaining);
   if (events.length)
     todos.push({ key: 'events', icon: <UiIcon name="heart-full" w={7} h={6} scale={3} />, text: t('todo.events', { count: events.length, names: [...new Set(events.map((e) => name(npcs[e.npc]?.n)))].join(', ') }), to: '/map', scope: 'player' });
+  // A kiss and a chat a day keep the spouse happy; a roommate only talks.
+  const partner = player.spouse ? player.friendships[player.spouse] : undefined;
+  if (player.spouse && npcs[player.spouse] && partner && !partner.talkedToday)
+    todos.push({ key: 'spouse', icon: <NpcHead npc={player.spouse} />, text: t(partner.status === 'Roommate' ? 'todo.roommate' : 'todo.spouse', { name: name(npcs[player.spouse].n) }), to: '/relationships', urgent: true, scope: 'player' });
   const children = save.children.filter((c) => !player.friendships[c.name]?.talkedToday);
   if (children.length) todos.push({ key: 'kids', icon: <UiIcon name="heart-full" w={7} h={6} scale={3} />, text: t('todo.kids', { names: children.map((c) => c.name).join(', ') }), to: '/relationships', scope: 'player' });
 

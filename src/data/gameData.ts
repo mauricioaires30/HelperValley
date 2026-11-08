@@ -1,5 +1,6 @@
 import type { WorldMapData } from '@/features/map/worldMap';
 import type { ScheduleData } from '@/features/map/schedule';
+import type { NpcPathMap } from '@/features/map/npcRoute';
 /** Localized name as [en, pt], matching the extractor output. */
 export type LocalizedName = [string, string];
 
@@ -162,6 +163,8 @@ export interface GameData {
   farm: FarmData;
   worldMap: WorldMapData;
   schedules: Record<string, ScheduleData>;
+  /** Walking grids, warps and doors per location, for NPC routes. */
+  npcPaths: Record<string, NpcPathMap>;
   fish: Record<string, FishData>;
   walnuts: WalnutSpot[];
   gameCollections: {
@@ -218,7 +221,7 @@ export interface WalnutSpot {
   tile: [number, number];
 }
 
-const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents', 'farm', 'worldMap', 'schedules', 'fish', 'walnuts', 'gameCollections', 'player', 'shops'] as const;
+const DATASETS = ['items', 'npcs', 'universalGifts', 'sheets', 'bundles', 'achievements', 'achievementGoals', 'museum', 'calendar', 'heartEvents', 'farm', 'worldMap', 'schedules', 'npcPaths', 'fish', 'walnuts', 'gameCollections', 'player', 'shops'] as const;
 
 export const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 export const spriteUrl = (sheet: string) => assetUrl(`sprites/${sheet}.png?v=${__BUILD_ID__}`);

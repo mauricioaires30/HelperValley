@@ -19,6 +19,7 @@ import { buildAchievementGoals, buildAchievements, buildBundles, buildMuseum } f
 import { buildCalendar, buildHeartEvents } from './lib/calendar.mjs';
 import { buildFarm } from './lib/farm.mjs';
 import { buildSchedules, buildWorldMap } from './lib/worldmap.mjs';
+import { buildNpcPaths } from './lib/npcPaths.mjs';
 import { buildFish } from './lib/fish.mjs';
 import { buildWalnutSpots } from './lib/walnuts.mjs';
 import { buildGameCollections } from './lib/collectionsGame.mjs';
@@ -62,6 +63,7 @@ const datasets = {
   farm: buildFarm(textures),
   worldMap: await buildWorldMap(gameDir, textures),
   schedules: buildSchedules(),
+  npcPaths: await buildNpcPaths(gameDir),
   fish: buildFish(),
   walnuts: buildWalnutSpots(gameDir),
   gameCollections: buildGameCollections(),

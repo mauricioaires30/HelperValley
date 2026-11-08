@@ -25,6 +25,8 @@ export interface Stop {
   location: string;
   x: number;
   y: number;
+  /** "a1300": the time to arrive by, instead of the time to leave at. */
+  arriveBy?: boolean;
 }
 
 export interface ScheduleResult {
@@ -65,7 +67,7 @@ export function parseStops(value: string): Stop[] {
     const tokens = part.trim().split(/\s+/);
     const time = Number(tokens[0]?.replace(/^a/, ''));
     if (!Number.isFinite(time) || tokens.length < 4) continue;
-    stops.push({ time, location: tokens[1], x: Number(tokens[2]), y: Number(tokens[3]) });
+    stops.push({ time, location: tokens[1], x: Number(tokens[2]), y: Number(tokens[3]), ...(tokens[0].startsWith('a') ? { arriveBy: true } : {}) });
   }
   return stops;
 }
