@@ -6,6 +6,9 @@ export interface ScheduleData {
   /** [location, x, y] where the NPC starts the day. */
   home: [string, number, number] | null;
   island: string | null;
+  /** Data/Characters CanSocialize. */
+  social?: string | null;
+  female?: boolean;
   schedules: Record<string, string>;
 }
 

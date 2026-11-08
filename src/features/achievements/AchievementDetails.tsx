@@ -205,6 +205,19 @@ export function AchievementDetails({ id, player }: { id: string; player: Player 
       );
     }
 
+    case '34': {
+      const shipped = gameData().gameCollections.shipped.filter((id) => (player.basicShipped[id.replace(/^\(O\)/, '')] ?? 0) === 0);
+      return (
+        <>
+          <p className="cc-summary__hint">{t('ach.details.shipment', { count: shipped.length })}</p>
+          <ItemGrid items={shipped.map((id) => ({ id }))} />
+          <Link className="button" to="/collections/shipped">
+            {t('ach.details.shipmentLink')}
+          </Link>
+        </>
+      );
+    }
+
     case '31': {
       const missing = goals.polyculture
         .map((crop) => ({ crop, shipped: player.basicShipped[crop] ?? 0 }))
@@ -262,4 +275,4 @@ export function AchievementDetails({ id, player }: { id: string; player: Player 
 }
 
 /** Achievements whose details panel has something to show. */
-export const HAS_DETAILS = new Set(['0', '1', '2', '3', '4', '5', '6', '7', '9', '11', '12', '13', '15', '16', '17', '18', '19', '20', '21', '22', '24', '25', '26', '28', '29', '30', '31', '32']);
+export const HAS_DETAILS = new Set(['0', '1', '2', '3', '4', '5', '6', '7', '9', '11', '12', '13', '15', '16', '17', '18', '19', '20', '21', '22', '24', '25', '26', '28', '29', '30', '31', '32', '34']);

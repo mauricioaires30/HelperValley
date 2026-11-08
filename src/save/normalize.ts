@@ -308,6 +308,8 @@ export function normalizeSave(xml: string, folder: string): SaveData {
     dailyLuck: num(save.dailyLuck),
     weatherTomorrow: weather(save.weatherForTomorrow),
     isRaining: bool(save.isRaining),
+    islandRaining: islandWeather(save),
+    villagers: findVillagers(locations),
     goldenWalnuts: num(save.goldenWalnuts),
     goldenWalnutsFound: num(save.goldenWalnutsFound),
     lostBooksFound: num(save.lostBooksFound),
@@ -439,6 +441,25 @@ function findSlimeHutches(locations: XmlValue[]): SlimeHutchState[] {
 }
 
 /** Children live in the farmhouse (or a cabin) as Child NPCs. */
+/** LocationWeather of the island's context. */
+function islandWeather(save: XmlNode): boolean {
+  const entry = dictEntries(save.locationWeather).find(([key]) => key === 'Island');
+  return bool(node(node(entry?.[1])?.LocationWeather ?? entry?.[1])?.isRaining);
+}
+
+function findVillagers(locations: XmlValue[]): SaveData['villagers'] {
+  const out: SaveData['villagers'] = [];
+  for (const location of walkLocations(locations)) {
+    for (const c of arr(node(location.characters)?.NPC)) {
+      const npc = node(c);
+      // Plain NPCs only: children, pets, horses and monsters have their own types.
+      if (!npc || xsiType(npc)) continue;
+      out.push({ name: text(npc.name) ?? '', location: text(location.name) ?? '', age: num(npc.age), invisible: bool(npc.isInvisible) || num(npc.daysUntilNotInvisible) > 0 });
+    }
+  }
+  return out;
+}
+
 function findChildren(locations: XmlValue[]): ChildState[] {
   const out: ChildState[] = [];
   for (const location of walkLocations(locations)) {

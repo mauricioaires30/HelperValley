@@ -7,6 +7,8 @@ interface Pins {
   quests: string[];
   /** Fish item ids marked on the map. */
   fish: string[];
+  /** Stardrops with a place to go (collections/stardrops.ts). */
+  stardrops: string[];
 }
 
 interface PinState extends Pins {
@@ -16,9 +18,9 @@ interface PinState extends Pins {
 function load(): Pins {
   try {
     const raw = JSON.parse(localStorage.getItem(KEY) ?? '{}');
-    return { quests: raw.quests ?? [], fish: raw.fish ?? [] };
+    return { quests: raw.quests ?? [], fish: raw.fish ?? [], stardrops: raw.stardrops ?? [] };
   } catch {
-    return { quests: [], fish: [] };
+    return { quests: [], fish: [], stardrops: [] };
   }
 }
 
@@ -30,7 +32,7 @@ export const usePinStore = create<PinState>((set, get) => ({
     const next = list.includes(id) ? list.filter((x) => x !== id) : [...list, id];
     set({ [kind]: next } as Partial<Pins>);
     try {
-      localStorage.setItem(KEY, JSON.stringify({ quests: get().quests, fish: get().fish }));
+      localStorage.setItem(KEY, JSON.stringify({ quests: get().quests, fish: get().fish, stardrops: get().stardrops }));
     } catch {
       // Pins just won't survive a reload.
     }

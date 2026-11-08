@@ -2,13 +2,14 @@ import { NavLink, Navigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AchievementsPage } from '@/features/achievements/AchievementsPage';
 import { WalnutsTab } from '@/features/walnuts/WalnutsTab';
+import { StardropsTab } from './StardropsTab';
 import { PerfectionTab } from './Perfection';
 import { GameCollectionTab, LettersTab, NotesTab, type GameTab } from './GameCollections';
 import './collections.css';
 
 /** Same tabs as the game's collections menu, then the bigger trackers. */
 const GAME_TABS = ['shipped', 'fish', 'artifacts', 'minerals', 'cooking', 'crafting', 'achievements', 'letters', 'notes'] as const;
-const EXTRA_TABS = ['walnuts', 'perfection'] as const;
+const EXTRA_TABS = ['walnuts', 'stardrops', 'perfection'] as const;
 type Tab = (typeof GAME_TABS)[number] | (typeof EXTRA_TABS)[number];
 
 const isGrid = (tab: Tab): tab is GameTab => ['shipped', 'fish', 'artifacts', 'minerals', 'cooking', 'crafting'].includes(tab);
@@ -37,6 +38,7 @@ export function CollectionsPage() {
       {tab === 'notes' && <NotesTab />}
       {tab === 'walnuts' && <WalnutsTab />}
       {tab === 'perfection' && <PerfectionTab />}
+      {tab === 'stardrops' && <StardropsTab />}
     </div>
   );
 }

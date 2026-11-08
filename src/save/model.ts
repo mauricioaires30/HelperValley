@@ -232,6 +232,10 @@ export interface SaveData {
   dailyLuck: number;
   weatherTomorrow: string;
   isRaining: boolean;
+  /** Ginger Island has its own weather. */
+  islandRaining: boolean;
+  /** Every villager where the day starts, in the game's order (it decides the resort's draw). */
+  villagers: Array<{ name: string; location: string; age: number; invisible: boolean }>;
   goldenWalnuts: number;
   goldenWalnutsFound: number;
   lostBooksFound: number;

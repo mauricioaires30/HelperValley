@@ -59,7 +59,7 @@ function Achievements({ save, player }: { save: SaveData; player: Player }) {
   const [openId, setOpenId] = useState<string | null>(null);
   const progress = useMemo(() => {
     const ids = Object.keys(gameData().achievements).sort((a, b) => Number(a) - Number(b));
-    return achievementProgress(save, player, gameData().achievementGoals, ids);
+    return achievementProgress(save, player, gameData().achievementGoals, ids, gameData().gameCollections.shipped);
   }, [save, player]);
   const earned = progress.filter((p) => p.earned).length;
 
