@@ -1287,5 +1287,32 @@
     "tipHas": "In the save: {{name}}",
     "tipExtra": "Outside the plan: {{name}}",
     "nothing": "nothing"
+  },
+  "share": {
+    "title": "Play together (multiplayer)",
+    "host": "Share this save",
+    "hostHint": "Makes a code so the other players can see this farm live, while the site is open here.",
+    "needSave": "Open a save first.",
+    "yourCode": "Room code:",
+    "copy": "Copy code",
+    "peers_one": "Live · {{count}} player connected",
+    "peers_other": "Live · {{count}} players connected",
+    "starting": "Opening the room…",
+    "error": "Couldn't open the room. Try again.",
+    "stop": "Stop sharing",
+    "codePlaceholder": "Host's code (ABC-123)",
+    "join": "Join room",
+    "badCode": "Invalid code or room not found.",
+    "room": "Room {{code}}",
+    "leave": "Leave room",
+    "guest": {
+      "joining": "Connecting…",
+      "joined": "Live: showing the host's save",
+      "hostAway": "The host is offline; showing the last copy",
+      "error": "Couldn't join the room."
+    },
+    "chipHost": "Sharing {{code}} · {{count}}",
+    "chipGuest": "Host's save ({{code}})",
+    "peers_zero": "Live · nobody connected yet"
   }
 }

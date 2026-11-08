@@ -55,38 +55,36 @@ function ChildSprite({ child }: { child: ChildState }) {
   return child.age >= 3 ? <Sprite sheet={sheet} x={0} y={0} w={16} h={32} scale={2} /> : <Sprite sheet={sheet} x={0} y={0} w={22} h={16} scale={2} />;
 }
 
-/** Your children: age, hearts and whether you've talked today. */
-function Children({ save, player }: { save: SaveData; player: Player }) {
+/** This player's children. */
+const childrenOf = (save: SaveData, player: Player) => save.children.filter((c) => !c.parent || c.parent === player.id || save.players.length === 1);
+
+/** Child cards (age, hearts, talked today), shown with the spouse under Family. */
+function ChildCards({ save, player }: { save: SaveData; player: Player }) {
   const { t } = useTranslation();
-  const children = save.children.filter((c) => !c.parent || c.parent === player.id || save.players.length === 1);
-  if (children.length === 0) return null;
   return (
-    <section className="rel-children">
-      <h2>{t('rel.children.title')}</h2>
-      <div className="rel-grid">
-        {children.map((c) => {
-          const f = player.friendships[c.name];
-          return (
-            <article key={c.name} className="rel box">
-              <span className="rel-child__pic">
-                <ChildSprite child={c} />
-              </span>
-              <div className="rel__body">
-                <header className="rel__header">
-                  <h3>{c.name}</h3>
-                  <span className="rel__status">{t(`rel.children.age.${Math.min(3, c.age)}`)}</span>
-                </header>
-                <Hearts value={Math.floor((f?.points ?? 0) / POINTS_PER_HEART)} max={10} />
-                <ul className="rel__facts">
-                  <li>{t('rel.children.days', { count: c.daysOld })}</li>
-                  <li className={f?.talkedToday ? 'rel__muted' : undefined}>{f?.talkedToday ? t('rel.children.talked') : t('rel.children.talk')}</li>
-                </ul>
-              </div>
-            </article>
-          );
-        })}
-      </div>
-    </section>
+    <>
+      {childrenOf(save, player).map((c) => {
+        const f = player.friendships[c.name];
+        return (
+          <article key={c.name} className="rel box">
+            <span className="rel-child__pic">
+              <ChildSprite child={c} />
+            </span>
+            <div className="rel__body">
+              <header className="rel__header">
+                <h3>{c.name}</h3>
+                <span className="rel__status">{t(`rel.children.age.${Math.min(3, c.age)}`)}</span>
+              </header>
+              <Hearts value={Math.floor((f?.points ?? 0) / POINTS_PER_HEART)} max={10} />
+              <ul className="rel__facts">
+                <li>{t('rel.children.days', { count: c.daysOld })}</li>
+                <li className={f?.talkedToday ? 'rel__muted' : undefined}>{f?.talkedToday ? t('rel.children.talked') : t('rel.children.talk')}</li>
+              </ul>
+            </div>
+          </article>
+        );
+      })}
+    </>
   );
 }
 
@@ -220,17 +218,19 @@ function Relationships({ save, player }: { save: SaveData; player: Player }) {
           )}
         </label>
       </header>
-      <Children save={save} player={player} />
       {sort === 'groups' ? (
         GROUPS.map((group) => {
           const list = sorted.filter((rel) => groupOf(rel) === group);
-          if (!list.length) return null;
+          // Family = spouse and children together.
+          const kids = group === 'family' ? childrenOf(save, player).length : 0;
+          if (!list.length && !kids) return null;
           return (
             <section key={group} className="rel-section">
               <h2 className="quest-section">
-                {t(`rel.group.${group}`)} ({list.length})
+                {t(`rel.group.${group}`)} ({list.length + kids})
               </h2>
               <div className="rel-grid">
+                {group === 'family' && <ChildCards save={save} player={player} />}
                 {list.map((rel) => (
                   <RelationshipCard key={rel.npc} rel={rel} owned={owned} />
                 ))}
@@ -240,6 +240,7 @@ function Relationships({ save, player }: { save: SaveData; player: Player }) {
         })
       ) : (
         <div className="rel-grid">
+          <ChildCards save={save} player={player} />
           {sorted.map((rel) => (
             <RelationshipCard key={rel.npc} rel={rel} owned={owned} />
           ))}

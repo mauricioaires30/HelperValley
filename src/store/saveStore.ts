@@ -59,6 +59,8 @@ interface SaveState {
   selectSave(folder: string): Promise<void>;
   selectPlayer(id: string): void;
   disconnect(): Promise<void>;
+  /** Shows a save received from a multiplayer host (live share), instead of a local one. */
+  showShared(save: SaveData): void;
 }
 
 let pollTimer: number | undefined;
@@ -182,6 +184,22 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
   }
 
   return {
+    showShared(save: SaveData) {
+      stopPolling();
+      const previous = getState().save;
+      const now = Date.now();
+      setState({
+        save,
+        folder: 'shared',
+        playerId: getState().save?.uniqueId === save.uniqueId ? getState().playerId : rememberedPlayer(save),
+        status: 'ready',
+        loadedAt: now,
+        cachedAt: null,
+        // A new day from the host shows the same "the game saved" toast as a local save.
+        lastUpdate: previous && previous.uniqueId === save.uniqueId && JSON.stringify(previous.date) !== JSON.stringify(save.date) ? { at: now, date: save.date } : getState().lastUpdate,
+      });
+    },
+
     status: 'idle',
     error: null,
     source: null,

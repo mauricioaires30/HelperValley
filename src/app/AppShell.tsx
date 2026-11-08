@@ -8,6 +8,7 @@ import { Search } from '@/features/search/Search';
 import { useSaveNotifications } from '@/features/saves/Notifications';
 import { ThemeToggle } from './ThemeToggle';
 import { CachedChip } from '@/features/saves/CachedBanner';
+import { ShareChip } from '@/features/share/SharePanel';
 import './shell.css';
 
 /** Menu icon: a game item, or a UI crop from public/sprites/ui. */
@@ -87,6 +88,7 @@ export function AppShell() {
       <div className="content">
         <header className="topbar">
           <CachedChip />
+          <ShareChip />
           <span className="topbar__spacer" />
           <label className="topbar__select box">
             <span className="visually-hidden">{t('common.language')}</span>

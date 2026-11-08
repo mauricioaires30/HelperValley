@@ -47,7 +47,7 @@ export function ThemeToggle() {
   };
 
   return (
-    <button type="button" className="button theme-toggle" onClick={toggle} aria-label={night ? t('theme.toDay') : t('theme.toNight')} title={night ? t('theme.toDay') : t('theme.toNight')}>
+    <button type="button" className="box theme-toggle" onClick={toggle} aria-label={night ? t('theme.toDay') : t('theme.toNight')} title={night ? t('theme.toDay') : t('theme.toNight')}>
       <span className={night ? 'theme-toggle__moon' : 'theme-toggle__sun'} aria-hidden="true" />
     </button>
   );
