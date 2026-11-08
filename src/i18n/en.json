@@ -270,7 +270,11 @@
     "seasonYear": "{{season}}, Year {{year}}",
     "previous": "Previous season",
     "next": "Next season",
-    "backToToday": "Back to today"
+    "backToToday": "Back to today",
+    "tab": {
+      "hoje": "Today",
+      "geral": "Calendar"
+    }
   },
   "rel": {
     "title": "{{name}}'s relationships",
@@ -1092,7 +1096,7 @@
   },
   "intro": {
     "player": "Your character: skills, professions, mastery and what's left for Grandpa to light all 4 candles.",
-    "calendar": "Today, birthdays and festivals. Use the arrows to look at other days and years.",
+    "calendar": "Today: what to do now and the next 7 days. Calendar: the season grid with birthdays and festivals.",
     "relationships": "Hearts with each villager. Hover the buttons for gifts and events.",
     "map": "Where every villager is, every 10 minutes. Drag to move, scroll to zoom and turn on layers on the side.",
     "quests": "Journal quests, special orders, fish ponds and slayer goals. Use \"Mark\" to see them on the map.",
@@ -1106,5 +1110,26 @@
     "auto": "Theme: automatic",
     "day": "Theme: day",
     "night": "Theme: night"
+  },
+  "todo": {
+    "title": "To do today",
+    "goodToKnow": "Good to know",
+    "nothing": "Nothing urgent today. Enjoy the day!",
+    "machines": "{{count}} machines ready to collect",
+    "pet": "{{count}} animals need petting",
+    "bowl": "Fill your pet's water bowl",
+    "slimeWater": "Fill the slime hutch troughs",
+    "slimeBalls": "{{count}} slime balls to break",
+    "ponds": "{{count}} fish ponds ready to collect",
+    "pondAsks": "{{count}} fish ponds asking for an item",
+    "birthday": "{{name}}'s birthday today: gifts count 8×",
+    "festival": "Festival today: {{name}}",
+    "events": "{{count}} heart events available ({{names}})",
+    "kids": "Talk to {{names}}",
+    "quests": "{{count}} quests end within 2 days",
+    "orders": "{{count}} special orders end within 2 days",
+    "cart": "The Traveling Cart is in the forest today",
+    "tv": "The Queen of Sauce is on TV today (new recipe)",
+    "seasonEnd": "Last day of the season: crops that aren't {{next}} crops die tomorrow"
   }
 }
