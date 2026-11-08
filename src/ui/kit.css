@@ -392,3 +392,8 @@
   position: absolute;
   inset: 0;
 }
+
+/* Checkboxes keep their size next to labels that wrap. */
+input[type='checkbox'] {
+  flex: none;
+}
