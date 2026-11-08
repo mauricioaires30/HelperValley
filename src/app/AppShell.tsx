@@ -21,6 +21,7 @@ const NAV: Array<{ to: string; key: string; icon: NavIcon }> = [
   { to: '/map', key: 'map', icon: { item: '(O)102' } },
   { to: '/quests', key: 'quests', icon: { item: '(O)842' } },
   { to: '/shops', key: 'shops', icon: { item: '(O)472' } },
+  { to: '/farm', key: 'farmPlan', icon: { sheet: 'Buildings/Big Barn', x: 0, y: 0, w: 112, h: 112, scale: 0.3 } },
   { to: '/production', key: 'farm', icon: { item: '(BC)12' } },
   { to: '/community', key: 'community', icon: { item: '(O)96' } },
   { to: '/collections', key: 'collections', icon: { ui: 'junimo', w: 16, h: 16, scale: 2, className: 'nav-junimo' } },
@@ -50,7 +51,7 @@ function NavIconView({ icon }: { icon: NavIcon }) {
 }
 
 /** Pages that get a one-line "what's here / what you can do" intro, by first path segment. */
-const INTRO_PAGES = new Set(['player', 'calendar', 'relationships', 'map', 'quests', 'shops', 'production', 'community', 'collections']);
+const INTRO_PAGES = new Set(['farm', 'player', 'calendar', 'relationships', 'map', 'quests', 'shops', 'production', 'community', 'collections']);
 
 /** A short friendly line at the top of each page. */
 function PageIntro() {

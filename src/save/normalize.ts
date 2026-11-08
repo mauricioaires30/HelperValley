@@ -170,6 +170,7 @@ export function normalizePlayer(value: XmlValue, isHost: boolean): Player {
     professions: numbers(p.professions),
     spouse: text(p.spouse) || undefined,
     houseUpgradeLevel: num(p.houseUpgradeLevel),
+    daysUntilHouseUpgrade: num(p.daysUntilHouseUpgrade, -1),
     deepestMineLevel: num(p.deepestMineLevel),
     qiGems: num(p.qiGems),
     millisecondsPlayed: num(p.millisecondsPlayed),
