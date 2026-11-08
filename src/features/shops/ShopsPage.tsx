@@ -6,7 +6,8 @@ import { useGameName } from '@/i18n';
 import type { Player, SaveData } from '@/save/model';
 import { RequireSave } from '@/features/saves/RequireSave';
 import { ItemIcon, NpcHead, Tooltip } from '@/ui';
-import { jojaMartGone, SHOPS, type ShopInfo } from './catalog';
+import { jojaMartGone, SHOP_AREAS, shopArea, SHOPS, type ShopInfo } from './catalog';
+import '@/features/farm/farm.css';
 import { groupStock } from './groups';
 import { Constructions, ShopAnimals, ToolUpgrades } from './Constructions';
 import { shopStock, type ShopDay, type ShopsData, type StockEntry } from './stock';
@@ -129,22 +130,33 @@ function Shops({ save, player }: { save: SaveData; player: Player }) {
 
   return (
     <div className="shops">
-      <nav className="shops__tabs" role="tablist" aria-label={t('nav.shops')}>
-        {visible.map((s) => (
-          <button
-            key={s.id}
-            type="button"
-            role="tab"
-            aria-selected={s.id === selected?.id}
-            className={[s.id === selected?.id ? 'button button--primary' : 'button', 'shops__tab', isOpen(s) ? '' : 'shops__tab--closed'].join(' ')}
-            title={isOpen(s) ? undefined : t('shops.closedToday')}
-            onClick={() => navigate(`/shops/${s.id}`)}
-          >
-            <ShopIcon info={s} scale={1} />
-            {t(`shops.name.${s.id}`)}
-            {matches && <em>({matches[s.id]})</em>}
-          </button>
-        ))}
+      <nav className="tab-groups" role="tablist" aria-label={t('nav.shops')}>
+        {SHOP_AREAS.map((area) => {
+          const inArea = visible.filter((s) => shopArea(s.id) === area);
+          if (!inArea.length) return null;
+          return (
+            <div key={area} className="tab-group">
+              <span className="tab-group__label">{t(`shops.area.${area}`)}</span>
+              <div className="shops__tabs">
+                {inArea.map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={s.id === selected?.id}
+                    className={[s.id === selected?.id ? 'button button--primary' : 'button', 'shops__tab', isOpen(s) ? '' : 'shops__tab--closed'].join(' ')}
+                    title={isOpen(s) ? undefined : t('shops.closedToday')}
+                    onClick={() => navigate(`/shops/${s.id}`)}
+                  >
+                    <ShopIcon info={s} scale={1} />
+                    {t(`shops.name.${s.id}`)}
+                    {matches && <em>({matches[s.id]})</em>}
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        })}
       </nav>
       <div className="shops__bar">
         <input className="shops__search" type="search" placeholder={t('shops.search')} value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -153,8 +165,7 @@ function Shops({ save, player }: { save: SaveData; player: Player }) {
             day: day.day,
             season: t(`common.seasons.${day.season}`),
             year: day.year,
-          })}{' '}
-          · {t('shops.how')}
+          })}
         </p>
       </div>
       {visible.length === 0 && <p className="cc-summary__hint">{t('shops.nothing')}</p>}

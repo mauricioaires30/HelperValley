@@ -12,6 +12,31 @@ function relativeTime(at: number, lang: string) {
   return rtf.format(Math.round(minutes / 1440), 'day');
 }
 
+/** Top bar chip while showing the cached copy: when it was read and a button to go live again. */
+export function CachedChip() {
+  const { t, i18n } = useTranslation();
+  const cachedAt = useSaveStore((s) => s.cachedAt);
+  const source = useSaveStore((s) => s.source);
+  const pendingHandle = useSaveStore((s) => s.pendingHandle);
+  const reconnect = useSaveStore((s) => s.reconnect);
+  const connectDirectory = useSaveStore((s) => s.connectDirectory);
+  if (!cachedAt || source) return null;
+  return (
+    <span className="cached-chip box" role="status" title={t(`saves.${pendingHandle ? 'cachedHintReconnect' : supportsDirectoryAccess() ? 'cachedHintPick' : 'cachedHintUnsupported'}`)}>
+      {t('saves.cachedShort', { time: relativeTime(cachedAt, i18n.language) })}
+      {pendingHandle ? (
+        <button className="button button--primary" onClick={() => void reconnect()}>
+          {t('saves.cachedLive')}
+        </button>
+      ) : supportsDirectoryAccess() ? (
+        <button className="button" onClick={() => void connectDirectory()}>
+          {t('saves.cachedOpen')}
+        </button>
+      ) : null}
+    </span>
+  );
+}
+
 /** Shown while the page displays the save cached in IndexedDB rather than the live folder. */
 export function CachedBanner() {
   const { t, i18n } = useTranslation();

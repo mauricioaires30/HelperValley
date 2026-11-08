@@ -84,12 +84,18 @@
       "close": "Close Stardew Valley.",
       "run": "Open PowerShell (Start menu → \"PowerShell\") and run this once:",
       "copy": "Copy command",
-      "pick": "Choose Documents/StardewValley Saves:",
+      "pick": "Choose the Documents/StardewValley Saves folder:",
       "allow": "On your next visit, choose \"Allow on every visit\".",
       "safe": "Same files; Steam Cloud keeps working.",
       "noLive": "Without changing anything (not live):",
       "pickHidden": "Choose the {{path}} folder.",
-      "browsers": "Works in Chrome, Edge, Brave and Opera (Windows, Mac and Linux). Firefox and Safari only read a copy."
+      "browsers": "Works in Chrome, Edge, Brave and Opera (Windows, Mac and Linux). Firefox and Safari only read a copy.",
+      "terminal": {
+        "mac": "Open Terminal (Spotlight → \"Terminal\") and run this once to make a visible link in Documents:",
+        "linux": "Open a terminal and run this once to make a visible link in Documents:"
+      },
+      "orHidden": "(or open {{path}} directly, it is a hidden folder)",
+      "safeLink": "It's just a link: the game keeps saving in the same place and Steam Cloud works as usual."
     },
     "quickTitle": "See your farm now",
     "quickHint": "Select {{path}}. The browser keeps a copy.",
@@ -106,7 +112,13 @@
     },
     "flatpak": "Steam from Flatpak: {{path}}",
     "farmName": "{{name}} Farm",
-    "dayShort": "{{season}} {{day}}, year {{year}}"
+    "dayShort": "{{season}} {{day}}, year {{year}}",
+    "cachedShort": "Saved copy ({{time}})",
+    "os": {
+      "windows": "Windows",
+      "mac": "Mac",
+      "linux": "Linux"
+    }
   },
   "locations": {
     "Farm": "Farm",
@@ -1087,6 +1099,14 @@
         "gold": "Gold",
         "iridium": "Iridium"
       }
+    },
+    "area": {
+      "town": "Town",
+      "farmLife": "Farm & trades",
+      "away": "Desert, mines & sewers",
+      "island": "Ginger Island",
+      "visitors": "Visitors",
+      "festivals": "Today's festival"
     }
   },
   "community": {
@@ -1117,18 +1137,6 @@
       "Prismatic Slime": "Prismatic slime"
     }
   },
-  "intro": {
-    "player": "Your character: skills, professions, mastery and what's left for Grandpa to light all 4 candles.",
-    "calendar": "Today: what to do now and the next 7 days. Calendar: the season grid with birthdays and festivals.",
-    "relationships": "Hearts with each villager. Hover the buttons for gifts and events.",
-    "map": "Where every villager is, every 10 minutes. Drag to move, scroll to zoom and turn on layers on the side.",
-    "quests": "Journal quests, special orders, fish ponds and slayer goals. Use \"Mark\" to see them on the map.",
-    "shops": "Each shop's stock today, random picks included. Faded shops are closed today.",
-    "production": "Everything the farm is making, animals, slimes, crops and what to plant.",
-    "community": "Community Center bundles (or Joja), museum and island field office donations.",
-    "collections": "The game's collections. Hover an item to see how to get it.",
-    "farm": "The farm's buildings, what you can upgrade, what's planted and your plans."
-  },
   "theme": {
     "label": "Theme",
     "auto": "Theme: automatic",
@@ -1158,9 +1166,14 @@
   },
   "farmPlan": {
     "tab": {
-      "buildings": "Buildings",
+      "producing": "Producing",
+      "animals": "Animals",
+      "ponds": "Fish ponds",
+      "slimes": "Slime hutch",
       "crops": "Crops",
+      "recommendations": "Recommendations",
       "plans": "Plans & shopping",
+      "buildings": "Buildings",
       "planner": "Stardew Planner"
     },
     "house": "House",
@@ -1180,10 +1193,15 @@
     "upgradeFrom": "Upgrades {{count}}× {{name}}",
     "missingRobin": "Not built yet with Robin ({{count}})",
     "allBuilt": "You have everything Robin builds!",
-    "wizard": "Wizard's Tower",
+    "wizard": "Not built yet with the Wizard",
     "have": "You have {{count}}",
     "plannerTitle": "Stardew Planner",
-    "plannerSoon": "Coming soon: import a Stardew Planner (V3) layout and compare it with your farm."
+    "plannerSoon": "Coming soon: import a Stardew Planner (V3) layout and compare it with your farm.",
+    "group": {
+      "production": "Production",
+      "land": "Land",
+      "build": "Build"
+    }
   },
   "perfection": {
     "title": "Perfection: {{pct}}%",
@@ -1236,5 +1254,35 @@
     "off": "Turn off alerts",
     "newDay": "New day: {{date}}",
     "nothing": "Nothing urgent today."
+  },
+  "planner": {
+    "slot": {
+      "farm": "Farm",
+      "island": "Island (island farm)"
+    },
+    "linkPlaceholder": "Plan link: https://stardew.info/planner/...",
+    "load": "Load plan",
+    "remove": "Remove",
+    "bad": "I didn't recognize that link or text. Paste a stardew.info/planner link or the plan's data.",
+    "pasteStep1": "stardew.info doesn't let other sites read plans. Open this link:",
+    "pasteStep2": "Copy all the text it shows (Ctrl+A, Ctrl+C) and paste it here:",
+    "usePasted": "Use this plan",
+    "summary": "{{done}} of {{total}} planned items are already in place ({{pct}}%).",
+    "buildings": "Buildings",
+    "items": "Plan items",
+    "count": "{{have}}/{{planned}}",
+    "inPlace": "{{inPlace}}/{{planned}} in place · you have {{have}}",
+    "legend": "On the map: green = in place, red = still to do, dots = your things outside the plan. The plan is lined up with your farm automatically.",
+    "names": {
+      "house": "Farmhouse",
+      "greenhouse-repaired": "Greenhouse",
+      "grass": "Grass",
+      "oak-tree": "Oak tree",
+      "maple-tree": "Maple tree",
+      "pine-tree": "Pine tree",
+      "mahogany-tree": "Mahogany tree",
+      "palm-tree": "Palm tree",
+      "mushroom-tree": "Mushroom tree"
+    }
   }
 }

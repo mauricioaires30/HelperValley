@@ -1,7 +1,7 @@
 import type { Season } from '@/data/gameData';
 import { readFarm } from './farm';
 import type { QuestState } from './model';
-import type { ChildState, Clothing, SlimeHutchState, CommunityCenter, Container, Friendship, ItemStack, Player, PlayerLook, SaveData, SaveSummary } from './model';
+import type { ChildState, Clothing, LayoutState, SlimeHutchState, CommunityCenter, Container, Friendship, ItemStack, Player, PlayerLook, SaveData, SaveSummary } from './model';
 import {
   arr,
   bool,
@@ -349,6 +349,7 @@ export function normalizeSave(xml: string, folder: string): SaveData {
     grandpaScore: num(locations.map(node).find((l) => xsiType(l) === 'Farm' || text(l?.name) === 'Farm')?.grandpaScore),
     children: findChildren(locations),
     slimeHutches: findSlimeHutches(locations),
+    layouts: readLayouts(locations),
     world: {
       profitMargin: num(node(save.player)?.difficultyModifier, 1),
       dishOfTheDay: node(save.dishOfTheDay) && text(node(save.dishOfTheDay)!['@_xsi:nil']) !== 'true' ? qualifiedId(node(save.dishOfTheDay)!) : undefined,
@@ -362,6 +363,54 @@ export function normalizeSave(xml: string, folder: string): SaveData {
       return { restored: bool(south?.resortRestored), openToday: bool(south?.resortOpenToday) };
     })(),
   };
+}
+
+/** "Big Shed" → "big-shed", like the planner's names. */
+const slug = (name: string) => name.trim().toLowerCase().replace(/\s+/g, '-');
+
+/** Building types named differently in the planner. */
+const PLANNER_BUILDING: Record<string, string> = { Farmhouse: 'house', Greenhouse: 'greenhouse-repaired' };
+
+/** Objects, furniture, terrain features and buildings of the farm and the island farm. */
+function readLayouts(locations: XmlValue[]): Record<string, LayoutState> {
+  const out: Record<string, LayoutState> = {};
+  for (const value of locations) {
+    const location = node(value);
+    const name = text(location?.name);
+    if (!location || (name !== 'Farm' && name !== 'IslandWest')) continue;
+    const tiles: LayoutState['tiles'] = [];
+    const at = (key: XmlValue) => [num(node(key)?.X), num(node(key)?.Y)] as const;
+    for (const [key, v] of dictEntries(location.objects)) {
+      const obj = node(v);
+      const objName = text(obj?.name);
+      if (objName) tiles.push([...at(key), slug(objName)]);
+    }
+    for (const [key, v] of dictEntries(location.terrainFeatures)) {
+      const tf = node(v);
+      const type = xsiType(tf);
+      if (type === 'Tree') tiles.push([...at(key), `tree:${text(tf?.treeType) ?? ''}`]);
+      else if (type === 'FruitTree') tiles.push([...at(key), `fruit:${text(tf?.treeId) ?? ''}`]);
+      else if (type === 'Grass') tiles.push([...at(key), 'grass']);
+      else if (type === 'Flooring') tiles.push([...at(key), `floor:${text(tf?.whichFloor) ?? ''}`]);
+      else if (type === 'HoeDirt') {
+        const crop = node(tf?.crop);
+        if (crop) tiles.push([...at(key), `crop:${text(crop.netSeedIndex) ?? text(crop.seedIndex) ?? ''}:${text(crop.indexOfHarvest) ?? ''}`]);
+      }
+    }
+    // Furniture placed outdoors (tubs of flowers, seasonal plants...).
+    for (const f of arr(node(location.furniture)?.Furniture)) {
+      const furniture = node(f);
+      const fName = text(furniture?.name);
+      if (fName) tiles.push([num(node(furniture?.tileLocation)?.X), num(node(furniture?.tileLocation)?.Y), slug(fName)]);
+    }
+    const buildings: LayoutState['buildings'] = arr(node(location.buildings)?.Building).flatMap((b) => {
+      const building = node(b);
+      const type = text(building?.buildingType);
+      return type ? [[num(building!.tileX), num(building!.tileY), PLANNER_BUILDING[type] ?? slug(type)] as [number, number, string]] : [];
+    });
+    out[name] = { tiles, buildings };
+  }
+  return out;
 }
 
 /** Slime hutches: slimes, troughs, slime balls and the slime machines inside. */

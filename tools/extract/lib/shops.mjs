@@ -116,6 +116,9 @@ export function buildShops(textures) {
   );
   const tools = Object.fromEntries(Object.entries(readRaw('Data/Tools') ?? {}).map(([id, t]) => [id, t.SalePrice]));
 
+  // The farmhouse picture (Buildings/houses), for the Farm page.
+  textures.add('Buildings/houses');
+
   // Robin's and the Wizard's constructions (Data/Buildings with a Builder).
   const buildings = Object.entries(readRaw('Data/Buildings') ?? {})
     .filter(([, b]) => b.Builder === 'Robin' || b.Builder === 'Wizard')

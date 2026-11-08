@@ -89,7 +89,13 @@
       "safe": "Os arquivos são os mesmos e a Steam Cloud continua funcionando.",
       "noLive": "Sem mudar nada (sem ao vivo):",
       "pickHidden": "Escolha a pasta {{path}}.",
-      "browsers": "Funciona no Chrome, Edge, Brave e Opera (Windows, Mac e Linux). Firefox e Safari só leem uma cópia."
+      "browsers": "Funciona no Chrome, Edge, Brave e Opera (Windows, Mac e Linux). Firefox e Safari só leem uma cópia.",
+      "terminal": {
+        "mac": "Abra o Terminal (Spotlight → \"Terminal\") e rode isto uma vez para criar um atalho visível em Documentos:",
+        "linux": "Abra o terminal e rode isto uma vez para criar um atalho visível em Documentos:"
+      },
+      "orHidden": "(ou abra direto {{path}}, que é uma pasta oculta)",
+      "safeLink": "É só um atalho: o jogo continua salvando no mesmo lugar e a Steam Cloud funciona normal."
     },
     "quickTitle": "Ver sua fazenda agora",
     "quickHint": "Selecione {{path}}. O navegador guarda uma cópia.",
@@ -106,7 +112,13 @@
     },
     "flatpak": "Steam pelo Flatpak: {{path}}",
     "farmName": "Fazenda {{name}}",
-    "dayShort": "{{day}} de {{season}}, ano {{year}}"
+    "dayShort": "{{day}} de {{season}}, ano {{year}}",
+    "cachedShort": "Cópia salva ({{time}})",
+    "os": {
+      "windows": "Windows",
+      "mac": "Mac",
+      "linux": "Linux"
+    }
   },
   "locations": {
     "Farm": "Fazenda",
@@ -1087,6 +1099,14 @@
         "gold": "Ouro",
         "iridium": "Irídio"
       }
+    },
+    "area": {
+      "town": "Cidade",
+      "farmLife": "Fazenda e ofícios",
+      "away": "Deserto, minas e esgoto",
+      "island": "Ilha Gengibre",
+      "visitors": "Visitantes",
+      "festivals": "Festival de hoje"
     }
   },
   "community": {
@@ -1117,18 +1137,6 @@
       "Prismatic Slime": "Slime prismático"
     }
   },
-  "intro": {
-    "player": "Seu personagem: habilidades, profissões, maestria e o que falta para o vovô acender as 4 velas.",
-    "calendar": "Hoje: o que fazer agora e os próximos 7 dias. Geral: o calendário da estação, com aniversários e festivais.",
-    "relationships": "Corações de cada morador. Passe o mouse nos botões para ver presentes e eventos.",
-    "map": "Onde cada morador está a cada 10 minutos. Arraste para mover, use a roda do mouse para dar zoom e ligue as camadas ao lado.",
-    "quests": "Missões do diário, pedidos especiais, lagos de peixe e metas do caçador. Use \"Marcar\" para ver no mapa.",
-    "shops": "O estoque de hoje de cada loja, inclusive o que é sorteado. Lojas apagadas estão fechadas hoje.",
-    "production": "Tudo que a fazenda está produzindo, animais, slimes, plantações e o que plantar.",
-    "community": "Pacotes do Centro Comunitário (ou Joja), doações do museu e da pesquisa da ilha.",
-    "collections": "As coleções do jogo. Passe o mouse num item para ver como conseguir.",
-    "farm": "Construções da fazenda, o que dá para melhorar, o que está plantado e seus planos."
-  },
   "theme": {
     "label": "Tema",
     "auto": "Tema: automático",
@@ -1158,9 +1166,14 @@
   },
   "farmPlan": {
     "tab": {
-      "buildings": "Construções",
+      "producing": "Produzindo",
+      "animals": "Animais",
+      "ponds": "Lagos de peixe",
+      "slimes": "Casa de slimes",
       "crops": "Plantações",
+      "recommendations": "Recomendações",
       "plans": "Planos e compras",
+      "buildings": "Construções",
       "planner": "Stardew Planner"
     },
     "house": "Casa",
@@ -1180,10 +1193,15 @@
     "upgradeFrom": "Melhora {{count}}× {{name}}",
     "missingRobin": "Ainda não construído com a Robin ({{count}})",
     "allBuilt": "Você já tem tudo que a Robin constrói!",
-    "wizard": "Torre do Mago",
+    "wizard": "Ainda não construído com o Mago",
     "have": "Você tem {{count}}",
     "plannerTitle": "Stardew Planner",
-    "plannerSoon": "Em breve: importar um layout do Stardew Planner (V3) e comparar com a sua fazenda."
+    "plannerSoon": "Em breve: importar um layout do Stardew Planner (V3) e comparar com a sua fazenda.",
+    "group": {
+      "production": "Produção",
+      "land": "Terra",
+      "build": "Construir"
+    }
   },
   "perfection": {
     "title": "Perfeição: {{pct}}%",
@@ -1236,5 +1254,35 @@
     "off": "Desativar avisos",
     "newDay": "Novo dia: {{date}}",
     "nothing": "Nada urgente hoje."
+  },
+  "planner": {
+    "slot": {
+      "farm": "Fazenda",
+      "island": "Ilha (fazenda da ilha)"
+    },
+    "linkPlaceholder": "Link do plano: https://stardew.info/planner/...",
+    "load": "Carregar plano",
+    "remove": "Remover",
+    "bad": "Não reconheci esse link ou texto. Cole um link do stardew.info/planner ou os dados do plano.",
+    "pasteStep1": "O stardew.info não deixa outros sites lerem os planos. Abra este link:",
+    "pasteStep2": "Copie todo o texto que aparecer (Ctrl+A, Ctrl+C) e cole aqui:",
+    "usePasted": "Usar este plano",
+    "summary": "{{done}} de {{total}} itens do plano já estão no lugar ({{pct}}%).",
+    "buildings": "Construções",
+    "items": "Itens do plano",
+    "count": "{{have}}/{{planned}}",
+    "inPlace": "{{inPlace}}/{{planned}} no lugar · você tem {{have}}",
+    "legend": "No mapa: verde = já está no lugar, vermelho = ainda falta, pontos = coisas suas fora do plano. O plano é alinhado sozinho com a sua fazenda.",
+    "names": {
+      "house": "Casa",
+      "greenhouse-repaired": "Estufa",
+      "grass": "Grama",
+      "oak-tree": "Carvalho",
+      "maple-tree": "Bordo",
+      "pine-tree": "Pinheiro",
+      "mahogany-tree": "Mogno",
+      "palm-tree": "Palmeira",
+      "mushroom-tree": "Árvore de cogumelo"
+    }
   }
 }

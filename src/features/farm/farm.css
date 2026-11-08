@@ -327,3 +327,101 @@
 .farm-planner-soon {
   margin-top: 12px;
 }
+
+/* Tabs in labelled groups (Farm and Shops pages). */
+.tab-groups {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.tab-group {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 6px;
+  border-bottom: 2px dashed rgb(91 43 21 / 0.28);
+}
+
+.tab-group:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.tab-group__label {
+  font-size: var(--fs-sm);
+  font-weight: bold;
+  opacity: 0.8;
+}
+
+@media (max-width: 700px) {
+  .tab-group {
+    grid-template-columns: 1fr;
+  }
+}
+
+.planner-slot__load {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.planner-slot__load .shops__search {
+  flex: 1;
+  min-width: 260px;
+  max-width: none;
+}
+
+.planner-paste {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0;
+  font-size: var(--fs-sm);
+}
+
+.planner-paste p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.planner-paste__text {
+  font: inherit;
+  font-size: var(--fs-xs);
+  width: 100%;
+}
+
+.planner-result {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: start;
+  margin-top: 8px;
+}
+
+.plan-map {
+  max-width: 100%;
+  image-rendering: pixelated;
+}
+
+.planner-list {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  font-size: var(--fs-sm);
+}
+
+.planner-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.planner-row--done {
+  opacity: 0.6;
+}
+
+@media (max-width: 1000px) {
+  .planner-result {
+    grid-template-columns: 1fr;
+  }
+}

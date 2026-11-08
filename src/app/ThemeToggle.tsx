@@ -37,7 +37,7 @@ export function ThemeToggle() {
     return () => media.removeEventListener('change', onChange);
   }, [theme]);
   return (
-    <label className="shell__lang box">
+    <label className="topbar__select box">
       <span className="visually-hidden">{t('theme.label')}</span>
       <select value={theme} onChange={(e) => setTheme(e.target.value as Theme)}>
         <option value="auto">{t('theme.auto')}</option>

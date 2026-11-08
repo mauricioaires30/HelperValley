@@ -14,6 +14,40 @@ export interface ShopInfo {
   rotates?: boolean;
 }
 
+/** Where a shop is, to group the tabs. */
+export const SHOP_AREAS = ['town', 'farmLife', 'away', 'island', 'visitors', 'festivals'] as const;
+export type ShopArea = (typeof SHOP_AREAS)[number];
+
+const AREA: Record<string, ShopArea> = {
+  SeedShop: 'town',
+  Joja: 'town',
+  Saloon: 'town',
+  Hospital: 'town',
+  Bookseller: 'town',
+  BooksellerTrade: 'town',
+  IceCreamStand: 'town',
+  BoxOffice: 'town',
+  AnimalShop: 'farmLife',
+  Carpenter: 'farmLife',
+  Blacksmith: 'farmLife',
+  FishShop: 'farmLife',
+  Wizard: 'farmLife',
+  ShadowShop: 'away',
+  Sandy: 'away',
+  DesertTrade: 'away',
+  Casino: 'away',
+  Dwarf: 'away',
+  AdventureShop: 'away',
+  IslandTrade: 'island',
+  ResortBar: 'island',
+  VolcanoShop: 'island',
+  QiGemShop: 'island',
+  Traveler: 'visitors',
+  Raccoon: 'visitors',
+  HatMouse: 'visitors',
+};
+export const shopArea = (id: string): ShopArea => (id.startsWith('Festival_') ? 'festivals' : (AREA[id] ?? 'visitors'));
+
 /** 0 = Monday ... 6 = Sunday. */
 export const weekday = (day: ShopDay) => (day.day - 1) % 7;
 const on = (season: Season, ...days: number[]) => (d: ShopDay) => d.season === season && days.includes(d.day);

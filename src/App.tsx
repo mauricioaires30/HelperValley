@@ -7,7 +7,6 @@ import { HomePage } from '@/features/home/HomePage';
 import { KitPage } from '@/features/kit/KitPage';
 import { MapPage } from '@/features/map/MapPage';
 import { QuestsPage } from '@/features/quests/QuestsPage';
-import { FarmPage } from '@/features/farm/FarmPage';
 import { RelationshipsPage } from '@/features/relationships/RelationshipsPage';
 import { PlayerPage } from '@/features/player/PlayerPage';
 import { ShopsPage } from '@/features/shops/ShopsPage';
@@ -47,7 +46,7 @@ export function App() {
           <Route path="relationships" element={<RelationshipsPage />} />
           <Route path="map" element={<MapPage />} />
           <Route path="quests" element={<QuestsPage />} />
-          <Route path="production" element={<FarmPage />} />
+          <Route path="production" element={<Navigate to="/farm/producing" replace />} />
           <Route path="shops/:shop?" element={<ShopsPage />} />
           <Route path="farm/:tab?" element={<FarmPlanPage />} />
           <Route path="collections/:tab?" element={<CollectionsPage />} />

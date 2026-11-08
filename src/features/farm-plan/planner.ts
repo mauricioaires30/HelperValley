@@ -1,0 +1,212 @@
+import { gameData, getItem } from '@/data/gameData';
+import type { LayoutState } from '@/save/model';
+
+/** A Stardew Planner (stardew.info/planner) layout as its API returns it: positions in pixels (16 per tile). */
+export interface PlannerPlan {
+  tiles: Array<{ type: string; x: number; y: number }>;
+  buildings: Array<{ type: string; x: number; y: number }>;
+  flooring: Array<{ type: string; x: number; y: number }>;
+  options?: { layout?: string };
+}
+
+const API = 'https://stardew.info/api/';
+
+/** "https://stardew.info/planner/7-dead-gerbils-danced-easily" → "7-dead-gerbils-danced-easily". */
+export function planId(input: string): string | null {
+  const m = /planner\/([a-z0-9-]+)/i.exec(input.trim()) ?? /^([0-9]+-[a-z-]+)$/i.exec(input.trim());
+  return m ? m[1] : null;
+}
+
+export const planApiUrl = (id: string) => API + id;
+
+/** Text pasted by the user: either the plan JSON or a link. */
+export function parsePlanJson(text: string): PlannerPlan | null {
+  try {
+    const data = JSON.parse(text);
+    if (data && Array.isArray(data.tiles)) return { tiles: data.tiles, buildings: data.buildings ?? [], flooring: data.flooring ?? [], options: data.options };
+  } catch {
+    // not JSON
+  }
+  return null;
+}
+
+/** Tries to load the plan straight from stardew.info (works only if the site allows cross-site reads). */
+export async function fetchPlan(id: string): Promise<PlannerPlan> {
+  const res = await fetch(planApiUrl(id), { headers: { 'Content-Type': 'application/json' } });
+  const plan = parsePlanJson(await res.text());
+  if (!plan) throw new Error('not a plan');
+  return plan;
+}
+
+/** Wild tree types (Tree.treeType) and flooring ids (Data/FloorsAndPaths) in the planner's words. */
+const TREE: Record<string, string> = { '1': 'oak-tree', '2': 'maple-tree', '3': 'pine-tree', '6': 'palm-tree', '9': 'palm-tree', '7': 'mushroom-tree', '8': 'mahogany-tree' };
+const FLOOR: Record<string, string> = {
+  '0': 'wooden-floor',
+  '1': 'stone-floor',
+  '2': 'weathered-floor',
+  '3': 'crystal-floor',
+  '4': 'straw-floor',
+  '5': 'gravel-path',
+  '6': 'wooden-path',
+  '7': 'crystal-path',
+  '8': 'cobblestone',
+  '9': 'steppingstone-path',
+  '10': 'brick-floor',
+  '11': 'rustic-plank-floor',
+  '12': 'stone-walkway-floor',
+};
+/** Same thing, different names. */
+const ALIASES: Record<string, string> = { 'stone-gate': 'gate', 'wood-gate': 'gate' };
+
+const slug = (name: string) => name.trim().toLowerCase().replace(/\s+/g, '-');
+const canon = (type: string) => ALIASES[type] ?? type;
+
+/** Every planner-style name a save tile can match (a crop matches its seed or its harvest). */
+export function saveKeys(key: string): string[] {
+  const [kind, a, b] = key.split(':');
+  switch (kind) {
+    case 'tree':
+      return TREE[a] ? [TREE[a]] : [];
+    case 'floor':
+      return FLOOR[a] ? [FLOOR[a]] : [];
+    case 'fruit': {
+      const sapling = getItem(`(O)${a}`)?.n[0];
+      return sapling ? [slug(sapling).replace(/-sapling$/, '-tree')] : [];
+    }
+    case 'crop': {
+      const seed = getItem(`(O)${a}`)?.n[0];
+      const harvest = getItem(`(O)${b}`)?.n[0];
+      return [seed, harvest].filter(Boolean).map((n) => slug(n!));
+    }
+    default:
+      return [canon(key)];
+  }
+}
+
+export interface TypeResult {
+  type: string;
+  planned: number;
+  /** Planned tiles that have it in the save, at the same spot. */
+  inPlace: number;
+  /** How many the save has on this map, anywhere. */
+  have: number;
+}
+
+export interface Comparison {
+  /** Shift applied to the plan to line it up with the save (in tiles). */
+  offset: [number, number];
+  types: TypeResult[];
+  buildings: TypeResult[];
+  /** Per planned tile: x, y (save coordinates), done. */
+  cells: Array<[number, number, boolean]>;
+  extra: Array<[number, number]>;
+  done: number;
+  total: number;
+}
+
+/** Lines the plan up with the save (the planner's map may be shifted a few tiles) and compares. */
+export function comparePlan(plan: PlannerPlan, layout: LayoutState | undefined): Comparison {
+  const saved = new Map<string, Set<string>>();
+  const counts = new Map<string, number>();
+  for (const [x, y, key] of layout?.tiles ?? []) {
+    const keys = saveKeys(key);
+    const set = saved.get(`${x},${y}`) ?? new Set<string>();
+    for (const k of keys) {
+      set.add(k);
+      counts.set(k, (counts.get(k) ?? 0) + 1);
+    }
+    saved.set(`${x},${y}`, set);
+  }
+  const planned = [...plan.tiles, ...plan.flooring].map((t) => ({ x: Math.round(t.x / 16), y: Math.round(t.y / 16), type: canon(t.type) }));
+
+  // Pick the shift with the most matches (ties keep the smallest shift).
+  let best: [number, number] = [0, 0];
+  let bestScore = -1;
+  for (let dx = -10; dx <= 10; dx++) {
+    for (let dy = -10; dy <= 10; dy++) {
+      let score = 0;
+      for (const p of planned) if (saved.get(`${p.x + dx},${p.y + dy}`)?.has(p.type)) score++;
+      if (score > bestScore || (score === bestScore && Math.abs(dx) + Math.abs(dy) < Math.abs(best[0]) + Math.abs(best[1]))) {
+        bestScore = score;
+        best = [dx, dy];
+      }
+    }
+  }
+
+  // Some things are drawn from a different corner in the planner (trees by the top of their sprite),
+  // so each type may need its own small extra shift on top of the global one.
+  const typeShift = new Map<string, [number, number]>();
+  for (const type of new Set(planned.map((p) => p.type))) {
+    const list = planned.filter((p) => p.type === type);
+    const score = (sx: number, sy: number) => list.filter((p) => saved.get(`${p.x + best[0] + sx},${p.y + best[1] + sy}`)?.has(type)).length;
+    let top = score(0, 0);
+    let shift: [number, number] = [0, 0];
+    for (let sx = -3; sx <= 3; sx++) {
+      for (let sy = -6; sy <= 6; sy++) {
+        const s = score(sx, sy);
+        if (s > top) {
+          top = s;
+          shift = [sx, sy];
+        }
+      }
+    }
+    typeShift.set(type, shift);
+  }
+
+  const [dx, dy] = best;
+  const byType = new Map<string, TypeResult>();
+  const cells: Comparison['cells'] = [];
+  const plannedSpots = new Set<string>();
+  for (const p of planned) {
+    const [sx, sy] = typeShift.get(p.type) ?? [0, 0];
+    const x = p.x + dx + sx;
+    const y = p.y + dy + sy;
+    const ok = !!saved.get(`${x},${y}`)?.has(p.type);
+    cells.push([x, y, ok]);
+    plannedSpots.add(`${x},${y}`);
+    const r = byType.get(p.type) ?? { type: p.type, planned: 0, inPlace: 0, have: counts.get(p.type) ?? 0 };
+    r.planned++;
+    if (ok) r.inPlace++;
+    byType.set(p.type, r);
+  }
+  const extra = (layout?.tiles ?? []).filter(([x, y, key]) => key !== 'grass' && !plannedSpots.has(`${x},${y}`)).map(([x, y]) => [x, y] as [number, number]);
+
+  const builtCounts = new Map<string, number>();
+  for (const [, , type] of layout?.buildings ?? []) builtCounts.set(type, (builtCounts.get(type) ?? 0) + 1);
+  const plannedBuildings = new Map<string, number>();
+  for (const b of plan.buildings) plannedBuildings.set(b.type, (plannedBuildings.get(b.type) ?? 0) + 1);
+  const buildings = [...plannedBuildings].map(([type, n]) => ({ type, planned: n, inPlace: Math.min(n, builtCounts.get(type) ?? 0), have: builtCounts.get(type) ?? 0 }));
+
+  const types = [...byType.values()].sort((a, b) => b.planned - b.inPlace - (a.planned - a.inPlace) || b.planned - a.planned);
+  return { offset: best, types, buildings, cells, extra, done: cells.filter((c) => c[2]).length, total: cells.length };
+}
+
+/** Planner floors and paths named differently from their items. */
+const TYPE_ITEM: Record<string, string> = {
+  cobblestone: '(O)411',
+  'steppingstone-path': '(O)415',
+  'wooden-floor': '(O)328',
+  'wooden-path': '(O)405',
+  'stone-floor': '(O)329',
+  'weathered-floor': '(O)331',
+  'crystal-floor': '(O)333',
+  'straw-floor': '(O)401',
+  'gravel-path': '(O)407',
+  'crystal-path': '(O)409',
+  'brick-floor': '(O)293',
+  'rustic-plank-floor': '(O)840',
+  'stone-walkway-floor': '(O)841',
+};
+
+/** A readable name for a planner type: a known label, the game item with that name, else the type itself. */
+export function plannerName(type: string, name: (n: [string, string] | undefined) => string, label?: (type: string) => string | undefined): string {
+  const known = label?.(type);
+  if (known) return known;
+  if (TYPE_ITEM[type]) return name(getItem(TYPE_ITEM[type])?.n);
+  const items = gameData().items;
+  for (const item of Object.values(items)) if (slug(item.n[0]) === type) return name(item.n);
+  const buildings = (gameData().shops as { buildings: Array<{ id: string; n: [string, string] }> }).buildings;
+  const b = buildings.find((x) => slug(x.id) === type);
+  if (b) return name(b.n);
+  return type.replace(/-/g, ' ');
+}

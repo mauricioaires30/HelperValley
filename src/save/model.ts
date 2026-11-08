@@ -139,6 +139,15 @@ export interface Player {
   hasSkullKey: boolean;
 }
 
+/**
+ * Placed things on a map, as [tileX, tileY, key]. Keys: object names in planner style ("bee-house"),
+ * "tree:<type>", "crop:<seedId>:<harvestId>", "floor:<id>", "grass"; buildings use their type slug.
+ */
+export interface LayoutState {
+  tiles: Array<[number, number, string]>;
+  buildings: Array<[number, number, string]>;
+}
+
 /** A slime hutch: its slimes, water troughs and what's lying on the floor. */
 export interface SlimeHutchState {
   /** One entry per slime: name (Green Slime, Frost Jelly, Sludge, Tiger Slime...) and color (#rrggbb). */
@@ -243,6 +252,8 @@ export interface SaveData {
   world: WorldState;
   children: ChildState[];
   slimeHutches: SlimeHutchState[];
+  /** What sits on each tile of the farm and the island farm, to compare with a Stardew Planner layout. */
+  layouts: Record<string, LayoutState>;
   fieldOffice: FieldOfficeState | null;
   specialOrders: SpecialOrderState[];
   /** Golden walnut ids already collected (e.g. "Bush_IslandEast_17_37"). */
