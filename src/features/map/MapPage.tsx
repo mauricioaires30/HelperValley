@@ -20,8 +20,8 @@ import './map.css';
 /** 6:00 to 2:00 in 10-minute steps, like the game clock. */
 const STEPS = Array.from({ length: 20 * 6 + 1 }, (_, i) => 600 + Math.floor(i / 6) * 100 + (i % 6) * 10);
 
-/** Where each shop is on the world map (Data/Shops id → location). */
-const SHOP_LOCATIONS: Record<string, string> = {
+/** Where each shop is on the world map (Data/Shops id → location, plus the tile for shops outdoors; see the game's location code). */
+const SHOP_LOCATIONS: Record<string, string | [string, [number, number]]> = {
   SeedShop: 'SeedShop',
   Joja: 'JojaMart',
   AnimalShop: 'AnimalShop',
@@ -32,16 +32,18 @@ const SHOP_LOCATIONS: Record<string, string> = {
   Hospital: 'Hospital',
   ShadowShop: 'Sewer',
   Sandy: 'SandyShop',
-  DesertTrade: 'Desert',
-  Traveler: 'Forest',
+  DesertTrade: ['Desert', [38, 22]],
+  Traveler: ['Forest', [27, 11]],
   Dwarf: 'Mines',
   AdventureShop: 'AdventureGuild',
-  IslandTrade: 'IslandNorth',
-  ResortBar: 'IslandSouth',
+  IslandTrade: ['IslandNorth', [36, 70]],
+  ResortBar: ['IslandSouth', [14, 22]],
   VolcanoShop: 'Caldera',
   Casino: 'Club',
-  HatMouse: 'Forest',
-  Raccoon: 'Forest',
+  HatMouse: ['Forest', [32, 94]],
+  Raccoon: ['Forest', [56, 6]],
+  Bookseller: ['Town', [110, 25]],
+  BooksellerTrade: ['Town', [110, 25]],
 };
 
 /** Where to look for each island fossil (see collections.fossil texts). */
@@ -259,11 +261,24 @@ export function MapPage() {
   // Shops around on the chosen day; clicking one opens its tab on the Shops page.
   const shopDay = { season, day, year: save?.date.year ?? 1, daysPlayed: 0 };
   const shopPins = save
-    ? SHOPS.filter((s) => SHOP_LOCATIONS[s.id] && (!s.open || s.open(shopDay, save))).flatMap((s, i) => {
-        const p = pinAt(SHOP_LOCATIONS[s.id]);
-        return p ? [{ key: `s-${s.id}`, ...p, shop: s, i }] : [];
+    ? SHOPS.filter((s) => SHOP_LOCATIONS[s.id] && (!s.open || s.open(shopDay, save))).flatMap((s) => {
+        const where = SHOP_LOCATIONS[s.id];
+        const p = typeof where === 'string' ? pinAt(where) : pinAt(where[0], where[1]);
+        return p ? [{ key: `s-${s.id}`, ...p, shop: s }] : [];
       })
     : [];
+  // Shops next to each other (Pierre and Harvey, the desert's three...) sit side by side instead of overlapping.
+  const shopClusters: Array<typeof shopPins> = [];
+  for (const p of shopPins) {
+    const near = shopClusters.find(([first]) => Math.abs(first.px - p.px) < 7 && Math.abs(first.py - p.py) < 7);
+    if (near) near.push(p);
+    else shopClusters.push([p]);
+  }
+  const shopSpread = new Map(shopClusters.flatMap((c) => [...c].sort((a, b) => a.px - b.px).map((p, i) => [p.key, { i, n: c.length }] as const)));
+  const spreadX = (key: string) => {
+    const s = shopSpread.get(key);
+    return s ? (s.i - (s.n - 1) / 2) * 30 : 0;
+  };
 
   // Missing donations: museum pieces you can dig up somewhere, and island fossils for Professor Snail.
   const donated = new Set(Object.values(save?.museum ?? {}).map((id) => (id.startsWith('(') ? id : `(O)${id}`)));
@@ -420,7 +435,7 @@ export function MapPage() {
                 ))}
               {layers.shops &&
                 shopPins.map((p) => (
-                  <span key={p.key} className="map-pin" style={{ left: pct(p.px, mapW), top: pct(p.py, mapH), transform: `translate(-50%, -100%) ${unscale} translate(${(p.i % 2) * 18}px, 0)` }}>
+                  <span key={p.key} className="map-pin" style={{ left: pct(p.px, mapW), top: pct(p.py, mapH), transform: `translate(-50%, -100%) ${unscale} translate(${spreadX(p.key)}px, 0)` }}>
                     <Tooltip
                       text={
                         <span className="slot-tooltip">

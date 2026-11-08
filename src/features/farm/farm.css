@@ -264,8 +264,10 @@
 }
 
 .prod-card__name {
+  max-width: 100%;
   font-size: var(--fs-sm);
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 .prod-card__when {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGameName } from '@/i18n';
 import type { SaveData } from '@/save/model';
@@ -60,7 +60,7 @@ function PlanMap({ result, show, describe }: { result: Comparison; show: Options
   const { t } = useTranslation();
   const ref = useRef<HTMLCanvasElement>(null);
   const { view, viewport, handlers, zoomIn, zoomOut, reset } = usePanZoom();
-  const [hover, setHover] = useState<{ x: number; y: number; px: number; py: number } | null>(null);
+  const [hover, setHover] = useState<{ x: number; y: number; px: number; py: number; vw: number; vh: number } | null>(null);
   const CELL = 8;
   const xs = [...result.cells.map((c) => c.x), ...result.extra.map((c) => c[0])];
   const ys = [...result.cells.map((c) => c.y), ...result.extra.map((c) => c[1])];
@@ -92,7 +92,7 @@ function PlanMap({ result, show, describe }: { result: Comparison; show: Options
     const x = Math.floor(((e.clientX - rect.left) / rect.width) * w) + minX;
     const y = Math.floor(((e.clientY - rect.top) / rect.height) * h) + minY;
     const box = viewport.current?.getBoundingClientRect();
-    setHover({ x, y, px: e.clientX - (box?.left ?? 0), py: e.clientY - (box?.top ?? 0) });
+    setHover({ x, y, px: e.clientX - (box?.left ?? 0), py: e.clientY - (box?.top ?? 0), vw: box?.width ?? 0, vh: box?.height ?? 0 });
   };
   const cell = hover ? cellAt.get(`${hover.x},${hover.y}`) : undefined;
   const extra = hover ? extraAt.get(`${hover.x},${hover.y}`) : undefined;
@@ -117,7 +117,7 @@ function PlanMap({ result, show, describe }: { result: Comparison; show: Options
           <canvas ref={ref} className="plan-map" width={w * CELL} height={h * CELL} onMouseMove={onMove} onMouseLeave={() => setHover(null)} />
         </div>
         {hover && (cell || extra) && (
-          <span className="plan-tip box" style={{ left: hover.px + 12, top: hover.py + 12 }}>
+          <span className="plan-tip box" style={tipPosition(hover)}>
             <strong>
               ({hover.x}, {hover.y})
             </strong>
@@ -129,6 +129,14 @@ function PlanMap({ result, show, describe }: { result: Comparison; show: Options
       </div>
     </div>
   );
+}
+
+/** Keeps the tooltip inside the map: it opens toward the side with more room. */
+function tipPosition(h: { px: number; py: number; vw: number; vh: number }): CSSProperties {
+  return {
+    ...(h.px > h.vw / 2 ? { right: h.vw - h.px + 12 } : { left: h.px + 12 }),
+    ...(h.py > h.vh / 2 ? { bottom: h.vh - h.py + 12 } : { top: h.py + 12 }),
+  };
 }
 
 function SlotView({ slot, saveData, stored, setStored, options, setOptions }: {
