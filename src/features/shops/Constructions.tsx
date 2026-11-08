@@ -77,7 +77,7 @@ export function Constructions({ builder }: { builder: 'Robin' | 'Wizard' }) {
   const nameOf = (id: string) => name(all.find((b) => b.id === id)?.n) || id;
   return (
     <section className="shop__group">
-      <h3 className="shop__group-title">{t('shops.group.buildings')}</h3>
+      <h3 className="shop__group-title">{t('shops.group.buildings')} ({list.length})</h3>
       <div className="build-grid">
         {list.map((b) => {
           const rect = buildingRect(b);
@@ -109,7 +109,7 @@ export function ShopAnimals() {
   const { animals, buildings } = gameData().shops as { animals: ShopAnimalData[]; buildings: BuildingData[] };
   return (
     <section className="shop__group">
-      <h3 className="shop__group-title">{t('shops.group.animals')}</h3>
+      <h3 className="shop__group-title">{t('shops.group.animals')} ({animals.length})</h3>
       <div className="build-grid">
         {animals.map((a) => (
           <article key={a.id} className="build-card inset">
@@ -131,7 +131,7 @@ export function ToolUpgrades() {
   const { t } = useTranslation();
   return (
     <section className="shop__group">
-      <h3 className="shop__group-title">{t('shops.group.upgrades')}</h3>
+      <h3 className="shop__group-title">{t('shops.group.upgrades')} ({TOOL_UPGRADES.length})</h3>
       <p className="cc-summary__hint">{t('shops.build.upgradeHint')}</p>
       <ul className="shop__items dashed-list">
         {TOOL_UPGRADES.map((u) => (

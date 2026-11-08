@@ -10,7 +10,44 @@ import { describeEvent } from './eventConditions';
 import { buildRelationships, POINTS_PER_HEART, type Relationship } from './relationships';
 import './relationships.css';
 
-type Sort = 'hearts' | 'birthday' | 'name';
+type Sort = 'groups' | 'hearts' | 'birthday' | 'name';
+
+/** Where each villager lives, to group the cards (the spouse goes in Family). */
+const HOME: Record<string, string> = {
+  Pierre: 'town',
+  Caroline: 'town',
+  Abigail: 'town',
+  Lewis: 'town',
+  Gus: 'town',
+  Emily: 'town',
+  Haley: 'town',
+  Jodi: 'town',
+  Kent: 'town',
+  Sam: 'town',
+  Vincent: 'town',
+  Alex: 'town',
+  George: 'town',
+  Evelyn: 'town',
+  Harvey: 'town',
+  Pam: 'town',
+  Penny: 'town',
+  Clint: 'town',
+  Robin: 'mountain',
+  Demetrius: 'mountain',
+  Maru: 'mountain',
+  Sebastian: 'mountain',
+  Linus: 'mountain',
+  Marnie: 'forest',
+  Jas: 'forest',
+  Shane: 'forest',
+  Leah: 'forest',
+  Willy: 'beach',
+  Elliott: 'beach',
+  Sandy: 'desert',
+  Leo: 'island',
+};
+const GROUPS = ['family', 'town', 'mountain', 'forest', 'beach', 'desert', 'island', 'other'] as const;
+const groupOf = (rel: Relationship) => (rel.status === 'Married' || rel.status === 'Roommate' ? 'family' : (HOME[rel.npc] ?? 'other'));
 
 /** Child sprite: babies use Baby(_dark), toddlers Toddler(_girl)(_dark) — first frame. */
 function ChildSprite({ child }: { child: ChildState }) {
@@ -72,9 +109,7 @@ function RelationshipCard({ rel, owned }: { rel: Relationship; owned: string[] }
         <ul className="rel__facts">
           {toNext > 0 && <li>{t('rel.toNext', { points: toNext })}</li>}
           {rel.hearts >= rel.maxHearts && rel.maxHearts === 8 && <li>{t('rel.bouquet')}</li>}
-          <li className={giftsLeft === 0 ? 'rel__muted' : undefined}>
-            {rel.giftsToday > 0 ? t('rel.giftedToday') : t('rel.giftsLeft', { count: giftsLeft })}
-          </li>
+          <li className={giftsLeft === 0 ? 'rel__muted' : undefined}>{rel.giftsToday > 0 ? t('rel.giftedToday') : t('rel.giftsLeft', { count: giftsLeft })}</li>
           {rel.birthdayIn !== null && rel.birthdayIn <= 7 && (
             <li className="rel__birthday">{rel.birthdayIn === 0 ? t('rel.birthdayToday') : t('rel.birthdayIn', { count: rel.birthdayIn })}</li>
           )}
@@ -148,7 +183,7 @@ function TasteButtons({ npc, owned }: { npc: string; owned: string[] }) {
 function Relationships({ save, player }: { save: SaveData; player: Player }) {
   const { t } = useTranslation();
   const name = useGameName();
-  const [sort, setSort] = useState<Sort>('hearts');
+  const [sort, setSort] = useState<Sort>('groups');
   const relationships = useMemo(() => buildRelationships(save, player), [save, player]);
   const owned = useMemo(() => ownedObjectIds(save), [save]);
 
@@ -157,7 +192,7 @@ function Relationships({ save, player }: { save: SaveData; player: Player }) {
     let cmp: number;
     if (sort === 'birthday') cmp = (a.birthdayIn ?? 999) - (b.birthdayIn ?? 999);
     else if (sort === 'name') cmp = name(gameData().npcs[a.npc].n).localeCompare(name(gameData().npcs[b.npc].n));
-    else cmp = b.points - a.points;
+    else cmp = b.points - a.points; // hearts, also the order inside each group
     return reversed ? -cmp : cmp;
   });
 
@@ -168,21 +203,48 @@ function Relationships({ save, player }: { save: SaveData; player: Player }) {
         <label className="cc__filter">
           {t('rel.sort')}
           <select className="box" value={sort} onChange={(e) => setSort(e.target.value as Sort)}>
+            <option value="groups">{t('rel.sortGroups')}</option>
             <option value="hearts">{t('rel.sortHearts')}</option>
             <option value="birthday">{t('rel.sortBirthday')}</option>
             <option value="name">{t('rel.sortName')}</option>
           </select>
-          <button className="button" aria-pressed={reversed} onClick={() => setReversed(!reversed)} title={t('rel.reverse')}>
-            {reversed ? '▲' : '▼'}
-          </button>
+          {sort !== 'groups' && (
+            <>
+              <button className="button" aria-pressed={reversed} onClick={() => setReversed(!reversed)} title={t('rel.reverse')}>
+                {reversed ? '▲' : '▼'}
+              </button>
+              <button className="button" onClick={() => setSort('groups')} title={t('rel.clearSort')} aria-label={t('rel.clearSort')}>
+                ✕
+              </button>
+            </>
+          )}
         </label>
       </header>
       <Children save={save} player={player} />
-      <div className="rel-grid">
-        {sorted.map((rel) => (
-          <RelationshipCard key={rel.npc} rel={rel} owned={owned} />
-        ))}
-      </div>
+      {sort === 'groups' ? (
+        GROUPS.map((group) => {
+          const list = sorted.filter((rel) => groupOf(rel) === group);
+          if (!list.length) return null;
+          return (
+            <section key={group} className="rel-section">
+              <h2 className="quest-section">
+                {t(`rel.group.${group}`)} ({list.length})
+              </h2>
+              <div className="rel-grid">
+                {list.map((rel) => (
+                  <RelationshipCard key={rel.npc} rel={rel} owned={owned} />
+                ))}
+              </div>
+            </section>
+          );
+        })
+      ) : (
+        <div className="rel-grid">
+          {sorted.map((rel) => (
+            <RelationshipCard key={rel.npc} rel={rel} owned={owned} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

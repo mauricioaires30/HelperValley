@@ -395,6 +395,7 @@ function readLayouts(locations: XmlValue[]): Record<string, LayoutState> {
       else if (type === 'HoeDirt') {
         const crop = node(tf?.crop);
         if (crop) tiles.push([...at(key), `crop:${text(crop.netSeedIndex) ?? text(crop.seedIndex) ?? ''}:${text(crop.indexOfHarvest) ?? ''}`]);
+        else tiles.push([...at(key), 'hoedirt']);
       }
     }
     // Furniture placed outdoors (tubs of flowers, seasonal plants...).

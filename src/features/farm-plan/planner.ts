@@ -92,24 +92,72 @@ export interface TypeResult {
   have: number;
 }
 
+export interface PlanCell {
+  x: number;
+  y: number;
+  type: string;
+  done: boolean;
+  /** What the save has on that tile (planner-style names). */
+  actual: string[];
+}
+
 export interface Comparison {
   /** Shift applied to the plan to line it up with the save (in tiles). */
   offset: [number, number];
   types: TypeResult[];
   buildings: TypeResult[];
-  /** Per planned tile: x, y (save coordinates), done. */
-  cells: Array<[number, number, boolean]>;
-  extra: Array<[number, number]>;
+  /** Planned tiles in save coordinates. */
+  cells: PlanCell[];
+  /** Your things outside the plan: x, y, names. */
+  extra: Array<[number, number, string[]]>;
   done: number;
   total: number;
 }
 
+/** Kinds of planned things, so the user can leave some out of the comparison. */
+export const CATEGORIES = ['crops', 'fences', 'grass', 'floors', 'trees', 'decor', 'machines'] as const;
+export type Category = (typeof CATEGORIES)[number];
+
+export interface CompareOptions {
+  /** Categories left out entirely. */
+  ignore?: Set<Category>;
+  /** Count any crop or tilled soil where the plan has a crop (keeps the planting areas, not the exact crop). */
+  anyCrop?: boolean;
+}
+
+/** Slugs of every seed and harvest, to tell crops apart from other things. */
+function cropSlugs(): Set<string> {
+  const out = new Set<string>();
+  for (const c of gameData().farm.crops) {
+    for (const id of [c.seed, c.harvest]) {
+      const n = getItem(id)?.n[0];
+      if (n) out.add(slug(n));
+    }
+  }
+  return out;
+}
+
+/** Which category a planner type belongs to. */
+export function categoryOf(type: string, crops = cropSlugs()): Category {
+  if (crops.has(type)) return 'crops';
+  if (type.endsWith('-fence') || type === 'gate') return 'fences';
+  if (type === 'grass') return 'grass';
+  if (TYPE_ITEM[type] || Object.values(FLOOR).includes(type)) return 'floors';
+  if (type.endsWith('-tree')) return 'trees';
+  for (const [id, item] of Object.entries(gameData().items)) if (id.startsWith('(F)') && slug(item.n[0]) === type) return 'decor';
+  if (['tub-o\'-flowers', 'seasonal-decor', 'seasonal-plant', 'stardew-hero-trophy', 'solid-gold-lewis'].includes(type)) return 'decor';
+  return 'machines';
+}
+
 /** Lines the plan up with the save (the planner's map may be shifted a few tiles) and compares. */
-export function comparePlan(plan: PlannerPlan, layout: LayoutState | undefined): Comparison {
+export function comparePlan(plan: PlannerPlan, layout: LayoutState | undefined, options: CompareOptions = {}): Comparison {
+  const crops = cropSlugs();
   const saved = new Map<string, Set<string>>();
   const counts = new Map<string, number>();
   for (const [x, y, key] of layout?.tiles ?? []) {
     const keys = saveKeys(key);
+    // Any crop or tilled soil can stand for a planned crop when only the planting areas matter.
+    if (options.anyCrop && (key === 'hoedirt' || key.startsWith('crop:'))) keys.push('planting-area');
     const set = saved.get(`${x},${y}`) ?? new Set<string>();
     for (const k of keys) {
       set.add(k);
@@ -117,7 +165,15 @@ export function comparePlan(plan: PlannerPlan, layout: LayoutState | undefined):
     }
     saved.set(`${x},${y}`, set);
   }
-  const planned = [...plan.tiles, ...plan.flooring].map((t) => ({ x: Math.round(t.x / 16), y: Math.round(t.y / 16), type: canon(t.type) }));
+  const category = new Map<string, Category>();
+  const cat = (type: string) => {
+    if (!category.has(type)) category.set(type, categoryOf(type, crops));
+    return category.get(type)!;
+  };
+  const planned = [...plan.tiles, ...plan.flooring]
+    .map((t) => ({ x: Math.round(t.x / 16), y: Math.round(t.y / 16), type: canon(t.type) }))
+    .filter((p) => !options.ignore?.has(cat(p.type)))
+    .map((p) => (options.anyCrop && cat(p.type) === 'crops' ? { ...p, type: 'planting-area' } : p));
 
   // Pick the shift with the most matches (ties keep the smallest shift).
   let best: [number, number] = [0, 0];
@@ -161,15 +217,18 @@ export function comparePlan(plan: PlannerPlan, layout: LayoutState | undefined):
     const [sx, sy] = typeShift.get(p.type) ?? [0, 0];
     const x = p.x + dx + sx;
     const y = p.y + dy + sy;
-    const ok = !!saved.get(`${x},${y}`)?.has(p.type);
-    cells.push([x, y, ok]);
+    const here = saved.get(`${x},${y}`);
+    const ok = !!here?.has(p.type);
+    cells.push({ x, y, type: p.type, done: ok, actual: [...(here ?? [])].filter((k) => k !== 'planting-area') });
     plannedSpots.add(`${x},${y}`);
     const r = byType.get(p.type) ?? { type: p.type, planned: 0, inPlace: 0, have: counts.get(p.type) ?? 0 };
     r.planned++;
     if (ok) r.inPlace++;
     byType.set(p.type, r);
   }
-  const extra = (layout?.tiles ?? []).filter(([x, y, key]) => key !== 'grass' && !plannedSpots.has(`${x},${y}`)).map(([x, y]) => [x, y] as [number, number]);
+  const extra = (layout?.tiles ?? [])
+    .filter(([x, y, key]) => key !== 'grass' && key !== 'hoedirt' && !plannedSpots.has(`${x},${y}`))
+    .map(([x, y, key]) => [x, y, saveKeys(key)] as [number, number, string[]]);
 
   const builtCounts = new Map<string, number>();
   for (const [, , type] of layout?.buildings ?? []) builtCounts.set(type, (builtCounts.get(type) ?? 0) + 1);
@@ -178,7 +237,7 @@ export function comparePlan(plan: PlannerPlan, layout: LayoutState | undefined):
   const buildings = [...plannedBuildings].map(([type, n]) => ({ type, planned: n, inPlace: Math.min(n, builtCounts.get(type) ?? 0), have: builtCounts.get(type) ?? 0 }));
 
   const types = [...byType.values()].sort((a, b) => b.planned - b.inPlace - (a.planned - a.inPlace) || b.planned - a.planned);
-  return { offset: best, types, buildings, cells, extra, done: cells.filter((c) => c[2]).length, total: cells.length };
+  return { offset: best, types, buildings, cells, extra, done: cells.filter((c) => c.done).length, total: cells.length };
 }
 
 /** Planner floors and paths named differently from their items. */
