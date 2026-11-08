@@ -1215,5 +1215,17 @@
       "fish": "Catch every fish in the collection.",
       "walnuts": "Find all 130 of the island's golden walnuts."
     }
+  },
+  "search": {
+    "placeholder": "Search item, villager, shop…",
+    "none": "Nothing found.",
+    "soldAt": "For sale today: {{shops}}",
+    "usedIn": "Used in {{count}} recipes ({{list}})",
+    "bundles": "Bundle: {{list}}",
+    "group": {
+      "items": "Items",
+      "people": "Villagers",
+      "shops": "Shops"
+    }
   }
 }

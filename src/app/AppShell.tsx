@@ -4,6 +4,7 @@ import { LANGUAGES } from '@/i18n';
 import { ItemIcon, Sprite, UiIcon } from '@/ui';
 import { SaveUpdatedToast } from '@/features/saves/LiveStatus';
 import { SaveCard } from '@/features/saves/SaveCard';
+import { Search } from '@/features/search/Search';
 import { ThemeToggle } from './ThemeToggle';
 import { CachedBanner } from '@/features/saves/CachedBanner';
 import './shell.css';
@@ -73,6 +74,7 @@ export function AppShell() {
         </div>
 
         <SaveCard />
+        <Search />
 
         <nav className="sidebar__nav" aria-label="Main">
           <ul className="side-tabs">
