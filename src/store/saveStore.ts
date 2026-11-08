@@ -36,6 +36,8 @@ const storage = {
 export type SaveStatus = 'idle' | 'needs-permission' | 'listing' | 'loading' | 'ready' | 'error';
 
 interface SaveState {
+  /** Startup finished: the cached save and a farmhand's room had their chance to load. */
+  initialized: boolean;
   status: SaveStatus;
   error: string | null;
   source: SaveSource | null;
@@ -200,6 +202,7 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
       });
     },
 
+    initialized: false,
     status: 'idle',
     error: null,
     source: null,

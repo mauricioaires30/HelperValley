@@ -27,7 +27,11 @@ export function App() {
       () => {
         setReady(true);
         // Reopen the remembered saves folder, if any.
-        void useSaveStore.getState().init().then(resumeShare);
+        void useSaveStore
+          .getState()
+          .init()
+          .then(resumeShare)
+          .finally(() => useSaveStore.setState({ initialized: true }));
       },
       (e: unknown) => setError(String(e)),
     );
