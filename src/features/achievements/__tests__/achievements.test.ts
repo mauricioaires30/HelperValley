@@ -10,7 +10,7 @@ import goals from '../../../../public/data/achievementGoals.json';
 import achievements from '../../../../public/data/achievements.json';
 import { achievementProgress } from '../achievements';
 
-const dir = process.env.STARDEW_SAVES_DIR ?? path.join(process.env.APPDATA ?? '', 'StardewValley', 'Saves');
+const dir = process.env.STARDEW_SAVES_DIR ?? (process.env.APPDATA ? path.join(process.env.APPDATA, 'StardewValley', 'Saves') : path.join(process.env.HOME ?? '', '.config', 'StardewValley', 'Saves'));
 const folders = existsSync(dir) ? readdirSync(dir).filter((f) => statSync(path.join(dir, f)).isDirectory()) : [];
 
 describe.skipIf(folders.length === 0)('achievement progress on real saves', () => {

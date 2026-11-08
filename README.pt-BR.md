@@ -7,7 +7,7 @@ Ajudante de Stardew Valley que lê os seus próprios saves no navegador. Sem con
 **Acesse:** [mauricioaires30.github.io/HelperValley](https://mauricioaires30.github.io/HelperValley/)
 
 ## Recursos
-- **Saves locais:** escolha a pasta `%AppData%\StardewValley\Saves` uma vez. No Chrome ou no Edge, marque "Permitir em todas as visitas" e o site fica sempre de olho nela.
+- **Saves locais, no Windows, Mac e Linux:** escolha a pasta de saves uma vez (`%AppData%\StardewValley\Saves` no Windows, `~/.config/StardewValley/Saves` no Mac e no Linux). No Chrome, Edge, Brave ou Opera, marque "Permitir em todas as visitas" e o site fica sempre de olho nela.
 - **Atualização ao vivo:** toda vez que o jogo salva (quando você dorme), a página mostra o novo dia sozinha.
 - **Lembra da sua fazenda:** o último save fica guardado no navegador e abre na hora na próxima visita.
 - **Multiplayer:** alterne entre o anfitrião e cada ajudante.

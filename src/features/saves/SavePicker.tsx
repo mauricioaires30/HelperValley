@@ -2,26 +2,30 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSaveStore } from '@/store/saveStore';
 import { supportsDirectoryAccess } from '@/save/sources';
+import { detectPlatform, LINUX_FLATPAK_PATH, SAVES_PATH } from '@/save/platform';
 import type { SaveSummary } from '@/save/model';
 import { ItemIcon, SeasonIcon } from '@/ui';
 import './saves.css';
 
-const SAVES_PATH = '%AppData%\\StardewValley\\Saves';
 
 function CopyPath() {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
+  const platform = detectPlatform();
+  const path = SAVES_PATH[platform];
   const copy = () =>
-    void navigator.clipboard?.writeText(SAVES_PATH).then(() => {
+    void navigator.clipboard?.writeText(path).then(() => {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1500);
     });
   return (
     <p className="saves__path">
-      {t('saves.where')} <code className="inset">{SAVES_PATH}</code>
+      {t('saves.where')} <code className="inset">{path}</code>
       <button className="button" onClick={copy}>
         {copied ? t('saves.copied') : t('saves.copy')}
       </button>
+      {platform !== 'windows' && <span className="saves__hint">{t(`saves.hidden.${platform}`)}</span>}
+      {platform === 'linux' && <span className="saves__hint">{t('saves.flatpak', { path: LINUX_FLATPAK_PATH })}</span>}
     </p>
   );
 }
@@ -73,7 +77,7 @@ export function ConnectPanel() {
       {/* Works everywhere, even with the saves inside AppData: load once, the browser keeps a copy. */}
       <div className="saves__quick box">
         <strong>{t('saves.quickTitle')}</strong>
-        <span className="saves__hint">{t('saves.quickHint')}</span>
+        <span className="saves__hint">{t('saves.quickHint', { path: SAVES_PATH[detectPlatform()] })}</span>
         <FolderInput label={t('saves.quickButton')} primary />
       </div>
       {!supportsDirectoryAccess() && <p className="saves__hint">{t('saves.fallbackHint')}</p>}

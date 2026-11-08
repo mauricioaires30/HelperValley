@@ -7,7 +7,7 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { normalizeSave, normalizeSummary } from '../normalize';
 
-const dir = process.env.STARDEW_SAVES_DIR ?? path.join(process.env.APPDATA ?? '', 'StardewValley', 'Saves');
+const dir = process.env.STARDEW_SAVES_DIR ?? (process.env.APPDATA ? path.join(process.env.APPDATA, 'StardewValley', 'Saves') : path.join(process.env.HOME ?? '', '.config', 'StardewValley', 'Saves'));
 const folders = existsSync(dir) ? readdirSync(dir).filter((f) => statSync(path.join(dir, f)).isDirectory()) : [];
 
 describe.skipIf(folders.length === 0)('real saves', () => {
