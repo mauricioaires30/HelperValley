@@ -72,6 +72,11 @@
         "windows": "Open PowerShell (Start menu → \"PowerShell\") and run this once:",
         "mac": "Open Terminal (Spotlight → \"Terminal\") and run this once:",
         "linux": "Open a terminal and run this once:"
+      },
+      "warningTitle": "Warning: these are your real saves",
+      "warning": {
+        "windows": "The command moves your saves to Documents\\StardewValley Saves and leaves a link behind: the game then uses that folder, so don't delete it. Before moving, it creates Documents\\StardewValley Saves Backup, which updates about 1 minute after each change and never deletes anything. If something goes wrong, run the command again: it restores from the backup.",
+        "link": "The command only creates a link in Documents. Your saves stay where they are: don't delete that folder."
       }
     },
     "how": {
@@ -87,7 +92,12 @@
     },
     "remove": "Remove folder",
     "removeHint": "Only removes it from the site: your saves stay on your PC.",
-    "needsBrowser": "This site reads your saves live, which only works in Chrome, Edge, Brave or Opera."
+    "needsBrowser": "This site reads your saves live, which only works in Chrome, Edge, Brave or Opera.",
+    "restore": {
+      "title": "Put the folders back to normal",
+      "windows": "Close the game and run this in PowerShell. Your saves go back to AppData, and the link and the backup updates are removed. The backup folder stays in Documents: delete it only if you want to.",
+      "link": "Run this in the terminal. It only removes the link: your saves don't move."
+    }
   },
   "locations": {
     "Farm": "Farm",

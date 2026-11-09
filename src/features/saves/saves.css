@@ -230,3 +230,11 @@
   justify-content: center;
   gap: 8px;
 }
+
+.live-guide__warning {
+  display: grid;
+  gap: 4px;
+  padding: 8px 12px;
+  border-left: 4px solid var(--danger);
+  background: rgb(255 255 255 / 0.35);
+}
