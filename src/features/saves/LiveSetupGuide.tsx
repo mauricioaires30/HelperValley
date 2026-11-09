@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSaveStore } from '@/store/saveStore';
 import { ItemIcon } from '@/ui';
-import { detectPlatform, type Platform } from '@/save/platform';
+import { detectPlatform, LINUX_FLATPAK_PATH, type Platform } from '@/save/platform';
 
 /**
  * Windows: Chrome and Edge refuse to open folders inside AppData ("contains system files"), which is
@@ -12,8 +12,8 @@ import { detectPlatform, type Platform } from '@/save/platform';
 export const JUNCTION_COMMAND = [
   '$saves = "$env:APPDATA\\StardewValley\\Saves"',
   '$docs = "$env:USERPROFILE\\Documents\\StardewValley Saves"',
-  'Move-Item $saves $docs',
-  'New-Item -ItemType Junction -Path $saves -Target $docs',
+  // Already done before: running it again changes nothing.
+  "if ((Get-Item $saves).LinkType -ne 'Junction') { Move-Item $saves $docs; New-Item -ItemType Junction -Path $saves -Target $docs }",
 ].join('; ');
 
 /**
@@ -21,8 +21,8 @@ export const JUNCTION_COMMAND = [
  * folder easy to find in the picker; the game keeps saving in the same place.
  */
 const LINK_COMMAND: Record<Exclude<Platform, 'windows'>, string> = {
-  mac: 'ln -s ~/.config/StardewValley/Saves ~/Documents/StardewValley\\ Saves',
-  linux: 'ln -s ~/.config/StardewValley/Saves ~/Documents/StardewValley\\ Saves',
+  mac: 'ln -sfn ~/.config/StardewValley/Saves ~/Documents/StardewValley\\ Saves',
+  linux: 'ln -sfn ~/.config/StardewValley/Saves ~/Documents/StardewValley\\ Saves',
 };
 
 const PLATFORMS: Platform[] = ['windows', 'mac', 'linux'];
@@ -59,9 +59,8 @@ export function LiveSetupGuide() {
   );
 
   return (
-    <details className="home-fold box">
-      <summary>{t('saves.guide.title')}</summary>
-      <div className="live-guide">
+    <section className="live-guide box">
+      <h2>{t('saves.guide.title')}</h2>
       <div className="calendar__nav" role="tablist">
         {PLATFORMS.map((p) => (
           <button key={p} role="tab" aria-selected={p === platform} className={p === platform ? 'button button--primary' : 'button'} onClick={() => setPlatform(p)}>
@@ -76,13 +75,13 @@ export function LiveSetupGuide() {
         <li>
           {t(`saves.guide.terminal.${platform}`)}
           <Command command={platform === 'windows' ? JUNCTION_COMMAND : LINK_COMMAND[platform]} />
+          {platform === 'linux' && <span className="saves__hint">{t('saves.flatpak', { path: LINUX_FLATPAK_PATH })}</span>}
         </li>
         <li>
           {t('saves.guide.pick')} {openButton}
         </li>
         <li>{t('saves.guide.allow')}</li>
       </ol>
-      </div>
-    </details>
+    </section>
   );
 }

@@ -219,3 +219,14 @@
 .home__privacy {
   margin-top: 12px;
 }
+
+.live-guide h2 {
+  margin: 0;
+}
+
+.saves__connect-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}

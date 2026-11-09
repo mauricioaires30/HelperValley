@@ -7,7 +7,6 @@ import { SaveCard } from '@/features/saves/SaveCard';
 import { Search } from '@/features/search/Search';
 import { useSaveNotifications } from '@/features/saves/Notifications';
 import { ThemeToggle } from './ThemeToggle';
-import { CachedChip } from '@/features/saves/CachedBanner';
 import { ShareChip } from '@/features/share/SharePanel';
 import { useShareStore } from '@/features/share/liveShare';
 import { useSaveStore } from '@/store/saveStore';
@@ -61,9 +60,11 @@ export function AppShell() {
   const hasSave = useSaveStore((s) => !!s.save);
   const initialized = useSaveStore((s) => s.initialized);
   const inRoom = useShareStore((s) => !!s.role);
+  // Waiting for the click that restores the folder: stay on this page, it loads right after.
+  const reconnecting = useSaveStore((s) => !!s.pendingHandle);
   const { pathname } = useLocation();
   // Without a save every other page is empty: only the Saves page is available.
-  if (initialized && !hasSave && !inRoom && pathname !== '/' && pathname !== '/kit') return <Navigate to="/" replace />;
+  if (initialized && !hasSave && !inRoom && !reconnecting && pathname !== '/' && pathname !== '/kit') return <Navigate to="/" replace />;
 
   return (
     <div className="app">
@@ -98,7 +99,6 @@ export function AppShell() {
 
       <div className="content">
         <header className="topbar">
-          <CachedChip />
           <ShareChip />
           <span className="topbar__spacer" />
           <label className="topbar__select box">

@@ -46,19 +46,13 @@
     }
   },
   "saves": {
-    "where": "Os saves ficam em:",
-    "copy": "Copiar caminho",
     "copied": "Copiado!",
     "open": "Abrir pasta Saves",
-    "openHint": "O site atualiza sozinho quando o jogo salva.",
-    "fallback": "Selecionar pasta Saves",
     "reconnect": "Reconectar aos saves",
     "reconnectHint": "Clique em qualquer lugar e escolha \"Permitir em todas as visitas\".",
     "change": "Trocar pasta",
     "none": "Nenhum save encontrado nessa pasta.",
     "list": "Suas fazendas",
-    "live": "Ao vivo",
-    "snapshot": "Cópia salva",
     "loading": "Lendo o save...",
     "player": "Jogador",
     "day": "Dia {{day}} de {{season}}, Ano {{year}}",
@@ -68,13 +62,8 @@
     "error": "Não foi possível ler este save: {{message}}",
     "required": "Abra a pasta de saves para ver esta página.",
     "updated": "O jogo salvou! Mostrando o novo dia",
-    "cachedLive": "Reconectar para atualizar ao vivo",
-    "cachedOpen": "Conectar pasta Saves",
-    "cachedHintReconnect": "Clique em qualquer lugar e escolha \"Permitir em todas as visitas\".",
-    "cachedHintPick": "Conecte a pasta para atualizar ao vivo.",
-    "cachedHintUnsupported": "Para atualizar ao vivo, use Chrome, Edge, Brave ou Opera.",
     "guide": {
-      "title": "Atualizar sozinho quando o jogo salvar",
+      "title": "Conectar seus saves",
       "close": "Feche o Stardew Valley.",
       "copy": "Copiar comando",
       "pick": "Escolha a pasta Documentos/StardewValley Saves:",
@@ -85,25 +74,20 @@
         "linux": "Abra o terminal e rode isto uma vez:"
       }
     },
-    "quickButton": "Selecionar pasta Saves",
     "how": {
       "local": "O site lê os saves direto do seu PC; nada é enviado."
-    },
-    "hidden": {
-      "mac": "É uma pasta oculta: no seletor, aperte Cmd+Shift+. para ver pastas ocultas, ou Cmd+Shift+G e cole o caminho.",
-      "linux": "É uma pasta oculta: no seletor, aperte Ctrl+H para ver pastas ocultas."
     },
     "flatpak": "Steam pelo Flatpak: {{path}}",
     "farmName": "Fazenda {{name}}",
     "dayShort": "{{day}} de {{season}}, ano {{year}}",
-    "cachedShort": "Cópia salva ({{time}})",
     "os": {
       "windows": "Windows",
       "mac": "Mac",
       "linux": "Linux"
     },
     "remove": "Remover pasta",
-    "removeHint": "Só tira do site: seus saves continuam no PC."
+    "removeHint": "Só tira do site: seus saves continuam no PC.",
+    "needsBrowser": "Este site lê seus saves ao vivo, o que só funciona no Chrome, Edge, Brave ou Opera."
   },
   "locations": {
     "Farm": "Fazenda",

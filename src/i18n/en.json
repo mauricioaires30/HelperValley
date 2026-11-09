@@ -46,19 +46,13 @@
     }
   },
   "saves": {
-    "where": "Your saves are in:",
-    "copy": "Copy path",
     "copied": "Copied!",
     "open": "Open Saves folder",
-    "openHint": "The site updates itself when the game saves.",
-    "fallback": "Select Saves folder",
     "reconnect": "Reconnect to your saves",
     "reconnectHint": "Click anywhere and choose \"Allow on every visit\".",
     "change": "Change folder",
     "none": "No saves were found in that folder.",
     "list": "Your farms",
-    "live": "Live",
-    "snapshot": "Saved copy",
     "loading": "Reading save...",
     "player": "Player",
     "day": "Day {{day}} of {{season}}, Year {{year}}",
@@ -68,13 +62,8 @@
     "error": "Couldn't read this save: {{message}}",
     "required": "Open your saves folder to see this page.",
     "updated": "The game saved! Showing the new day",
-    "cachedLive": "Reconnect to update live",
-    "cachedOpen": "Connect Saves folder",
-    "cachedHintReconnect": "Click anywhere and choose \"Allow on every visit\".",
-    "cachedHintPick": "Connect the folder for live updates.",
-    "cachedHintUnsupported": "For live updates, use Chrome, Edge, Brave or Opera.",
     "guide": {
-      "title": "Update by itself when the game saves",
+      "title": "Connect your saves",
       "close": "Close Stardew Valley.",
       "copy": "Copy command",
       "pick": "Choose the Documents/StardewValley Saves folder:",
@@ -85,25 +74,20 @@
         "linux": "Open a terminal and run this once:"
       }
     },
-    "quickButton": "Select the Saves folder",
     "how": {
       "local": "The site reads your saves right from your PC; nothing is uploaded."
-    },
-    "hidden": {
-      "mac": "It's a hidden folder: in the picker press Cmd+Shift+. to show hidden folders, or Cmd+Shift+G and paste the path.",
-      "linux": "It's a hidden folder: in the picker press Ctrl+H to show hidden folders."
     },
     "flatpak": "Steam from Flatpak: {{path}}",
     "farmName": "{{name}} Farm",
     "dayShort": "{{season}} {{day}}, year {{year}}",
-    "cachedShort": "Saved copy ({{time}})",
     "os": {
       "windows": "Windows",
       "mac": "Mac",
       "linux": "Linux"
     },
     "remove": "Remove folder",
-    "removeHint": "Only removes it from the site: your saves stay on your PC."
+    "removeHint": "Only removes it from the site: your saves stay on your PC.",
+    "needsBrowser": "This site reads your saves live, which only works in Chrome, Edge, Brave or Opera."
   },
   "locations": {
     "Farm": "Farm",
