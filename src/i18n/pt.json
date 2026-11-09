@@ -66,7 +66,7 @@
       "title": "Conectar seus saves",
       "close": "Feche o Stardew Valley.",
       "copy": "Copiar comando",
-      "pick": "Escolha a pasta Documentos/StardewValley Saves:",
+      "pick": "Escolha a pasta Documentos/Stardew Valley/Saves:",
       "allow": "Na próxima visita, escolha \"Permitir em todas as visitas\".",
       "terminal": {
         "windows": "Abra o PowerShell (menu Iniciar → \"PowerShell\") e rode isto uma vez:",
@@ -74,15 +74,12 @@
         "linux": "Abra o terminal e rode isto uma vez:"
       },
       "warningTitle": "Atenção: estes são os seus saves de verdade",
-      "warning": {
-        "windows": "O comando leva seus saves para Documentos\\StardewValley Saves e deixa um atalho no lugar: é essa pasta que o jogo passa a usar, então não a apague. Antes de mover, ele cria Documentos\\StardewValley Saves Backup, que se atualiza cerca de 1 minuto depois de cada mudança e nunca apaga nada. Se algo der errado, rode o comando de novo: ele recupera do backup.",
-        "link": "O comando só cria um atalho em Documentos. Seus saves continuam onde estão: não apague essa pasta."
-      }
+      "warning": "O comando leva seus saves para Documentos/Stardew Valley/Saves e deixa um atalho onde o jogo procura: é essa pasta que o jogo passa a usar, então não a apague. Antes de mover, ele cria Documentos/Stardew Valley/Backup, que se atualiza cerca de 1 minuto depois de cada mudança e nunca apaga nada. Se algo der errado, rode o comando de novo: ele recupera do backup. Saves e backup ficam juntos: apagar a pasta Stardew Valley inteira apaga os dois.",
+      "untested": "Este comando ainda não foi testado neste sistema. Copie seus saves para outro lugar antes de rodar."
     },
     "how": {
       "local": "O site lê os saves direto do seu PC; nada é enviado."
     },
-    "flatpak": "Steam pelo Flatpak: {{path}}",
     "farmName": "Fazenda {{name}}",
     "dayShort": "{{day}} de {{season}}, ano {{year}}",
     "os": {
@@ -95,8 +92,7 @@
     "needsBrowser": "Este site lê seus saves ao vivo, o que só funciona no Chrome, Edge, Brave ou Opera.",
     "restore": {
       "title": "Voltar as pastas ao normal",
-      "windows": "Feche o jogo e rode isto no PowerShell. Seus saves voltam para o AppData, e o atalho e a atualização do backup são removidos. A pasta de backup continua em Documentos: apague só se quiser.",
-      "link": "Rode isto no terminal. Remove só o atalho: seus saves não mudam de lugar."
+      "text": "Feche o jogo e rode isto. Seus saves voltam para onde o jogo guarda, e o atalho e a atualização do backup são removidos. A pasta Backup continua em Documentos/Stardew Valley: apague só se quiser."
     }
   },
   "locations": {
