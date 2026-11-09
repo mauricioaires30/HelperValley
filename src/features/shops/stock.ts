@@ -254,6 +254,15 @@ export function seedContext(save: SaveData, day: ShopDay): SeedContext {
 
 /** Builds one shop's stock for a day, like the game does when the shop opens. */
 export function shopStock(shopId: string, save: SaveData, player: Player, day: ShopDay): ShopStock {
+  const stock = dataShopStock(shopId, save, player, day);
+  if (shopId !== 'Bookseller') return stock;
+  // The game has two lists for the same stand: books for gold and books for trades.
+  const trades = dataShopStock('BooksellerTrade', save, player, day);
+  const froms = [stock.uncertainFrom, trades.uncertainFrom].filter((n): n is number => n !== null);
+  return { ...stock, items: [...stock.items, ...trades.items], uncertainFrom: froms.length ? Math.min(...froms) : null };
+}
+
+function dataShopStock(shopId: string, save: SaveData, player: Player, day: ShopDay): ShopStock {
   const data = gameData().shops as ShopsData;
   const shop = data.shops[shopId];
   const items: StockEntry[] = [];

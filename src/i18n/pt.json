@@ -101,7 +101,9 @@
       "windows": "Windows",
       "mac": "Mac",
       "linux": "Linux"
-    }
+    },
+    "remove": "Remover pasta",
+    "removeHint": "Só tira do site: seus saves continuam no PC."
   },
   "locations": {
     "Farm": "Fazenda",
@@ -1001,7 +1003,6 @@
       "QiGemShop": "Sala das Nozes do Qi",
       "Casino": "Cassino",
       "Bookseller": "Livreiro",
-      "BooksellerTrade": "Livreiro (trocas)",
       "Raccoon": "Guaxinim",
       "HatMouse": "Rato dos Chapéus",
       "IceCreamStand": "Sorveteria",

@@ -108,6 +108,7 @@ export function SaveList() {
   const connectDirectory = useSaveStore((s) => s.connectDirectory);
   const pendingHandle = useSaveStore((s) => s.pendingHandle);
   const reconnect = useSaveStore((s) => s.reconnect);
+  const disconnect = useSaveStore((s) => s.disconnect);
   const cachedFolders = useSaveStore((s) => s.cachedFolders);
   const mode = source?.live ? 'live' : source ? 'snapshot' : 'cached';
 
@@ -127,6 +128,9 @@ export function SaveList() {
         ) : (
           <FolderInput label={t('saves.change')} />
         )}
+        <button className="button" onClick={() => void disconnect()} title={t('saves.removeHint')}>
+          {t('saves.remove')}
+        </button>
       </div>
       {summaries.length === 0 && status !== 'listing' && <p>{t('saves.none')}</p>}
       <div className="saves__grid">

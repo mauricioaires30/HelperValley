@@ -12,7 +12,7 @@ import { ONE_TIME_GUIDE } from '@/features/walnuts/walnutGuide';
 import { SHOPS } from '@/features/shops/catalog';
 import { SEASONS } from '@/features/calendar/calendar';
 import { describeEvent } from '@/features/relationships/eventConditions';
-import { formatTime, resolveSchedule, WEEKDAYS, type ScheduleData, type ScheduleResult, type Stop } from './schedule';
+import { formatTime, resolveSchedule, WEEKDAYS, type ScheduleData, type ScheduleResult, type Stop, currentData } from './schedule';
 import { layoutPins } from './pinLayout';
 import { islandDay } from './islandVisitors';
 import { PlacePicture } from './PlacePicture';
@@ -226,13 +226,14 @@ export function MapPage() {
       const conditions = { season, day, raining, hearts: friendship ? Math.floor(friendship.points / 250) : 0, married };
       // Today's island visitors follow the schedule the game gave them.
       const visit = island?.schedules[npc];
-      const schedule = visit ? { key: 'island', stops: visit } : resolveSchedule(schedules[npc], conditions, npc);
-      const place = placeAt(schedules[npc], schedule, time, married);
+      const data = currentData(schedules[npc], save?.players[0]?.mailReceived ?? []);
+      const schedule = visit ? { key: 'island', stops: visit } : resolveSchedule(data, conditions, npc);
+      const place = placeAt(data, schedule, time, married);
       if (!place) continue;
       out.push({ npc, location: place.location, since: place.since, walking: place.walking, region: place.pixel?.region ?? null, px: place.pixel?.px ?? 0, py: place.pixel?.py ?? 0 });
     }
     return out;
-  }, [player, season, day, raining, time, schedules, island]);
+  }, [player, season, day, raining, time, schedules, island, save]);
 
   const events = useMemo(() => availableEvents(player, season, day, time, raining), [player, season, day, time, raining]);
 
@@ -292,10 +293,10 @@ export function MapPage() {
         const pixel = toMapPixel(worldMap, place, tile[0], tile[1]);
         if (!pixel || pixel.region !== region) return [];
         // Buildings and caves show at their door; real water goes on the drawn water.
-        if (!isOpenArea(worldMap, pixel.region, place)) return [{ key: `f-${id}-${l.location}-${l.area ?? ''}-${i}`, ...pixel, id, place: l.location, tile }];
+        if (!isOpenArea(worldMap, pixel.region, place)) return [{ key: `f-${id}-${l.location}-${l.area ?? ''}-${i}`, ...pixel, id, place: l.location, tile, specific: l.specific }];
         const onWater = snapToMap(worldMap, pixel, 'water', 15);
         // Water the map doesn't draw (the backwoods' pond): no pin on dry land. The desert is all drawn blank.
-        return place === 'Desert' || isWater(worldMap, onWater.region, onWater.px, onWater.py) ? [{ key: `f-${id}-${l.location}-${l.area ?? ''}-${i}`, ...onWater, id, place: l.location, tile }] : [];
+        return place === 'Desert' || isWater(worldMap, onWater.region, onWater.px, onWater.py) ? [{ key: `f-${id}-${l.location}-${l.area ?? ''}-${i}`, ...onWater, id, place: l.location, tile, specific: l.specific }] : [];
       });
     }),
   );
@@ -472,7 +473,6 @@ export function MapPage() {
                         <span className="slot-tooltip">
                           <strong>{t('map.eventPin', { name: name(npcs[e.npc]?.n), hearts: e.hearts })}</strong>
                           <span>{describeEvent(e, t, name).join(' · ')}</span>
-                          <PlacePicture location={e.location} />
                         </span>
                       }
                     >
@@ -505,7 +505,6 @@ export function MapPage() {
                         <span className="slot-tooltip">
                           <strong>{t(`walnuts.once.${p.key}`)}</strong>
                           <span>{t(`walnuts.how.${p.key}`)}</span>
-                          <PlacePicture location={p.location} />
                         </span>
                       }
                     >
@@ -522,7 +521,7 @@ export function MapPage() {
                       text={
                         <span className="slot-tooltip">
                           <strong>{name(gameData().items[p.id]?.n)}</strong>
-                          <PlacePicture location={p.place} tile={p.tile} />
+                          {p.specific && <PlacePicture location={p.place} tile={p.tile} />}
                         </span>
                       }
                     >
@@ -539,7 +538,6 @@ export function MapPage() {
                       text={
                         <span className="slot-tooltip">
                           <strong>{t('map.questPin', { title: p.q.title })}</strong>
-                          {p.q.location && <PlacePicture location={p.q.location} tile={p.q.tile} />}
                         </span>
                       }
                     >
@@ -600,7 +598,6 @@ export function MapPage() {
                             ))}
                           </span>
                           <span>{p.ids.map((id) => name(getItem(id)?.n)).join(', ')}</span>
-                          <PlacePicture location={p.place} />
                         </span>
                       }
                     >

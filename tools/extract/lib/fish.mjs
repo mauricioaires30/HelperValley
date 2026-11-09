@@ -106,6 +106,9 @@ function middleOfWater(indexes, w) {
   return [middle % w, Math.floor(middle / w)];
 }
 
+const LEGENDARY = new Set(['(O)159', '(O)160', '(O)163', '(O)682', '(O)775', '(O)898', '(O)899', '(O)900', '(O)901', '(O)902']);
+const SPECIAL_WATERS = new Set(['Desert', 'Woods', 'WitchSwamp', 'BugLand']);
+
 /**
  * Fills each fish location with `spots`: tiles in the water it really bites in. A fishing area is the
  * water inside its rectangle (or outside the others'); legendaries, the water near where you must stand.
@@ -133,11 +136,15 @@ export async function addFishSpots(fish, gameDir) {
   };
   const inside = (i, w, r) => r && i % w >= r.X && i % w < r.X + r.Width && Math.floor(i / w) >= r.Y && Math.floor(i / w) < r.Y + r.Height;
 
+  const ids = new Map(Object.entries(fish).map(([id, value]) => [value, id]));
+  const fishId = (entry) => ids.get(entry);
   for (const entry of Object.values(fish)) {
     delete entry.ignoresRules;
     for (const l of entry.locations) {
       const near = l.near;
       delete l.near;
+      // Worth a picture: an exact spot (legendaries, the waterfall) or a rare place, not "any river".
+      if (near || LEGENDARY.has(fishId(entry)) || SPECIAL_WATERS.has(l.location)) l.specific = true;
       if (l.location === 'Farm') continue; // Depends on the farm type: the map shows just one.
       const map = await load(l.location);
       if (!map?.water.size) continue;

@@ -2,7 +2,7 @@ import { unpackToContent } from 'xnb';
 import { PNG } from 'pngjs';
 import { crc32, deflateSync } from 'node:zlib';
 import { readFile, writeFile, mkdir, rm } from 'node:fs/promises';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { readRaw } from './raw.mjs';
 import { parseTbin } from './npcPaths.mjs';
@@ -12,11 +12,14 @@ const OUT = path.join(ROOT, 'public/places');
 const TILE = 16;
 const CROP = { w: 14, h: 9 };
 
-/** Places with their own picture. Buildings show their door from outside instead. */
-const LOCATIONS = ['Town', 'Forest', 'Mountain', 'Beach', 'BusStop', 'Backwoods', 'Railroad', 'Desert', 'Woods', 'Sewer', 'BugLand', 'WitchSwamp', 'Submarine', 'Club', 'SkullCave', 'IslandSouth', 'IslandSouthEast', 'IslandEast', 'IslandWest', 'IslandNorth', 'IslandShrine', 'Caldera', 'IslandSouthEastCave'];
+/** Outdoor maps drawn right from the map files. Caves, the volcano, the sewer and the submarine depend on the game's code. */
+const LOCATIONS = ['Town', 'Forest', 'Mountain', 'Beach', 'BusStop', 'Railroad', 'Desert', 'Woods', 'BugLand', 'IslandSouth', 'IslandSouthEast', 'IslandWest', 'IslandNorth', 'IslandShrine'];
 
-/** Fixed spots marked on the map outside the game's data (the Fair's Stardrop, in collections/stardrops.ts). */
-const EXTRA_SPOTS = [['Town', 43, 62]];
+/** Buildings whose door is worth showing: shops and the places of Stardrops. */
+const DOOR_TARGETS = new Set(['SeedShop', 'JojaMart', 'AnimalShop', 'ScienceHouse', 'Blacksmith', 'FishShop', 'Saloon', 'Hospital', 'SandyHouse', 'AdventureGuild', 'ArchaeologyHouse', 'Mine']);
+
+/** Things that are part of the map itself. The Traveling Cart, Desert Trader and Bookseller are drawn at runtime, so a picture would show empty ground. */
+const FIXED_SPOTS = [['Forest', 32, 94]]; // Hat Mouse
 
 // GameLocation.loadPathsLayerObjectsInArea: map trees, drawn from their spring textures.
 const TREES = { 9: 'tree1_spring', 10: 'tree2_spring', 11: 'tree3_spring' };
@@ -144,8 +147,28 @@ function encodePng(rgb, w, h) {
   return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', ihdr), chunk('PLTE', plte), chunk('IDAT', deflateSync(indexes, { level: 9 })), chunk('IEND', Buffer.alloc(0))]);
 }
 
-/** A crop around a tile, with the spot marked unless it's just the place in general. */
-function crop(png, tileX, tileY, mark) {
+/** A crop around a tile, with the spot marked. */
+/** Too dark to see anything: caves, map edges and shaded jungle. */
+function tooDark(png, tileX, tileY) {
+  let black = 0;
+  let total = 0;
+  let light = 0;
+  const [w, h] = [CROP.w * TILE, CROP.h * TILE];
+  const left = Math.max(0, Math.min(png.width - w, tileX * TILE + TILE / 2 - w / 2));
+  const top = Math.max(0, Math.min(png.height - h, tileY * TILE + TILE / 2 - h / 2));
+  for (let y = top; y < Math.min(png.height, top + h); y++) {
+    for (let x = left; x < Math.min(png.width, left + w); x++) {
+      const i = (y * png.width + x) * 4;
+      const sum = png.data[i] + png.data[i + 1] + png.data[i + 2];
+      total++;
+      light += sum / 3;
+      if (sum < 90) black++;
+    }
+  }
+  return black / total > 0.06 || light / total < 62;
+}
+
+function crop(png, tileX, tileY) {
   const [w, h] = [CROP.w * TILE, CROP.h * TILE];
   const [fw, fh] = [Math.min(w, png.width), Math.min(h, png.height)];
   const left = Math.max(0, Math.min(png.width - fw, tileX * TILE + TILE / 2 - fw / 2));
@@ -160,7 +183,7 @@ function crop(png, tileX, tileY, mark) {
       rgb[d + 2] = png.data[s + 2];
     }
   }
-  if (mark) {
+  {
     // A ring around the tile: white outside, red inside, readable on any ground.
     const [mx, my] = [tileX * TILE - left, tileY * TILE - top];
     const ring = (pad, [r, g, b]) => {
@@ -184,29 +207,26 @@ function crop(png, tileX, tileY, mark) {
 }
 
 /**
- * Real pictures of the map's pins, from the game's own maps and tilesheets: every fish spot, walnut,
- * shop and place, plus the door of each building. Returns what exists, for the hover cards.
+ * Real pictures of specific spots, from the game's own maps and tilesheets: rare and legendary fish,
+ * walnuts, the Hat Mouse and the door of each shop. Returns what exists, for the hover cards.
  */
 export async function buildPlacePictures(gameDir, datasets) {
   await rm(OUT, { recursive: true, force: true });
   await mkdir(OUT, { recursive: true });
   const locations = readRaw('Data/Locations');
-  const shops = JSON.parse(readFileSync(path.join(ROOT, 'src/features/map/shopLocations.json'), 'utf8'));
 
   const wanted = new Map(LOCATIONS.map((l) => [l, new Set()]));
   const add = (location, x, y) => wanted.get(location)?.add(`${x}_${y}`);
-  for (const fish of Object.values(datasets.fish)) for (const l of fish.locations) for (const [x, y] of l.spots ?? []) add(l.location, x, y);
+  for (const fish of Object.values(datasets.fish)) for (const l of fish.locations) if (l.specific) for (const [x, y] of l.spots ?? []) add(l.location, x, y);
   for (const w of datasets.walnuts) add(w.location, w.tile[0], w.tile[1]);
-  for (const where of Object.values(shops)) if (Array.isArray(where)) add(where[0], where[1][0], where[1][1]);
-  for (const [l, x, y] of EXTRA_SPOTS) add(l, x, y);
+  for (const [l, x, y] of FIXED_SPOTS) add(l, x, y);
 
   // Buildings: their door on the first outdoor map that leads to them.
   const doors = {};
   for (const location of LOCATIONS) {
     const paths = datasets.npcPaths[location];
     for (const [x, y, target] of [...(paths?.doors ?? []), ...(paths?.warps ?? [])]) {
-      // The farm is outdoors and changes with the farm type: no single picture fits.
-      if (wanted.has(target) || doors[target] || target === 'Farm' || x < 0 || y < 0) continue;
+      if (!DOOR_TARGETS.has(target) || doors[target] || x < 0 || y < 0) continue;
       doors[target] = `${location}_${x}_${y}`;
       add(location, x, y);
     }
@@ -220,14 +240,15 @@ export async function buildPlacePictures(gameDir, datasets) {
     const result = await quietly(async () => unpackToContent(await readFile(file)));
     const map = parseTbin(Buffer.from(result.content instanceof Blob ? await result.content.arrayBuffer() : result.content));
     const png = await renderMap(gameDir, map);
-    const { w, h } = map.layers.Back;
-    await writeFile(path.join(OUT, `${location}_c.png`), crop(png, Math.floor(w / 2), Math.floor(h / 2), false));
-    spots.push(`${location}_c`);
     for (const tile of tiles) {
       const [x, y] = tile.split('_').map(Number);
-      await writeFile(path.join(OUT, `${location}_${tile}.png`), crop(png, x, y, true));
+      // Doors are open views of a building, where a dark roof is fine.
+      if (!Object.values(doors).includes(`${location}_${tile}`) && tooDark(png, x, y)) continue;
+      await writeFile(path.join(OUT, `${location}_${tile}.png`), crop(png, x, y));
       spots.push(`${location}_${tile}`);
     }
   }
+  // A door whose picture was rejected has nothing to show.
+  for (const [target, key] of Object.entries(doors)) if (!spots.includes(key)) delete doors[target];
   return { spots, doors };
 }
