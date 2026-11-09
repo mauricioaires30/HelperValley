@@ -3,18 +3,15 @@ import { assetUrl, gameData } from '@/data/gameData';
 /** Location names that differ between the map's pins and the game's warps. */
 const ALIASES: Record<string, string> = { Mines: 'Mine', UndergroundMine: 'Mine', SandyShop: 'SandyHouse' };
 
-/** The picture for a place: the exact tile, else a building's door, else the place in general. */
+/** The picture for a place, only when it's a specific spot: the exact tile or a building's door. */
 export function placePictureKey(location: string, tile?: readonly [number, number]): string | null {
   const { spots, doors } = gameData().places;
   const exact = tile && `${location}_${tile[0]}_${tile[1]}`;
   if (exact && spots.includes(exact)) return exact;
-  const door = doors[ALIASES[location] ?? location];
-  if (door) return door;
-  const general = `${location}_c`;
-  return spots.includes(general) ? general : null;
+  return doors[ALIASES[location] ?? location] ?? null;
 }
 
-/** What the place looks like in the game, for a pin's hover card. */
+/** What the spot looks like in the game, for a pin's hover card. */
 export function PlacePicture({ location, tile }: { location: string; tile?: readonly [number, number] }) {
   const key = placePictureKey(location, tile);
   if (!key) return null;

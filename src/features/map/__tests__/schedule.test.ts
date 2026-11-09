@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { candidateKeys, parseStops, positionAt, resolveSchedule, type ScheduleData } from '../schedule';
+import { candidateKeys, parseStops, positionAt, resolveSchedule, type ScheduleData, currentData } from '../schedule';
 import { toMapPixel, type WorldMapData } from '../worldMap';
 
 const schedules = JSON.parse(readFileSync(new URL('../../../../public/data/schedules.json', import.meta.url), 'utf8')) as Record<string, ScheduleData>;
@@ -11,6 +11,14 @@ describe('NPC schedules', () => {
     const keys = candidateKeys({ season: 'spring', day: 4, raining: false, hearts: 2, married: false });
     expect(keys.slice(0, 4)).toEqual(['spring_4', '4_2', '4_1', '4']);
     expect(keys).toContain('Thu');
+  });
+
+  it('keeps NPCs at their first home until they move', () => {
+    const data = { home: ['IslandHut', 5, 6] as [string, number, number], island: null, schedules: { spring: 'island' }, moved: { mail: 'leoMoved', home: ['LeoTreeHouse', 5, 4] as [string, number, number], schedules: { spring: 'valley' } } };
+    expect(currentData(data, []).home?.[0]).toBe('IslandHut');
+    expect(currentData(data, []).schedules.spring).toBe('island');
+    expect(currentData(data, ['leoMoved']).home?.[0]).toBe('LeoTreeHouse');
+    expect(currentData(data, ['leoMoved']).schedules.spring).toBe('valley');
   });
 
   it('parses stops, including arrival times', () => {

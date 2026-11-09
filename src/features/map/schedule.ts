@@ -6,6 +6,8 @@ export interface ScheduleData {
   /** [location, x, y] where the NPC starts the day. */
   home: [string, number, number] | null;
   island: string | null;
+  /** A later home and schedule, once the host has this mail (Leo moving to the valley). */
+  moved?: { mail: string; home: [string, number, number]; schedules: Record<string, string> };
   /** Data/Characters CanSocialize. */
   social?: string | null;
   female?: boolean;
@@ -61,6 +63,11 @@ export function candidateKeys(c: DayConditions): string[] {
   for (let h = Math.floor(c.hearts); h > 0; h--) keys.push(`${dow}_${h}`);
   keys.push(dow, c.season, `spring_${dow}`, 'spring');
   return keys;
+}
+
+/** Who this NPC is in this save: moved NPCs get their later home and schedule. */
+export function currentData(data: ScheduleData, hostMail: readonly string[]): ScheduleData {
+  return data.moved && hostMail.includes(data.moved.mail) ? { ...data, home: data.moved.home, schedules: data.moved.schedules } : data;
 }
 
 /** Parses "900 SeedShop 9 5 0/a1300 Town 47 87 2 ..." into stops. */

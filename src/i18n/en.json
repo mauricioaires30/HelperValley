@@ -101,7 +101,9 @@
       "windows": "Windows",
       "mac": "Mac",
       "linux": "Linux"
-    }
+    },
+    "remove": "Remove folder",
+    "removeHint": "Only removes it from the site: your saves stay on your PC."
   },
   "locations": {
     "Farm": "Farm",
@@ -1001,7 +1003,6 @@
       "QiGemShop": "Qi's Walnut Room",
       "Casino": "Casino",
       "Bookseller": "Bookseller",
-      "BooksellerTrade": "Bookseller (trades)",
       "Raccoon": "Raccoon",
       "HatMouse": "Hat Mouse",
       "IceCreamStand": "Ice Cream Stand",

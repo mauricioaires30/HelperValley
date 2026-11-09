@@ -176,9 +176,15 @@ export function buildSchedules() {
       // Drop quoted dialogue keys; keep "time location x y facing [animation]".
       schedules[key] = value.replace(/\s*"[^"]*"/g, '');
     }
-    const home = c.Home?.[0];
+    // Conditional homes come first in the data; the plain one is where they start.
+    const place = (h) => [h.Location, h.Tile?.X ?? 0, h.Tile?.Y ?? 0];
+    const home = c.Home?.find((h) => !h.Condition) ?? c.Home?.[0];
+    const later = c.Home?.find((h) => /^PLAYER_HAS_MAIL Host \w+$/.test(h.Condition ?? ''));
+    const laterSchedules = later && readRaw(`Characters/schedules/${npc}Mainland`);
+    const strip = (entries) => Object.fromEntries(Object.entries(entries).map(([key, value]) => [key, value.replace(/\s*"[^"]*"/g, '')]));
     out[npc] = {
-      home: home ? [home.Location, home.Tile?.X ?? 0, home.Tile?.Y ?? 0] : null,
+      home: home ? place(home) : null,
+      ...(laterSchedules ? { moved: { mail: later.Condition.split(' ').pop(), home: place(later), schedules: strip(laterSchedules) } } : {}),
       island: c.CanVisitIsland ?? null,
       social: c.CanSocialize ?? null,
       female: c.Gender === 1,
