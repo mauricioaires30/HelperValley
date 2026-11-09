@@ -1,8 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useSaveStore } from '@/store/saveStore';
 import { ConnectPanel, SaveList } from '@/features/saves/SavePicker';
-import { LiveSetupGuide } from '@/features/saves/LiveSetupGuide';
-import { supportsDirectoryAccess } from '@/save/sources';
 import { NotifyToggle } from '@/features/saves/Notifications';
 import { SharePanel } from '@/features/share/SharePanel';
 
@@ -11,7 +9,6 @@ export function HomePage() {
   const source = useSaveStore((s) => s.source);
   const status = useSaveStore((s) => s.status);
   const error = useSaveStore((s) => s.error);
-  const summaries = useSaveStore((s) => s.summaries);
 
   return (
     <div className="home">
@@ -20,11 +17,10 @@ export function HomePage() {
           {t('saves.error', { message: error })}
         </p>
       )}
-      {source || summaries.length > 0 ? <SaveList /> : <ConnectPanel />}
+      {source ? <SaveList /> : <ConnectPanel />}
       {status === 'loading' && <p>{t('saves.loading')}</p>}
       <div className="home__more">
         <SharePanel />
-        {!source?.live && supportsDirectoryAccess() && <LiveSetupGuide />}
         <NotifyToggle />
       </div>
       <p className="cc-summary__hint home__privacy">{t('saves.how.local')}</p>
