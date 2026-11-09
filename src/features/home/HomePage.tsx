@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useSaveStore } from '@/store/saveStore';
 import { ConnectPanel, SaveList } from '@/features/saves/SavePicker';
+import { RestoreFolders } from '@/features/saves/LiveSetupGuide';
 import { NotifyToggle } from '@/features/saves/Notifications';
 import { SharePanel } from '@/features/share/SharePanel';
 
@@ -22,6 +23,7 @@ export function HomePage() {
       <div className="home__more">
         <SharePanel />
         <NotifyToggle />
+        <RestoreFolders />
       </div>
       <p className="cc-summary__hint home__privacy">{t('saves.how.local')}</p>
     </div>
