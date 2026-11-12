@@ -30,16 +30,15 @@ export function pickAsset(assets: ReleaseAsset[], platform: Platform): ReleaseAs
   return null;
 }
 
-const CACHE_KEY = 'hv-app-release';
+const CACHE_KEY = 'hv-app-release-v2';
+/** GitHub allows 60 API requests an hour per visitor; a new release shows up within this time. */
+const CACHE_MS = 10 * 60_000;
 
-/**
- * The latest desktop app release, from GitHub's API (60 requests an hour per visitor, so it's cached
- * for the session). Null while no app was released yet. App releases are tagged "app-v…".
- */
+/** The latest desktop app release, from GitHub's API. Null while no app was released yet. App releases are tagged "app-v…". */
 export async function latestAppRelease(): Promise<AppRelease | null> {
   try {
-    const cached = sessionStorage.getItem(CACHE_KEY);
-    if (cached) return JSON.parse(cached) as AppRelease | null;
+    const cached = JSON.parse(sessionStorage.getItem(CACHE_KEY) ?? 'null') as { at: number; release: AppRelease | null } | null;
+    if (cached && Date.now() - cached.at < CACHE_MS) return cached.release;
   } catch {
     // no cache
   }
@@ -48,7 +47,7 @@ export async function latestAppRelease(): Promise<AppRelease | null> {
   const releases = (await response.json()) as Array<AppRelease & { draft: boolean; prerelease: boolean }>;
   const release = releases.find((r) => r.tag_name.startsWith('app-v') && !r.draft && !r.prerelease) ?? null;
   try {
-    sessionStorage.setItem(CACHE_KEY, JSON.stringify(release));
+    sessionStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), release }));
   } catch {
     // no cache
   }

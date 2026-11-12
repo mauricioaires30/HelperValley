@@ -60,9 +60,11 @@ export function SaveList() {
   const selectSave = useSaveStore((s) => s.selectSave);
   const connectDirectory = useSaveStore((s) => s.connectDirectory);
   const disconnect = useSaveStore((s) => s.disconnect);
+  const app = useSaveStore((s) => s.app);
 
   return (
     <section>
+      {!app && status !== 'listing' && <p className="box">{t('saves.notApp')}</p>}
       <div className="saves__header">
         <h2>{t('saves.list')}</h2>
         <button className="button" onClick={() => void connectDirectory()}>
