@@ -64,18 +64,8 @@
     "updated": "The game saved! Showing the new day",
     "guide": {
       "title": "Connect your saves",
-      "close": "Close Stardew Valley.",
-      "copy": "Copy command",
-      "pick": "Choose the folder Documents/Stardew Valley/Saves:",
-      "allow": "On your next visit, choose \"Allow on every visit\".",
-      "terminal": {
-        "windows": "Open PowerShell (Start menu → \"PowerShell\") and run this once:",
-        "mac": "Open Terminal (Spotlight → \"Terminal\") and run this once:",
-        "linux": "Open a terminal and run this once:"
-      },
-      "warningTitle": "Warning: these are your real saves",
-      "warning": "The command moves your saves to Documents/Stardew Valley/Saves and leaves a link where the game looks: the game then uses that folder, so don't delete it. Before moving, it creates Documents/Stardew Valley/Backup, which updates about 1 minute after each change and never deletes anything. If something goes wrong, run the command again: it restores from the backup. Saves and backup sit together: deleting the whole Stardew Valley folder deletes both.",
-      "untested": "This command hasn't been tested on this system yet. Copy your saves somewhere else before running it."
+      "pick": "Click here and choose the folder Documents/HelperValley Saves:",
+      "allow": "On your next visit, choose \"Allow on every visit\"."
     },
     "how": {
       "local": "The site reads your saves right from your PC; nothing is uploaded."
@@ -90,9 +80,19 @@
     "remove": "Remove folder",
     "removeHint": "Only removes it from the site: your saves stay on your PC.",
     "needsBrowser": "This site reads your saves live, which only works in Chrome, Edge, Brave or Opera.",
-    "restore": {
-      "title": "Put the folders back to normal",
-      "text": "Close the game and run this. Your saves go back to where the game keeps them, and the link and the backup updates are removed. The Backup folder stays in Documents/Stardew Valley: delete it only if you want to."
+    "app": {
+      "why": "The browser can't open the folder where the game saves. The HelperValley app copies your saves to Documents/HelperValley Saves without touching the originals, and the site reads that copy live. Only whoever has the save (the host, or a solo player) needs the app: to join someone else's room, the code is enough, below under \"Play together\".",
+      "step1": "Download and install the HelperValley app:",
+      "step2": "Open the app. It stays in the corner of the taskbar even with its window closed; to end it, use \"Quit\" on its icon.",
+      "checking": "Looking for the latest app version…",
+      "soon": "The app hasn't been released yet. It's coming soon.",
+      "releases": "See all app versions",
+      "download": "Download HelperValley for {{os}} (v{{version}})",
+      "unsigned": {
+        "windows": "The app has no digital signature yet: the first time, Windows shows \"Windows protected your PC\". Click \"More info\", then \"Run anyway\".",
+        "mac": "The app has no Apple signature yet: after opening it, go to System Settings → Privacy & Security and click \"Open Anyway\". It also asks for access to the Documents folder.",
+        "linux": "For the AppImage, make it executable (chmod +x) before opening. The .deb installs through the package manager."
+      }
     }
   },
   "locations": {
@@ -1313,7 +1313,9 @@
     },
     "chipHost": "Sharing {{code}} · {{count}}",
     "chipGuest": "Host's save ({{code}})",
-    "peers_zero": "Live · nobody connected yet"
+    "peers_zero": "Live · nobody connected yet",
+    "live": "LIVE",
+    "liveHint": "The HelperValley app is open: the site updates by itself when the game saves."
   },
   "stardrops": {
     "hint": "Each gives +34 max energy.",

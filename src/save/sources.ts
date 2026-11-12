@@ -1,6 +1,7 @@
 import { get, set, del } from 'idb-keyval';
 import { normalizeSummary } from './normalize';
 import type { SaveSummary } from './model';
+import { APP_STATUS_FILE, parseAppStatus, type AppStatus } from './appStatus';
 
 const HANDLE_KEY = 'savesDirectory';
 
@@ -11,6 +12,8 @@ export interface SaveSource {
   readSave(folder: string): Promise<{ xml: string; modified: number }>;
   /** lastModified of the main save file, used to detect in-game saves. */
   modified(folder: string): Promise<number>;
+  /** The HelperValley app's status file, when the folder is its copy. */
+  appStatus(): Promise<{ status: AppStatus; modified: number } | null>;
 }
 
 export const supportsDirectoryAccess = () => typeof window !== 'undefined' && 'showDirectoryPicker' in window;
@@ -52,6 +55,21 @@ class DirectorySource implements SaveSource {
       }),
     );
     return summaries.sort((a, b) => b.modified - a.modified);
+  }
+
+  /** The app writes its status next to the saves; also looked for inside a "Saves" folder picked one level up. */
+  async appStatus(): Promise<{ status: AppStatus; modified: number } | null> {
+    for (const dir of [this.root, await this.root.getDirectoryHandle('Saves').catch(() => null)]) {
+      if (!dir) continue;
+      try {
+        const file = await (await dir.getFileHandle(APP_STATUS_FILE)).getFile();
+        const status = parseAppStatus(await file.text());
+        if (status) return { status, modified: file.lastModified };
+      } catch {
+        // Not here, or being replaced right now: try again on the next check.
+      }
+    }
+    return null;
   }
 
   private async mainFile(folder: string): Promise<File> {

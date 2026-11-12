@@ -2,6 +2,7 @@ import Peer, { type DataConnection } from 'peerjs';
 import { create } from 'zustand';
 import type { SaveData } from '@/save/model';
 import { useSaveStore } from '@/store/saveStore';
+import { isAppLive } from '@/save/appStatus';
 import { onLocalCheck, useChecks, type CheckMessage } from '@/features/today/checks';
 
 /**
@@ -25,6 +26,8 @@ interface ShareState {
   code: string | null;
   /** Farmhands connected to this host. */
   peers: number;
+  /** For farmhands: the host's HelperValley app is running and copying. */
+  hostApp: boolean;
   error: string | null;
   host(): void;
   join(code: string): void;
@@ -73,6 +76,7 @@ const PING_MS = 4000;
 const GONE_MS = 13000;
 const lastSeen = new Map<DataConnection, number>();
 let timer: number | null = null;
+let timerApp: number | null = null;
 
 // The Today list follows the save on screen, and a mark made here goes to the room:
 // a farmhand tells the host, the host tells everyone.
@@ -99,6 +103,8 @@ export const useShareStore = create<ShareState>((set, get) => {
     unsubscribe = null;
     if (timer !== null) window.clearInterval(timer);
     timer = null;
+    if (timerApp !== null) window.clearInterval(timerApp);
+    timerApp = null;
     lastSeen.clear();
     for (const c of connections) c.close();
     connections.clear();
@@ -115,7 +121,21 @@ export const useShareStore = create<ShareState>((set, get) => {
       if (!c.open) continue;
       c.send({ type: 'save', data });
       c.send({ type: 'checks', day, checked });
+      c.send({ type: 'app', live: hostAppLive() });
     }
+  };
+
+  /** The host's own app status, as farmhands should see it. */
+  const hostAppLive = () => {
+    const app = useSaveStore.getState().app;
+    return app ? isAppLive(app.status, app.modified, Date.now()) : false;
+  };
+  let lastApp: boolean | null = null;
+  const tellApp = () => {
+    const live = hostAppLive();
+    if (live === lastApp) return;
+    lastApp = live;
+    for (const c of connections) if (c.open) c.send({ type: 'app', live });
   };
 
   const startHost = (code: string, retries = 3) => {
@@ -128,6 +148,8 @@ export const useShareStore = create<ShareState>((set, get) => {
       remember(CODE_KEY, code);
       // Every new save (the game saved, another player chosen...) goes to everyone connected.
       let last = useSaveStore.getState().save;
+      lastApp = null;
+      timerApp = window.setInterval(tellApp, 5_000);
       unsubscribe = useSaveStore.subscribe((s) => {
         if (s.save && s.save !== last) {
           last = s.save;
@@ -193,10 +215,11 @@ export const useShareStore = create<ShareState>((set, get) => {
         else if (m.type === 'bye') set({ status: 'hostAway' });
         else if (m.type === 'check') useChecks.getState().apply(m.day!, m.key!, m.on!);
         else if (m.type === 'checks' && m.day) useChecks.getState().adopt(m.day, m.checked ?? {});
+        else if (m.type === 'app') set({ hostApp: (m as { live?: boolean }).live === true });
       });
       conn.on('close', () => {
         connections.delete(conn);
-        set({ status: 'hostAway' });
+        set({ status: 'hostAway', hostApp: false });
       });
     });
     peer.on('error', (e) => {
@@ -211,6 +234,7 @@ export const useShareStore = create<ShareState>((set, get) => {
     role: null,
     code: null,
     peers: 0,
+    hostApp: false,
     error: null,
     host() {
       startHost(recall(CODE_KEY) ?? newCode());
@@ -225,7 +249,7 @@ export const useShareStore = create<ShareState>((set, get) => {
       teardown();
       remember(HOST_KEY, null);
       remember(GUEST_KEY, null);
-      set({ status: 'idle', role: null, code: null, peers: 0, error: null });
+      set({ status: 'idle', role: null, code: null, peers: 0, hostApp: false, error: null });
       // Back to this player's own saves.
       if (wasGuest) void useSaveStore.getState().init();
     },

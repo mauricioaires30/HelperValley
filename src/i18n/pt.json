@@ -64,18 +64,8 @@
     "updated": "O jogo salvou! Mostrando o novo dia",
     "guide": {
       "title": "Conectar seus saves",
-      "close": "Feche o Stardew Valley.",
-      "copy": "Copiar comando",
-      "pick": "Escolha a pasta Documentos/Stardew Valley/Saves:",
-      "allow": "Na próxima visita, escolha \"Permitir em todas as visitas\".",
-      "terminal": {
-        "windows": "Abra o PowerShell (menu Iniciar → \"PowerShell\") e rode isto uma vez:",
-        "mac": "Abra o Terminal (Spotlight → \"Terminal\") e rode isto uma vez:",
-        "linux": "Abra o terminal e rode isto uma vez:"
-      },
-      "warningTitle": "Atenção: estes são os seus saves de verdade",
-      "warning": "O comando leva seus saves para Documentos/Stardew Valley/Saves e deixa um atalho onde o jogo procura: é essa pasta que o jogo passa a usar, então não a apague. Antes de mover, ele cria Documentos/Stardew Valley/Backup, que se atualiza cerca de 1 minuto depois de cada mudança e nunca apaga nada. Se algo der errado, rode o comando de novo: ele recupera do backup. Saves e backup ficam juntos: apagar a pasta Stardew Valley inteira apaga os dois.",
-      "untested": "Este comando ainda não foi testado neste sistema. Copie seus saves para outro lugar antes de rodar."
+      "pick": "Clique aqui e escolha a pasta Documentos/HelperValley Saves:",
+      "allow": "Na próxima visita, escolha \"Permitir em todas as visitas\"."
     },
     "how": {
       "local": "O site lê os saves direto do seu PC; nada é enviado."
@@ -90,9 +80,19 @@
     "remove": "Remover pasta",
     "removeHint": "Só tira do site: seus saves continuam no PC.",
     "needsBrowser": "Este site lê seus saves ao vivo, o que só funciona no Chrome, Edge, Brave ou Opera.",
-    "restore": {
-      "title": "Voltar as pastas ao normal",
-      "text": "Feche o jogo e rode isto. Seus saves voltam para onde o jogo guarda, e o atalho e a atualização do backup são removidos. A pasta Backup continua em Documentos/Stardew Valley: apague só se quiser."
+    "app": {
+      "why": "O navegador não pode abrir a pasta onde o jogo salva. O app HelperValley copia seus saves para Documentos/HelperValley Saves, sem mexer nos originais, e o site lê essa cópia ao vivo. Só quem tem o save (anfitrião ou quem joga sozinho) precisa do app: para entrar na sala de outra pessoa, basta o código, aqui embaixo em \"Jogar junto\".",
+      "step1": "Baixe e instale o app HelperValley:",
+      "step2": "Abra o app. Ele fica no canto da barra de tarefas mesmo com a janela fechada; para encerrar, use \"Sair\" no ícone dele.",
+      "checking": "Procurando a versão mais recente do app…",
+      "soon": "O app ainda não foi publicado. Ele chega em breve.",
+      "releases": "Ver todas as versões do app",
+      "download": "Baixar HelperValley para {{os}} (v{{version}})",
+      "unsigned": {
+        "windows": "O app ainda não tem assinatura digital: na primeira vez, o Windows mostra \"O Windows protegeu o computador\". Clique em \"Mais informações\" e depois em \"Executar assim mesmo\".",
+        "mac": "O app ainda não tem assinatura da Apple: depois de abrir, vá em Ajustes do Sistema → Privacidade e Segurança e clique em \"Abrir Mesmo Assim\". Ele também pede acesso à pasta Documentos.",
+        "linux": "No AppImage, dê permissão de execução (chmod +x) antes de abrir. O .deb instala pelo gerenciador de pacotes."
+      }
     }
   },
   "locations": {
@@ -1313,7 +1313,9 @@
     },
     "chipHost": "Compartilhando {{code}} · {{count}}",
     "chipGuest": "Save do anfitrião ({{code}})",
-    "peers_zero": "Ao vivo · ninguém conectado ainda"
+    "peers_zero": "Ao vivo · ninguém conectado ainda",
+    "live": "AO VIVO",
+    "liveHint": "O app HelperValley está aberto: o site atualiza sozinho quando o jogo salva."
   },
   "stardrops": {
     "hint": "Cada uma dá +34 de energia máxima.",
