@@ -9,7 +9,7 @@ import { useSaveNotifications } from '@/features/saves/Notifications';
 import { ThemeToggle } from './ThemeToggle';
 import { ShareChip } from '@/features/share/SharePanel';
 import { LiveBadge } from '@/features/share/LiveBadge';
-import { useShareStore } from '@/features/share/liveShare';
+import { useShareStore } from '@/features/share/room';
 import { useSaveStore } from '@/store/saveStore';
 import './shell.css';
 

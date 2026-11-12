@@ -26,6 +26,9 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+        env:
+          # The multiplayer server's address (repository variable), e.g. https://helpervalley-relay.NAME.workers.dev
+          VITE_RELAY_URL: ${{ vars.RELAY_URL }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

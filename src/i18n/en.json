@@ -1303,25 +1303,38 @@
     "copy": "Copy code",
     "peers_one": "Live · {{count}} player connected",
     "peers_other": "Live · {{count}} players connected",
-    "starting": "Opening the room…",
-    "error": "Couldn't open the room. Try again.",
     "stop": "Stop sharing",
-    "codePlaceholder": "Host's code (ABC-123)",
+    "codePlaceholder": "Code (ABC-123)",
     "join": "Join room",
-    "badCode": "Invalid code or room not found.",
     "room": "Room {{code}}",
     "leave": "Leave room",
-    "guest": {
-      "joining": "Connecting…",
-      "joined": "Live: showing the host's save",
-      "hostAway": "The host is offline; showing the last copy",
-      "error": "Couldn't join the room."
-    },
     "chipHost": "Sharing {{code}} · {{count}}",
     "chipGuest": "Host's save ({{code}})",
     "peers_zero": "Live · nobody connected yet",
     "live": "LIVE",
-    "liveHint": "The HelperValley app is open: the site updates by itself when the game saves."
+    "liveHint": "The HelperValley app is open: the site updates by itself when the game saves.",
+    "nickPlaceholder": "Your nickname",
+    "hostTag": "host",
+    "unavailable": "Playing together is unavailable right now.",
+    "state": {
+      "starting": "Opening the room…",
+      "joining": "Joining…",
+      "joined": "Live: watching the host's farm",
+      "hostAway": "Host offline: showing the last copy",
+      "reconnecting": "No connection. Trying again…"
+    },
+    "errors": {
+      "nick-taken": "Someone in the room already has that nickname. Pick another one.",
+      "nick-invalid": "Type a nickname of up to 20 letters.",
+      "nick": "Type a nickname of up to 20 letters.",
+      "room-taken": "That code belongs to another room. Try again.",
+      "no-room": "Room not found: check the code or ask the host to open the room.",
+      "code": "The code has 6 letters and numbers, like ABC-123.",
+      "bad-request": "Couldn't join. Reload the page and try again.",
+      "origin": "Couldn't join. Reload the page and try again.",
+      "replaced": "This room was opened in another tab.",
+      "unavailable": "Playing together is unavailable right now."
+    }
   },
   "stardrops": {
     "hint": "Each gives +34 max energy.",

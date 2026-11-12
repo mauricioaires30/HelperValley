@@ -1,0 +1,55 @@
+name: Multiplayer server
+
+# Checks the relay (worker/) in pull requests and publishes it to Cloudflare from main.
+# Needs the secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
+on:
+  pull_request:
+    paths:
+      - 'worker/**'
+      - 'src/features/share/protocol.ts'
+      - 'src/features/share/roomRules.ts'
+      - '.github/workflows/worker.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'worker/**'
+      - 'src/features/share/protocol.ts'
+      - 'src/features/share/roomRules.ts'
+      - '.github/workflows/worker.yml'
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: worker/package-lock.json
+      - run: npm ci
+        working-directory: worker
+      - run: npx tsc --noEmit
+        working-directory: worker
+      - run: npx wrangler deploy --dry-run --outdir dist
+        working-directory: worker
+
+  deploy:
+    needs: check
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: worker/package-lock.json
+      - run: npm ci
+        working-directory: worker
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker

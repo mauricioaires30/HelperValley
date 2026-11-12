@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { loadGameData } from '@/data/gameData';
 import { useSaveStore } from '@/store/saveStore';
-import { resumeShare } from '@/features/share/liveShare';
+import { resumeShare } from '@/features/share/room';
 import { AppShell } from '@/app/AppShell';
 import { HomePage } from '@/features/home/HomePage';
 import { KitPage } from '@/features/kit/KitPage';

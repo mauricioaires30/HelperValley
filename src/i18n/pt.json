@@ -1303,25 +1303,38 @@
     "copy": "Copiar código",
     "peers_one": "Ao vivo · {{count}} jogador conectado",
     "peers_other": "Ao vivo · {{count}} jogadores conectados",
-    "starting": "Abrindo a sala…",
-    "error": "Não deu para abrir a sala. Tente de novo.",
     "stop": "Parar de compartilhar",
-    "codePlaceholder": "Código do anfitrião (ABC-123)",
+    "codePlaceholder": "Código (ABC-123)",
     "join": "Entrar na sala",
-    "badCode": "Código inválido ou sala não encontrada.",
     "room": "Sala {{code}}",
     "leave": "Sair da sala",
-    "guest": {
-      "joining": "Conectando…",
-      "joined": "Ao vivo: mostrando o save do anfitrião",
-      "hostAway": "O anfitrião está offline; mostrando a última cópia",
-      "error": "Não deu para entrar na sala."
-    },
     "chipHost": "Compartilhando {{code}} · {{count}}",
     "chipGuest": "Save do anfitrião ({{code}})",
     "peers_zero": "Ao vivo · ninguém conectado ainda",
     "live": "AO VIVO",
-    "liveHint": "O app HelperValley está aberto: o site atualiza sozinho quando o jogo salva."
+    "liveHint": "O app HelperValley está aberto: o site atualiza sozinho quando o jogo salva.",
+    "nickPlaceholder": "Seu apelido",
+    "hostTag": "anfitrião",
+    "unavailable": "O jogo junto está fora do ar no momento.",
+    "state": {
+      "starting": "Abrindo a sala…",
+      "joining": "Entrando…",
+      "joined": "Ao vivo: vendo a fazenda do anfitrião",
+      "hostAway": "Anfitrião offline: mostrando a última cópia",
+      "reconnecting": "Sem conexão. Tentando de novo…"
+    },
+    "errors": {
+      "nick-taken": "Já tem alguém com esse apelido na sala. Escolha outro.",
+      "nick-invalid": "Escreva um apelido de até 20 letras.",
+      "nick": "Escreva um apelido de até 20 letras.",
+      "room-taken": "Esse código já é de outra sala. Tente de novo.",
+      "no-room": "Sala não encontrada: confira o código ou peça para o anfitrião abrir a sala.",
+      "code": "O código tem 6 letras e números, como ABC-123.",
+      "bad-request": "Não deu para entrar. Recarregue a página e tente de novo.",
+      "origin": "Não deu para entrar. Recarregue a página e tente de novo.",
+      "replaced": "Esta sala foi aberta em outra aba.",
+      "unavailable": "O jogo junto está fora do ar no momento."
+    }
   },
   "stardrops": {
     "hint": "Cada uma dá +34 de energia máxima.",
