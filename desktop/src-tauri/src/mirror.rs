@@ -107,11 +107,21 @@ fn lowercase(path: &Path) -> String {
     path.to_string_lossy().replace('\\', "/").trim_end_matches('/').to_lowercase()
 }
 
-/// No link or junction anywhere in the mirror's path: resolving it changes nothing.
-fn path_has_no_links(mirror: &Path) -> bool {
-    let Some(real) = resolved(mirror) else { return false };
-    let absolute = if mirror.is_absolute() { mirror.to_path_buf() } else { std::env::current_dir().map(|d| d.join(mirror)).unwrap_or_default() };
-    lowercase(&real) == lowercase(&dunce::simplified(&absolute).to_path_buf())
+/// A symlink or junction (a folder that is really somewhere else).
+fn is_link(path: &Path) -> bool {
+    let Ok(meta) = fs::symlink_metadata(path) else { return true };
+    #[cfg(windows)]
+    // An ordinary folder is an error here (not a reparse point), so only a confirmed junction counts.
+    if junction::exists(path).unwrap_or(false) {
+        return true;
+    }
+    meta.file_type().is_symlink()
+}
+
+/// The copy folder itself isn't a link. Links higher up (macOS /var, Windows short names, a moved
+/// Documents) are fine: `apart` compares the resolved paths, so the copy can't reach the game folder.
+fn not_a_link(mirror: &Path) -> bool {
+    !is_link(mirror)
 }
 
 /// The mirror and a source are different folders, and neither is inside the other.
@@ -174,7 +184,7 @@ pub fn sync(sources: &[PathBuf], mirror: &Path) -> io::Result<Report> {
             }
         }
         // Files the game removed from this save (its own "_old" rotation): only once the whole folder is settled.
-        if !report.busy && marked {
+        if !report.busy && marked && !is_link(&to_dir) {
             let wanted: BTreeSet<&str> = files.iter().map(|(f, _, _)| f.as_str()).collect();
             for entry in fs::read_dir(&to_dir)?.flatten() {
                 let file = entry.file_name().to_string_lossy().into_owned();
@@ -191,6 +201,8 @@ pub fn sync(sources: &[PathBuf], mirror: &Path) -> io::Result<Report> {
         .flatten()
         .filter(|e| e.file_type().is_ok_and(|t| t.is_dir()))
         .map(|e| e.path())
+        // A save folder that is really a link elsewhere is never deleted.
+        .filter(|p| !is_link(p))
         .filter(|p| is_save_folder(p) && !saves.contains_key(&p.file_name().unwrap_or_default().to_string_lossy().into_owned()))
         .collect();
     if !stale.is_empty() {
@@ -210,7 +222,7 @@ pub fn sync(sources: &[PathBuf], mirror: &Path) -> io::Result<Report> {
 
 /// Every guard for deleting inside the mirror.
 fn deletes_allowed(sources: &[PathBuf], mirror: &Path, report: &Report) -> bool {
-    report.saves > 0 && mirror.join(MARKER).is_file() && path_has_no_links(mirror) && sources.iter().all(|s| apart(mirror, s))
+    report.saves > 0 && mirror.join(MARKER).is_file() && not_a_link(mirror) && sources.iter().all(|s| apart(mirror, s))
 }
 
 #[cfg(test)]
@@ -360,6 +372,45 @@ mod tests {
         let report = sync(&[game], &linked).unwrap();
         assert!(report.deletes_blocked);
         assert!(real_copy.join("Farm_2/Farm_2").is_file());
+    }
+
+    #[test]
+    fn a_link_higher_up_in_the_path_still_allows_deletes() {
+        // Like macOS /var -> /private/var, or Documents moved to another drive.
+        let tmp = tempfile::tempdir().unwrap();
+        let (game, parent, linked_parent) = (tmp.path().join("game"), tmp.path().join("parent"), tmp.path().join("linked_parent"));
+        fs::create_dir_all(&parent).unwrap();
+        #[cfg(windows)]
+        junction::create(&parent, &linked_parent).unwrap();
+        #[cfg(unix)]
+        std::os::unix::fs::symlink(&parent, &linked_parent).unwrap();
+        let copy = linked_parent.join("copy");
+        save(&game, "Farm_1", "a");
+        save(&game, "Farm_2", "b");
+        settle();
+        sync(&[game.clone()], &copy).unwrap();
+        fs::remove_dir_all(game.join("Farm_2")).unwrap();
+        let report = sync(&[game], &copy).unwrap();
+        assert_eq!(report.removed, 1);
+        assert!(!parent.join("copy/Farm_2").exists());
+        assert!(parent.join("copy/Farm_1/Farm_1").is_file());
+    }
+
+    #[test]
+    fn a_save_folder_that_is_a_link_is_never_deleted() {
+        let tmp = tempfile::tempdir().unwrap();
+        let (game, copy, elsewhere) = (tmp.path().join("game"), tmp.path().join("copy"), tmp.path().join("elsewhere"));
+        save(&game, "Farm_1", "a");
+        save(&elsewhere, "Farm_9", "precious");
+        settle();
+        sync(&[game.clone()], &copy).unwrap();
+        #[cfg(windows)]
+        junction::create(elsewhere.join("Farm_9"), copy.join("Farm_9")).unwrap();
+        #[cfg(unix)]
+        std::os::unix::fs::symlink(elsewhere.join("Farm_9"), copy.join("Farm_9")).unwrap();
+        let report = sync(&[game], &copy).unwrap();
+        assert_eq!(report.removed, 0);
+        assert!(elsewhere.join("Farm_9/Farm_9").is_file());
     }
 
     #[test]
