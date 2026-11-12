@@ -64,14 +64,16 @@ describe('who may enter a room', () => {
   const guest = { role: 'guest', clientId: 'guestclient1', nick: 'Bia', token: null };
 
   it('the first host claims the room, and only that host comes back', () => {
-    expect(admit(host, { token: null, peers: [] })).toEqual({ peer: { clientId: 'hostclient1', nick: 'Ana', role: 'host' }, claim: true });
-    expect(admit(host, { token: 'secrettoken1', peers: [] })).toMatchObject({ claim: false });
-    expect(admit({ ...host, token: 'someoneelse1' }, { token: 'secrettoken1', peers: [] })).toEqual({ refuse: 'room-taken' });
+    expect(admit(host, { token: null, peers: [], hostPresent: true })).toEqual({ peer: { clientId: 'hostclient1', nick: 'Ana', role: 'host' }, claim: true });
+    expect(admit(host, { token: 'secrettoken1', peers: [], hostPresent: true })).toMatchObject({ claim: false });
+    expect(admit({ ...host, token: 'someoneelse1' }, { token: 'secrettoken1', peers: [], hostPresent: true })).toEqual({ refuse: 'room-taken' });
   });
 
   it('guests need an opened room and a free nickname', () => {
-    expect(admit(guest, { token: null, peers: [] })).toEqual({ refuse: 'no-room' });
-    const room = { token: 'secrettoken1', peers: [{ clientId: 'other1234', nick: 'bia', role: 'guest' as const }] };
+    expect(admit(guest, { token: null, peers: [], hostPresent: true })).toEqual({ refuse: 'no-room' });
+    // The host left and didn't come back: the room is closed.
+    expect(admit(guest, { token: 'secrettoken1', peers: [], hostPresent: false })).toEqual({ refuse: 'no-room' });
+    const room = { token: 'secrettoken1', peers: [{ clientId: 'other1234', nick: 'bia', role: 'guest' as const }], hostPresent: true };
     expect(admit(guest, room)).toEqual({ refuse: 'nick-taken' });
     expect(admit({ ...guest, nick: '' }, room)).toEqual({ refuse: 'nick-invalid' });
     // The same browser reconnecting keeps its nickname.
@@ -79,8 +81,8 @@ describe('who may enter a room', () => {
   });
 
   it('refuses malformed requests', () => {
-    expect(admit({ ...guest, role: 'admin' }, { token: 't', peers: [] })).toEqual({ refuse: 'bad-request' });
-    expect(admit({ ...guest, clientId: 'x' }, { token: 't', peers: [] })).toEqual({ refuse: 'bad-request' });
+    expect(admit({ ...guest, role: 'admin' }, { token: 't', peers: [], hostPresent: true })).toEqual({ refuse: 'bad-request' });
+    expect(admit({ ...guest, clientId: 'x' }, { token: 't', peers: [], hostPresent: true })).toEqual({ refuse: 'bad-request' });
   });
 });
 
@@ -95,6 +97,17 @@ describe('what each one may send', () => {
     expect(accept('host', all)).toEqual({ type: 'checks', day: 'd', checked: { a: true } });
     expect(accept('host', app)).toEqual({ type: 'app', live: true });
     expect(accept('host', 'not json')).toBeNull();
+  });
+
+  it('everyone can say where they are and move a cursor; only the host can close the room', () => {
+    expect(accept('guest', JSON.stringify({ type: 'route', route: '/map' }))).toEqual({ type: 'route', route: '/map' });
+    expect(accept('guest', JSON.stringify({ type: 'route', route: 'javascript:alert(1)' }))).toBeNull();
+    expect(accept('guest', JSON.stringify({ type: 'cur', a: 'map', x: 0.123456, y: 0.5 }))).toEqual({ type: 'cur', a: 'map', x: 0.1235, y: 0.5 });
+    expect(accept('guest', JSON.stringify({ type: 'cur', a: 'main', x: 0.5, y: 1200 }))).toEqual({ type: 'cur', a: 'main', x: 0.5, y: 1200 });
+    expect(accept('guest', JSON.stringify({ type: 'cur', a: 'map', x: 9, y: 0 }))).toBeNull();
+    expect(accept('guest', JSON.stringify({ type: 'cur', hide: true }))).toEqual({ type: 'cur', hide: true });
+    expect(accept('guest', JSON.stringify({ type: 'close' }))).toBeNull();
+    expect(accept('host', JSON.stringify({ type: 'close' }))).toEqual({ type: 'close' });
   });
 
   it('applies a mark only to the same day', () => {

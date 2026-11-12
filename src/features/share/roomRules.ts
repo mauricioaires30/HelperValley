@@ -16,6 +16,8 @@ export interface RoomState {
   /** Set by the first host to open the room. */
   token: string | null;
   peers: Peer[];
+  /** The host is connected, or dropped less than HOST_GRACE_MS ago. Without a host the room is closed. */
+  hostPresent: boolean;
 }
 
 export type Admission = { peer: Peer; claim: boolean } | { refuse: Refusal };
@@ -32,7 +34,7 @@ export function admit(request: JoinRequest, room: RoomState): Admission {
     if (room.token && room.token !== request.token) return { refuse: 'room-taken' };
     return { peer: { clientId: request.clientId, nick: nick ?? 'Host', role }, claim: !room.token };
   }
-  if (!room.token) return { refuse: 'no-room' };
+  if (!room.token || !room.hostPresent) return { refuse: 'no-room' };
   if (!nick) return { refuse: 'nick-invalid' };
   // The same browser reconnecting takes its own place back.
   if (room.peers.some((p) => p.clientId !== request.clientId && sameNick(p.nick, nick))) return { refuse: 'nick-taken' };
@@ -54,11 +56,23 @@ export function accept(role: Role, raw: string): ClientMessage | null {
   if (m.type === 'check' && typeof m.day === 'string' && typeof m.key === 'string' && typeof m.on === 'boolean' && m.key.length <= 200) {
     return { type: 'check', day: m.day, key: m.key, on: m.on };
   }
+  if (m.type === 'route' && typeof m.route === 'string' && /^\/[\w/-]{0,63}$/.test(m.route)) return { type: 'route', route: m.route };
+  if (m.type === 'cur') {
+    if (m.hide === true) return { type: 'cur', hide: true };
+    if (typeof m.a === 'string' && /^[\w-]{1,40}$/.test(m.a) && isFraction(m.x) && typeof m.y === 'number' && Number.isFinite(m.y) && Math.abs(m.y) < 100_000) {
+      return { type: 'cur', a: m.a, x: round(m.x), y: round(m.y) };
+    }
+    return null;
+  }
   if (role !== 'host') return null;
   if (m.type === 'checks' && (m.day === null || typeof m.day === 'string') && isChecked(m.checked)) return { type: 'checks', day: m.day, checked: m.checked };
   if (m.type === 'app' && typeof m.live === 'boolean') return { type: 'app', live: m.live };
+  if (m.type === 'close') return { type: 'close' };
   return null;
 }
+
+const isFraction = (v: unknown): v is number => typeof v === 'number' && v >= -0.5 && v <= 1.5;
+const round = (v: number) => Math.round(v * 10_000) / 10_000;
 
 /** A mark applied to the room's list; null when it's about another day (it isn't passed on). */
 export function applyCheck(checks: Checks, day: string, key: string, on: boolean): Checks | null {

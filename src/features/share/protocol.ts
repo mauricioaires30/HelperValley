@@ -18,12 +18,25 @@ export interface Peer {
   clientId: string;
   nick: string;
   role: Role;
+  /** The page they're on, like "/map". */
+  route?: string;
 }
 
 export type Checks = { day: string | null; checked: Record<string, true> };
 
-/** Why the server refused or ended a connection (sent as the close reason). */
-export type Refusal = 'nick-taken' | 'nick-invalid' | 'room-taken' | 'no-room' | 'bad-request' | 'origin';
+/**
+ * Why the server refused or ended a connection (sent as the close reason, code 4000).
+ * "host-left" (code 4002) closes the room for the farmhands once the host is gone.
+ */
+export type Refusal = 'nick-taken' | 'nick-invalid' | 'room-taken' | 'no-room' | 'bad-request' | 'origin' | 'host-left';
+export const CLOSE_REFUSED = 4000;
+export const CLOSE_REPLACED = 4001;
+export const CLOSE_HOST_LEFT = 4002;
+/** A host who drops without "stop sharing" (reload, network) has this long to come back before the room closes. */
+export const HOST_GRACE_MS = 45_000;
+
+/** A mouse position: `a` is what it's relative to (the page, or a part of it like the map), x/y are fractions. */
+export type Cursor = { a: string; x: number; y: number };
 
 /** Server → client. */
 export type ServerMessage =
@@ -32,13 +45,23 @@ export type ServerMessage =
   | { type: 'host'; online: boolean }
   | { type: 'check'; day: string; key: string; on: boolean }
   | { type: 'checks'; day: string | null; checked: Record<string, true> }
-  | { type: 'app'; live: boolean };
+  | { type: 'app'; live: boolean }
+  | { type: 'route'; clientId: string; route: string }
+  | ({ type: 'cur'; clientId: string } & (Cursor | { hide: true }));
 
-/** Client → server. Only the host may send checks (the whole list) and app. */
+/** Client → server. Only the host may send checks (the whole list), app and close. */
 export type ClientMessage =
   | { type: 'check'; day: string; key: string; on: boolean }
   | { type: 'checks'; day: string | null; checked: Record<string, true> }
-  | { type: 'app'; live: boolean };
+  | { type: 'app'; live: boolean }
+  | { type: 'route'; route: string }
+  | ({ type: 'cur' } & (Cursor | { hide: true }))
+  | { type: 'close' };
+
+/** Cursors go out at most this often (12 per second). */
+export const CURSOR_MS = 1000 / 12;
+/** A cursor that hasn't moved for this long is hidden. */
+export const CURSOR_IDLE_MS = 6000;
 
 const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 

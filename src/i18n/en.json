@@ -1333,8 +1333,10 @@
       "bad-request": "Couldn't join. Reload the page and try again.",
       "origin": "Couldn't join. Reload the page and try again.",
       "replaced": "This room was opened in another tab.",
-      "unavailable": "Playing together is unavailable right now."
-    }
+      "unavailable": "Playing together is unavailable right now.",
+      "host-left": "The host closed the room."
+    },
+    "you": "you"
   },
   "stardrops": {
     "hint": "Each gives +34 max energy.",

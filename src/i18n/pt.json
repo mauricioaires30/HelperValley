@@ -1333,8 +1333,10 @@
       "bad-request": "Não deu para entrar. Recarregue a página e tente de novo.",
       "origin": "Não deu para entrar. Recarregue a página e tente de novo.",
       "replaced": "Esta sala foi aberta em outra aba.",
-      "unavailable": "O jogo junto está fora do ar no momento."
-    }
+      "unavailable": "O jogo junto está fora do ar no momento.",
+      "host-left": "O anfitrião encerrou a sala."
+    },
+    "you": "você"
   },
   "stardrops": {
     "hint": "Cada uma dá +34 de energia máxima.",

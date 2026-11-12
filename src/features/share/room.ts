@@ -3,8 +3,12 @@ import type { SaveData } from '@/save/model';
 import { useSaveStore } from '@/store/saveStore';
 import { isAppLive } from '@/save/appStatus';
 import { onLocalCheck, useChecks } from '@/features/today/checks';
+import { useCursors } from './cursors';
 import {
   backoff,
+  CLOSE_HOST_LEFT,
+  CLOSE_REFUSED,
+  CLOSE_REPLACED,
   ChunkAssembler,
   cleanNick,
   decodeChunk,
@@ -15,6 +19,7 @@ import {
   PONG,
   randomId,
   saveVersion,
+  type Cursor,
   type Peer,
   type Refusal,
   type ServerMessage,
@@ -47,7 +52,7 @@ interface ShareState {
   code: string | null;
   /** Farmhands in the room. */
   peers: number;
-  /** Everyone in the room, this browser included. */
+  /** Everyone in the room, this tab first. */
   people: Peer[];
   /** For farmhands: the host's HelperValley app is running and copying. */
   hostApp: boolean;
@@ -55,6 +60,10 @@ interface ShareState {
   host(): void;
   join(code: string, nick: string): void;
   stop(): void;
+  /** This tab moved to another page. */
+  setRoute(route: string): void;
+  /** This tab's mouse, or null when it left the page. */
+  sendCursor(cursor: Cursor | null): void;
 }
 
 // Per tab: being in a room, and who this tab is (two tabs can be host and farmhand; a reload keeps both).
@@ -102,6 +111,8 @@ let retryTimer: number | null = null;
 let attempt = 0;
 let unsubscribeSave: (() => void) | null = null;
 let assembler = new ChunkAssembler();
+/** The page this tab shows, like "/map". */
+let route = '/';
 
 // The Today list follows the save on screen, and a mark made here goes to the room.
 const followDay = (save: SaveData | null) => {
@@ -155,13 +166,17 @@ export const useShareStore = create<ShareState>((set, get) => {
     const old = socket;
     socket = null;
     old?.close(1000, 'bye');
+    useCursors.getState().clear();
   };
+
+  const forget = (clientId: string) => useCursors.getState().remove(clientId);
 
   const onMessage = (m: ServerMessage) => {
     const { role } = get();
     if (m.type === 'welcome') {
       attempt = 0;
-      set({ people: [m.you, ...m.peers], peers: m.peers.filter((p) => p.role === 'guest').length });
+      set({ people: [{ ...m.you, route }, ...m.peers], peers: m.peers.filter((p) => p.role === 'guest').length });
+      send({ type: 'route', route });
       if (role === 'host') {
         set({ status: 'hosting', error: null });
         lastApp = null;
@@ -174,6 +189,7 @@ export const useShareStore = create<ShareState>((set, get) => {
     } else if (m.type === 'peer') {
       const people = get().people.filter((p) => p.clientId !== m.peer.clientId);
       if (m.online) people.push(m.peer);
+      else forget(m.peer.clientId);
       set({ people, peers: people.filter((p) => p.role === 'guest').length });
     } else if (m.type === 'host') {
       set({ status: m.online ? 'joined' : 'hostAway', ...(m.online ? {} : { hostApp: false }) });
@@ -183,6 +199,13 @@ export const useShareStore = create<ShareState>((set, get) => {
       if (m.day) useChecks.getState().adopt(m.day, m.checked);
     } else if (m.type === 'app') {
       set({ hostApp: m.live });
+    } else if (m.type === 'route') {
+      set({ people: get().people.map((p) => (p.clientId === m.clientId ? { ...p, route: m.route } : p)) });
+      if (m.route !== route) forget(m.clientId);
+    } else if (m.type === 'cur') {
+      const who = get().people.find((p) => p.clientId === m.clientId);
+      if ('hide' in m || !who) forget(m.clientId);
+      else useCursors.getState().move(m.clientId, who.nick, { a: m.a, x: m.x, y: m.y });
     }
   };
 
@@ -245,16 +268,31 @@ export const useShareStore = create<ShareState>((set, get) => {
       pingTimer = appTimer = null;
       unsubscribeSave?.();
       unsubscribeSave = null;
+      useCursors.getState().clear();
       const reason = event.reason as Refusal | 'replaced';
-      if (event.code === 4000 && reason === 'room-taken' && role === 'host' && retries > 0) {
+      if (event.code === CLOSE_HOST_LEFT) {
+        // The host stopped sharing or didn't come back: leave the room and go back to this player's own saves.
+        remember(GUEST_KEY, null);
+        set({ status: 'error', error: 'host-left', people: [], peers: 0, hostApp: false });
+        useSaveStore.getState().leaveShared();
+        void useSaveStore.getState().init();
+        return;
+      }
+      if (event.code === CLOSE_REFUSED && reason === 'room-taken' && role === 'host' && retries > 0) {
         // Someone else owns this code: pick another one.
         const fresh = newCode();
         set({ code: fresh });
         return connect(role, fresh, nick, retries - 1);
       }
-      if (event.code === 4000 || event.code === 4001) {
+      if (event.code === CLOSE_REFUSED || event.code === CLOSE_REPLACED) {
         remember(role === 'host' ? HOST_KEY : GUEST_KEY, null);
-        return set({ status: 'error', error: reason, people: [], peers: 0, hostApp: false });
+        set({ status: 'error', error: reason, people: [], peers: 0, hostApp: false });
+        // A farmhand whose room is gone (closed while away) goes back to their own saves.
+        if (role === 'guest' && reason === 'no-room') {
+          useSaveStore.getState().leaveShared();
+          void useSaveStore.getState().init();
+        }
+        return;
       }
       // The network dropped or the server restarted: try again, waiting longer each time.
       set({ status: 'reconnecting', hostApp: false });
@@ -290,14 +328,32 @@ export const useShareStore = create<ShareState>((set, get) => {
       set({ status: 'joining', role: 'guest', code, error: null, people: [] });
       connect('guest', code, nick);
     },
+    setRoute(next) {
+      if (next === route) return;
+      route = next;
+      useCursors.getState().clear();
+      const me = get().people[0];
+      if (me) set({ people: [{ ...me, route }, ...get().people.slice(1)] });
+      send({ type: 'route', route });
+    },
+    sendCursor(cursor) {
+      // Only worth sending when someone else is on this page.
+      if (!get().people.slice(1).some((p) => p.route === route)) return;
+      send(cursor ? { type: 'cur', ...cursor } : { type: 'cur', hide: true });
+    },
     stop() {
       const wasGuest = get().role === 'guest';
+      // The host closes the room for everyone.
+      if (get().role === 'host') send({ type: 'close' });
       teardown();
       remember(HOST_KEY, null);
       remember(GUEST_KEY, null);
       set({ status: 'idle', role: null, code: null, peers: 0, people: [], hostApp: false, error: null });
       // Back to this player's own saves.
-      if (wasGuest) void useSaveStore.getState().init();
+      if (wasGuest) {
+        useSaveStore.getState().leaveShared();
+        void useSaveStore.getState().init();
+      }
     },
   };
 });

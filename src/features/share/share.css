@@ -31,6 +31,48 @@
   text-transform: uppercase;
 }
 
+/* Other people's mice: fixed to the screen, never in the way of clicks. */
+.cursor-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: flex-start;
+  transition: transform 80ms linear;
+  will-change: transform;
+}
+
+.cursor__arrow path {
+  fill: hsl(var(--hue) 70% 50%);
+  stroke: #fff;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.cursor__name {
+  margin: 14px 0 0 -2px;
+  padding: 1px 6px;
+  font-size: var(--fs-xs);
+  color: #fff;
+  white-space: nowrap;
+  background: hsl(var(--hue) 70% 38%);
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    transition: none;
+  }
+}
+
 .share__nick {
   text-transform: none;
 }
@@ -53,6 +95,42 @@
 
 .share__person--host {
   font-weight: 600;
+}
+
+.share__page {
+  margin-left: 6px;
+  font-size: var(--fs-xs);
+  opacity: 0.75;
+}
+
+.share__page::before {
+  content: '· ';
+}
+
+.share-chip {
+  position: relative;
+}
+
+.share-chip > summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.share-chip > summary::-webkit-details-marker {
+  display: none;
+}
+
+.share-chip__list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 40;
+  min-width: 220px;
+  padding: 8px;
+}
+
+.share-chip__list .share__people {
+  flex-direction: column;
 }
 
 .share__tag {

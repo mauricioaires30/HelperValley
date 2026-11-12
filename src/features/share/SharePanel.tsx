@@ -5,18 +5,38 @@ import { NICK_MAX } from './protocol';
 import { relayAvailable, savedNick, useShareStore } from './room';
 import './share.css';
 
-function People() {
+/** Menu label key for each page path. */
+const PAGE_KEYS: Record<string, string> = {
+  '': 'home',
+  player: 'player',
+  calendar: 'calendar',
+  relationships: 'relationships',
+  map: 'map',
+  quests: 'quests',
+  shops: 'shops',
+  farm: 'farmPlan',
+  community: 'community',
+  collections: 'collections',
+};
+
+/** Who's in the room and which tab each one is looking at; this tab first. */
+export function People() {
   const { t } = useTranslation();
   const people = useShareStore((s) => s.people);
   if (people.length === 0) return null;
   return (
     <ul className="share__people">
-      {people.map((p) => (
-        <li key={p.clientId} className={p.role === 'host' ? 'share__person share__person--host' : 'share__person'}>
-          {p.nick}
-          {p.role === 'host' && <span className="share__tag">{t('share.hostTag')}</span>}
-        </li>
-      ))}
+      {people.map((p, i) => {
+        const key = PAGE_KEYS[(p.route ?? '/').split('/')[1] ?? ''];
+        return (
+          <li key={p.clientId} className={p.role === 'host' ? 'share__person share__person--host' : 'share__person'}>
+            {p.nick}
+            {i === 0 && <span className="share__tag">{t('share.you')}</span>}
+            {p.role === 'host' && <span className="share__tag">{t('share.hostTag')}</span>}
+            {key && <span className="share__page">{t(`nav.${key}`)}</span>}
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -113,10 +133,16 @@ export function ShareChip() {
   const { t } = useTranslation();
   const { status, role, code, peers } = useShareStore();
   if (!role || status === 'error') return null;
+  // Opens the list of who's here and on which tab.
   return (
-    <span className="cached-chip box">
-      <span className={status === 'hosting' || status === 'joined' ? 'share__dot share__dot--on' : 'share__dot'} aria-hidden="true" />
-      {role === 'host' ? t('share.chipHost', { code, count: peers }) : t('share.chipGuest', { code })}
-    </span>
+    <details className="share-chip">
+      <summary className="cached-chip box">
+        <span className={status === 'hosting' || status === 'joined' ? 'share__dot share__dot--on' : 'share__dot'} aria-hidden="true" />
+        {role === 'host' ? t('share.chipHost', { code, count: peers }) : t('share.chipGuest', { code })}
+      </summary>
+      <div className="share-chip__list box">
+        <People />
+      </div>
+    </details>
   );
 }

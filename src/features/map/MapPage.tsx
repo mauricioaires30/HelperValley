@@ -454,10 +454,13 @@ export function MapPage() {
             ref={viewport}
             className={view.zoom > 1 ? 'map-viewport map-viewport--zoomed' : 'map-viewport'}
             style={{ aspectRatio: `${mapW} / ${mapH}` }}
+            data-cursor-frame
             {...handlers}
           >
+            {/* Cursors in a shared room are placed on the map itself, so they follow each person's zoom. */}
             <div
               className="map-canvas"
+              data-cursor-anchor="map"
               style={{
                 transform: `translate(${view.x}px, ${view.y}px) scale(${view.zoom})`,
                 backgroundImage: `url("${encodeURI(spriteUrl(texture))}")`,

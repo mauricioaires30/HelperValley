@@ -62,6 +62,8 @@ interface SaveState {
   disconnect(): Promise<void>;
   /** Shows a save received from a multiplayer host (live share), instead of a local one. */
   showShared(save: SaveData): void;
+  /** Leaving the host's room: their save stops being shown. */
+  leaveShared(): void;
 }
 
 let pollTimer: number | undefined;
@@ -178,6 +180,11 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
         // A new day from the host shows the same "the game saved" toast as a local save.
         lastUpdate: previous && previous.uniqueId === save.uniqueId && JSON.stringify(previous.date) !== JSON.stringify(save.date) ? { at: now, date: save.date } : getState().lastUpdate,
       });
+    },
+
+    leaveShared() {
+      if (getState().folder !== 'shared') return;
+      setState({ save: null, folder: null, playerId: null, status: 'idle', loadedAt: null, lastUpdate: null });
     },
 
     initialized: false,
