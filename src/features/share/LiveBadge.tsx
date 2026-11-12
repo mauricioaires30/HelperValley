@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isAppLive } from '@/save/appStatus';
 import { useSaveStore } from '@/store/saveStore';
-import { useShareStore } from './liveShare';
+import { useShareStore } from './room';
 
 /** Whether the saves on screen come live from the HelperValley app: your own, or the host's in a room. */
 export function useAppLive(): boolean {

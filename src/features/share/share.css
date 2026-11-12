@@ -31,6 +31,36 @@
   text-transform: uppercase;
 }
 
+.share__nick {
+  text-transform: none;
+}
+
+.share__people {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.share__person {
+  padding: 2px 8px;
+  font-size: var(--fs-sm);
+  background: rgb(255 255 255 / 0.35);
+  border-radius: 4px;
+}
+
+.share__person--host {
+  font-weight: 600;
+}
+
+.share__tag {
+  margin-left: 6px;
+  font-size: var(--fs-xs);
+  opacity: 0.75;
+}
+
 .share__status {
   font-size: var(--fs-sm);
   opacity: 0.8;

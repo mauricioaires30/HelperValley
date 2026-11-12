@@ -3,7 +3,7 @@ import { create } from 'zustand';
 /**
  * What's checked on the Today list, for one game day. Keys are `farm:<todo>` for chores of the whole
  * farm and `player:<id>:<todo>` for one character's, so everyone viewing them sees the same marks.
- * In a live share room the host's copy wins (see features/share/liveShare.ts).
+ * In a live share room the host's copy wins (see features/share/room.ts).
  */
 export type CheckMessage = { type: 'check'; day: string; key: string; on: boolean };
 

@@ -4,6 +4,7 @@ import { ConnectPanel, SaveList } from '@/features/saves/SavePicker';
 import { LiveSetupGuide } from '@/features/saves/LiveSetupGuide';
 import { NotifyToggle } from '@/features/saves/Notifications';
 import { SharePanel } from '@/features/share/SharePanel';
+import { useShareStore } from '@/features/share/room';
 
 export function HomePage() {
   const { t } = useTranslation();
@@ -11,8 +12,9 @@ export function HomePage() {
   const status = useSaveStore((s) => s.status);
   const error = useSaveStore((s) => s.error);
   const folderGone = useSaveStore((s) => s.folderGone);
-  // In someone else's room: their save is shown, so the full guide would only be in the way.
-  const guest = useSaveStore((s) => s.folder === 'shared');
+  // In someone else's room only the host's save is shown: no own farms to switch to, and no full guide.
+  const guestRole = useShareStore((s) => s.role === 'guest' && s.status !== 'error');
+  const guest = useSaveStore((s) => s.folder === 'shared') || guestRole;
 
   return (
     <div className="home">
@@ -26,7 +28,7 @@ export function HomePage() {
           {t('saves.folderGone')}
         </p>
       )}
-      {source ? <SaveList /> : !guest && <ConnectPanel />}
+      {!guest && (source ? <SaveList /> : <ConnectPanel />)}
       {status === 'loading' && <p>{t('saves.loading')}</p>}
       {(source || guest) && <LiveSetupGuide folded />}
       <div className="home__more">
