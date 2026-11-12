@@ -1,7 +1,6 @@
 //! HelperValley: copies the Stardew Valley saves into Documents/HelperValley Saves, where the website can
 //! read them, and tells the site it's running through a small status file next to the copies.
 
-mod legacy;
 mod mirror;
 mod paths;
 
@@ -31,6 +30,7 @@ fn now_ms() -> u64 {
 #[serde(rename_all = "camelCase")]
 struct Status {
     enabled: bool,
+    quit_on_close: bool,
     /// ok | paused | source-missing | error
     state: String,
     message: Option<String>,
@@ -38,7 +38,6 @@ struct Status {
     saves: usize,
     sources: Vec<String>,
     mirror: String,
-    legacy: Option<legacy::Legacy>,
     version: String,
 }
 
@@ -56,6 +55,8 @@ enum Wake {
 struct Settings {
     #[serde(default)]
     disabled: bool,
+    #[serde(default)]
+    quit_on_close: bool,
 }
 
 fn load_settings() -> Settings {
@@ -181,7 +182,8 @@ fn get_status(shared: State<'_, Arc<Shared>>) -> Status {
 fn set_enabled_inner(app: &AppHandle, enabled: bool) {
     let shared = app.state::<Arc<Shared>>();
     shared.status.lock().unwrap().enabled = enabled;
-    save_settings(&Settings { disabled: !enabled });
+    let quit_on_close = shared.status.lock().unwrap().quit_on_close;
+    save_settings(&Settings { disabled: !enabled, quit_on_close });
     if let Some(tx) = shared.wake.lock().unwrap().as_ref() {
         let _ = tx.send(Wake::Sync);
     }
@@ -203,41 +205,18 @@ fn open_mirror(shared: State<'_, Arc<Shared>>) -> Result<(), String> {
     open_path(&mirror)
 }
 
-#[tauri::command]
-fn open_path_cmd(path: String) -> Result<(), String> {
-    open_path(&path)
-}
-
 fn open_path(path: &str) -> Result<(), String> {
     tauri_plugin_opener::open_path(path, None::<&str>).map_err(|e| e.to_string())
 }
 
 #[tauri::command]
-fn undo_legacy(shared: State<'_, Arc<Shared>>) -> Result<Vec<String>, String> {
-    let link = shared.status.lock().unwrap().legacy.as_ref().and_then(|l| l.link.clone());
-    let system = legacy::RealSystem;
-    let done = match link {
-        Some(link) => legacy::undo(Path::new(&link), &system).map_err(|e| e.to_string())?,
-        None => {
-            if legacy::System::backup_job_exists(&system) {
-                legacy::System::stop_backup_job(&system).map_err(|e| e.to_string())?;
-            }
-            vec!["stopped the old backup job".into()]
-        }
+fn set_quit_on_close(shared: State<'_, Arc<Shared>>, quit: bool) {
+    let enabled = {
+        let mut status = shared.status.lock().unwrap();
+        status.quit_on_close = quit;
+        status.enabled
     };
-    // A record of what was done, next to the copies.
-    let mirror = shared.status.lock().unwrap().mirror.clone();
-    let _ = fs::create_dir_all(&mirror);
-    let log = format!("{}\n{}\n\n", now_ms(), done.join("\n"));
-    let path = Path::new(&mirror).join("helpervalley-undo.log");
-    let previous = fs::read_to_string(&path).unwrap_or_default();
-    let _ = fs::write(path, previous + &log);
-    let documents = dirs::document_dir();
-    shared.status.lock().unwrap().legacy = Some(legacy::detect(&paths::source_dirs(), documents.as_deref(), &system)).filter(|l| l.found() || !l.leftovers.is_empty());
-    if let Some(tx) = shared.wake.lock().unwrap().as_ref() {
-        let _ = tx.send(Wake::Sync);
-    }
-    Ok(done)
+    save_settings(&Settings { disabled: !enabled, quit_on_close: quit });
 }
 
 fn show_window(app: &AppHandle) {
@@ -263,18 +242,16 @@ pub fn run() {
     let sources = paths::source_dirs();
     let mirror = paths::mirror_dir().unwrap_or_else(|| PathBuf::from("HelperValley Saves"));
     let settings = load_settings();
-    let documents = dirs::document_dir();
-    let found = legacy::detect(&sources, documents.as_deref(), &legacy::RealSystem);
     let shared = Arc::new(Shared {
         status: Mutex::new(Status {
             enabled: !settings.disabled,
+            quit_on_close: settings.quit_on_close,
             state: "ok".into(),
             message: None,
             last_copy_at: None,
             saves: 0,
             sources: sources.iter().map(|s| s.to_string_lossy().into_owned()).collect(),
             mirror: mirror.to_string_lossy().into_owned(),
-            legacy: Some(found).filter(|l| l.found() || !l.leftovers.is_empty()),
             version: env!("CARGO_PKG_VERSION").into(),
         }),
         wake: Mutex::new(None),
@@ -287,7 +264,7 @@ pub fn run() {
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_opener::init())
         .manage(shared.clone())
-        .invoke_handler(tauri::generate_handler![get_status, set_enabled, open_mirror, open_path_cmd, undo_legacy])
+        .invoke_handler(tauri::generate_handler![get_status, set_enabled, open_mirror, set_quit_on_close])
         .setup(move |app| {
             let handle = app.handle().clone();
             let show = MenuItem::with_id(app, "show", "HelperValley", true, None::<&str>)?;
@@ -329,10 +306,16 @@ pub fn run() {
             Ok(())
         })
         .on_window_event(|window, event| {
-            // Closing the window keeps the app running in the tray; "Quit" ends it.
+            // Closing the window keeps the app in the tray, unless set to quit; "Quit" in the tray always ends it.
             if let WindowEvent::CloseRequested { api, .. } = event {
                 api.prevent_close();
-                let _ = window.hide();
+                let app = window.app_handle();
+                let quit_on_close = app.state::<Arc<Shared>>().status.lock().unwrap().quit_on_close;
+                if quit_on_close {
+                    quit(app);
+                } else {
+                    let _ = window.hide();
+                }
             }
         })
         .build(tauri::generate_context!())

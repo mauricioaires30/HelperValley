@@ -66,16 +66,16 @@
       "local": "The site reads your saves right from your PC; nothing is uploaded.",
       "title": "How it works",
       "toggle": "How it works · get the app",
-      "hostTitle": "See your saves live",
-      "hostWho": "For solo players and hosts.",
-      "host1": "Download and open the HelperValley app. It copies your saves to Documents › HelperValley Saves without touching the originals.",
-      "host2": "Click the button and pick the HelperValley Saves folder inside Documents. On later visits, choose \"Allow on every visit\".",
-      "host3": "Done. While the app is open, LIVE shows at the top and the site updates by itself every time the game saves (when you sleep).",
-      "guestTitle": "Join someone's farm",
-      "guestWho": "For farmhands. You don't need the app.",
-      "guest1": "Ask the host for the room code.",
-      "guest2": "Paste the code in \"Play together\", below, and click \"Join room\".",
-      "guest3": "Pick your farmer in the side menu. The site shows the host's farm live."
+      "hostTitle": "Your saves, live",
+      "hostWho": "Solo or host.",
+      "host1": "Download and open the app.",
+      "host2": "Pick the Documents › HelperValley Saves folder:",
+      "host3": "Done: while the app is open, LIVE shows and the site updates by itself.",
+      "guestTitle": "On someone's farm",
+      "guestWho": "You don't need the app.",
+      "guest1": "Ask the host for the code.",
+      "guest2": "Paste it in \"Play together\", below.",
+      "guest3": "Pick your farmer in the side menu."
     },
     "farmName": "{{name}} Farm",
     "dayShort": "{{season}} {{day}}, year {{year}}",
@@ -93,13 +93,13 @@
       "releases": "See all app versions",
       "download": "Download HelperValley for {{os}} (v{{version}})",
       "unsigned": {
-        "windows": "The app has no digital signature yet: the first time, Windows shows \"Windows protected your PC\". Click \"More info\", then \"Run anyway\".",
-        "mac": "The app has no Apple signature yet: after opening it, go to System Settings → Privacy & Security and click \"Open Anyway\". It also asks for access to the Documents folder.",
-        "linux": "For the AppImage, make it executable (chmod +x) before opening. The .deb installs through the package manager."
+        "windows": "If Windows warns you: \"More info\" → \"Run anyway\".",
+        "mac": "If the Mac blocks it: Settings → Privacy & Security → \"Open Anyway\".",
+        "linux": "AppImage: make it executable before opening."
       }
     },
-    "folderGone": "The folder that was connected doesn't exist anymore (it was the old commands' folder). Connect Documents › HelperValley Saves, made by the app.",
-    "notApp": "This isn't the HelperValley app's folder, so the site may not update live. Open the app and pick Documents › HelperValley Saves with \"Change folder\"."
+    "folderGone": "The old folder doesn't exist anymore. Pick Documents › HelperValley Saves.",
+    "notApp": "This isn't the app's folder, so it may not update live. Use \"Change folder\" → Documents › HelperValley Saves."
   },
   "locations": {
     "Farm": "Farm",
