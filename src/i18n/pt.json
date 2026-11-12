@@ -62,13 +62,20 @@
     "error": "Não foi possível ler este save: {{message}}",
     "required": "Abra a pasta de saves para ver esta página.",
     "updated": "O jogo salvou! Mostrando o novo dia",
-    "guide": {
-      "title": "Conectar seus saves",
-      "pick": "Clique aqui e escolha a pasta Documentos/HelperValley Saves:",
-      "allow": "Na próxima visita, escolha \"Permitir em todas as visitas\"."
-    },
     "how": {
-      "local": "O site lê os saves direto do seu PC; nada é enviado."
+      "local": "O site lê os saves direto do seu PC; nada é enviado.",
+      "title": "Como funciona",
+      "toggle": "Como funciona · baixar o app",
+      "hostTitle": "Ver seus saves ao vivo",
+      "hostWho": "Para quem joga sozinho ou é o anfitrião.",
+      "host1": "Baixe e abra o app HelperValley. Ele copia seus saves para Documentos › HelperValley Saves, sem mexer nos originais.",
+      "host2": "Clique no botão e escolha a pasta HelperValley Saves, dentro de Documentos. Nas próximas visitas, escolha \"Permitir em todas as visitas\".",
+      "host3": "Pronto. Com o app aberto aparece AO VIVO no topo, e o site atualiza sozinho cada vez que o jogo salva (quando você dorme).",
+      "guestTitle": "Entrar na fazenda de alguém",
+      "guestWho": "Para quem joga como ajudante. Não precisa do app.",
+      "guest1": "Peça o código da sala ao anfitrião.",
+      "guest2": "Cole o código em \"Jogar junto\", aqui embaixo, e clique em \"Entrar na sala\".",
+      "guest3": "Escolha o seu fazendeiro no menu ao lado. O site mostra a fazenda do anfitrião ao vivo."
     },
     "farmName": "Fazenda {{name}}",
     "dayShort": "{{day}} de {{season}}, ano {{year}}",
@@ -81,9 +88,6 @@
     "removeHint": "Só tira do site: seus saves continuam no PC.",
     "needsBrowser": "Este site lê seus saves ao vivo, o que só funciona no Chrome, Edge, Brave ou Opera.",
     "app": {
-      "why": "O navegador não pode abrir a pasta onde o jogo salva. O app HelperValley copia seus saves para Documentos/HelperValley Saves, sem mexer nos originais, e o site lê essa cópia ao vivo. Só quem tem o save (anfitrião ou quem joga sozinho) precisa do app: para entrar na sala de outra pessoa, basta o código, aqui embaixo em \"Jogar junto\".",
-      "step1": "Baixe e instale o app HelperValley:",
-      "step2": "Abra o app. Ele fica no canto da barra de tarefas mesmo com a janela fechada; para encerrar, use \"Sair\" no ícone dele.",
       "checking": "Procurando a versão mais recente do app…",
       "soon": "O app ainda não foi publicado. Ele chega em breve.",
       "releases": "Ver todas as versões do app",
@@ -93,7 +97,9 @@
         "mac": "O app ainda não tem assinatura da Apple: depois de abrir, vá em Ajustes do Sistema → Privacidade e Segurança e clique em \"Abrir Mesmo Assim\". Ele também pede acesso à pasta Documentos.",
         "linux": "No AppImage, dê permissão de execução (chmod +x) antes de abrir. O .deb instala pelo gerenciador de pacotes."
       }
-    }
+    },
+    "folderGone": "A pasta que estava conectada não existe mais (era a dos comandos antigos). Conecte a pasta Documentos › HelperValley Saves, criada pelo app.",
+    "notApp": "Esta pasta não é a do app HelperValley, então o site pode não atualizar ao vivo. Abra o app e escolha Documentos › HelperValley Saves em \"Trocar pasta\"."
   },
   "locations": {
     "Farm": "Fazenda",

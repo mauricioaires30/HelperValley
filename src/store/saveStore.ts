@@ -48,6 +48,8 @@ interface SaveState {
   playerId: string | null;
   /** The HelperValley app's last status, read from the connected folder. */
   app: { status: AppStatus; modified: number } | null;
+  /** The remembered folder no longer exists and was forgotten. */
+  folderGone: boolean;
   loadedAt: number | null;
   /** Set when a live folder reloads because the game wrote the save. */
   lastUpdate: { at: number; date: SaveData['date'] } | null;
@@ -139,10 +141,22 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
 
   async function useSource(source: SaveSource) {
     stopPolling();
-    setState({ source, pendingHandle: null, status: 'listing', error: null });
-    const summaries = await source.listSaves();
-    setState({ summaries, status: 'idle' });
-    void source.appStatus().then((app) => setState({ app }));
+    setState({ source, pendingHandle: null, status: 'listing', error: null, folderGone: false });
+    let summaries: SaveSummary[];
+    try {
+      summaries = await source.listSaves();
+    } catch (e) {
+      // The remembered folder was moved or deleted (like the old setup's folder): forget it.
+      if (e instanceof DOMException && e.name === 'NotFoundError') {
+        await forgetDirectory();
+        setState({ source: null, summaries: [], folder: null, save: null, app: null, status: 'idle', folderGone: true });
+        return;
+      }
+      throw e;
+    }
+    // Known before the list shows, so "not the app's folder" doesn't flash.
+    const app = await source.appStatus();
+    setState({ summaries, app, status: 'idle' });
     const remembered = storage.get(SELECTED_KEY);
     const folder = summaries.find((s) => s.folder === remembered)?.folder ?? summaries[0]?.folder ?? null;
     if (!folder) return;
@@ -176,6 +190,7 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
     save: null,
     playerId: null,
     app: null,
+    folderGone: false,
     loadedAt: null,
     lastUpdate: null,
 
@@ -240,7 +255,7 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
     async disconnect() {
       stopPolling();
       await forgetDirectory();
-      setState({ source: null, summaries: [], folder: null, save: null, playerId: null, app: null, status: 'idle', pendingHandle: null });
+      setState({ source: null, summaries: [], folder: null, save: null, playerId: null, app: null, status: 'idle', pendingHandle: null, folderGone: false });
     },
   };
 });

@@ -50,30 +50,57 @@ function DownloadApp() {
   );
 }
 
-/** How to connect your own saves: the HelperValley app copies them where the browser may read them. */
-export function LiveSetupGuide() {
+function Guide() {
   const { t } = useTranslation();
   const connectDirectory = useSaveStore((s) => s.connectDirectory);
+  return (
+    <div className="live-guide__ways">
+      <div className="live-guide__way">
+        <h3>{t('saves.how.hostTitle')}</h3>
+        <p className="cc-summary__hint">{t('saves.how.hostWho')}</p>
+        <ol>
+          <li>
+            {t('saves.how.host1')}
+            <DownloadApp />
+          </li>
+          <li>
+            {t('saves.how.host2')}{' '}
+            <button className="button button--primary" onClick={() => void connectDirectory()}>
+              <ItemIcon id="(BC)130" scale={1} tooltip={false} />
+              {t('saves.open')}
+            </button>
+          </li>
+          <li>{t('saves.how.host3')}</li>
+        </ol>
+      </div>
+      <div className="live-guide__way">
+        <h3>{t('saves.how.guestTitle')}</h3>
+        <p className="cc-summary__hint">{t('saves.how.guestWho')}</p>
+        <ol>
+          <li>{t('saves.how.guest1')}</li>
+          <li>{t('saves.how.guest2')}</li>
+          <li>{t('saves.how.guest3')}</li>
+        </ol>
+      </div>
+    </div>
+  );
+}
 
+/** How the site works: your own saves through the app, or someone else's room with a code. Folded once a folder is connected. */
+export function LiveSetupGuide({ folded = false }: { folded?: boolean }) {
+  const { t } = useTranslation();
+  if (folded) {
+    return (
+      <details className="live-guide box">
+        <summary>{t('saves.how.toggle')}</summary>
+        <Guide />
+      </details>
+    );
+  }
   return (
     <section className="live-guide box">
-      <h2>{t('saves.guide.title')}</h2>
-      <p>{t('saves.app.why')}</p>
-      <ol>
-        <li>
-          {t('saves.app.step1')}
-          <DownloadApp />
-        </li>
-        <li>{t('saves.app.step2')}</li>
-        <li>
-          {t('saves.guide.pick')}{' '}
-          <button className="button button--primary" onClick={() => void connectDirectory()}>
-            <ItemIcon id="(BC)130" scale={1} tooltip={false} />
-            {t('saves.open')}
-          </button>
-        </li>
-        <li>{t('saves.guide.allow')}</li>
-      </ol>
+      <h2>{t('saves.how.title')}</h2>
+      <Guide />
     </section>
   );
 }

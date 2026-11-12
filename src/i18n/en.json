@@ -62,13 +62,20 @@
     "error": "Couldn't read this save: {{message}}",
     "required": "Open your saves folder to see this page.",
     "updated": "The game saved! Showing the new day",
-    "guide": {
-      "title": "Connect your saves",
-      "pick": "Click here and choose the folder Documents/HelperValley Saves:",
-      "allow": "On your next visit, choose \"Allow on every visit\"."
-    },
     "how": {
-      "local": "The site reads your saves right from your PC; nothing is uploaded."
+      "local": "The site reads your saves right from your PC; nothing is uploaded.",
+      "title": "How it works",
+      "toggle": "How it works · get the app",
+      "hostTitle": "See your saves live",
+      "hostWho": "For solo players and hosts.",
+      "host1": "Download and open the HelperValley app. It copies your saves to Documents › HelperValley Saves without touching the originals.",
+      "host2": "Click the button and pick the HelperValley Saves folder inside Documents. On later visits, choose \"Allow on every visit\".",
+      "host3": "Done. While the app is open, LIVE shows at the top and the site updates by itself every time the game saves (when you sleep).",
+      "guestTitle": "Join someone's farm",
+      "guestWho": "For farmhands. You don't need the app.",
+      "guest1": "Ask the host for the room code.",
+      "guest2": "Paste the code in \"Play together\", below, and click \"Join room\".",
+      "guest3": "Pick your farmer in the side menu. The site shows the host's farm live."
     },
     "farmName": "{{name}} Farm",
     "dayShort": "{{season}} {{day}}, year {{year}}",
@@ -81,9 +88,6 @@
     "removeHint": "Only removes it from the site: your saves stay on your PC.",
     "needsBrowser": "This site reads your saves live, which only works in Chrome, Edge, Brave or Opera.",
     "app": {
-      "why": "The browser can't open the folder where the game saves. The HelperValley app copies your saves to Documents/HelperValley Saves without touching the originals, and the site reads that copy live. Only whoever has the save (the host, or a solo player) needs the app: to join someone else's room, the code is enough, below under \"Play together\".",
-      "step1": "Download and install the HelperValley app:",
-      "step2": "Open the app. It stays in the corner of the taskbar even with its window closed; to end it, use \"Quit\" on its icon.",
       "checking": "Looking for the latest app version…",
       "soon": "The app hasn't been released yet. It's coming soon.",
       "releases": "See all app versions",
@@ -93,7 +97,9 @@
         "mac": "The app has no Apple signature yet: after opening it, go to System Settings → Privacy & Security and click \"Open Anyway\". It also asks for access to the Documents folder.",
         "linux": "For the AppImage, make it executable (chmod +x) before opening. The .deb installs through the package manager."
       }
-    }
+    },
+    "folderGone": "The folder that was connected doesn't exist anymore (it was the old commands' folder). Connect Documents › HelperValley Saves, made by the app.",
+    "notApp": "This isn't the HelperValley app's folder, so the site may not update live. Open the app and pick Documents › HelperValley Saves with \"Change folder\"."
   },
   "locations": {
     "Farm": "Farm",
