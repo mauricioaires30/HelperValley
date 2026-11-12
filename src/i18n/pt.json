@@ -66,16 +66,16 @@
       "local": "O site lê os saves direto do seu PC; nada é enviado.",
       "title": "Como funciona",
       "toggle": "Como funciona · baixar o app",
-      "hostTitle": "Ver seus saves ao vivo",
-      "hostWho": "Para quem joga sozinho ou é o anfitrião.",
-      "host1": "Baixe e abra o app HelperValley. Ele copia seus saves para Documentos › HelperValley Saves, sem mexer nos originais.",
-      "host2": "Clique no botão e escolha a pasta HelperValley Saves, dentro de Documentos. Nas próximas visitas, escolha \"Permitir em todas as visitas\".",
-      "host3": "Pronto. Com o app aberto aparece AO VIVO no topo, e o site atualiza sozinho cada vez que o jogo salva (quando você dorme).",
-      "guestTitle": "Entrar na fazenda de alguém",
-      "guestWho": "Para quem joga como ajudante. Não precisa do app.",
-      "guest1": "Peça o código da sala ao anfitrião.",
-      "guest2": "Cole o código em \"Jogar junto\", aqui embaixo, e clique em \"Entrar na sala\".",
-      "guest3": "Escolha o seu fazendeiro no menu ao lado. O site mostra a fazenda do anfitrião ao vivo."
+      "hostTitle": "Seus saves ao vivo",
+      "hostWho": "Solo ou anfitrião.",
+      "host1": "Baixe e abra o app.",
+      "host2": "Escolha a pasta Documentos › HelperValley Saves:",
+      "host3": "Pronto: com o app aberto, aparece AO VIVO e o site atualiza sozinho.",
+      "guestTitle": "Na fazenda de alguém",
+      "guestWho": "Não precisa do app.",
+      "guest1": "Peça o código ao anfitrião.",
+      "guest2": "Cole em \"Jogar junto\", aqui embaixo.",
+      "guest3": "Escolha seu fazendeiro no menu ao lado."
     },
     "farmName": "Fazenda {{name}}",
     "dayShort": "{{day}} de {{season}}, ano {{year}}",
@@ -93,13 +93,13 @@
       "releases": "Ver todas as versões do app",
       "download": "Baixar HelperValley para {{os}} (v{{version}})",
       "unsigned": {
-        "windows": "O app ainda não tem assinatura digital: na primeira vez, o Windows mostra \"O Windows protegeu o computador\". Clique em \"Mais informações\" e depois em \"Executar assim mesmo\".",
-        "mac": "O app ainda não tem assinatura da Apple: depois de abrir, vá em Ajustes do Sistema → Privacidade e Segurança e clique em \"Abrir Mesmo Assim\". Ele também pede acesso à pasta Documentos.",
-        "linux": "No AppImage, dê permissão de execução (chmod +x) antes de abrir. O .deb instala pelo gerenciador de pacotes."
+        "windows": "Se o Windows avisar: \"Mais informações\" → \"Executar assim mesmo\".",
+        "mac": "Se o Mac bloquear: Ajustes → Privacidade e Segurança → \"Abrir Mesmo Assim\".",
+        "linux": "AppImage: dê permissão de execução antes de abrir."
       }
     },
-    "folderGone": "A pasta que estava conectada não existe mais (era a dos comandos antigos). Conecte a pasta Documentos › HelperValley Saves, criada pelo app.",
-    "notApp": "Esta pasta não é a do app HelperValley, então o site pode não atualizar ao vivo. Abra o app e escolha Documentos › HelperValley Saves em \"Trocar pasta\"."
+    "folderGone": "A pasta antiga não existe mais. Escolha Documentos › HelperValley Saves.",
+    "notApp": "Esta não é a pasta do app, então pode não atualizar ao vivo. Use \"Trocar pasta\" → Documentos › HelperValley Saves."
   },
   "locations": {
     "Farm": "Fazenda",

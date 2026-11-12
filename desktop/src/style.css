@@ -1,24 +1,46 @@
 :root {
-  --paper: #f8e7c3;
-  --paper-light: #fff6df;
-  --wood: #8a4d22;
-  --wood-dark: #5b2b15;
+  --bg: #f8e7c3;
+  --card: #fff6df;
+  --border: #8a4d22;
   --text: #3b2412;
   --soft: #7a5a3c;
+  --button: #f1d29a;
+  --button-border: #5b2b15;
   --ok: #3a8f2a;
+  --ok-border: #245c19;
   --warn: #d08a1f;
-  --danger: #b3263a;
   color-scheme: light;
   font-family: system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1f1a24;
+    --card: #2b2433;
+    --border: #5c4a6e;
+    --text: #efe6f5;
+    --soft: #b3a5c2;
+    --button: #3a3045;
+    --button-border: #7a6690;
+    --ok: #4caf3a;
+    --ok-border: #2f7a22;
+    --warn: #e0a040;
+    color-scheme: dark;
+  }
 }
 
 * {
   box-sizing: border-box;
 }
 
+/* Elements with display rules (cards) still hide with the hidden attribute. */
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
-  background: var(--paper);
+  background: var(--bg);
   color: var(--text);
 }
 
@@ -47,13 +69,9 @@ h1 {
   display: grid;
   gap: 8px;
   padding: 12px;
-  background: var(--paper-light);
-  border: 3px solid var(--wood);
+  background: var(--card);
+  border: 3px solid var(--border);
   border-radius: 8px;
-}
-
-.card.warn {
-  border-color: var(--warn);
 }
 
 .card.update {
@@ -72,7 +90,12 @@ h1 {
   cursor: pointer;
 }
 
+.toggle input {
+  accent-color: var(--ok);
+}
+
 .dot {
+  flex: none;
   width: 12px;
   height: 12px;
   border-radius: 50%;
@@ -85,10 +108,6 @@ h1 {
 
 .dot--warn {
   background: var(--warn);
-}
-
-.dot--off {
-  background: var(--soft);
 }
 
 .hint {
@@ -106,39 +125,23 @@ p {
   padding: 6px 14px;
   font: inherit;
   color: var(--text);
-  background: #f1d29a;
-  border: 2px solid var(--wood-dark);
+  background: var(--button);
+  border: 2px solid var(--button-border);
   border-radius: 6px;
   cursor: pointer;
+}
+
+.button:hover:not(:disabled) {
+  filter: brightness(1.08);
 }
 
 .button.primary {
   color: #fff;
   background: var(--ok);
-  border-color: #245c19;
+  border-color: var(--ok-border);
 }
 
 .button:disabled {
   opacity: 0.6;
   cursor: default;
-}
-
-ul {
-  display: grid;
-  gap: 4px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.link {
-  padding: 0;
-  font: inherit;
-  font-size: 13px;
-  color: var(--wood-dark);
-  text-align: left;
-  text-decoration: underline;
-  background: none;
-  border: 0;
-  cursor: pointer;
 }

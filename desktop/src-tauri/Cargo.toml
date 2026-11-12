@@ -1,6 +1,6 @@
 [package]
 name = "helpervalley"
-version = "0.1.0"
+version = "0.1.1"
 description = "Copies your Stardew Valley saves where the HelperValley website can read them"
 authors = ["mauricioaires30"]
 edition = "2021"
@@ -26,7 +26,6 @@ dunce = "1"
 filetime = "0.2"
 notify = "8"
 notify-debouncer-full = "0.6"
-sysinfo = "0.37"
 
 [target.'cfg(windows)'.dependencies]
 junction = "1"

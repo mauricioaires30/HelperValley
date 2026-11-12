@@ -203,6 +203,25 @@
 .save-side {
   display: grid;
   gap: 4px;
+  transition: transform 80ms steps(2);
+}
+
+/* Moves like the menu tabs below it, so it reads as the button to the Saves page. */
+.save-side:has(.save-side__link:hover) {
+  transform: translateX(calc(2 * var(--px)));
+}
+
+.save-side:has(.save-side__link[aria-current='page']) {
+  transform: translateX(calc(6 * var(--px)));
+  filter: brightness(1.08) drop-shadow(calc(2 * var(--px)) calc(2 * var(--px)) 0 rgb(0 0 0 / 0.3));
+}
+
+@media (max-width: 900px) {
+  .save-side,
+  .save-side:has(.save-side__link:hover),
+  .save-side:has(.save-side__link[aria-current='page']) {
+    transform: none;
+  }
 }
 
 .save-side__link {

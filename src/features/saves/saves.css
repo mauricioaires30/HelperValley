@@ -211,10 +211,15 @@
   border-top: var(--px) dashed rgb(91 43 21 / 0.3);
 }
 
+/* Room between the farms, the guide and the sections below. */
+.home {
+  display: grid;
+  gap: 16px;
+}
+
 .home__more {
   display: grid;
   gap: 8px;
-  margin-top: 16px;
 }
 
 .home-fold summary {
