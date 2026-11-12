@@ -57,6 +57,9 @@ struct Settings {
     disabled: bool,
     #[serde(default)]
     quit_on_close: bool,
+    /// The version whose icon Windows was last told to refresh.
+    #[serde(default)]
+    icons_for: Option<String>,
 }
 
 fn load_settings() -> Settings {
@@ -183,7 +186,7 @@ fn set_enabled_inner(app: &AppHandle, enabled: bool) {
     let shared = app.state::<Arc<Shared>>();
     shared.status.lock().unwrap().enabled = enabled;
     let quit_on_close = shared.status.lock().unwrap().quit_on_close;
-    save_settings(&Settings { disabled: !enabled, quit_on_close });
+    save_settings(&Settings { disabled: !enabled, quit_on_close, ..load_settings() });
     if let Some(tx) = shared.wake.lock().unwrap().as_ref() {
         let _ = tx.send(Wake::Sync);
     }
@@ -216,7 +219,24 @@ fn set_quit_on_close(shared: State<'_, Arc<Shared>>, quit: bool) {
         status.quit_on_close = quit;
         status.enabled
     };
-    save_settings(&Settings { disabled: !enabled, quit_on_close: quit });
+    save_settings(&Settings { disabled: !enabled, quit_on_close: quit, ..load_settings() });
+}
+
+/// Windows caches shortcut icons, so after an update the desktop shortcut kept the old picture.
+/// Once per version, ask it to rebuild that cache.
+fn refresh_icons_after_update(settings: &Settings) {
+    let version = env!("CARGO_PKG_VERSION");
+    if settings.icons_for.as_deref() == Some(version) {
+        return;
+    }
+    #[cfg(windows)]
+    std::thread::spawn(|| {
+        use std::os::windows::process::CommandExt;
+        const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+        let system = std::env::var_os("SystemRoot").map(PathBuf::from).unwrap_or_else(|| PathBuf::from(r"C:\Windows"));
+        let _ = std::process::Command::new(system.join("System32").join("ie4uinit.exe")).arg("-show").creation_flags(CREATE_NO_WINDOW).status();
+    });
+    save_settings(&Settings { icons_for: Some(version.into()), ..load_settings() });
 }
 
 fn show_window(app: &AppHandle) {
@@ -242,6 +262,7 @@ pub fn run() {
     let sources = paths::source_dirs();
     let mirror = paths::mirror_dir().unwrap_or_else(|| PathBuf::from("HelperValley Saves"));
     let settings = load_settings();
+    refresh_icons_after_update(&settings);
     let shared = Arc::new(Shared {
         status: Mutex::new(Status {
             enabled: !settings.disabled,
