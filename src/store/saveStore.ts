@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { Player, SaveData, SaveSummary } from '@/save/model';
+import type { AppStatus } from '@/save/appStatus';
 import { parseSave } from '@/save/parse';
 import { removeOldCopies } from '@/save/cache';
 import {
@@ -45,6 +46,8 @@ interface SaveState {
   folder: string | null;
   save: SaveData | null;
   playerId: string | null;
+  /** The HelperValley app's last status, read from the connected folder. */
+  app: { status: AppStatus; modified: number } | null;
   loadedAt: number | null;
   /** Set when a live folder reloads because the game wrote the save. */
   lastUpdate: { at: number; date: SaveData['date'] } | null;
@@ -78,6 +81,7 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
   async function check() {
     const { source, folder } = getState();
     if (!source || !folder) return;
+    void source.appStatus().then((app) => getState().source === source && setState({ app }));
     try {
       const modified = await source.modified(folder);
       if (modified > lastModified) await load(folder, true);
@@ -138,6 +142,7 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
     setState({ source, pendingHandle: null, status: 'listing', error: null });
     const summaries = await source.listSaves();
     setState({ summaries, status: 'idle' });
+    void source.appStatus().then((app) => setState({ app }));
     const remembered = storage.get(SELECTED_KEY);
     const folder = summaries.find((s) => s.folder === remembered)?.folder ?? summaries[0]?.folder ?? null;
     if (!folder) return;
@@ -170,6 +175,7 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
     folder: null,
     save: null,
     playerId: null,
+    app: null,
     loadedAt: null,
     lastUpdate: null,
 
@@ -234,7 +240,7 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
     async disconnect() {
       stopPolling();
       await forgetDirectory();
-      setState({ source: null, summaries: [], folder: null, save: null, playerId: null, status: 'idle', pendingHandle: null });
+      setState({ source: null, summaries: [], folder: null, save: null, playerId: null, app: null, status: 'idle', pendingHandle: null });
     },
   };
 });

@@ -15,3 +15,26 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+
+  # The app's copy and undo logic touches real saves, so its tests run on every system.
+  desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [windows-latest, macos-latest, ubuntu-22.04]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Linux libraries
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: desktop/src-tauri -> target
+      # Tauri checks that the window's files exist when compiling.
+      - run: mkdir -p desktop/dist
+        shell: bash
+      - run: cargo test --manifest-path desktop/src-tauri/Cargo.toml

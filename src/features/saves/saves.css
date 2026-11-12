@@ -238,3 +238,14 @@
   border-left: 4px solid var(--danger);
   background: rgb(255 255 255 / 0.35);
 }
+
+.download-app {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.download-app__button {
+  font-size: var(--fs-md);
+}

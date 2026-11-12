@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HelperValley</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <main id="app">
+      <header class="head">
+        <img src="/app-icon.png" alt="" width="48" height="48" />
+        <div>
+          <h1>HelperValley</h1>
+          <p id="version" class="hint"></p>
+        </div>
+      </header>
+
+      <section id="update" class="card update" hidden>
+        <span id="update-text"></span>
+        <button id="update-button" class="button primary"></button>
+      </section>
+
+      <section class="card">
+        <div class="row">
+          <span id="dot" class="dot"></span>
+          <strong id="state"></strong>
+        </div>
+        <p id="detail" class="hint"></p>
+        <p id="last" class="hint"></p>
+        <label class="row toggle">
+          <input id="enabled" type="checkbox" />
+          <span id="enabled-label"></span>
+        </label>
+        <button id="open" class="button"></button>
+      </section>
+
+      <section id="legacy" class="card warn" hidden>
+        <strong id="legacy-title"></strong>
+        <p id="legacy-text"></p>
+        <button id="legacy-button" class="button primary"></button>
+        <p id="legacy-result" class="hint"></p>
+        <ul id="legacy-leftovers"></ul>
+      </section>
+
+      <p id="tray" class="hint"></p>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

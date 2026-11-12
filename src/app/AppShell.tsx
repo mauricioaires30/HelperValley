@@ -8,6 +8,7 @@ import { Search } from '@/features/search/Search';
 import { useSaveNotifications } from '@/features/saves/Notifications';
 import { ThemeToggle } from './ThemeToggle';
 import { ShareChip } from '@/features/share/SharePanel';
+import { LiveBadge } from '@/features/share/LiveBadge';
 import { useShareStore } from '@/features/share/liveShare';
 import { useSaveStore } from '@/store/saveStore';
 import './shell.css';
@@ -99,6 +100,7 @@ export function AppShell() {
 
       <div className="content">
         <header className="topbar">
+          <LiveBadge />
           <ShareChip />
           <span className="topbar__spacer" />
           <label className="topbar__select box">
