@@ -11,6 +11,7 @@ import { FarmBuildings } from './Buildings';
 import { PlannerCompare } from './PlannerCompare';
 import '@/features/farm/farm.css';
 import '@/features/shops/shops.css';
+import { PresenceDots } from '@/features/share/Presence';
 
 /** One Farm page, its tabs grouped: what the farm makes, the land, and building. */
 const GROUPS = [
@@ -35,6 +36,7 @@ export function FarmPlanPage() {
               {g.tabs.map((id) => (
                 <NavLink key={id} to={`/farm/${id}`} className={({ isActive }) => (isActive ? 'button button--primary' : 'button')}>
                   {t(`farmPlan.tab.${id}`)}
+                  <PresenceDots to={`/farm/${id}`} exact />
                 </NavLink>
               ))}
             </div>

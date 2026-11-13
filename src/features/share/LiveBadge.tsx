@@ -20,15 +20,29 @@ export function useAppLive(): boolean {
   return app ? isAppLive(app.status, app.modified, now) : false;
 }
 
-/** "AO VIVO" at the top of the page while the saves are kept up to date by the app. */
+/**
+ * "AO VIVO" at the top while the saves on screen are kept up to date by the app (yours, or the host's in a room),
+ * and "NÃO AO VIVO" when a save is open but the app is closed, so nobody mistakes an old copy for the current day.
+ */
 export function LiveBadge() {
   const { t } = useTranslation();
   const live = useAppLive();
-  if (!live) return null;
+  const hasSave = useSaveStore((s) => !!s.save);
+  const inRoom = useShareStore((s) => s.role === 'guest' && s.status !== 'error');
+  if (live) {
+    return (
+      <span className="live-badge box" role="status" title={t('share.liveHint')}>
+        <span className="live-badge__dot" aria-hidden="true" />
+        {t('share.live')}
+      </span>
+    );
+  }
+  if (!hasSave && !inRoom) return null;
+  const guest = inRoom || useSaveStore.getState().folder === 'shared';
   return (
-    <span className="live-badge box" role="status" title={t('share.liveHint')}>
+    <span className="live-badge live-badge--off box" role="status" title={t(guest ? 'share.notLiveGuestHint' : 'share.notLiveHint')}>
       <span className="live-badge__dot" aria-hidden="true" />
-      {t('share.live')}
+      {t('share.notLive')}
     </span>
   );
 }

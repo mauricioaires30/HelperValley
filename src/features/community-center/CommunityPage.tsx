@@ -7,6 +7,7 @@ import { CommunityCenterPage, JojaView } from './CommunityCenterPage';
 import { useCurrentSave } from '@/store/saveStore';
 import { ccIsWarehouse, jojaMartGone } from '@/features/shops/catalog';
 import '@/features/collections/collections.css';
+import { PresenceDots } from '@/features/share/Presence';
 
 /** Donation projects in their own tab: Community Center (or Joja), museum and the island field office. */
 const TABS = ['cc', 'joja', 'museum', 'island'] as const;
@@ -28,6 +29,7 @@ export function CommunityPage() {
           {tabs.map((id) => (
             <NavLink key={id} to={`/community/${id}`} className={({ isActive }) => (isActive ? 'button button--primary' : 'button')}>
               {t(`community.tab.${id}`)}
+              <PresenceDots to={`/community/${id}`} exact />
             </NavLink>
           ))}
         </div>

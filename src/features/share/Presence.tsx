@@ -63,6 +63,7 @@ export function PresenceSync() {
 /** Everyone else's mouse on this page, with their nickname. */
 export function CursorLayer() {
   const cursors = useCursors((s) => s.cursors);
+  const people = useShareStore((s) => s.people);
   const [, redraw] = useState(0);
   const ids = Object.keys(cursors);
 
@@ -84,7 +85,7 @@ export function CursorLayer() {
         const at = place(cursor);
         if (!at) return null;
         return (
-          <div key={id} className="cursor" style={{ transform: `translate(${at.left}px, ${at.top}px)`, ['--hue' as string]: hue(id) }}>
+          <div key={id} className="cursor" style={{ transform: `translate(${at.left}px, ${at.top}px)`, ['--color' as string]: people.find((p) => p.clientId === id)?.color ?? '#999' }}>
             <svg width="16" height="20" viewBox="0 0 16 20" className="cursor__arrow">
               <path d="M1 1 L1 16 L5 12 L8 19 L11 18 L8 11 L14 11 Z" />
             </svg>
@@ -96,9 +97,25 @@ export function CursorLayer() {
   );
 }
 
-/** A steady color per person. */
-function hue(id: string) {
-  let h = 0;
-  for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) % 360;
-  return h;
+/**
+ * Colored squares for the other people on a page, next to its tab; hovering one shows the nickname.
+ * `to` is the tab's address; with `exact` only that page counts (inner tabs), otherwise its sub-pages too (menu).
+ */
+export function PresenceDots({ to, exact = false }: { to: string; exact?: boolean }) {
+  // Selected as-is (a new array here would re-render forever); this tab is first and left out.
+  const people = useShareStore((s) => s.people);
+  const closed = useShareStore((s) => s.status === 'error');
+  if (closed) return null;
+  const here = people.slice(1).filter((p) => {
+    const route = p.route ?? '/';
+    return route === to || (!exact && to !== '/' && route.startsWith(`${to}/`));
+  });
+  if (here.length === 0) return null;
+  return (
+    <span className="presence-dots">
+      {here.map((p) => (
+        <span key={p.clientId} className="presence-dot" style={{ background: p.color ?? '#999' }} title={p.nick} aria-label={p.nick} role="img" />
+      ))}
+    </span>
+  );
 }

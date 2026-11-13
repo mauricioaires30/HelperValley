@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCurrentSave, useSaveStore } from '@/store/saveStore';
 import { ItemIcon } from '@/ui';
+import { PresenceDots } from '@/features/share/Presence';
 
 /**
  * One sidebar card for the save: chest, farm and player names, and the date.
@@ -26,6 +27,7 @@ export function SaveCard() {
             <strong>{t('nav.home')}</strong>
           )}
         </span>
+        <PresenceDots to="/" exact />
       </NavLink>
       {save && player && save.players.length > 1 && (
         <label className="save-side__switch">

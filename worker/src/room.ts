@@ -2,11 +2,13 @@ import { DurableObject } from 'cloudflare:workers';
 import {
   CLOSE_HOST_LEFT,
   CLOSE_REFUSED,
+  CLOSE_REMOVED,
   CLOSE_REPLACED,
   decodeChunk,
   HOST_GRACE_MS,
   PING,
   PONG,
+  type Ban,
   type Checks,
   type Peer,
   type ServerMessage,
@@ -23,11 +25,11 @@ interface SaveMeta {
   total: number;
 }
 
-/** Who a socket is, kept on the socket itself so it survives hibernation. */
-type Attached = Peer & { replaced?: boolean };
+/** Who a socket is, kept on the socket itself so it survives hibernation. The browser id stays here, private. */
+type Attached = Peer & { replaced?: boolean; browser?: string | null };
 
 const NO_CHECKS: Checks = { day: null, checked: {} };
-const publicPeer = ({ clientId, nick, role, route }: Attached): Peer => ({ clientId, nick, role, route });
+const publicPeer = ({ clientId, nick, role, route, color }: Attached): Peer => ({ clientId, nick, role, route, color });
 
 /**
  * One multiplayer room. Uses the WebSocket Hibernation API: while nobody sends anything the room sleeps
@@ -84,7 +86,7 @@ export class Room extends DurableObject<Env> {
       ws.close(CLOSE_HOST_LEFT, 'host-left');
     }
     const meta = await this.ctx.storage.get<SaveMeta>('save');
-    const keys = ['save', 'checks', 'app', 'hostGoneAt', ...Array.from({ length: meta?.total ?? 0 }, (_, i) => `chunk:${i}`)];
+    const keys = ['save', 'checks', 'app', 'hostGoneAt', 'locked', ...Array.from({ length: meta?.total ?? 0 }, (_, i) => `chunk:${i}`)];
     await this.ctx.storage.delete(keys);
   }
 
@@ -94,9 +96,12 @@ export class Room extends DurableObject<Env> {
     const hostGoneAt = (await this.ctx.storage.get<number>('hostGoneAt')) ?? null;
     const present = this.live();
     const hostPresent = present.some((e) => e.peer.role === 'host') || (hostGoneAt !== null && Date.now() - hostGoneAt < HOST_GRACE_MS);
+    const locked = (await this.ctx.storage.get<boolean>('locked')) ?? false;
+    const bans = (await this.ctx.storage.get<Ban[]>('bans')) ?? [];
+    const browser = url.searchParams.get('browser');
     const admission = admit(
-      { role: url.searchParams.get('role'), clientId: url.searchParams.get('clientId'), nick: url.searchParams.get('nick'), token: url.searchParams.get('token') },
-      { token, peers: present.map((e) => e.peer), hostPresent },
+      { role: url.searchParams.get('role'), clientId: url.searchParams.get('clientId'), nick: url.searchParams.get('nick'), token: url.searchParams.get('token'), browser },
+      { token, peers: present.map((e) => e.peer), hostPresent, locked, bans: bans.map((b) => b.browser) },
     );
 
     const [client, server] = Object.values(new WebSocketPair());
@@ -127,13 +132,13 @@ export class Room extends DurableObject<Env> {
     }
 
     this.ctx.acceptWebSocket(server);
-    server.serializeAttachment(peer);
+    server.serializeAttachment({ ...peer, browser });
 
     const others = this.live(server).map((e) => publicPeer(e.peer));
     const checks = (await this.ctx.storage.get<Checks>('checks')) ?? NO_CHECKS;
     const app = (await this.ctx.storage.get<boolean>('app')) ?? false;
     const hostOnline = peer.role === 'host' || others.some((p) => p.role === 'host');
-    this.send(server, { type: 'welcome', you: peer, peers: others, hostOnline, checks, app: hostOnline && app });
+    this.send(server, { type: 'welcome', you: peer, peers: others, hostOnline, checks, app: hostOnline && app, locked, bans: peer.role === 'host' ? bans : [] });
 
     if (peer.role === 'guest') {
       // The last save the host sent, for whoever joins late.
@@ -200,6 +205,30 @@ export class Room extends DurableObject<Env> {
       case 'app':
         await this.ctx.storage.put('app', m.live);
         this.broadcast(m, (p) => p.role === 'guest', ws);
+        return;
+      case 'kick':
+      case 'ban': {
+        const target = this.live().find((e) => e.peer.clientId === m.clientId && e.peer.role === 'guest');
+        if (!target) return;
+        if (m.type === 'ban' && target.peer.browser) {
+          const bans = ((await this.ctx.storage.get<Ban[]>('bans')) ?? []).filter((b) => b.browser !== target.peer.browser);
+          bans.push({ browser: target.peer.browser, nick: target.peer.nick });
+          await this.ctx.storage.put('bans', bans);
+          this.send(ws, { type: 'bans', bans });
+        }
+        // Leaves like anyone else (the others see them go), but told why.
+        target.ws.close(CLOSE_REMOVED, m.type === 'ban' ? 'banned' : 'kicked');
+        return;
+      }
+      case 'unban': {
+        const bans = ((await this.ctx.storage.get<Ban[]>('bans')) ?? []).filter((b) => b.browser !== m.browser);
+        await this.ctx.storage.put('bans', bans);
+        this.send(ws, { type: 'bans', bans });
+        return;
+      }
+      case 'lock':
+        await this.ctx.storage.put('locked', m.locked);
+        this.send(ws, { type: 'lock', locked: m.locked });
         return;
       case 'close':
         // "Stop sharing": the room closes for everyone right away.

@@ -8,6 +8,7 @@ import {
   backoff,
   CLOSE_HOST_LEFT,
   CLOSE_REFUSED,
+  CLOSE_REMOVED,
   CLOSE_REPLACED,
   ChunkAssembler,
   cleanNick,
@@ -19,6 +20,7 @@ import {
   PONG,
   randomId,
   saveVersion,
+  type Ban,
   type Cursor,
   type Peer,
   type Refusal,
@@ -40,6 +42,8 @@ const HOST_KEY = 'hv-share-host';
 const GUEST_KEY = 'hv-share-guest';
 const CLIENT_KEY = 'hv-client-id';
 const NICK_KEY = 'hv-nick';
+/** This browser across tabs and visits: what the host's bans apply to. */
+const BROWSER_KEY = 'hv-browser-id';
 const tokenKey = (code: string) => `hv-room-token:${code}`;
 const PING_MS = 20_000;
 
@@ -56,6 +60,10 @@ interface ShareState {
   people: Peer[];
   /** For farmhands: the host's HelperValley app is running and copying. */
   hostApp: boolean;
+  /** For the host: new farmhands can't join. */
+  locked: boolean;
+  /** For the host: banned browsers. */
+  bans: Ban[];
   error: ShareError;
   host(): void;
   join(code: string, nick: string): void;
@@ -64,6 +72,12 @@ interface ShareState {
   setRoute(route: string): void;
   /** This tab's mouse, or null when it left the page. */
   sendCursor(cursor: Cursor | null): void;
+  kick(clientId: string): void;
+  ban(clientId: string): void;
+  unban(browser: string): void;
+  setLocked(locked: boolean): void;
+  /** Closes this room for everyone and opens a new one with another code. */
+  newCode(): void;
 }
 
 // Per tab: being in a room, and who this tab is (two tabs can be host and farmhand; a reload keeps both).
@@ -82,6 +96,14 @@ export const recall = (key: string) => {
   } catch {
     return null;
   }
+};
+
+const browserId = () => {
+  const known = recall(BROWSER_KEY);
+  if (known) return known;
+  const id = randomId();
+  remember(BROWSER_KEY, id);
+  return id;
 };
 
 const clientId = () => {
@@ -175,7 +197,7 @@ export const useShareStore = create<ShareState>((set, get) => {
     const { role } = get();
     if (m.type === 'welcome') {
       attempt = 0;
-      set({ people: [{ ...m.you, route }, ...m.peers], peers: m.peers.filter((p) => p.role === 'guest').length });
+      set({ people: [{ ...m.you, route }, ...m.peers], peers: m.peers.filter((p) => p.role === 'guest').length, locked: m.locked, bans: m.bans });
       send({ type: 'route', route });
       if (role === 'host') {
         set({ status: 'hosting', error: null });
@@ -199,6 +221,10 @@ export const useShareStore = create<ShareState>((set, get) => {
       if (m.day) useChecks.getState().adopt(m.day, m.checked);
     } else if (m.type === 'app') {
       set({ hostApp: m.live });
+    } else if (m.type === 'lock') {
+      set({ locked: m.locked });
+    } else if (m.type === 'bans') {
+      set({ bans: m.bans });
     } else if (m.type === 'route') {
       set({ people: get().people.map((p) => (p.clientId === m.clientId ? { ...p, route: m.route } : p)) });
       if (m.route !== route) forget(m.clientId);
@@ -212,7 +238,7 @@ export const useShareStore = create<ShareState>((set, get) => {
   const connect = (role: 'host' | 'guest', code: string, nick: string, retries = 3) => {
     teardown();
     assembler = new ChunkAssembler();
-    const params = new URLSearchParams({ role, clientId: clientId(), nick });
+    const params = new URLSearchParams({ role, clientId: clientId(), nick, browser: browserId() });
     if (role === 'host') {
       let token = recall(tokenKey(code));
       if (!token) {
@@ -270,10 +296,10 @@ export const useShareStore = create<ShareState>((set, get) => {
       unsubscribeSave = null;
       useCursors.getState().clear();
       const reason = event.reason as Refusal | 'replaced';
-      if (event.code === CLOSE_HOST_LEFT) {
-        // The host stopped sharing or didn't come back: leave the room and go back to this player's own saves.
+      if (event.code === CLOSE_HOST_LEFT || event.code === CLOSE_REMOVED) {
+        // The host stopped sharing, didn't come back, or sent this farmhand away: back to this player's own saves.
         remember(GUEST_KEY, null);
-        set({ status: 'error', error: 'host-left', people: [], peers: 0, hostApp: false });
+        set({ status: 'error', error: event.code === CLOSE_REMOVED ? reason : 'host-left', people: [], peers: 0, hostApp: false });
         useSaveStore.getState().leaveShared();
         void useSaveStore.getState().init();
         return;
@@ -307,7 +333,27 @@ export const useShareStore = create<ShareState>((set, get) => {
     peers: 0,
     people: [],
     hostApp: false,
+    locked: false,
+    bans: [],
     error: null,
+    kick(clientId) {
+      send({ type: 'kick', clientId });
+    },
+    ban(clientId) {
+      send({ type: 'ban', clientId });
+    },
+    unban(browser) {
+      send({ type: 'unban', browser });
+    },
+    setLocked(locked) {
+      send({ type: 'lock', locked });
+    },
+    newCode() {
+      if (get().role !== 'host') return;
+      get().stop();
+      remember(CODE_KEY, newCode());
+      get().host();
+    },
     host() {
       if (!relayAvailable()) return set({ status: 'error', error: 'unavailable' });
       const { save, playerId } = useSaveStore.getState();
@@ -348,7 +394,7 @@ export const useShareStore = create<ShareState>((set, get) => {
       teardown();
       remember(HOST_KEY, null);
       remember(GUEST_KEY, null);
-      set({ status: 'idle', role: null, code: null, peers: 0, people: [], hostApp: false, error: null });
+      set({ status: 'idle', role: null, code: null, peers: 0, people: [], hostApp: false, locked: false, bans: [], error: null });
       // Back to this player's own saves.
       if (wasGuest) {
         useSaveStore.getState().leaveShared();

@@ -1334,9 +1334,28 @@
       "origin": "Couldn't join. Reload the page and try again.",
       "replaced": "This room was opened in another tab.",
       "unavailable": "Playing together is unavailable right now.",
-      "host-left": "The host closed the room."
+      "host-left": "The host closed the room.",
+      "room-full": "The room is full: the game has at most 8 players (the host and 7 farmhands).",
+      "locked": "The host locked the room.",
+      "banned": "The host banned you from this room.",
+      "kicked": "The host removed you from the room."
     },
-    "you": "you"
+    "you": "you",
+    "notLive": "NOT LIVE",
+    "notLiveHint": "The HelperValley app is closed: the site shows the last copy and doesn't update when the game saves. Open the app to go live again.",
+    "notLiveGuestHint": "The host's app is closed: you see the last copy they sent, not updating live.",
+    "kick": "Kick",
+    "kickHint": "Removes them from the room; they can join again with the code.",
+    "ban": "Ban",
+    "banHint": "Removes them and doesn't let this browser back in.",
+    "banConfirm": "Ban {{nick}}? This browser can't come back until you unban it.",
+    "lock": "Lock room",
+    "lockHint": "Nobody new can join; whoever is in stays.",
+    "newCode": "New code",
+    "newCodeHint": "Closes this room for everyone and opens another with a new code.",
+    "newCodeConfirm": "Make a new code? Everyone leaves the room and needs the new code to come back.",
+    "banned": "Banned:",
+    "unban": "Unban"
   },
   "stardrops": {
     "hint": "Each gives +34 max energy.",

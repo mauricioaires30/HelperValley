@@ -1334,9 +1334,28 @@
       "origin": "Não deu para entrar. Recarregue a página e tente de novo.",
       "replaced": "Esta sala foi aberta em outra aba.",
       "unavailable": "O jogo junto está fora do ar no momento.",
-      "host-left": "O anfitrião encerrou a sala."
+      "host-left": "O anfitrião encerrou a sala.",
+      "room-full": "A sala está cheia: o jogo tem no máximo 8 jogadores (o anfitrião e 7 ajudantes).",
+      "locked": "O anfitrião trancou a sala.",
+      "banned": "O anfitrião te baniu desta sala.",
+      "kicked": "O anfitrião te tirou da sala."
     },
-    "you": "você"
+    "you": "você",
+    "notLive": "NÃO AO VIVO",
+    "notLiveHint": "O app HelperValley está fechado: o site mostra a última cópia e não atualiza quando o jogo salva. Abra o app para voltar ao vivo.",
+    "notLiveGuestHint": "O app do anfitrião está fechado: você vê a última cópia que ele mandou, sem atualizar ao vivo.",
+    "kick": "Expulsar",
+    "kickHint": "Tira da sala; a pessoa pode entrar de novo com o código.",
+    "ban": "Banir",
+    "banHint": "Tira da sala e não deixa este navegador voltar.",
+    "banConfirm": "Banir {{nick}}? Este navegador não poderá voltar à sala até você desbanir.",
+    "lock": "Trancar sala",
+    "lockHint": "Ninguém novo entra; quem já está continua.",
+    "newCode": "Novo código",
+    "newCodeHint": "Fecha esta sala para todos e abre outra com um código novo.",
+    "newCodeConfirm": "Gerar um código novo? Todos saem da sala e precisam do código novo para voltar.",
+    "banned": "Banidos:",
+    "unban": "Desbanir"
   },
   "stardrops": {
     "hint": "Cada uma dá +34 de energia máxima.",
