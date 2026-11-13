@@ -4,7 +4,7 @@ import { useGameName } from '@/i18n';
 import type { SaveData } from '@/save/model';
 import { Progress } from '@/ui';
 import { usePanZoom } from '@/ui/usePanZoom';
-import { CATEGORIES, comparePlan, fetchPlan, parsePlanJson, planApiUrl, planId, plannerName, type Category, type Comparison, type PlannerPlan } from './planner';
+import { CATEGORIES, comparePlan, farmEntries, fetchPlan, parsePlanJson, planApiUrl, planEntries, planId, plannerName, type Category, type Comparison, type MapEntry, type PlannerPlan } from './planner';
 import '@/features/map/map.css';
 
 /** The two maps a plan can be for: the farm and the island farm. */
@@ -16,6 +16,10 @@ type SlotId = (typeof SLOTS)[number]['id'];
 
 const storageKey = (slot: string) => `hv-planner-${slot}`;
 const OPTIONS_KEY = 'hv-planner-options';
+
+/** compare: plan vs save (green/red). plan: the whole planned layout. farm: the whole farm as it is now. */
+type ViewId = 'compare' | 'plan' | 'farm';
+const VIEWS: ViewId[] = ['compare', 'plan', 'farm'];
 
 interface Stored {
   link: string;
@@ -139,6 +143,119 @@ function tipPosition(h: { px: number; py: number; vw: number; vh: number }): CSS
   };
 }
 
+/** Colors of the full maps, by category. Buildings and machines are drawn last, on top of the ground. */
+const FULL_COLORS: Record<string, string> = {
+  soil: '#8b5a2b',
+  grass: '#a8d672',
+  floors: '#c9b79c',
+  fences: '#8d6e63',
+  crops: '#f0b429',
+  trees: '#2e7d32',
+  decor: '#c678dd',
+  machines: '#2f80ed',
+  buildings: '#4e342e',
+};
+const FULL_ORDER = Object.keys(FULL_COLORS);
+/** Buildings are drawn this many tiles square: their real size isn't in the save or the plan. */
+const BUILDING_SPAN = 3;
+const spanOf = (e: MapEntry) => (e.building ? BUILDING_SPAN : 1);
+
+/** Every object of a layout in its own color, with a legend. Zoom and drag like the other maps. */
+function FullMap({ entries, ignore, describe, label }: { entries: MapEntry[]; ignore: Set<string>; describe: (types: string[]) => string; label: (category: string) => string }) {
+  const { t } = useTranslation();
+  const ref = useRef<HTMLCanvasElement>(null);
+  const { view, viewport, handlers, zoomIn, zoomOut, reset } = usePanZoom();
+  const [hover, setHover] = useState<{ x: number; y: number; px: number; py: number; vw: number; vh: number } | null>(null);
+  const CELL = 8;
+  const shown = useMemo(
+    () => entries.filter((e) => !ignore.has(e.category)).sort((a, b) => FULL_ORDER.indexOf(a.category) - FULL_ORDER.indexOf(b.category)),
+    [entries, ignore],
+  );
+  const minX = Math.min(...shown.map((e) => e.x), 0);
+  const minY = Math.min(...shown.map((e) => e.y), 0);
+  const w = Math.max(...shown.map((e) => e.x + spanOf(e) - 1), 1) - minX + 1;
+  const h = Math.max(...shown.map((e) => e.y + spanOf(e) - 1), 1) - minY + 1;
+  const counts = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const e of shown) m.set(e.category, (m.get(e.category) ?? 0) + 1);
+    return FULL_ORDER.filter((c) => m.has(c)).map((c) => ({ c, n: m.get(c)! }));
+  }, [shown]);
+
+  useEffect(() => {
+    const ctx = ref.current?.getContext('2d');
+    if (!ctx) return;
+    ctx.clearRect(0, 0, w * CELL, h * CELL);
+    // A faint grid so tiles can be counted when zoomed in.
+    ctx.fillStyle = 'rgba(91, 43, 21, 0.06)';
+    for (let x = 0; x < w; x += 2) ctx.fillRect(x * CELL, 0, CELL, h * CELL);
+    for (const e of shown) {
+      ctx.globalAlpha = e.category === 'grass' ? 0.5 : 1;
+      ctx.fillStyle = FULL_COLORS[e.category];
+      const size = spanOf(e) * CELL - 1;
+      ctx.fillRect((e.x - minX) * CELL, (e.y - minY) * CELL, size, size);
+    }
+    ctx.globalAlpha = 1;
+  }, [shown, w, h, minX, minY]);
+
+  const onMove = (e: MouseEvent<HTMLCanvasElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = Math.floor(((e.clientX - rect.left) / rect.width) * w) + minX;
+    const y = Math.floor(((e.clientY - rect.top) / rect.height) * h) + minY;
+    const box = viewport.current?.getBoundingClientRect();
+    setHover({ x, y, px: e.clientX - (box?.left ?? 0), py: e.clientY - (box?.top ?? 0), vw: box?.width ?? 0, vh: box?.height ?? 0 });
+  };
+  // Ground under everything (grass) is left out of the tooltip.
+  const here = hover
+    ? shown.filter((e) => e.category !== 'grass' && hover.x >= e.x && hover.x < e.x + spanOf(e) && hover.y >= e.y && hover.y < e.y + spanOf(e))
+    : [];
+
+  return (
+    <div className="planner-full">
+      <div className="map-frame panel plan-frame">
+        <div className="map-zoom">
+          <button className="button" onClick={zoomIn} aria-label={t('map.zoomIn')}>
+            +
+          </button>
+          <button className="button" onClick={zoomOut} aria-label={t('map.zoomOut')}>
+            −
+          </button>
+          {view.zoom > 1 && (
+            <button className="button" onClick={reset}>
+              {t('map.zoomReset')}
+            </button>
+          )}
+        </div>
+        <div ref={viewport} className={view.zoom > 1 ? 'map-viewport map-viewport--zoomed' : 'map-viewport'} style={{ aspectRatio: `${w} / ${h}` }} {...handlers}>
+          <div className="map-canvas" style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.zoom})` }}>
+            <canvas ref={ref} className="plan-map" width={w * CELL} height={h * CELL} onMouseMove={onMove} onMouseLeave={() => setHover(null)} />
+          </div>
+          {hover && here.length > 0 && (
+            <span className="plan-tip box" style={tipPosition(hover)}>
+              <strong>
+                ({hover.x}, {hover.y})
+              </strong>
+              {here.map((e, i) => (
+                <span key={i}>
+                  {label(e.category)}: {describe(e.names)}
+                </span>
+              ))}
+            </span>
+          )}
+        </div>
+      </div>
+      <ul style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 16px', listStyle: 'none', padding: 0, margin: '8px 0' }}>
+        {counts.map(({ c, n }) => (
+          <li key={c} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ display: 'inline-block', width: 12, height: 12, borderRadius: 2, background: FULL_COLORS[c] }} />
+            {label(c)} · {n}
+          </li>
+        ))}
+      </ul>
+      <p className="cc-summary__hint">{t('planner.buildingsApprox')}</p>
+    </div>
+  );
+}
+
 function SlotView({ slot, saveData, stored, setStored, options, setOptions }: {
   slot: (typeof SLOTS)[number];
   saveData: SaveData;
@@ -154,6 +271,7 @@ function SlotView({ slot, saveData, stored, setStored, options, setOptions }: {
   const [input, setInput] = useState(stored?.link ?? '');
   const [status, setStatus] = useState<'idle' | 'loading' | 'needsCopy' | 'error'>('idle');
   const [pasted, setPasted] = useState('');
+  const [view, setView] = useState<ViewId>('compare');
   const id = planId(input);
 
   const keep = (plan: PlannerPlan, link: string) => {
@@ -194,6 +312,12 @@ function SlotView({ slot, saveData, stored, setStored, options, setOptions }: {
     () => (stored ? comparePlan(stored.plan, saveData.layouts[slot.location], { ignore: new Set(options.ignore), anyCrop: options.anyCrop }) : null),
     [stored, saveData, slot.location, options.ignore, options.anyCrop],
   );
+  const planMap = useMemo(() => (stored ? planEntries(stored.plan) : []), [stored]);
+  const farmMap = useMemo(() => farmEntries(saveData.layouts[slot.location]), [saveData, slot.location]);
+  const ignoreSet = useMemo(() => new Set<string>(options.ignore), [options.ignore]);
+  const categoryLabel = (c: string) => t(`planner.cat.${c}`);
+  // Without a loaded plan only the farm can be shown.
+  const shownView: ViewId = view !== 'farm' && !result ? 'farm' : view;
   const toggleIgnore = (c: Category) => setOptions({ ...options, ignore: options.ignore.includes(c) ? options.ignore.filter((x) => x !== c) : [...options.ignore, c] });
   const missing = result?.types.filter((r) => r.inPlace < r.planned) ?? [];
   const done = result?.types.filter((r) => r.inPlace >= r.planned) ?? [];
@@ -236,35 +360,57 @@ function SlotView({ slot, saveData, stored, setStored, options, setOptions }: {
 
       {!stored && status === 'idle' && <p className="cc-summary__hint">{t('planner.empty')}</p>}
 
-      {result && (
-        <>
-          <div className="planner-options">
-            <span className="tab-group__label">{t('planner.ignore')}</span>
-            {CATEGORIES.map((c) => (
-              <label key={c} className="cc__filter">
-                <input type="checkbox" checked={options.ignore.includes(c)} onChange={() => toggleIgnore(c)} />
-                {t(`planner.cat.${c}`)}
-              </label>
-            ))}
-            <label className="cc__filter">
-              <input type="checkbox" checked={options.anyCrop} onChange={(e) => setOptions({ ...options, anyCrop: e.target.checked })} />
-              {t('planner.anyCrop')}
-            </label>
-          </div>
-          <div className="planner-options">
-            <span className="tab-group__label">{t('planner.show')}</span>
-            {(['all', 'missing', 'done'] as const).map((s) => (
-              <button key={s} className={options.show === s ? 'button button--primary' : 'button'} onClick={() => setOptions({ ...options, show: s })}>
-                {t(`planner.showOpt.${s}`)}
-              </button>
-            ))}
-          </div>
+      <div className="planner-options">
+        <span className="tab-group__label">{t('planner.view')}</span>
+        {VIEWS.map((v) => (
+          <button key={v} className={shownView === v ? 'button button--primary' : 'button'} disabled={v !== 'farm' && !result} onClick={() => setView(v)}>
+            {t(`planner.viewOpt.${v}`)}
+          </button>
+        ))}
+      </div>
 
-          <p className="planner-summary">{t('planner.summary', { done: result.done, total: result.total, pct: result.total ? Math.round((result.done / result.total) * 100) : 0 })}</p>
-          <Progress value={result.done} max={result.total || 1} />
+      <div className="planner-options">
+        <span className="tab-group__label">{t('planner.ignore')}</span>
+        {CATEGORIES.map((c) => (
+          <label key={c} className="cc__filter">
+            <input type="checkbox" checked={options.ignore.includes(c)} onChange={() => toggleIgnore(c)} />
+            {t(`planner.cat.${c}`)}
+          </label>
+        ))}
+        {shownView === 'compare' && (
+          <label className="cc__filter">
+            <input type="checkbox" checked={options.anyCrop} onChange={(e) => setOptions({ ...options, anyCrop: e.target.checked })} />
+            {t('planner.anyCrop')}
+          </label>
+        )}
+      </div>
+
+      {shownView === 'farm' && <FullMap entries={farmMap} ignore={ignoreSet} describe={describe} label={categoryLabel} />}
+
+      {result && shownView !== 'farm' && (
+        <>
+          {shownView === 'compare' && (
+            <>
+              <div className="planner-options">
+                <span className="tab-group__label">{t('planner.show')}</span>
+                {(['all', 'missing', 'done'] as const).map((s) => (
+                  <button key={s} className={options.show === s ? 'button button--primary' : 'button'} onClick={() => setOptions({ ...options, show: s })}>
+                    {t(`planner.showOpt.${s}`)}
+                  </button>
+                ))}
+              </div>
+
+              <p className="planner-summary">{t('planner.summary', { done: result.done, total: result.total, pct: result.total ? Math.round((result.done / result.total) * 100) : 0 })}</p>
+              <Progress value={result.done} max={result.total || 1} />
+            </>
+          )}
 
           <div className="planner-result">
-            <PlanMap result={result} show={options.show} describe={describe} />
+            {shownView === 'compare' ? (
+              <PlanMap result={result} show={options.show} describe={describe} />
+            ) : (
+              <FullMap entries={planMap} ignore={ignoreSet} describe={describe} label={categoryLabel} />
+            )}
             <div>
               <h4>{t('planner.missing', { count: missing.length })}</h4>
               <ul className="shop__items dashed-list planner-list">
