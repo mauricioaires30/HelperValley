@@ -1266,6 +1266,9 @@
       "farm": "Farm",
       "island": "Island (island farm)"
     },
+    "view": "View",
+    "viewOpt": { "compare": "Compare with plan", "plan": "View plan", "farm": "View farm now" },
+    "buildingsApprox": "Buildings are drawn at an approximate size.",
     "linkPlaceholder": "Plan link: https://stardew.info/planner/...",
     "load": "Load plan",
     "remove": "Remove",
@@ -1275,6 +1278,7 @@
     "buildings": "Buildings ({{count}})",
     "count": "{{have}}/{{planned}}",
     "names": {
+      "tilled-soil": "Tilled soil",
       "house": "Farmhouse",
       "greenhouse-repaired": "Greenhouse",
       "grass": "Grass",
@@ -1294,6 +1298,8 @@
     "bookmarkHint": "Drag to your bookmarks and click it on a stardew.info plan.",
     "ignore": "Ignore:",
     "cat": {
+      "soil": "Tilled soil",
+      "buildings": "Buildings",
       "crops": "Crops",
       "fences": "Fences",
       "grass": "Grass",
