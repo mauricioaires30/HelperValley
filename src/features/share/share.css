@@ -193,20 +193,46 @@
   box-shadow: 0 0 0 2px rgb(58 143 42 / 0.3);
 }
 
-/* Who's on a tab: small squares in each person's color, wrapping into a little grid. */
+/*
+ * Who's on a tab: little ribbons in each person's color sticking out of the top of the button, like
+ * bookmarks in a book, in the order people arrived. They sit on top of the button, so they never make
+ * it wider. Hovering one shows the nickname.
+ */
+.side-tab,
+.save-side__link,
+.calendar__nav .button,
+.shops__tab {
+  position: relative;
+}
+
 .presence-dots {
-  display: inline-grid;
-  grid-template-columns: repeat(4, 8px);
+  position: absolute;
+  /* Entirely above the edge, so it never covers the label. */
+  top: -11px;
+  left: 10px;
+  z-index: 2;
+  display: flex;
   gap: 2px;
-  margin-left: auto;
-  padding-left: 4px;
-  align-content: center;
+  pointer-events: none;
+  /* On the group: the ribbon shape would cut a shadow on each one. */
+  filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.55));
 }
 
 .presence-dot {
+  display: block;
   width: 8px;
-  height: 8px;
-  border: 1px solid rgb(0 0 0 / 0.55);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.25);
+  height: 12px;
+  pointer-events: auto;
   cursor: help;
+  /* A bookmark ribbon: square top, notched bottom. */
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 72%, 0 100%);
+  box-shadow: inset 0 2px 0 rgb(255 255 255 / 0.35), inset 0 -3px 0 rgb(0 0 0 / 0.25);
+}
+
+/* In the room list the color is a plain square next to the name. */
+.share__person .presence-dot {
+  width: 10px;
+  height: 10px;
+  clip-path: none;
+  border: 1px solid rgb(0 0 0 / 0.55);
 }

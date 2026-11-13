@@ -34,7 +34,7 @@ export interface Ban {
 export const MAX_GUESTS = 7;
 export const HOST_COLOR = '#ffffff';
 /** Farmhand colors, all easy to tell apart and readable on the brown menus. */
-export const GUEST_COLORS = ['#e5484d', '#3e8ef7', '#30a46c', '#f5c518', '#9b5de5', '#f76b15', '#12a5b8', '#e93d82'];
+export const GUEST_COLORS = ['#e5484d', '#3e8ef7', '#30a46c', '#f5c518', '#9b5de5', '#f76b15', '#12a5b8', '#ff9ec7'];
 
 export type Checks = { day: string | null; checked: Record<string, true> };
 

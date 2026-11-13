@@ -47,7 +47,7 @@ function Weather({ kind }: { kind: 'sunny' | 'rainy' }) {
 }
 
 /** Where and when a fish bites, one labeled row each, plus whether it bites at `now` (on the map). */
-export function FishWhere({ id, now }: { id: string; now?: FishMoment }) {
+export function FishWhere({ id, now, hideWhere = false }: { id: string; now?: FishMoment; /** On the map the pin already shows where. */ hideWhere?: boolean }) {
   const { t } = useTranslation();
   const place = useLocationName();
   const fish = gameData().fish[id];
@@ -99,6 +99,7 @@ export function FishWhere({ id, now }: { id: string; now?: FishMoment }) {
           )}
         </span>
       </span>
+      {!hideWhere && (
       <span className="fish-where__row">
         <span className="fish-where__label">{t('fish.cond.where')}</span>
         <span>
@@ -109,6 +110,7 @@ export function FishWhere({ id, now }: { id: string; now?: FishMoment }) {
             : t(`fish.special.${id}`, { defaultValue: t('fish.special.default') })}
         </span>
       </span>
+      )}
       {fish.level ? (
         <span className="fish-where__row">
           <span className="fish-where__label">{t('fish.cond.level')}</span>
