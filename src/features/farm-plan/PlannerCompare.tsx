@@ -6,7 +6,7 @@ import { useShareStore } from '@/features/share/room';
 import type { SaveData } from '@/save/model';
 import { Progress } from '@/ui';
 import { usePanZoom } from '@/ui/usePanZoom';
-import { loadSheet, sheetImage, spriteBox, spriteFor, TILE } from './mapSprites';
+import { loadSheet, sheetImage, spriteBox, spriteFor, TILE, type SpriteRef } from './mapSprites';
 import { CATEGORIES, comparePlan, farmEntries, fetchPlan, parsePlanJson, planApiUrl, planEntries, planId, plannerName, type Category, type Comparison, type MapEntry, type PlannerPlan } from './planner';
 import '@/features/map/map.css';
 
