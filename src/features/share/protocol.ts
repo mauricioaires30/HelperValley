@@ -82,8 +82,11 @@ export type ClientMessage =
 
 /** Cursors go out at most this often (12 per second). */
 export const CURSOR_MS = 1000 / 12;
-/** A cursor that hasn't moved for this long is hidden. */
-export const CURSOR_IDLE_MS = 6000;
+/**
+ * A cursor stays where it was while its owner is on the page, even with the mouse still; it goes away when
+ * they leave the window or the page. This only clears one that was never told to go (a closed laptop).
+ */
+export const CURSOR_IDLE_MS = 10 * 60_000;
 
 const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 
