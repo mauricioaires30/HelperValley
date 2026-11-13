@@ -391,8 +391,8 @@ function readLayouts(locations: XmlValue[]): Record<string, LayoutState> {
     for (const [key, v] of dictEntries(location.terrainFeatures)) {
       const tf = node(v);
       const type = xsiType(tf);
-      if (type === 'Tree') tiles.push([...at(key), `tree:${text(tf?.treeType) ?? ''}`]);
-      else if (type === 'FruitTree') tiles.push([...at(key), `fruit:${text(tf?.treeId) ?? ''}`]);
+      if (type === 'Tree') tiles.push([...at(key), `tree:${text(tf?.treeType) ?? ''}:${num(tf?.growthStage, 5)}`]);
+      else if (type === 'FruitTree') tiles.push([...at(key), `fruit:${text(tf?.treeId) ?? ''}:${num(tf?.growthStage, 4)}`]);
       else if (type === 'Grass') tiles.push([...at(key), 'grass']);
       else if (type === 'Flooring') tiles.push([...at(key), `floor:${text(tf?.whichFloor) ?? ''}`]);
       else if (type === 'HoeDirt') {

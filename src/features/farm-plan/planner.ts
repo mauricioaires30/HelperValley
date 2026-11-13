@@ -279,9 +279,21 @@ export interface MapEntry {
   /** A Category, or 'soil' (tilled ground) / 'buildings'. */
   category: string;
   building?: boolean;
-  /** Which picture of several to draw (the farmhouse's upgrade level). */
+  /** Which picture of several to draw: the farmhouse's upgrade level, or a tree's season (0 spring - 3 winter). */
   variant?: number;
+  /** How grown a tree is (0 seed - 5 full; fruit trees 0-4). Missing means full grown. */
+  stage?: number;
+  /** The planner gives a building's bottom row, the map draws from the top: see planBuildingsToTopLeft. */
+  bottomRow?: boolean;
 }
+
+/** What changes how things are drawn: the farmhouse's upgrade level and the season's trees. */
+export interface ArtContext {
+  houseLevel: number;
+  season: number;
+}
+
+const NO_ART: ArtContext = { houseLevel: 0, season: 0 };
 
 /** Category per name, looked up once per name (the lookup scans every item). */
 function categoryMemo() {
@@ -297,25 +309,31 @@ function categoryMemo() {
 }
 
 /** Everything in a planner layout, as it is drawn (no comparison with the save). */
-export function planEntries(plan: PlannerPlan, offset: [number, number] = [0, 0], houseLevel = 0): MapEntry[] {
+export function planEntries(plan: PlannerPlan, offset: [number, number] = [0, 0], art: ArtContext = NO_ART): MapEntry[] {
   const category = categoryMemo();
   const out: MapEntry[] = [];
   for (const t of [...plan.tiles, ...plan.flooring]) {
     const type = canon(t.type);
-    out.push({ x: Math.round(t.x / 16) + offset[0], y: Math.round(t.y / 16) + offset[1], names: [type], category: category(type) });
+    const kind = category(type);
+    out.push({ x: Math.round(t.x / 16) + offset[0], y: Math.round(t.y / 16) + offset[1], names: [type], category: kind, variant: kind === 'trees' ? art.season : undefined });
   }
-  for (const b of plan.buildings) out.push({ x: Math.round(b.x / 16) + offset[0], y: Math.round(b.y / 16) + offset[1], names: [b.type], category: 'buildings', building: true, variant: houseLevel });
+  for (const b of plan.buildings) out.push({ x: Math.round(b.x / 16) + offset[0], y: Math.round(b.y / 16) + offset[1], names: [b.type], category: 'buildings', building: true, variant: art.houseLevel, bottomRow: true });
   return out;
 }
 
 /** The planned things that aren't there yet, where the plan puts them in the save (shown faded on the farm). */
-export function missingEntries(result: Comparison): MapEntry[] {
+export function missingEntries(result: Comparison, art: ArtContext = NO_ART): MapEntry[] {
   const category = categoryMemo();
-  return result.cells.filter((c) => !c.done).map((c) => ({ x: c.x, y: c.y, names: [c.type], category: category(c.type) }));
+  return result.cells
+    .filter((c) => !c.done)
+    .map((c) => {
+      const kind = category(c.type);
+      return { x: c.x, y: c.y, names: [c.type], category: kind, variant: kind === 'trees' ? art.season : undefined };
+    });
 }
 
 /** Everything in the save's layout, as it is drawn. */
-export function farmEntries(layout: LayoutState | undefined, houseLevel = 0): MapEntry[] {
+export function farmEntries(layout: LayoutState | undefined, art: ArtContext = NO_ART): MapEntry[] {
   const category = categoryMemo();
   const out: MapEntry[] = [];
   for (const [x, y, key] of layout?.tiles ?? []) {
@@ -324,8 +342,12 @@ export function farmEntries(layout: LayoutState | undefined, houseLevel = 0): Ma
       continue;
     }
     const names = saveKeys(key);
-    out.push({ x, y, names: names.length ? names : [key], category: names.length ? category(names[0]) : 'machines' });
+    const kind = names.length ? category(names[0]) : 'machines';
+    // Trees carry how grown they are: "tree:1:3", "fruit:633:4".
+    const [type, , grown] = key.split(':');
+    const stage = (type === 'tree' || type === 'fruit') && grown !== undefined && grown !== '' ? Number(grown) : undefined;
+    out.push({ x, y, names: names.length ? names : [key], category: kind, variant: kind === 'trees' ? art.season : undefined, stage: Number.isFinite(stage) ? stage : undefined });
   }
-  for (const [x, y, type] of layout?.buildings ?? []) out.push({ x, y, names: [type], category: 'buildings', building: true, variant: houseLevel });
+  for (const [x, y, type] of layout?.buildings ?? []) out.push({ x, y, names: [type], category: 'buildings', building: true, variant: art.houseLevel });
   return out;
 }

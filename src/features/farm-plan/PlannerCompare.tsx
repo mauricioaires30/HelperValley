@@ -6,8 +6,8 @@ import { useShareStore } from '@/features/share/room';
 import type { SaveData } from '@/save/model';
 import { Progress } from '@/ui';
 import { usePanZoom } from '@/ui/usePanZoom';
-import { backgroundFor, BUILDING_SPAN, loadSheet, mapBounds, minTiles, sheetImage, spriteBox, spriteFor, TILE, type Bounds, type SpriteRef } from './mapSprites';
-import { CATEGORIES, comparePlan, farmEntries, fetchPlan, missingEntries, parsePlanJson, planApiUrl, planEntries, planId, plannerName, type Category, type Comparison, type MapEntry, type PlannerPlan } from './planner';
+import { backgroundFor, BUILDING_SPAN, loadSheet, mapBounds, minTiles, planBuildingsToTopLeft, sheetImage, spriteBox, spriteFor, TILE, type Bounds, type SpriteRef } from './mapSprites';
+import { CATEGORIES, comparePlan, farmEntries, fetchPlan, missingEntries, parsePlanJson, planApiUrl, planEntries, planId, plannerName, type ArtContext, type Category, type Comparison, type MapEntry, type PlannerPlan } from './planner';
 import '@/features/map/map.css';
 
 /** The two maps a plan can be for: the farm and the island farm. */
@@ -245,7 +245,12 @@ function FullMap({
           ctx.fillStyle = WATER_COLOR;
           ctx.fillRect(p.x - ox + p.ref.water[0], p.y - oy + p.ref.water[1], p.ref.water[2], p.ref.water[3]);
         }
-        ctx.drawImage(image, p.ref.x, p.ref.y, p.ref.w, p.ref.h, p.x - ox, p.y - oy, p.w, p.h);
+        if (p.ref.layers) {
+          // A picture made of pieces (a full tree's trunk and crown).
+          for (const [sx, sy, sw, sh, dx, dy] of p.ref.layers) ctx.drawImage(image, sx, sy, sw, sh, p.entry.x * TILE - ox + dx, p.entry.y * TILE - oy + dy, sw, sh);
+        } else {
+          ctx.drawImage(image, p.ref.x, p.ref.y, p.ref.w, p.ref.h, p.x - ox, p.y - oy, p.w, p.h);
+        }
       } else if (!(ground && p.entry.category === 'grass')) {
         // No art (tilled soil, things the game files here don't have), or the sheet isn't in yet: a colored square on its tiles.
         ctx.globalAlpha = (p.entry.category === 'grass' ? 0.5 : 1) * alpha;
@@ -400,9 +405,11 @@ function SlotView({ slot, saveData, stored, setStored, options, setOptions, read
   );
   // The plan is lined up with the farm (the planner's map may be shifted a few tiles), so both sit on the same ground.
   const houseLevel = saveData.players[0]?.houseUpgradeLevel ?? 0;
-  const planMap = useMemo(() => (stored ? planEntries(stored.plan, result?.offset, houseLevel) : []), [stored, result, houseLevel]);
-  const farmMap = useMemo(() => farmEntries(saveData.layouts[slot.location], houseLevel), [saveData, slot.location, houseLevel]);
-  const missingMap = useMemo(() => (result ? missingEntries(result) : []), [result]);
+  const season = Math.max(0, ['spring', 'summer', 'fall', 'winter'].indexOf(saveData.date.season));
+  const art = useMemo<ArtContext>(() => ({ houseLevel, season }), [houseLevel, season]);
+  const planMap = useMemo(() => (stored ? planBuildingsToTopLeft(planEntries(stored.plan, result?.offset, art)) : []), [stored, result, art]);
+  const farmMap = useMemo(() => farmEntries(saveData.layouts[slot.location], art), [saveData, slot.location, art]);
+  const missingMap = useMemo(() => (result ? missingEntries(result, art) : []), [result, art]);
   // One window for every view, so the map keeps its size when the view changes.
   const bounds = useMemo(
     () => mapBounds([...farmMap, ...planMap, ...missingMap], result?.cells.map((c) => [c.x, c.y] as [number, number]) ?? [], minTiles(slot.id, saveData.farmType)),

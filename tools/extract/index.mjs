@@ -88,6 +88,10 @@ console.log(`Wrote ${Object.keys(datasets).length} datasets to public/data`);
 
 // Buildings the planner draws that no shop sells (the greenhouse, the cabin skins, the pet bowl variants).
 for (const name of ['Greenhouse', 'Log Cabin', 'Plank Cabin', 'Rustic Cabin', 'Beach Cabin', 'Trailer Cabin', 'Neighbor Cabin', 'Hay Pet Bowl', 'Stone Pet Bowl']) textures.add(`Buildings/${name}`);
+// Trees the planner draws (there is no summer pine: the game uses the spring one).
+for (const n of [1, 2, 3, 8]) for (const season of ['spring', 'summer', 'fall', 'winter']) textures.add(`TerrainFeatures/tree${n}_${season}`);
+for (const name of ['tree_palm', 'tree_palm2', 'mushroom_tree']) textures.add(`TerrainFeatures/${name}`);
+textures.add('TileSheets/fruitTrees');
 
 await rm(SPRITES_OUT, { recursive: true, force: true });
 const { written, missing, sizes } = await exportTextures(gameDir, textures);
