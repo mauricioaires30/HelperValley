@@ -185,8 +185,9 @@ export interface Bounds {
   h: number;
 }
 
-/** The farm map is 80x65 tiles whatever the farm type; the island farm's size comes from what is on it. */
-export const MIN_TILES: Record<'farm' | 'island', [number, number]> = { farm: [80, 65], island: [0, 0] };
+/** Size in tiles of each farm map (by the save's whichFarm), and of the island farm. */
+const FARM_TILES: Array<[number, number]> = [[80, 65], [80, 65], [80, 65], [80, 65], [80, 65], [80, 80], [110, 110], [100, 75]];
+export const minTiles = (slot: 'farm' | 'island', farmType: number): [number, number] => (slot === 'island' ? [110, 110] : (FARM_TILES[farmType] ?? [80, 65]));
 
 /**
  * The tiles every view of a slot covers, so switching views never changes the map's size: the whole map
@@ -220,7 +221,7 @@ export function mapBounds(entries: MapEntry[], points: Array<[number, number]>, 
 }
 
 /** Farm type (the save's whichFarm) → the game's map file. */
-const FARM_MAP_FILES = ['Farm', 'Farm_Fishing', 'Farm_Foraging', 'Farm_Mining', 'Farm_Combat', 'Farm_FourCorners', 'Farm_Island', 'Farm_Meadowlands'];
+const FARM_MAP_FILES = ['Farm', 'Farm_Fishing', 'Farm_Foraging', 'Farm_Mining', 'Farm_Combat', 'Farm_FourCorners', 'Farm_Island', 'Farm_Ranching'];
 
 /**
  * The sheet name of the game's own map picture (ground, water, cliffs) for a slot. tools/extract draws these

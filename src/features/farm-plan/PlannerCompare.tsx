@@ -6,7 +6,7 @@ import { useShareStore } from '@/features/share/room';
 import type { SaveData } from '@/save/model';
 import { Progress } from '@/ui';
 import { usePanZoom } from '@/ui/usePanZoom';
-import { backgroundFor, BUILDING_SPAN, loadSheet, mapBounds, MIN_TILES, sheetImage, spriteBox, spriteFor, TILE, type Bounds, type SpriteRef } from './mapSprites';
+import { backgroundFor, BUILDING_SPAN, loadSheet, mapBounds, minTiles, sheetImage, spriteBox, spriteFor, TILE, type Bounds, type SpriteRef } from './mapSprites';
 import { CATEGORIES, comparePlan, farmEntries, fetchPlan, missingEntries, parsePlanJson, planApiUrl, planEntries, planId, plannerName, type Category, type Comparison, type MapEntry, type PlannerPlan } from './planner';
 import '@/features/map/map.css';
 
@@ -399,7 +399,7 @@ function SlotView({ slot, saveData, stored, setStored, options, setOptions, read
   const missingMap = useMemo(() => (result ? missingEntries(result) : []), [result]);
   // One window for every view, so the map keeps its size when the view changes.
   const bounds = useMemo(
-    () => mapBounds([...farmMap, ...planMap, ...missingMap], result?.cells.map((c) => [c.x, c.y] as [number, number]) ?? [], MIN_TILES[slot.id]),
+    () => mapBounds([...farmMap, ...planMap, ...missingMap], result?.cells.map((c) => [c.x, c.y] as [number, number]) ?? [], minTiles(slot.id, saveData.farmType)),
     [farmMap, planMap, missingMap, result, slot.id],
   );
   const background = backgroundFor(slot.id, saveData.farmType);

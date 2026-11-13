@@ -6,8 +6,18 @@ import { parseTbin } from './npcPaths.mjs';
 import { encodePng, quietly, renderMap } from './placePictures.mjs';
 import { SPRITES_OUT } from './paths.mjs';
 
-/** One map per farm type (Game1.whichFarm 0-7) and the island farm. Files a game version doesn't have are skipped. */
-const MAPS = ['Farm', 'Farm_Fishing', 'Farm_Foraging', 'Farm_Mining', 'Farm_Combat', 'Farm_FourCorners', 'Farm_Island', 'Farm_Meadowlands', 'IslandWest'];
+/** The game's map file → the picture's name. One map per farm type (Game1.whichFarm 0-7) and the island farm. Files a game version doesn't have are skipped. */
+const MAPS = [
+  ['Farm', 'Farm'],
+  ['Farm_Fishing', 'Farm_Fishing'],
+  ['Farm_Foraging', 'Farm_Foraging'],
+  ['Farm_Mining', 'Farm_Mining'],
+  ['Farm_Combat', 'Farm_Combat'],
+  ['Farm_FourCorners', 'Farm_FourCorners'],
+  ['Farm_Island', 'Farm_Island'],
+  ['Farm_Ranching', 'Farm_Ranching'],
+  ['Island_W', 'IslandWest'],
+];
 
 /**
  * Draws each farm map's ground, water and cliffs to public/sprites/FarmMaps/<name>.png, for the planner's
@@ -18,8 +28,8 @@ export async function buildFarmMaps(gameDir) {
   await rm(out, { recursive: true, force: true });
   await mkdir(out, { recursive: true });
   const written = [];
-  for (const name of MAPS) {
-    const file = path.join(gameDir, 'Content', 'Maps', `${name}.xnb`);
+  for (const [source, name] of MAPS) {
+    const file = path.join(gameDir, 'Content', 'Maps', `${source}.xnb`);
     if (!existsSync(file)) continue;
     const result = await quietly(async () => unpackToContent(await readFile(file)));
     const map = parseTbin(Buffer.from(result.content instanceof Blob ? await result.content.arrayBuffer() : result.content));
