@@ -6,8 +6,8 @@ import { useShareStore } from '@/features/share/room';
 import type { SaveData } from '@/save/model';
 import { Progress } from '@/ui';
 import { usePanZoom } from '@/ui/usePanZoom';
-import { loadSheet, sheetImage, spriteBox, spriteFor, TILE, type SpriteRef } from './mapSprites';
-import { CATEGORIES, comparePlan, farmEntries, fetchPlan, parsePlanJson, planApiUrl, planEntries, planId, plannerName, type Category, type Comparison, type MapEntry, type PlannerPlan } from './planner';
+import { backgroundFor, BUILDING_SPAN, loadSheet, mapBounds, MIN_TILES, sheetImage, spriteBox, spriteFor, TILE, type Bounds, type SpriteRef } from './mapSprites';
+import { CATEGORIES, comparePlan, farmEntries, fetchPlan, missingEntries, parsePlanJson, planApiUrl, planEntries, planId, plannerName, type Category, type Comparison, type MapEntry, type PlannerPlan } from './planner';
 import '@/features/map/map.css';
 
 /** The two maps a plan can be for: the farm and the island farm. */
@@ -58,29 +58,14 @@ const fromShared = (p: SharedPlan | undefined): Stored | null => {
   return p && plan ? { link: p.link, plan } : null;
 };
 
-/** Which slot a plan belongs to, from its map type. */
-const slotOf = (plan: PlannerPlan): SlotId => (plan.options?.layout === 'ginger_island' ? 'island' : 'farm');
-
-/** Bookmark to click on a stardew.info plan page: it reads the plan there and sends it to this site. */
-function bookmarklet() {
-  const target = `${window.location.origin}${import.meta.env.BASE_URL}#/farm/planner`;
-  const code = `(async()=>{const id=location.pathname.split('/').filter(Boolean).pop();const d=await (await fetch('/api/'+id)).text();const w=window.open(${JSON.stringify(target)});let n=0;const t=setInterval(()=>{w&&w.postMessage({type:'hv-plan',link:location.href,data:d},'*');if(++n>30)clearInterval(t)},500)})()`;
-  return `javascript:${encodeURIComponent(code)}`;
-}
-
 /** The planned tiles over the map: green = done, red = to do, dots = your things outside the plan. Zoom and drag like the villager map. */
-function PlanMap({ result, show, describe }: { result: Comparison; show: Options['show']; describe: (types: string[]) => string }) {
+function PlanMap({ result, show, describe, bounds }: { result: Comparison; show: Options['show']; describe: (types: string[]) => string; bounds: Bounds }) {
   const { t } = useTranslation();
   const ref = useRef<HTMLCanvasElement>(null);
   const { view, viewport, handlers, zoomIn, zoomOut, reset } = usePanZoom();
   const [hover, setHover] = useState<{ x: number; y: number; px: number; py: number; vw: number; vh: number } | null>(null);
   const CELL = 8;
-  const xs = [...result.cells.map((c) => c.x), ...result.extra.map((c) => c[0])];
-  const ys = [...result.cells.map((c) => c.y), ...result.extra.map((c) => c[1])];
-  const minX = Math.min(...xs, 0);
-  const minY = Math.min(...ys, 0);
-  const w = Math.max(...xs, 1) - minX + 1;
-  const h = Math.max(...ys, 1) - minY + 1;
+  const { minX, minY, w, h } = bounds;
   const cellAt = useMemo(() => new Map(result.cells.map((c) => [`${c.x},${c.y}`, c])), [result]);
   const extraAt = useMemo(() => new Map(result.extra.map((c) => [`${c[0]},${c[1]}`, c[2]])), [result]);
 
@@ -166,8 +151,7 @@ const FULL_COLORS: Record<string, string> = {
 };
 /** Drawn in this order, so buildings and machines sit on top of the ground. */
 const FULL_ORDER = Object.keys(FULL_COLORS);
-/** A building without a picture is drawn as a square this many tiles wide. */
-const BUILDING_SPAN = 3;
+const MISSING_COLOR = '#e0283c';
 
 /** One entry placed on the map: its art (if any), where it is drawn, and the tiles it covers. */
 interface Placed {
@@ -180,75 +164,99 @@ interface Placed {
   foot: [number, number];
 }
 
-/** Every object of a layout drawn with the game's own art, with a legend. Zoom and drag like the other maps. */
-function FullMap({ entries, ignore, describe, label }: { entries: MapEntry[]; ignore: Set<string>; describe: (types: string[]) => string; label: (category: string) => string }) {
+/** Where an entry is drawn: its art when there is some, else a square on its tiles. */
+function place(entry: MapEntry): Placed {
+  const sprite = spriteFor(entry);
+  if (sprite) return { entry, ref: sprite, ...spriteBox(entry, sprite), foot: sprite.foot };
+  const span = entry.building ? BUILDING_SPAN : 1;
+  return { entry, ref: null, x: entry.x * TILE, y: entry.y * TILE, w: span * TILE - 1, h: span * TILE - 1, foot: [span, span] };
+}
+
+const byLayer = (a: MapEntry, b: MapEntry) => FULL_ORDER.indexOf(a.category) - FULL_ORDER.indexOf(b.category) || a.y - b.y || a.x - b.x;
+
+/** Every object of a layout drawn with the game's own art, over the game's own ground when it is there. Zoom and drag like the other maps. */
+function FullMap({
+  entries,
+  ghosts,
+  ignore,
+  bounds,
+  background,
+  describe,
+  label,
+}: {
+  entries: MapEntry[];
+  /** Planned things that are still missing: drawn faded, in place, with a red frame. */
+  ghosts?: MapEntry[];
+  ignore: Set<string>;
+  bounds: Bounds;
+  /** The game's map picture (ground, water, cliffs), when tools/extract has made it. */
+  background?: string;
+  describe: (types: string[]) => string;
+  label: (category: string) => string;
+}) {
   const { t } = useTranslation();
   const ref = useRef<HTMLCanvasElement>(null);
   const { view, viewport, handlers, zoomIn, zoomOut, reset } = usePanZoom();
   const [hover, setHover] = useState<{ x: number; y: number; px: number; py: number; vw: number; vh: number } | null>(null);
   const [loaded, setLoaded] = useState(0);
-  const placed = useMemo<Placed[]>(
-    () =>
-      entries
-        .filter((e) => !ignore.has(e.category))
-        .sort((a, b) => FULL_ORDER.indexOf(a.category) - FULL_ORDER.indexOf(b.category) || a.y - b.y || a.x - b.x)
-        .map((entry) => {
-          const sprite = spriteFor(entry);
-          if (sprite) {
-            const box = spriteBox(entry, sprite);
-            return { entry, ref: sprite, ...box, foot: sprite.foot };
-          }
-          const span = entry.building ? BUILDING_SPAN : 1;
-          return { entry, ref: null, x: entry.x * TILE, y: entry.y * TILE, w: span * TILE - 1, h: span * TILE - 1, foot: [span, span] as [number, number] };
-        }),
-    [entries, ignore],
-  );
-  // Tall sprites reach above their tile, so the map starts at the highest one.
-  const minX = Math.floor(Math.min(...placed.map((p) => p.x), 0) / TILE);
-  const minY = Math.floor(Math.min(...placed.map((p) => p.y), 0) / TILE);
-  const w = Math.max(Math.ceil(Math.max(...placed.map((p) => p.x + p.w), TILE) / TILE) - minX, 1);
-  const h = Math.max(Math.ceil(Math.max(...placed.map((p) => p.y + p.h), TILE) / TILE) - minY, 1);
+  const { minX, minY, w, h } = bounds;
+  const placed = useMemo(() => entries.filter((e) => !ignore.has(e.category)).sort(byLayer).map(place), [entries, ignore]);
+  const faded = useMemo(() => (ghosts ?? []).filter((e) => !ignore.has(e.category)).sort(byLayer).map(place), [ghosts, ignore]);
   const counts = useMemo(() => {
     const m = new Map<string, number>();
     for (const p of placed) m.set(p.entry.category, (m.get(p.entry.category) ?? 0) + 1);
     return FULL_ORDER.filter((c) => m.has(c)).map((c) => ({ c, n: m.get(c)! }));
   }, [placed]);
 
-  // Sprite sheets load once; the map redraws when they are in.
+  // Sprite sheets and the map picture load once; the map redraws when they are in.
   useEffect(() => {
     let alive = true;
-    const sheets = new Set(placed.flatMap((p) => (p.ref ? [p.ref.sheet] : [])));
+    const sheets = new Set([...placed, ...faded].flatMap((p) => (p.ref ? [p.ref.sheet] : [])));
+    if (background) sheets.add(background);
     void Promise.all([...sheets].map(loadSheet)).then(() => {
       if (alive) setLoaded((n) => n + 1);
     });
     return () => {
       alive = false;
     };
-  }, [placed]);
+  }, [placed, faded, background]);
 
   useEffect(() => {
     const ctx = ref.current?.getContext('2d');
     if (!ctx) return;
     ctx.imageSmoothingEnabled = false;
     ctx.clearRect(0, 0, w * TILE, h * TILE);
-    // A faint grid so tiles can be counted when zoomed in.
-    ctx.fillStyle = 'rgba(91, 43, 21, 0.06)';
-    for (let x = 0; x < w; x += 2) ctx.fillRect(x * TILE, 0, TILE, h * TILE);
     const ox = minX * TILE;
     const oy = minY * TILE;
-    for (const p of placed) {
+    const ground = background ? sheetImage(background) : undefined;
+    if (ground) {
+      ctx.drawImage(ground, -ox, -oy);
+    } else {
+      // No map picture: a faint grid so tiles can be counted when zoomed in.
+      ctx.fillStyle = 'rgba(91, 43, 21, 0.06)';
+      for (let x = 0; x < w; x += 2) ctx.fillRect(x * TILE, 0, TILE, h * TILE);
+    }
+    const draw = (p: Placed, alpha: number) => {
       const image = p.ref ? sheetImage(p.ref.sheet) : undefined;
       if (p.ref && image) {
+        ctx.globalAlpha = alpha;
         ctx.drawImage(image, p.ref.x, p.ref.y, p.ref.w, p.ref.h, p.x - ox, p.y - oy, p.w, p.h);
-      } else {
-        // No art (grass, tilled soil, things the game files here don't have), or the sheet isn't in yet: a colored square on its tiles.
-        ctx.globalAlpha = p.entry.category === 'grass' ? 0.5 : 1;
+      } else if (!(ground && p.entry.category === 'grass')) {
+        // No art (tilled soil, things the game files here don't have), or the sheet isn't in yet: a colored square on its tiles.
+        ctx.globalAlpha = (p.entry.category === 'grass' ? 0.5 : 1) * alpha;
         ctx.fillStyle = FULL_COLORS[p.entry.category];
         ctx.fillRect(p.entry.x * TILE - ox, p.entry.y * TILE - oy, p.foot[0] * TILE - 1, p.foot[1] * TILE - 1);
-        ctx.globalAlpha = 1;
       }
+      ctx.globalAlpha = 1;
+    };
+    for (const p of placed) draw(p, 1);
+    for (const p of faded) {
+      draw(p, 0.55);
+      ctx.strokeStyle = MISSING_COLOR;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(p.entry.x * TILE - ox + 0.5, p.entry.y * TILE - oy + 0.5, p.foot[0] * TILE - 1, p.foot[1] * TILE - 1);
     }
-  }, [placed, w, h, minX, minY, loaded]);
+  }, [placed, faded, background, w, h, minX, minY, loaded]);
 
   const onMove = (e: MouseEvent<HTMLCanvasElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -257,10 +265,10 @@ function FullMap({ entries, ignore, describe, label }: { entries: MapEntry[]; ig
     const box = viewport.current?.getBoundingClientRect();
     setHover({ x, y, px: e.clientX - (box?.left ?? 0), py: e.clientY - (box?.top ?? 0), vw: box?.width ?? 0, vh: box?.height ?? 0 });
   };
+  const covers = (p: Placed) => !!hover && hover.x >= p.entry.x && hover.x < p.entry.x + p.foot[0] && hover.y >= p.entry.y && hover.y < p.entry.y + p.foot[1];
   // Ground under everything (grass) is left out of the tooltip.
-  const here = hover
-    ? placed.filter((p) => p.entry.category !== 'grass' && hover.x >= p.entry.x && hover.x < p.entry.x + p.foot[0] && hover.y >= p.entry.y && hover.y < p.entry.y + p.foot[1])
-    : [];
+  const here = hover ? placed.filter((p) => p.entry.category !== 'grass' && covers(p)) : [];
+  const hereMissing = hover ? faded.filter(covers) : [];
 
   return (
     <div className="planner-full">
@@ -290,7 +298,7 @@ function FullMap({ entries, ignore, describe, label }: { entries: MapEntry[]; ig
               onMouseLeave={() => setHover(null)}
             />
           </div>
-          {hover && here.length > 0 && (
+          {hover && (here.length > 0 || hereMissing.length > 0) && (
             <span className="plan-tip box" style={tipPosition(hover)}>
               <strong>
                 ({hover.x}, {hover.y})
@@ -299,6 +307,9 @@ function FullMap({ entries, ignore, describe, label }: { entries: MapEntry[]; ig
                 <span key={i}>
                   {label(p.entry.category)}: {describe(p.entry.names)}
                 </span>
+              ))}
+              {hereMissing.map((p, i) => (
+                <span key={`missing-${i}`}>{t('planner.tipMissing', { name: describe(p.entry.names) })}</span>
               ))}
             </span>
           )}
@@ -311,6 +322,12 @@ function FullMap({ entries, ignore, describe, label }: { entries: MapEntry[]; ig
             {label(c)} · {n}
           </li>
         ))}
+        {faded.length > 0 && (
+          <li style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: 2, border: `1px solid ${MISSING_COLOR}`, opacity: 0.7 }} />
+            {t('planner.ghostLegend', { count: faded.length })}
+          </li>
+        )}
       </ul>
       <p className="cc-summary__hint">{t('planner.artNote')}</p>
     </div>
@@ -335,6 +352,7 @@ function SlotView({ slot, saveData, stored, setStored, options, setOptions, read
   const [status, setStatus] = useState<'idle' | 'loading' | 'needsCopy' | 'error'>('idle');
   const [pasted, setPasted] = useState('');
   const [view, setView] = useState<ViewId>('compare');
+  const [ghosts, setGhosts] = useState(true);
   const id = planId(input);
 
   const keep = (plan: PlannerPlan, link: string) => {
@@ -375,8 +393,16 @@ function SlotView({ slot, saveData, stored, setStored, options, setOptions, read
     () => (stored ? comparePlan(stored.plan, saveData.layouts[slot.location], { ignore: new Set(options.ignore), anyCrop: options.anyCrop }) : null),
     [stored, saveData, slot.location, options.ignore, options.anyCrop],
   );
-  const planMap = useMemo(() => (stored ? planEntries(stored.plan) : []), [stored]);
+  // The plan is lined up with the farm (the planner's map may be shifted a few tiles), so both sit on the same ground.
+  const planMap = useMemo(() => (stored ? planEntries(stored.plan, result?.offset) : []), [stored, result]);
   const farmMap = useMemo(() => farmEntries(saveData.layouts[slot.location]), [saveData, slot.location]);
+  const missingMap = useMemo(() => (result ? missingEntries(result) : []), [result]);
+  // One window for every view, so the map keeps its size when the view changes.
+  const bounds = useMemo(
+    () => mapBounds([...farmMap, ...planMap, ...missingMap], result?.cells.map((c) => [c.x, c.y] as [number, number]) ?? [], MIN_TILES[slot.id]),
+    [farmMap, planMap, missingMap, result, slot.id],
+  );
+  const background = backgroundFor(slot.id, saveData.farmType);
   const ignoreSet = useMemo(() => new Set<string>(options.ignore), [options.ignore]);
   const categoryLabel = (c: string) => t(`planner.cat.${c}`);
   // Without a loaded plan only the farm can be shown.
@@ -452,21 +478,30 @@ function SlotView({ slot, saveData, stored, setStored, options, setOptions, read
         )}
       </div>
 
-      {shownView === 'farm' && <FullMap entries={farmMap} ignore={ignoreSet} describe={describe} label={categoryLabel} />}
+      {shownView === 'farm' && !result && <FullMap entries={farmMap} ignore={ignoreSet} bounds={bounds} background={background} describe={describe} label={categoryLabel} />}
 
-      {result && shownView !== 'farm' && (
+      {result && (
         <>
           {shownView === 'compare' && (
+            <div className="planner-options">
+              <span className="tab-group__label">{t('planner.show')}</span>
+              {(['all', 'missing', 'done'] as const).map((s) => (
+                <button key={s} className={options.show === s ? 'button button--primary' : 'button'} onClick={() => setOptions({ ...options, show: s })}>
+                  {t(`planner.showOpt.${s}`)}
+                </button>
+              ))}
+            </div>
+          )}
+          {shownView === 'farm' && (
+            <div className="planner-options">
+              <label className="cc__filter">
+                <input type="checkbox" checked={ghosts} onChange={(e) => setGhosts(e.target.checked)} />
+                {t('planner.showMissingOnMap')}
+              </label>
+            </div>
+          )}
+          {shownView !== 'plan' && (
             <>
-              <div className="planner-options">
-                <span className="tab-group__label">{t('planner.show')}</span>
-                {(['all', 'missing', 'done'] as const).map((s) => (
-                  <button key={s} className={options.show === s ? 'button button--primary' : 'button'} onClick={() => setOptions({ ...options, show: s })}>
-                    {t(`planner.showOpt.${s}`)}
-                  </button>
-                ))}
-              </div>
-
               <p className="planner-summary">{t('planner.summary', { done: result.done, total: result.total, pct: result.total ? Math.round((result.done / result.total) * 100) : 0 })}</p>
               <Progress value={result.done} max={result.total || 1} />
             </>
@@ -474,9 +509,17 @@ function SlotView({ slot, saveData, stored, setStored, options, setOptions, read
 
           <div className="planner-result">
             {shownView === 'compare' ? (
-              <PlanMap result={result} show={options.show} describe={describe} />
+              <PlanMap result={result} show={options.show} describe={describe} bounds={bounds} />
             ) : (
-              <FullMap entries={planMap} ignore={ignoreSet} describe={describe} label={categoryLabel} />
+              <FullMap
+                entries={shownView === 'farm' ? farmMap : planMap}
+                ghosts={shownView === 'farm' && ghosts ? missingMap : undefined}
+                ignore={ignoreSet}
+                bounds={bounds}
+                background={background}
+                describe={describe}
+                label={categoryLabel}
+              />
             )}
             <div>
               <h4>{t('planner.missing', { count: missing.length })}</h4>
@@ -548,20 +591,6 @@ export function PlannerCompare({ save: saveData }: { save: SaveData }) {
     if (role === 'host') sharePlan(id, s ? { data: JSON.stringify(s.plan), link: s.link } : null);
   };
 
-  // A plan sent by the bookmark from stardew.info.
-  useEffect(() => {
-    const onMessage = (e: MessageEvent) => {
-      if (guest || e.origin !== 'https://stardew.info' || e.data?.type !== 'hv-plan') return;
-      const plan = parsePlanJson(String(e.data.data));
-      if (!plan) return;
-      const target = slotOf(plan);
-      setStored(target, { link: String(e.data.link ?? ''), plan });
-      setSlot(target);
-    };
-    window.addEventListener('message', onMessage);
-    return () => window.removeEventListener('message', onMessage);
-  });
-
   // The host's plans go to the room once it's open, and again after a reconnect.
   useEffect(() => {
     if (role !== 'host' || status !== 'hosting') return;
@@ -583,19 +612,7 @@ export function PlannerCompare({ save: saveData }: { save: SaveData }) {
             </button>
           ))}
         </div>
-        {!guest && (
-        <a
-          className="button planner-bookmark"
-          // React won't render a javascript: href, so it's set on the element directly.
-          ref={(el) => el?.setAttribute('href', bookmarklet())}
-          onClick={(e) => e.preventDefault()}
-          title={t('planner.bookmarkHint')}
-        >
-          {t('planner.bookmark')}
-        </a>
-        )}
       </div>
-      {!guest && <p className="cc-summary__hint">{t('planner.bookmarkHint')}</p>}
       <SlotView key={slot} slot={current} saveData={saveData} stored={shownPlans[slot]} setStored={(s) => setStored(slot, s)} options={options} setOptions={setOptions} readOnly={guest} />
     </div>
   );

@@ -173,3 +173,57 @@ export function loadSheet(sheet: string): Promise<void> {
 }
 
 export const sheetImage = (sheet: string) => images.get(sheet);
+
+/** A building without a picture is drawn as a square this many tiles wide. */
+export const BUILDING_SPAN = 3;
+
+/** The map's window, in tiles. */
+export interface Bounds {
+  minX: number;
+  minY: number;
+  w: number;
+  h: number;
+}
+
+/** The farm map is 80x65 tiles whatever the farm type; the island farm's size comes from what is on it. */
+export const MIN_TILES: Record<'farm' | 'island', [number, number]> = { farm: [80, 65], island: [0, 0] };
+
+/**
+ * The tiles every view of a slot covers, so switching views never changes the map's size: the whole map
+ * plus anything drawn beyond it (tall sprites reach above their tile).
+ */
+export function mapBounds(entries: MapEntry[], points: Array<[number, number]>, min: [number, number]): Bounds {
+  let x0 = 0;
+  let y0 = 0;
+  let x1 = min[0] * TILE;
+  let y1 = min[1] * TILE;
+  const grow = (x: number, y: number, w: number, h: number) => {
+    x0 = Math.min(x0, x);
+    y0 = Math.min(y0, y);
+    x1 = Math.max(x1, x + w);
+    y1 = Math.max(y1, y + h);
+  };
+  for (const e of entries) {
+    const sprite = spriteFor(e);
+    if (sprite) {
+      const box = spriteBox(e, sprite);
+      grow(box.x, box.y, box.w, box.h);
+    } else {
+      const size = (e.building ? BUILDING_SPAN : 1) * TILE;
+      grow(e.x * TILE, e.y * TILE, size, size);
+    }
+  }
+  for (const [x, y] of points) grow(x * TILE, y * TILE, TILE, TILE);
+  const minX = Math.floor(x0 / TILE);
+  const minY = Math.floor(y0 / TILE);
+  return { minX, minY, w: Math.max(Math.ceil(x1 / TILE) - minX, 1), h: Math.max(Math.ceil(y1 / TILE) - minY, 1) };
+}
+
+/** Farm type (the save's whichFarm) → the game's map file. */
+const FARM_MAP_FILES = ['Farm', 'Farm_Fishing', 'Farm_Foraging', 'Farm_Mining', 'Farm_Combat', 'Farm_FourCorners', 'Farm_Island', 'Farm_Meadowlands'];
+
+/**
+ * The sheet name of the game's own map picture (ground, water, cliffs) for a slot. tools/extract draws these
+ * into public/sprites/FarmMaps; until it has, the file isn't there and the map simply has no background.
+ */
+export const backgroundFor = (slot: 'farm' | 'island', farmType: number) => `FarmMaps/${slot === 'island' ? 'IslandWest' : (FARM_MAP_FILES[farmType] ?? 'Farm')}`;

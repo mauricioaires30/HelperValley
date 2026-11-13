@@ -21,6 +21,7 @@ import { buildFarm } from './lib/farm.mjs';
 import { buildSchedules, buildWorldMap } from './lib/worldmap.mjs';
 import { buildNpcPaths } from './lib/npcPaths.mjs';
 import { buildPlacePictures } from './lib/placePictures.mjs';
+import { buildFarmMaps } from './lib/farmMaps.mjs';
 import { addFishSpots, buildFish } from './lib/fish.mjs';
 import { buildWalnutSpots } from './lib/walnuts.mjs';
 import { buildGameCollections } from './lib/collectionsGame.mjs';
@@ -98,3 +99,9 @@ await writeFile(path.join(DATA_OUT, 'npcs.json'), JSON.stringify(datasets.npcs))
 console.log(`Wrote ${written} sprite sheets to public/sprites`);
 if (missing.length) console.log(`  (not in this game version, skipped: ${missing.join(', ')})`);
 console.log(`Wrote ${exportUiCrops()} UI crops to public/sprites/ui`);
+try {
+  console.log(`Wrote ${(await buildFarmMaps(gameDir)).length} farm maps to public/sprites/FarmMaps`);
+} catch (error) {
+  // The planner works without them (no ground behind the farm), so the rest of the extraction stands.
+  console.log(`Farm maps skipped: ${error.message}`);
+}

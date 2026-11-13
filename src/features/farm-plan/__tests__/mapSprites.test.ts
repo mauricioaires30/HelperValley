@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadTestGameData } from '@/test/gameData';
-import { spriteBox, spriteFor } from '../mapSprites';
+import { backgroundFor, mapBounds, spriteBox, spriteFor } from '../mapSprites';
 import type { MapEntry } from '../planner';
 
 beforeAll(loadTestGameData);
@@ -39,5 +39,21 @@ describe('map sprites', () => {
     expect(spriteFor(entry(['tilled-soil'], 'soil'))).toBeNull();
     expect(spriteFor(entry(['no-such-thing'], 'machines'))).toBeNull();
     expect(spriteFor(entry(['junimo-hut'], 'buildings', true))).toBeNull();
+  });
+});
+
+describe('map window and ground', () => {
+  it('keeps the whole farm map, and grows only for what is drawn beyond it', () => {
+    expect(mapBounds([entry(['keg'], 'machines')], [], [80, 65])).toMatchObject({ minX: 0, minY: 0, w: 80, h: 65 });
+    // A keg on the top row is two tiles tall: its top is one tile above the map.
+    expect(mapBounds([{ ...entry(['keg'], 'machines'), y: 0 }], [], [80, 65])).toMatchObject({ minY: -1, h: 66 });
+    expect(mapBounds([], [[90, 70]], [80, 65])).toMatchObject({ w: 91, h: 71 });
+  });
+
+  it('picks the game map picture for the farm type', () => {
+    expect(backgroundFor('farm', 0)).toBe('FarmMaps/Farm');
+    expect(backgroundFor('farm', 1)).toBe('FarmMaps/Farm_Fishing');
+    expect(backgroundFor('farm', 99)).toBe('FarmMaps/Farm');
+    expect(backgroundFor('island', 3)).toBe('FarmMaps/IslandWest');
   });
 });

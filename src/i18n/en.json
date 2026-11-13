@@ -1271,6 +1271,9 @@
     "artNote": "Objects, furniture and buildings use the game's art. Crops, trees, floors and fences show the item's icon (crop, seed, sapling); anything without art is a colored square.",
     "viewOnly": "Only the room's host can load or change the plan. You're seeing the plan they shared.",
     "noPlanShared": "The host hasn't shared a plan yet.",
+    "showMissingOnMap": "Show what's missing on the map",
+    "ghostLegend": "Missing ({{count}}, faded)",
+    "tipMissing": "Missing: {{name}}",
     "linkPlaceholder": "Plan link: https://stardew.info/planner/...",
     "load": "Load plan",
     "remove": "Remove",
@@ -1296,8 +1299,6 @@
     "copyHow": "stardew.info doesn't let other sites read plans directly. Click below, copy everything on the page that opens (Ctrl+A, Ctrl+C) and come back to this tab: the site reads it on its own.",
     "openData": "Open plan data",
     "pasteManual": "Paste manually",
-    "bookmark": "★ Send to HelperValley",
-    "bookmarkHint": "Drag to your bookmarks and click it on a stardew.info plan.",
     "ignore": "Ignore:",
     "cat": {
       "soil": "Tilled soil",
