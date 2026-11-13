@@ -648,7 +648,15 @@
       "rain": "Resort closed: rain on the island",
       "festival": "Resort closed: festival day"
     },
-    "visitors": "On the island today"
+    "visitors": "On the island today",
+    "shop": {
+      "openNow": "Open now",
+      "closedNow": "Closed now",
+      "closedToday": "Closed this day",
+      "opensAt": "Closed now · opens at {{time}}",
+      "hours": "Hours: {{from}}–{{to}}",
+      "allDay": "Open all day"
+    }
   },
   "prod": {
     "title": "Production",
@@ -804,6 +812,22 @@
       "(O)900": "Legendary Family (Mr. Qi's special order)",
       "(O)901": "Legendary Family (Mr. Qi's special order)",
       "(O)902": "Legendary Family (Mr. Qi's special order)"
+    },
+    "cond": {
+      "seasons": "Season",
+      "allYear": "all year",
+      "time": "Time",
+      "weather": "Weather",
+      "anyWeather": "any weather",
+      "where": "Where",
+      "level": "Fishing level",
+      "biting": "Biting now",
+      "ifWeather": "Bites now if the weather is right",
+      "not": {
+        "season": "Doesn't bite this season",
+        "time": "Doesn't bite at this time",
+        "weather": "Doesn't bite in this weather"
+      }
     }
   },
   "walnuts": {

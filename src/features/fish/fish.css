@@ -1,0 +1,52 @@
+/* Fish conditions: one labeled row each, and on the map whether it bites at the chosen moment. */
+.fish-where {
+  display: grid;
+  gap: 3px;
+  min-width: 220px;
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+}
+
+.fish-where__row {
+  display: grid;
+  grid-template-columns: 7.5em 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.fish-where__label {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.fish-where__seasons,
+.fish-where__weather {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+}
+
+.fish-where__season {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.fish-where__season--now {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.fish-where__now {
+  justify-self: start;
+  padding: 1px 8px;
+  font-weight: 700;
+  color: #fff;
+  background: #3a8f2a;
+  border-radius: 4px;
+}
+
+.fish-where__now--no {
+  background: #8a6a4a;
+}

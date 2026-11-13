@@ -9,7 +9,7 @@ import { ItemIcon, NpcHead, SeasonIcon, Tooltip, UiIcon, Sprite } from '@/ui';
 import { usePinStore } from '@/store/pinStore';
 import { FishPicker } from './FishPicker';
 import { ONE_TIME_GUIDE } from '@/features/walnuts/walnutGuide';
-import { SHOPS } from '@/features/shops/catalog';
+import { SHOPS, openAt } from '@/features/shops/catalog';
 import { SEASONS } from '@/features/calendar/calendar';
 import { describeEvent } from '@/features/relationships/eventConditions';
 import { formatTime, resolveSchedule, WEEKDAYS, type ScheduleData, type ScheduleResult, type Stop, currentData } from './schedule';
@@ -22,6 +22,7 @@ import { npcRoute, routeMinutes, TILES_PER_MINUTE, type RouteTile } from './npcR
 import { isOpenArea, isWater, snapToMap, toMapPixel, type RegionId } from './worldMap';
 import { usePanZoom } from '@/ui/usePanZoom';
 import './map.css';
+import { FishWhere } from '@/features/fish/FishInfo';
 
 const LAYERS_KEY = 'hv-map-layers';
 const DEFAULT_LAYERS = { npcs: true, events: true, quests: true, fish: true, stardrops: true, walnuts: false, shops: false, donations: false };
@@ -271,7 +272,8 @@ export function MapPage() {
   const questPins = (player?.quests ?? [])
     .filter((q) => pinnedQuests.includes(q.id) && !q.completed)
     .flatMap((q) => {
-      if (q.location) {
+      // A lost item already found goes back to its owner: pin the NPC instead.
+      if (q.location && !q.found) {
         const p = pinAt(q.location, q.tile);
         return p ? [{ key: `q-${q.id}`, ...p, q }] : [];
       }
@@ -313,13 +315,14 @@ export function MapPage() {
     const p = pinAt(g.pin!.location);
     return p ? [{ key: g.key, ...p, location: g.pin!.location }] : [];
   });
-  // Shops around on the chosen day; clicking one opens its tab on the Shops page.
+  // Shops on the chosen day, open or not (festival stalls only on their day); clicking one opens its tab on the Shops page.
   const shopDay = { season, day, year: save?.date.year ?? 1, daysPlayed: 0 };
   const shopPins = save
-    ? SHOPS.filter((s) => SHOP_LOCATIONS[s.id] && (!s.open || s.open(shopDay, save))).flatMap((s) => {
+    ? SHOPS.filter((s) => SHOP_LOCATIONS[s.id] && !(s.id.startsWith('Festival_') && s.open && !s.open(shopDay, save))).flatMap((s) => {
         const where = SHOP_LOCATIONS[s.id];
         const p = typeof where === 'string' ? pinAt(where) : pinAt(where[0], where[1]);
-        return p ? [{ key: `s-${s.id}`, ...p, shop: s }] : [];
+        const today = !s.open || s.open(shopDay, save);
+        return p ? [{ key: `s-${s.id}`, ...p, shop: s, today, now: today && openAt(s, time) }] : [];
       })
     : [];
   // Stardrops marked in Collections, until they're eaten.
@@ -524,6 +527,7 @@ export function MapPage() {
                       text={
                         <span className="slot-tooltip">
                           <strong>{name(gameData().items[p.id]?.n)}</strong>
+                          <FishWhere id={p.id} now={{ season, time, raining: isToday || isTomorrow ? raining : null, location: p.place }} />
                           {p.specific && <PlacePicture location={p.place} tile={p.tile} />}
                         </span>
                       }
@@ -541,6 +545,8 @@ export function MapPage() {
                       text={
                         <span className="slot-tooltip">
                           <strong>{t('map.questPin', { title: p.q.title })}</strong>
+                          {p.q.objective && <span>{p.q.objective}</span>}
+                          {p.q.location && p.q.tile && !p.q.found && <PlacePicture location={p.q.location} tile={p.q.tile} />}
                         </span>
                       }
                     >
@@ -575,6 +581,16 @@ export function MapPage() {
                       text={
                         <span className="slot-tooltip">
                           <strong>{t(`shops.name.${p.shop.id}`)}</strong>
+                          <span className={p.now ? 'shop-hours shop-hours--open' : 'shop-hours'}>
+                            {!p.today
+                              ? t('map.shop.closedToday')
+                              : p.now
+                                ? t('map.shop.openNow')
+                                : p.shop.hours && time < p.shop.hours[0]
+                                  ? t('map.shop.opensAt', { time: formatTime(p.shop.hours[0]) })
+                                  : t('map.shop.closedNow')}
+                          </span>
+                          <span>{p.shop.hours ? t('map.shop.hours', { from: formatTime(p.shop.hours[0]), to: formatTime(p.shop.hours[1]) }) : t('map.shop.allDay')}</span>
                           <PlacePicture
                             location={Array.isArray(SHOP_LOCATIONS[p.shop.id]) ? SHOP_LOCATIONS[p.shop.id][0] : (SHOP_LOCATIONS[p.shop.id] as string)}
                             tile={Array.isArray(SHOP_LOCATIONS[p.shop.id]) ? (SHOP_LOCATIONS[p.shop.id][1] as [number, number]) : undefined}
@@ -582,7 +598,7 @@ export function MapPage() {
                         </span>
                       }
                     >
-                      <button type="button" className="map-pin__icon map-pin__icon--shop" onClick={() => navigate(`/shops/${p.shop.id}`)} aria-label={t(`shops.name.${p.shop.id}`)}>
+                      <button type="button" className={p.now ? 'map-pin__icon map-pin__icon--shop' : 'map-pin__icon map-pin__icon--shop map-pin__icon--closed'} onClick={() => navigate(`/shops/${p.shop.id}`)} aria-label={t(`shops.name.${p.shop.id}`)}>
                         {p.shop.npc ? <NpcHead npc={p.shop.npc} scale={1} /> : <ItemIcon id={p.shop.icon ?? '(O)472'} scale={1} tooltip={false} />}
                       </button>
                     </Tooltip>

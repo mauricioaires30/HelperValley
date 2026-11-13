@@ -38,16 +38,6 @@
 }
 
 .quest__how-fish,
-.fish-where {
-  display: inline-grid;
-  gap: 2px;
-}
-
-.fish-where {
-  font-size: var(--fs-sm);
-  color: var(--text-soft);
-}
-
 .quest__footer {
   display: flex;
   flex-wrap: wrap;
@@ -88,3 +78,4 @@
   background: rgb(255 255 255 / 0.35);
   border-left: calc(2 * var(--px)) solid var(--accent);
 }
+
