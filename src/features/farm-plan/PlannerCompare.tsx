@@ -6,6 +6,7 @@ import { useShareStore } from '@/features/share/room';
 import type { SaveData } from '@/save/model';
 import { Progress } from '@/ui';
 import { usePanZoom } from '@/ui/usePanZoom';
+import { loadSheet, sheetImage, spriteBox, spriteFor, TILE, type SpriteRef } from './mapSprites';
 import { CATEGORIES, comparePlan, farmEntries, fetchPlan, parsePlanJson, planApiUrl, planEntries, planId, plannerName, type Category, type Comparison, type MapEntry, type PlannerPlan } from './planner';
 import '@/features/map/map.css';
 
@@ -151,7 +152,7 @@ function tipPosition(h: { px: number; py: number; vw: number; vh: number }): CSS
   };
 }
 
-/** Colors of the full maps, by category. Buildings and machines are drawn last, on top of the ground. */
+/** Colors of the squares drawn where the game has no art for something, and of the legend. */
 const FULL_COLORS: Record<string, string> = {
   soil: '#8b5a2b',
   grass: '#a8d672',
@@ -163,47 +164,91 @@ const FULL_COLORS: Record<string, string> = {
   machines: '#2f80ed',
   buildings: '#4e342e',
 };
+/** Drawn in this order, so buildings and machines sit on top of the ground. */
 const FULL_ORDER = Object.keys(FULL_COLORS);
-/** Buildings are drawn this many tiles square: their real size isn't in the save or the plan. */
+/** A building without a picture is drawn as a square this many tiles wide. */
 const BUILDING_SPAN = 3;
-const spanOf = (e: MapEntry) => (e.building ? BUILDING_SPAN : 1);
 
-/** Every object of a layout in its own color, with a legend. Zoom and drag like the other maps. */
+/** One entry placed on the map: its art (if any), where it is drawn, and the tiles it covers. */
+interface Placed {
+  entry: MapEntry;
+  ref: SpriteRef | null;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  foot: [number, number];
+}
+
+/** Every object of a layout drawn with the game's own art, with a legend. Zoom and drag like the other maps. */
 function FullMap({ entries, ignore, describe, label }: { entries: MapEntry[]; ignore: Set<string>; describe: (types: string[]) => string; label: (category: string) => string }) {
   const { t } = useTranslation();
   const ref = useRef<HTMLCanvasElement>(null);
   const { view, viewport, handlers, zoomIn, zoomOut, reset } = usePanZoom();
   const [hover, setHover] = useState<{ x: number; y: number; px: number; py: number; vw: number; vh: number } | null>(null);
-  const CELL = 8;
-  const shown = useMemo(
-    () => entries.filter((e) => !ignore.has(e.category)).sort((a, b) => FULL_ORDER.indexOf(a.category) - FULL_ORDER.indexOf(b.category)),
+  const [loaded, setLoaded] = useState(0);
+  const placed = useMemo<Placed[]>(
+    () =>
+      entries
+        .filter((e) => !ignore.has(e.category))
+        .sort((a, b) => FULL_ORDER.indexOf(a.category) - FULL_ORDER.indexOf(b.category) || a.y - b.y || a.x - b.x)
+        .map((entry) => {
+          const sprite = spriteFor(entry);
+          if (sprite) {
+            const box = spriteBox(entry, sprite);
+            return { entry, ref: sprite, ...box, foot: sprite.foot };
+          }
+          const span = entry.building ? BUILDING_SPAN : 1;
+          return { entry, ref: null, x: entry.x * TILE, y: entry.y * TILE, w: span * TILE - 1, h: span * TILE - 1, foot: [span, span] as [number, number] };
+        }),
     [entries, ignore],
   );
-  const minX = Math.min(...shown.map((e) => e.x), 0);
-  const minY = Math.min(...shown.map((e) => e.y), 0);
-  const w = Math.max(...shown.map((e) => e.x + spanOf(e) - 1), 1) - minX + 1;
-  const h = Math.max(...shown.map((e) => e.y + spanOf(e) - 1), 1) - minY + 1;
+  // Tall sprites reach above their tile, so the map starts at the highest one.
+  const minX = Math.floor(Math.min(...placed.map((p) => p.x), 0) / TILE);
+  const minY = Math.floor(Math.min(...placed.map((p) => p.y), 0) / TILE);
+  const w = Math.max(Math.ceil(Math.max(...placed.map((p) => p.x + p.w), TILE) / TILE) - minX, 1);
+  const h = Math.max(Math.ceil(Math.max(...placed.map((p) => p.y + p.h), TILE) / TILE) - minY, 1);
   const counts = useMemo(() => {
     const m = new Map<string, number>();
-    for (const e of shown) m.set(e.category, (m.get(e.category) ?? 0) + 1);
+    for (const p of placed) m.set(p.entry.category, (m.get(p.entry.category) ?? 0) + 1);
     return FULL_ORDER.filter((c) => m.has(c)).map((c) => ({ c, n: m.get(c)! }));
-  }, [shown]);
+  }, [placed]);
+
+  // Sprite sheets load once; the map redraws when they are in.
+  useEffect(() => {
+    let alive = true;
+    const sheets = new Set(placed.flatMap((p) => (p.ref ? [p.ref.sheet] : [])));
+    void Promise.all([...sheets].map(loadSheet)).then(() => {
+      if (alive) setLoaded((n) => n + 1);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [placed]);
 
   useEffect(() => {
     const ctx = ref.current?.getContext('2d');
     if (!ctx) return;
-    ctx.clearRect(0, 0, w * CELL, h * CELL);
+    ctx.imageSmoothingEnabled = false;
+    ctx.clearRect(0, 0, w * TILE, h * TILE);
     // A faint grid so tiles can be counted when zoomed in.
     ctx.fillStyle = 'rgba(91, 43, 21, 0.06)';
-    for (let x = 0; x < w; x += 2) ctx.fillRect(x * CELL, 0, CELL, h * CELL);
-    for (const e of shown) {
-      ctx.globalAlpha = e.category === 'grass' ? 0.5 : 1;
-      ctx.fillStyle = FULL_COLORS[e.category];
-      const size = spanOf(e) * CELL - 1;
-      ctx.fillRect((e.x - minX) * CELL, (e.y - minY) * CELL, size, size);
+    for (let x = 0; x < w; x += 2) ctx.fillRect(x * TILE, 0, TILE, h * TILE);
+    const ox = minX * TILE;
+    const oy = minY * TILE;
+    for (const p of placed) {
+      const image = p.ref ? sheetImage(p.ref.sheet) : undefined;
+      if (p.ref && image) {
+        ctx.drawImage(image, p.ref.x, p.ref.y, p.ref.w, p.ref.h, p.x - ox, p.y - oy, p.w, p.h);
+      } else {
+        // No art (grass, tilled soil, things the game files here don't have), or the sheet isn't in yet: a colored square on its tiles.
+        ctx.globalAlpha = p.entry.category === 'grass' ? 0.5 : 1;
+        ctx.fillStyle = FULL_COLORS[p.entry.category];
+        ctx.fillRect(p.entry.x * TILE - ox, p.entry.y * TILE - oy, p.foot[0] * TILE - 1, p.foot[1] * TILE - 1);
+        ctx.globalAlpha = 1;
+      }
     }
-    ctx.globalAlpha = 1;
-  }, [shown, w, h, minX, minY]);
+  }, [placed, w, h, minX, minY, loaded]);
 
   const onMove = (e: MouseEvent<HTMLCanvasElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -214,7 +259,7 @@ function FullMap({ entries, ignore, describe, label }: { entries: MapEntry[]; ig
   };
   // Ground under everything (grass) is left out of the tooltip.
   const here = hover
-    ? shown.filter((e) => e.category !== 'grass' && hover.x >= e.x && hover.x < e.x + spanOf(e) && hover.y >= e.y && hover.y < e.y + spanOf(e))
+    ? placed.filter((p) => p.entry.category !== 'grass' && hover.x >= p.entry.x && hover.x < p.entry.x + p.foot[0] && hover.y >= p.entry.y && hover.y < p.entry.y + p.foot[1])
     : [];
 
   return (
@@ -235,16 +280,24 @@ function FullMap({ entries, ignore, describe, label }: { entries: MapEntry[]; ig
         </div>
         <div ref={viewport} className={view.zoom > 1 ? 'map-viewport map-viewport--zoomed' : 'map-viewport'} style={{ aspectRatio: `${w} / ${h}` }} {...handlers}>
           <div className="map-canvas" style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.zoom})` }}>
-            <canvas ref={ref} className="plan-map" width={w * CELL} height={h * CELL} onMouseMove={onMove} onMouseLeave={() => setHover(null)} />
+            <canvas
+              ref={ref}
+              className="plan-map"
+              style={{ imageRendering: 'pixelated' }}
+              width={w * TILE}
+              height={h * TILE}
+              onMouseMove={onMove}
+              onMouseLeave={() => setHover(null)}
+            />
           </div>
           {hover && here.length > 0 && (
             <span className="plan-tip box" style={tipPosition(hover)}>
               <strong>
                 ({hover.x}, {hover.y})
               </strong>
-              {here.map((e, i) => (
+              {here.map((p, i) => (
                 <span key={i}>
-                  {label(e.category)}: {describe(e.names)}
+                  {label(p.entry.category)}: {describe(p.entry.names)}
                 </span>
               ))}
             </span>
@@ -259,7 +312,7 @@ function FullMap({ entries, ignore, describe, label }: { entries: MapEntry[]; ig
           </li>
         ))}
       </ul>
-      <p className="cc-summary__hint">{t('planner.buildingsApprox')}</p>
+      <p className="cc-summary__hint">{t('planner.artNote')}</p>
     </div>
   );
 }

@@ -1268,7 +1268,7 @@
     },
     "view": "View",
     "viewOpt": { "compare": "Compare with plan", "plan": "View plan", "farm": "View farm now" },
-    "buildingsApprox": "Buildings are drawn at an approximate size.",
+    "artNote": "Objects, furniture and buildings use the game's art. Crops, trees, floors and fences show the item's icon (crop, seed, sapling); anything without art is a colored square.",
     "viewOnly": "Only the room's host can load or change the plan. You're seeing the plan they shared.",
     "noPlanShared": "The host hasn't shared a plan yet.",
     "linkPlaceholder": "Plan link: https://stardew.info/planner/...",
