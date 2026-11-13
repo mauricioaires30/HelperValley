@@ -86,6 +86,9 @@ await writeFile(
 );
 console.log(`Wrote ${Object.keys(datasets).length} datasets to public/data`);
 
+// Buildings the planner draws that no shop sells (the greenhouse, the cabin skins, the pet bowl variants).
+for (const name of ['Greenhouse', 'Log Cabin', 'Plank Cabin', 'Rustic Cabin', 'Beach Cabin', 'Trailer Cabin', 'Neighbor Cabin', 'Hay Pet Bowl', 'Stone Pet Bowl']) textures.add(`Buildings/${name}`);
+
 await rm(SPRITES_OUT, { recursive: true, force: true });
 const { written, missing, sizes } = await exportTextures(gameDir, textures);
 await writeFile(path.join(DATA_OUT, 'sheets.json'), JSON.stringify(sizes));

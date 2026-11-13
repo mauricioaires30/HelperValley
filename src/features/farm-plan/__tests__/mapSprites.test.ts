@@ -38,7 +38,7 @@ describe('map sprites', () => {
     expect(spriteFor(entry(['grass'], 'grass'))).toBeNull();
     expect(spriteFor(entry(['tilled-soil'], 'soil'))).toBeNull();
     expect(spriteFor(entry(['no-such-thing'], 'machines'))).toBeNull();
-    expect(spriteFor(entry(['junimo-hut'], 'buildings', true))).toBeNull();
+    expect(spriteFor(entry(['no-such-building'], 'buildings', true))).toBeNull();
   });
 });
 
@@ -58,5 +58,35 @@ describe('map window and ground', () => {
     expect(minTiles('farm', 5)).toEqual([80, 80]);
     expect(minTiles('farm', 99)).toEqual([80, 65]);
     expect(backgroundFor('island', 3)).toBe('FarmMaps/IslandWest');
+  });
+});
+
+describe('building pictures', () => {
+  const building = (name: string, variant = 0): MapEntry => ({ ...entry([name], 'buildings', true), variant });
+
+  it('takes the Junimo Hut\'s first color, as wide as the building', () => {
+    expect(spriteFor(building('junimo-hut'))).toMatchObject({ sheet: 'Buildings/Junimo Hut', x: 0, y: 0, w: 48, h: 64, foot: [3, 2] });
+  });
+
+  it('draws the farmhouse for its upgrade, a tile to the left of its footprint', () => {
+    const house = spriteFor(building('house', 2))!;
+    expect(house).toMatchObject({ sheet: 'Buildings/houses', y: 288, w: 160, h: 144, foot: [9, 5] });
+    // Footprint 9x5 at tile (10, 20): the picture is nine tiles tall, standing on the footprint's bottom edge.
+    expect(spriteBox(building('house', 2), house)).toMatchObject({ x: 10 * 16 - 16, y: (20 + 5) * 16 - 144 });
+    expect(spriteFor(building('house', 9))?.y).toBe(288);
+  });
+
+  it('draws the repaired greenhouse from the lower half of its sheet', () => {
+    expect(spriteFor(building('greenhouse-repaired'))).toMatchObject({ sheet: 'Buildings/Greenhouse', y: 160, w: 112, h: 160, foot: [7, 6] });
+    expect(spriteFor(building('greenhouse'))).toMatchObject({ y: 0 });
+  });
+
+  it('draws a fish pond as its ring with water inside, and a pet bowl from its own frame', () => {
+    expect(spriteFor(building('fish-pond'))).toMatchObject({ sheet: 'Buildings/Fish Pond', w: 80, h: 80, foot: [5, 5], water: [16, 16, 48, 48] });
+    expect(spriteFor(building('pet-bowl'))).toMatchObject({ sheet: 'Buildings/Pet Bowl', x: 32, w: 32, h: 32, foot: [2, 2] });
+  });
+
+  it('draws cabins from their first skin', () => {
+    expect(spriteFor(building('log-cabin'))).toMatchObject({ sheet: 'Buildings/Log Cabin', w: 80, h: 112, foot: [5, 3] });
   });
 });

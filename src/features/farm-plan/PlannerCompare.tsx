@@ -152,6 +152,7 @@ const FULL_COLORS: Record<string, string> = {
 /** Drawn in this order, so buildings and machines sit on top of the ground. */
 const FULL_ORDER = Object.keys(FULL_COLORS);
 const MISSING_COLOR = '#e0283c';
+const WATER_COLOR = '#3f93b8';
 
 /** One entry placed on the map: its art (if any), where it is drawn, and the tiles it covers. */
 interface Placed {
@@ -240,6 +241,10 @@ function FullMap({
       const image = p.ref ? sheetImage(p.ref.sheet) : undefined;
       if (p.ref && image) {
         ctx.globalAlpha = alpha;
+        if (p.ref.water) {
+          ctx.fillStyle = WATER_COLOR;
+          ctx.fillRect(p.x - ox + p.ref.water[0], p.y - oy + p.ref.water[1], p.ref.water[2], p.ref.water[3]);
+        }
         ctx.drawImage(image, p.ref.x, p.ref.y, p.ref.w, p.ref.h, p.x - ox, p.y - oy, p.w, p.h);
       } else if (!(ground && p.entry.category === 'grass')) {
         // No art (tilled soil, things the game files here don't have), or the sheet isn't in yet: a colored square on its tiles.
@@ -394,8 +399,9 @@ function SlotView({ slot, saveData, stored, setStored, options, setOptions, read
     [stored, saveData, slot.location, options.ignore, options.anyCrop],
   );
   // The plan is lined up with the farm (the planner's map may be shifted a few tiles), so both sit on the same ground.
-  const planMap = useMemo(() => (stored ? planEntries(stored.plan, result?.offset) : []), [stored, result]);
-  const farmMap = useMemo(() => farmEntries(saveData.layouts[slot.location]), [saveData, slot.location]);
+  const houseLevel = saveData.players[0]?.houseUpgradeLevel ?? 0;
+  const planMap = useMemo(() => (stored ? planEntries(stored.plan, result?.offset, houseLevel) : []), [stored, result, houseLevel]);
+  const farmMap = useMemo(() => farmEntries(saveData.layouts[slot.location], houseLevel), [saveData, slot.location, houseLevel]);
   const missingMap = useMemo(() => (result ? missingEntries(result) : []), [result]);
   // One window for every view, so the map keeps its size when the view changes.
   const bounds = useMemo(
