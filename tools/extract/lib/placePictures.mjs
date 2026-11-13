@@ -24,7 +24,7 @@ const FIXED_SPOTS = [['Forest', 32, 94]]; // Hat Mouse
 // GameLocation.loadPathsLayerObjectsInArea: map trees, drawn from their spring textures.
 const TREES = { 9: 'tree1_spring', 10: 'tree2_spring', 11: 'tree3_spring' };
 
-async function quietly(fn) {
+export async function quietly(fn) {
   const { log, info } = console;
   console.log = console.info = () => {};
   try {
@@ -65,7 +65,7 @@ function blit(target, source, sx, sy, w, h, dx, dy) {
 }
 
 /** The whole map as pixels: ground, buildings, trees, treetops. */
-async function renderMap(gameDir, map) {
+export async function renderMap(gameDir, map, { trees = true } = {}) {
   const { w, h } = map.layers.Back;
   const png = new PNG({ width: w * TILE, height: h * TILE });
   png.data.fill(0);
@@ -86,7 +86,7 @@ async function renderMap(gameDir, map) {
   await drawLayer('Back');
   await drawLayer('Buildings');
   const paths = map.layers.Paths;
-  if (paths) {
+  if (paths && trees) {
     for (let i = 0; i < w * h; i++) {
       const name = TREES[paths.tiles[i]?.index];
       const image = name && (await texture(gameDir, `TerrainFeatures/${name}`));
@@ -112,7 +112,7 @@ function chunk(type, data) {
 }
 
 /** Pixel art has few colors: an indexed PNG is a fraction of the size. */
-function encodePng(rgb, w, h) {
+export function encodePng(rgb, w, h) {
   const palette = new Map();
   const indexes = Buffer.alloc((w + 1) * h);
   for (let y = 0; y < h; y++) {

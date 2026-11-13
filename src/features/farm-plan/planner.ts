@@ -295,15 +295,21 @@ function categoryMemo() {
 }
 
 /** Everything in a planner layout, as it is drawn (no comparison with the save). */
-export function planEntries(plan: PlannerPlan): MapEntry[] {
+export function planEntries(plan: PlannerPlan, offset: [number, number] = [0, 0]): MapEntry[] {
   const category = categoryMemo();
   const out: MapEntry[] = [];
   for (const t of [...plan.tiles, ...plan.flooring]) {
     const type = canon(t.type);
-    out.push({ x: Math.round(t.x / 16), y: Math.round(t.y / 16), names: [type], category: category(type) });
+    out.push({ x: Math.round(t.x / 16) + offset[0], y: Math.round(t.y / 16) + offset[1], names: [type], category: category(type) });
   }
-  for (const b of plan.buildings) out.push({ x: Math.round(b.x / 16), y: Math.round(b.y / 16), names: [b.type], category: 'buildings', building: true });
+  for (const b of plan.buildings) out.push({ x: Math.round(b.x / 16) + offset[0], y: Math.round(b.y / 16) + offset[1], names: [b.type], category: 'buildings', building: true });
   return out;
+}
+
+/** The planned things that aren't there yet, where the plan puts them in the save (shown faded on the farm). */
+export function missingEntries(result: Comparison): MapEntry[] {
+  const category = categoryMemo();
+  return result.cells.filter((c) => !c.done).map((c) => ({ x: c.x, y: c.y, names: [c.type], category: category(c.type) }));
 }
 
 /** Everything in the save's layout, as it is drawn. */
