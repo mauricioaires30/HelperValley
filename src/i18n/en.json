@@ -1365,7 +1365,6 @@
       "kicked": "The host removed you from the room."
     },
     "you": "you",
-    "notLive": "NOT LIVE",
     "notLiveHint": "The HelperValley app is closed: the site shows the last copy and doesn't update when the game saves. Open the app to go live again.",
     "notLiveGuestHint": "The host's app is closed: you see the last copy they sent, not updating live.",
     "kick": "Kick",

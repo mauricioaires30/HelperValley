@@ -1365,7 +1365,6 @@
       "kicked": "O anfitrião te tirou da sala."
     },
     "you": "você",
-    "notLive": "NÃO AO VIVO",
     "notLiveHint": "O app HelperValley está fechado: o site mostra a última cópia e não atualiza quando o jogo salva. Abra o app para voltar ao vivo.",
     "notLiveGuestHint": "O app do anfitrião está fechado: você vê a última cópia que ele mandou, sem atualizar ao vivo.",
     "kick": "Expulsar",
