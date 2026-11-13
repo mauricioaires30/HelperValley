@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import { CURSOR_IDLE_MS, CURSOR_MS } from './protocol';
 import { locate, place, useCursors } from './cursors';
 import { useShareStore } from './room';
-import { Tooltip } from '@/ui';
 import './share.css';
 
 /** Tells the room which page this tab is on, and sends this mouse to whoever is on the same page. */
@@ -115,9 +114,11 @@ export function PresenceDots({ to, exact = false }: { to: string; exact?: boolea
   return (
     <span className="presence-dots">
       {here.map((p) => (
-        <Tooltip key={p.clientId} text={p.nick}>
-          <span className="presence-dot" style={{ background: p.color ?? '#999' }} aria-label={p.nick} role="img" />
-        </Tooltip>
+        // The name shows on hover in the person's own color, like the label on their cursor.
+        <span key={p.clientId} className="presence-mark" style={{ ['--color' as string]: p.color ?? '#999' }} aria-label={p.nick} role="img">
+          <span className="presence-dot" />
+          <span className="presence-name">{p.nick}</span>
+        </span>
       ))}
     </span>
   );
