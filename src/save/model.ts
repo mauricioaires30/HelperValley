@@ -77,6 +77,8 @@ export interface QuestState {
   /** Where to go or where the lost item is. */
   location?: string;
   tile?: [number, number];
+  /** A lost item already picked up: now it goes back to the NPC. */
+  found?: boolean;
 }
 
 /** A special order from the town board or Mr. Qi (shared by the farm). */

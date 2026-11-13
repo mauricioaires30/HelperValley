@@ -112,6 +112,7 @@ function questState(q: XmlNode): QuestState {
     monster: text(q.monsterName) || undefined,
     location: text(q.locationOfItem) || text(q.whereToGo) || undefined,
     tile: tileX ? [num(q.tileX), num(q.tileY)] : undefined,
+    found: bool(q.itemFound) || undefined,
   };
 }
 

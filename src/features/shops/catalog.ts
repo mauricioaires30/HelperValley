@@ -12,7 +12,15 @@ export interface ShopInfo {
   open?: (day: ShopDay, save: SaveData) => boolean;
   /** Stock changes from day to day (random picks). */
   rotates?: boolean;
+  /**
+   * Usual opening hours, game time (2600 = 2am). The game opens a shop while its owner stands at the
+   * counter, which follows their schedule; these are the hours the wiki lists. Omitted = all day.
+   */
+  hours?: [number, number];
 }
+
+/** Whether a shop is open at a game time, given that it's open that day. */
+export const openAt = (shop: ShopInfo, time: number) => !shop.hours || (time >= shop.hours[0] && time < shop.hours[1]);
 
 /** Where a shop is, to group the tabs. */
 export const SHOP_AREAS = ['town', 'farmLife', 'away', 'island', 'visitors', 'festivals'] as const;
@@ -60,32 +68,32 @@ export const ccIsWarehouse = (save: SaveData) =>
   hasFlag(save, 'JojaMember') && ['jojaBoilerRoom', 'jojaCraftsRoom', 'jojaFishTank', 'jojaPantry', 'jojaVault'].every((f) => hasFlag(save, f));
 
 export const SHOPS: ShopInfo[] = [
-  { id: 'SeedShop', npc: 'Pierre', rotates: true, open: (d, save) => weekday(d) !== 2 || ccDone(save) },
-  { id: 'Joja', npc: 'Morris', rotates: true, open: (_, save) => !jojaMartGone(save) },
-  { id: 'AnimalShop', npc: 'Marnie', open: (d) => ![0, 1].includes(weekday(d)) },
-  { id: 'Carpenter', npc: 'Robin', rotates: true, open: (d) => weekday(d) !== 1 },
-  { id: 'Blacksmith', npc: 'Clint' },
-  { id: 'FishShop', npc: 'Willy' },
-  { id: 'Saloon', npc: 'Gus', rotates: true },
-  { id: 'Hospital', npc: 'Harvey' },
+  { id: 'SeedShop', npc: 'Pierre', rotates: true, open: (d, save) => weekday(d) !== 2 || ccDone(save), hours: [900, 1700] },
+  { id: 'Joja', npc: 'Morris', rotates: true, open: (_, save) => !jojaMartGone(save), hours: [900, 2300] },
+  { id: 'AnimalShop', npc: 'Marnie', open: (d) => ![0, 1].includes(weekday(d)), hours: [900, 1600] },
+  { id: 'Carpenter', npc: 'Robin', rotates: true, open: (d) => weekday(d) !== 1, hours: [900, 1700] },
+  { id: 'Blacksmith', npc: 'Clint', hours: [900, 1600] },
+  { id: 'FishShop', npc: 'Willy', hours: [900, 1700] },
+  { id: 'Saloon', npc: 'Gus', rotates: true, hours: [1200, 2400] },
+  { id: 'Hospital', npc: 'Harvey', hours: [900, 1500] },
   { id: 'ShadowShop', npc: 'Krobus', rotates: true },
-  { id: 'Sandy', npc: 'Sandy', rotates: true },
+  { id: 'Sandy', npc: 'Sandy', rotates: true, hours: [900, 2350] },
   { id: 'DesertTrade', icon: '(O)60', rotates: true },
   // The cart comes Fridays and Sundays, and to the Night Market and the Desert Festival.
-  { id: 'Traveler', icon: '(O)347', rotates: true, open: (d) => [4, 6].includes(weekday(d)) || on('winter', 15, 16, 17)(d) || on('spring', 15, 16, 17)(d) },
-  { id: 'Wizard', npc: 'Wizard' },
+  { id: 'Traveler', icon: '(O)347', rotates: true, open: (d) => [4, 6].includes(weekday(d)) || on('winter', 15, 16, 17)(d) || on('spring', 15, 16, 17)(d), hours: [600, 2000] },
+  { id: 'Wizard', npc: 'Wizard', hours: [600, 2300] },
   { id: 'Dwarf', npc: 'Dwarf' },
-  { id: 'AdventureShop', npc: 'Marlon' },
+  { id: 'AdventureShop', npc: 'Marlon', hours: [1400, 2600] },
   { id: 'IslandTrade', icon: '(O)830', rotates: true },
   { id: 'ResortBar', npc: 'Gus' },
   { id: 'VolcanoShop', npc: 'Dwarf' },
   { id: 'QiGemShop', npc: 'MrQi' },
-  { id: 'Casino', npc: 'MrQi' },
+  { id: 'Casino', npc: 'MrQi', hours: [900, 2350] },
   { id: 'Bookseller', icon: '(O)Book_Trash' },
   { id: 'Raccoon', icon: '(O)Book_WildSeeds' },
   { id: 'HatMouse', icon: '(H)0' },
-  { id: 'IceCreamStand', icon: '(O)233', open: (d) => d.season === 'summer' },
-  { id: 'BoxOffice', icon: '(O)809' },
+  { id: 'IceCreamStand', icon: '(O)233', open: (d) => d.season === 'summer', hours: [1300, 1700] },
+  { id: 'BoxOffice', icon: '(O)809', hours: [900, 2100] },
   // Festival stalls, on their day only.
   { id: 'Festival_EggFestival_Pierre', npc: 'Pierre', open: on('spring', 13) },
   { id: 'Festival_FlowerDance_Pierre', npc: 'Pierre', open: on('spring', 24) },

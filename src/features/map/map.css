@@ -336,3 +336,18 @@
   image-rendering: pixelated;
   border: 2px solid #5b2b15;
 }
+
+/* Shops: closed ones fade on the map; the hover box says why and when they open. */
+.map-pin__icon--closed {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+
+.shop-hours {
+  font-weight: 700;
+  color: #8a3a2a;
+}
+
+.shop-hours--open {
+  color: #2f7a22;
+}

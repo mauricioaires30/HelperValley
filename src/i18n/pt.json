@@ -648,7 +648,15 @@
       "rain": "Resort fechado: chuva na ilha",
       "festival": "Resort fechado: dia de festival"
     },
-    "visitors": "Na ilha hoje"
+    "visitors": "Na ilha hoje",
+    "shop": {
+      "openNow": "Aberta agora",
+      "closedNow": "Fechada agora",
+      "closedToday": "Fechada neste dia",
+      "opensAt": "Fechada agora · abre às {{time}}",
+      "hours": "Horário: {{from}}–{{to}}",
+      "allDay": "Aberta o dia todo"
+    }
   },
   "prod": {
     "title": "Produção",
@@ -804,6 +812,22 @@
       "(O)900": "Família Lendária (pedido especial do Sr. Qi)",
       "(O)901": "Família Lendária (pedido especial do Sr. Qi)",
       "(O)902": "Família Lendária (pedido especial do Sr. Qi)"
+    },
+    "cond": {
+      "seasons": "Estação",
+      "allYear": "o ano todo",
+      "time": "Horário",
+      "weather": "Clima",
+      "anyWeather": "qualquer clima",
+      "where": "Onde",
+      "level": "Nível de pesca",
+      "biting": "Mordendo agora",
+      "ifWeather": "Morde agora se o clima ajudar",
+      "not": {
+        "season": "Não morde nesta estação",
+        "time": "Não morde neste horário",
+        "weather": "Não morde com este clima"
+      }
     }
   },
   "walnuts": {
