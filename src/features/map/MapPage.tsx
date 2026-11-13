@@ -527,7 +527,7 @@ export function MapPage() {
                       text={
                         <span className="slot-tooltip">
                           <strong>{name(gameData().items[p.id]?.n)}</strong>
-                          <FishWhere id={p.id} hideWhere now={{ season, time, raining: isToday || isTomorrow ? raining : null, location: p.place }} />
+                          <FishWhere id={p.id} now={{ season, time, raining: isToday || isTomorrow ? raining : null, location: p.place }} />
                           {p.specific && <PlacePicture location={p.place} tile={p.tile} />}
                         </span>
                       }
