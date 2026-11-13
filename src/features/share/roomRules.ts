@@ -66,13 +66,15 @@ const isChecked = (value: unknown): value is Record<string, true> =>
 
 /** A message this role may send, validated; null drops it. Only the host speaks for the whole room. */
 export function accept(role: Role, raw: string): ClientMessage | null {
-  if (raw.length > 64 * 1024) return null;
+  // Plans are the biggest messages (a whole farm's tiles); everything else stays small.
+  if (raw.length > 1024 * 1024) return null;
   let m: Record<string, unknown>;
   try {
     m = JSON.parse(raw) as Record<string, unknown>;
   } catch {
     return null;
   }
+  if (m.type !== 'plan' && raw.length > 64 * 1024) return null;
   if (m.type === 'check' && typeof m.day === 'string' && typeof m.key === 'string' && typeof m.on === 'boolean' && m.key.length <= 200) {
     return { type: 'check', day: m.day, key: m.key, on: m.on };
   }
@@ -85,6 +87,9 @@ export function accept(role: Role, raw: string): ClientMessage | null {
     return null;
   }
   if (role !== 'host') return null;
+  if (m.type === 'plan' && (m.slot === 'farm' || m.slot === 'island') && (m.data === null || (typeof m.data === 'string' && m.data.length <= 512 * 1024)) && typeof m.link === 'string' && m.link.length <= 300) {
+    return { type: 'plan', slot: m.slot, data: m.data, link: m.link };
+  }
   if (m.type === 'checks' && (m.day === null || typeof m.day === 'string') && isChecked(m.checked)) return { type: 'checks', day: m.day, checked: m.checked };
   if (m.type === 'app' && typeof m.live === 'boolean') return { type: 'app', live: m.live };
   if (m.type === 'close') return { type: 'close' };

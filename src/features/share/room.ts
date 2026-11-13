@@ -22,9 +22,11 @@ import {
   saveVersion,
   type Ban,
   type Cursor,
+  type PlanSlot,
   type Peer,
   type Refusal,
   type ServerMessage,
+  type SharedPlan,
 } from './protocol';
 
 /**
@@ -64,6 +66,8 @@ interface ShareState {
   locked: boolean;
   /** For the host: banned browsers. */
   bans: Ban[];
+  /** The plans in this room: the host's, shared with the farmhands. */
+  plans: Partial<Record<PlanSlot, SharedPlan>>;
   error: ShareError;
   host(): void;
   join(code: string, nick: string): void;
@@ -76,6 +80,8 @@ interface ShareState {
   ban(clientId: string): void;
   unban(browser: string): void;
   setLocked(locked: boolean): void;
+  /** The host shares a plan for a slot (null clears it). Only the host's reach farmhands. */
+  sharePlan(slot: PlanSlot, plan: SharedPlan | null): void;
   /** Closes this room for everyone and opens a new one with another code. */
   newCode(): void;
 }
@@ -153,6 +159,14 @@ if (typeof window !== 'undefined') {
   window.addEventListener('pagehide', () => socket?.close(1000, 'bye'));
 }
 
+/** The room's plans with one slot changed. */
+const withPlan = (plans: Partial<Record<PlanSlot, SharedPlan>>, slot: PlanSlot, plan: SharedPlan | null) => {
+  const next = { ...plans };
+  if (plan) next[slot] = plan;
+  else delete next[slot];
+  return next;
+};
+
 export const useShareStore = create<ShareState>((set, get) => {
   const hostAppLive = () => {
     const app = useSaveStore.getState().app;
@@ -199,7 +213,7 @@ export const useShareStore = create<ShareState>((set, get) => {
     const { role } = get();
     if (m.type === 'welcome') {
       attempt = 0;
-      set({ people: [{ ...m.you, route }, ...m.peers], peers: m.peers.filter((p) => p.role === 'guest').length, locked: m.locked, bans: m.bans });
+      set({ people: [{ ...m.you, route }, ...m.peers], peers: m.peers.filter((p) => p.role === 'guest').length, locked: m.locked, bans: m.bans, plans: m.plans });
       send({ type: 'route', route });
       if (role === 'host') {
         set({ status: 'hosting', error: null });
@@ -223,6 +237,8 @@ export const useShareStore = create<ShareState>((set, get) => {
       if (m.day) useChecks.getState().adopt(m.day, m.checked);
     } else if (m.type === 'app') {
       set({ hostApp: m.live });
+    } else if (m.type === 'plan') {
+      set({ plans: withPlan(get().plans, m.slot, m.data === null ? null : { data: m.data, link: m.link }) });
     } else if (m.type === 'lock') {
       set({ locked: m.locked });
     } else if (m.type === 'bans') {
@@ -339,6 +355,7 @@ export const useShareStore = create<ShareState>((set, get) => {
     hostApp: false,
     locked: false,
     bans: [],
+    plans: {},
     error: null,
     kick(clientId) {
       send({ type: 'kick', clientId });
@@ -351,6 +368,10 @@ export const useShareStore = create<ShareState>((set, get) => {
     },
     setLocked(locked) {
       send({ type: 'lock', locked });
+    },
+    sharePlan(slot, plan) {
+      send({ type: 'plan', slot, data: plan?.data ?? null, link: plan?.link ?? '' });
+      set({ plans: withPlan(get().plans, slot, plan) });
     },
     newCode() {
       if (get().role !== 'host') return;
@@ -400,7 +421,7 @@ export const useShareStore = create<ShareState>((set, get) => {
       teardown();
       remember(HOST_KEY, null);
       remember(GUEST_KEY, null);
-      set({ status: 'idle', role: null, code: null, peers: 0, people: [], hostApp: false, locked: false, bans: [], error: null });
+      set({ status: 'idle', role: null, code: null, peers: 0, people: [], hostApp: false, locked: false, bans: [], plans: {}, error: null });
       // Back to this player's own saves.
       if (wasGuest) {
         useSaveStore.getState().leaveShared();

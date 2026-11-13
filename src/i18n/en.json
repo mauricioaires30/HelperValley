@@ -1269,6 +1269,8 @@
     "view": "View",
     "viewOpt": { "compare": "Compare with plan", "plan": "View plan", "farm": "View farm now" },
     "buildingsApprox": "Buildings are drawn at an approximate size.",
+    "viewOnly": "Only the room's host can load or change the plan. You're seeing the plan they shared.",
+    "noPlanShared": "The host hasn't shared a plan yet.",
     "linkPlaceholder": "Plan link: https://stardew.info/planner/...",
     "load": "Load plan",
     "remove": "Remove",

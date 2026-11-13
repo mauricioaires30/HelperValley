@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGameName } from '@/i18n';
+import type { SharedPlan } from '@/features/share/protocol';
+import { useShareStore } from '@/features/share/room';
 import type { SaveData } from '@/save/model';
 import { Progress } from '@/ui';
 import { usePanZoom } from '@/ui/usePanZoom';
@@ -47,6 +49,12 @@ const save = (key: string, value: unknown) => {
   } catch {
     // Too big or private mode: it still works until the page closes.
   }
+};
+
+/** A plan the host shared, as this page keeps it. */
+const fromShared = (p: SharedPlan | undefined): Stored | null => {
+  const plan = p ? parsePlanJson(p.data) : null;
+  return p && plan ? { link: p.link, plan } : null;
 };
 
 /** Which slot a plan belongs to, from its map type. */
@@ -256,13 +264,15 @@ function FullMap({ entries, ignore, describe, label }: { entries: MapEntry[]; ig
   );
 }
 
-function SlotView({ slot, saveData, stored, setStored, options, setOptions }: {
+function SlotView({ slot, saveData, stored, setStored, options, setOptions, readOnly }: {
   slot: (typeof SLOTS)[number];
   saveData: SaveData;
   stored: Stored | null;
   setStored: (s: Stored | null) => void;
   options: Options;
   setOptions: (o: Options) => void;
+  /** Farmhands: they see the host's plan but can't load or change it. */
+  readOnly: boolean;
 }) {
   const { t, i18n } = useTranslation();
   const name = useGameName();
@@ -324,6 +334,9 @@ function SlotView({ slot, saveData, stored, setStored, options, setOptions }: {
 
   return (
     <div className="planner-slot">
+      {readOnly ? (
+        <p className="cc-summary__hint">{t('planner.viewOnly')}</p>
+      ) : (
       <div className="planner-slot__load">
         <input className="shops__search" placeholder={t('planner.linkPlaceholder')} value={input} onChange={(e) => setInput(e.target.value)} />
         <button className="button button--primary" onClick={() => void loadPlan()} disabled={status === 'loading'}>
@@ -341,6 +354,7 @@ function SlotView({ slot, saveData, stored, setStored, options, setOptions }: {
           </button>
         )}
       </div>
+      )}
       {status === 'error' && <p className="farm-warn">{t('planner.bad')}</p>}
       {status === 'needsCopy' && id && (
         <div className="box planner-paste">
@@ -358,7 +372,7 @@ function SlotView({ slot, saveData, stored, setStored, options, setOptions }: {
         </div>
       )}
 
-      {!stored && status === 'idle' && <p className="cc-summary__hint">{t('planner.empty')}</p>}
+      {!stored && status === 'idle' && <p className="cc-summary__hint">{t(readOnly ? 'planner.noPlanShared' : 'planner.empty')}</p>}
 
       <div className="planner-options">
         <span className="tab-group__label">{t('planner.view')}</span>
@@ -460,6 +474,16 @@ export function PlannerCompare({ save: saveData }: { save: SaveData }) {
   const { t } = useTranslation();
   const [slot, setSlot] = useState<SlotId>('farm');
   const [plans, setPlans] = useState<Record<SlotId, Stored | null>>(() => ({ farm: load(storageKey('farm'), null), island: load(storageKey('island'), null) }));
+  const role = useShareStore((s) => s.role);
+  const status = useShareStore((s) => s.status);
+  const sharedPlans = useShareStore((s) => s.plans);
+  const sharePlan = useShareStore((s) => s.sharePlan);
+  const guest = role === 'guest';
+  // Farmhands see the host's plans; their own come back when they leave the room.
+  const shownPlans = useMemo<Record<SlotId, Stored | null>>(
+    () => (guest ? { farm: fromShared(sharedPlans.farm), island: fromShared(sharedPlans.island) } : plans),
+    [guest, sharedPlans, plans],
+  );
   const [options, setOptionsState] = useState<Options>(() => ({ ignore: [], anyCrop: false, show: 'all', ...load<Partial<Options>>(OPTIONS_KEY, {}) }));
   const setOptions = (o: Options) => {
     setOptionsState(o);
@@ -468,12 +492,13 @@ export function PlannerCompare({ save: saveData }: { save: SaveData }) {
   const setStored = (id: SlotId, s: Stored | null) => {
     setPlans((p) => ({ ...p, [id]: s }));
     save(storageKey(id), s);
+    if (role === 'host') sharePlan(id, s ? { data: JSON.stringify(s.plan), link: s.link } : null);
   };
 
   // A plan sent by the bookmark from stardew.info.
   useEffect(() => {
     const onMessage = (e: MessageEvent) => {
-      if (e.origin !== 'https://stardew.info' || e.data?.type !== 'hv-plan') return;
+      if (guest || e.origin !== 'https://stardew.info' || e.data?.type !== 'hv-plan') return;
       const plan = parsePlanJson(String(e.data.data));
       if (!plan) return;
       const target = slotOf(plan);
@@ -484,6 +509,15 @@ export function PlannerCompare({ save: saveData }: { save: SaveData }) {
     return () => window.removeEventListener('message', onMessage);
   });
 
+  // The host's plans go to the room once it's open, and again after a reconnect.
+  useEffect(() => {
+    if (role !== 'host' || status !== 'hosting') return;
+    for (const s of SLOTS) {
+      const p = plans[s.id];
+      sharePlan(s.id, p ? { data: JSON.stringify(p.plan), link: p.link } : null);
+    }
+  }, [role, status]);
+
   const current = SLOTS.find((s) => s.id === slot)!;
   return (
     <div className="planner">
@@ -492,10 +526,11 @@ export function PlannerCompare({ save: saveData }: { save: SaveData }) {
           {SLOTS.map((s) => (
             <button key={s.id} role="tab" aria-selected={s.id === slot} className={s.id === slot ? 'button button--primary' : 'button'} onClick={() => setSlot(s.id)}>
               {t(`planner.slot.${s.id}`)}
-              {plans[s.id] ? ' ✓' : ''}
+              {shownPlans[s.id] ? ' ✓' : ''}
             </button>
           ))}
         </div>
+        {!guest && (
         <a
           className="button planner-bookmark"
           // React won't render a javascript: href, so it's set on the element directly.
@@ -505,9 +540,10 @@ export function PlannerCompare({ save: saveData }: { save: SaveData }) {
         >
           {t('planner.bookmark')}
         </a>
+        )}
       </div>
-      <p className="cc-summary__hint">{t('planner.bookmarkHint')}</p>
-      <SlotView key={slot} slot={current} saveData={saveData} stored={plans[slot]} setStored={(s) => setStored(slot, s)} options={options} setOptions={setOptions} />
+      {!guest && <p className="cc-summary__hint">{t('planner.bookmarkHint')}</p>}
+      <SlotView key={slot} slot={current} saveData={saveData} stored={shownPlans[slot]} setStored={(s) => setStored(slot, s)} options={options} setOptions={setOptions} readOnly={guest} />
     </div>
   );
 }
