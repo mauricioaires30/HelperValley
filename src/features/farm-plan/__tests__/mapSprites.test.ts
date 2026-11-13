@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadTestGameData } from '@/test/gameData';
-import { backgroundFor, mapBounds, spriteBox, spriteFor } from '../mapSprites';
+import { backgroundFor, mapBounds, minTiles, spriteBox, spriteFor } from '../mapSprites';
 import type { MapEntry } from '../planner';
 
 beforeAll(loadTestGameData);
@@ -53,7 +53,10 @@ describe('map window and ground', () => {
   it('picks the game map picture for the farm type', () => {
     expect(backgroundFor('farm', 0)).toBe('FarmMaps/Farm');
     expect(backgroundFor('farm', 1)).toBe('FarmMaps/Farm_Fishing');
+    expect(backgroundFor('farm', 7)).toBe('FarmMaps/Farm_Ranching');
     expect(backgroundFor('farm', 99)).toBe('FarmMaps/Farm');
+    expect(minTiles('farm', 5)).toEqual([80, 80]);
+    expect(minTiles('farm', 99)).toEqual([80, 65]);
     expect(backgroundFor('island', 3)).toBe('FarmMaps/IslandWest');
   });
 });
