@@ -1,5 +1,18 @@
 import { DurableObject } from 'cloudflare:workers';
-import { decodeChunk, PING, PONG, type Checks, type Peer, type ServerMessage } from '../../src/features/share/protocol';
+import {
+  CLOSE_HOST_LEFT,
+  CLOSE_REFUSED,
+  CLOSE_REMOVED,
+  CLOSE_REPLACED,
+  decodeChunk,
+  HOST_GRACE_MS,
+  PING,
+  PONG,
+  type Ban,
+  type Checks,
+  type Peer,
+  type ServerMessage,
+} from '../../src/features/share/protocol';
 import { accept, admit, applyCheck, ROOM_TTL_MS } from '../../src/features/share/roomRules';
 
 export interface Env {
@@ -12,13 +25,18 @@ interface SaveMeta {
   total: number;
 }
 
+/** Who a socket is, kept on the socket itself so it survives hibernation. The browser id stays here, private. */
+type Attached = Peer & { replaced?: boolean; browser?: string | null };
+
 const NO_CHECKS: Checks = { day: null, checked: {} };
+const publicPeer = ({ clientId, nick, role, route, color }: Attached): Peer => ({ clientId, nick, role, route, color });
 
 /**
  * One multiplayer room. Uses the WebSocket Hibernation API: while nobody sends anything the room sleeps
  * (and costs nothing), and pings are answered without waking it. Who each socket is lives in its
  * attachment; the save, the Today list and the app status live in the room's storage, so late joiners
- * and reconnects get them.
+ * and reconnects get them. The room exists while its host is there: when the host stops sharing, or
+ * drops and doesn't come back within HOST_GRACE_MS, the farmhands are sent away.
  */
 export class Room extends DurableObject<Env> {
   constructor(ctx: DurableObjectState, env: Env) {
@@ -30,8 +48,14 @@ export class Room extends DurableObject<Env> {
     return this.ctx.getWebSockets().filter((ws) => ws !== except && ws.readyState === WebSocket.OPEN);
   }
 
-  private peerOf(ws: WebSocket): Peer | null {
-    return (ws.deserializeAttachment() as Peer | null) ?? null;
+  private peerOf(ws: WebSocket): Attached | null {
+    return (ws.deserializeAttachment() as Attached | null) ?? null;
+  }
+
+  private live(except?: WebSocket) {
+    return this.sockets(except)
+      .map((ws) => ({ ws, peer: this.peerOf(ws) }))
+      .filter((e): e is { ws: WebSocket; peer: Attached } => !!e.peer && !e.peer.replaced);
   }
 
   private send(ws: WebSocket, message: ServerMessage | ArrayBuffer) {
@@ -42,55 +66,79 @@ export class Room extends DurableObject<Env> {
     }
   }
 
-  private broadcast(message: ServerMessage | ArrayBuffer, filter: (peer: Peer) => boolean, except?: WebSocket) {
-    for (const ws of this.sockets(except)) {
-      const peer = this.peerOf(ws);
-      if (peer && filter(peer)) this.send(ws, message);
+  private broadcast(message: ServerMessage | ArrayBuffer, filter: (peer: Attached) => boolean, except?: WebSocket) {
+    const body = message instanceof ArrayBuffer ? message : JSON.stringify(message);
+    for (const { ws, peer } of this.live(except)) {
+      if (!filter(peer)) continue;
+      try {
+        ws.send(body);
+      } catch {
+        // Already closing.
+      }
     }
+  }
+
+  /** The host is gone for good: send everyone away and forget what was shared (the code stays the host's). */
+  private async closeRoom() {
+    for (const { ws, peer } of this.live()) {
+      if (peer.role !== 'guest') continue;
+      ws.serializeAttachment({ ...peer, replaced: true });
+      ws.close(CLOSE_HOST_LEFT, 'host-left');
+    }
+    const meta = await this.ctx.storage.get<SaveMeta>('save');
+    const keys = ['save', 'checks', 'app', 'hostGoneAt', 'locked', ...Array.from({ length: meta?.total ?? 0 }, (_, i) => `chunk:${i}`)];
+    await this.ctx.storage.delete(keys);
   }
 
   async fetch(request: Request): Promise<Response> {
     const url = new URL(request.url);
     const token = (await this.ctx.storage.get<string>('token')) ?? null;
-    const peers = this.sockets()
-      .map((ws) => this.peerOf(ws))
-      .filter((p): p is Peer => !!p);
+    const hostGoneAt = (await this.ctx.storage.get<number>('hostGoneAt')) ?? null;
+    const present = this.live();
+    const hostPresent = present.some((e) => e.peer.role === 'host') || (hostGoneAt !== null && Date.now() - hostGoneAt < HOST_GRACE_MS);
+    const locked = (await this.ctx.storage.get<boolean>('locked')) ?? false;
+    const bans = (await this.ctx.storage.get<Ban[]>('bans')) ?? [];
+    const browser = url.searchParams.get('browser');
     const admission = admit(
-      { role: url.searchParams.get('role'), clientId: url.searchParams.get('clientId'), nick: url.searchParams.get('nick'), token: url.searchParams.get('token') },
-      { token, peers },
+      { role: url.searchParams.get('role'), clientId: url.searchParams.get('clientId'), nick: url.searchParams.get('nick'), token: url.searchParams.get('token'), browser },
+      { token, peers: present.map((e) => e.peer), hostPresent, locked, bans: bans.map((b) => b.browser) },
     );
 
     const [client, server] = Object.values(new WebSocketPair());
     if ('refuse' in admission) {
       // Accepted only to tell the browser why: a failed upgrade carries no reason.
       server.accept();
-      server.close(4000, admission.refuse);
+      server.close(CLOSE_REFUSED, admission.refuse);
       return new Response(null, { status: 101, webSocket: client });
     }
 
     const { peer, claim } = admission;
     if (claim) await this.ctx.storage.put('token', url.searchParams.get('token'));
-    await this.ctx.storage.deleteAlarm();
+    if (peer.role === 'host') {
+      // Back in time: the room stays open.
+      await this.ctx.storage.delete('hostGoneAt');
+      await this.ctx.storage.deleteAlarm();
+    } else if (hostGoneAt === null) {
+      // Someone's here: the room isn't forgotten (a host grace timer, if any, keeps running).
+      await this.ctx.storage.deleteAlarm();
+    }
 
     // The same browser reconnecting, or the host opening the room in another tab, replaces the old connection.
-    for (const ws of this.sockets()) {
-      const other = this.peerOf(ws);
-      if (other && (other.clientId === peer.clientId || (peer.role === 'host' && other.role === 'host'))) {
+    for (const { ws, peer: other } of present) {
+      if (other.clientId === peer.clientId || (peer.role === 'host' && other.role === 'host')) {
         ws.serializeAttachment({ ...other, replaced: true });
-        ws.close(4001, 'replaced');
+        ws.close(CLOSE_REPLACED, 'replaced');
       }
     }
 
     this.ctx.acceptWebSocket(server);
-    server.serializeAttachment(peer);
+    server.serializeAttachment({ ...peer, browser });
 
-    const others = this.sockets(server)
-      .map((ws) => this.peerOf(ws))
-      .filter((p): p is Peer & { replaced?: boolean } => !!p && !(p as { replaced?: boolean }).replaced);
+    const others = this.live(server).map((e) => publicPeer(e.peer));
     const checks = (await this.ctx.storage.get<Checks>('checks')) ?? NO_CHECKS;
     const app = (await this.ctx.storage.get<boolean>('app')) ?? false;
     const hostOnline = peer.role === 'host' || others.some((p) => p.role === 'host');
-    this.send(server, { type: 'welcome', you: peer, peers: others.map(({ clientId, nick, role }) => ({ clientId, nick, role })), hostOnline, checks, app: hostOnline && app });
+    this.send(server, { type: 'welcome', you: peer, peers: others, hostOnline, checks, app: hostOnline && app, locked, bans: peer.role === 'host' ? bans : [] });
 
     if (peer.role === 'guest') {
       // The last save the host sent, for whoever joins late.
@@ -111,7 +159,7 @@ export class Room extends DurableObject<Env> {
 
   async webSocketMessage(ws: WebSocket, message: string | ArrayBuffer) {
     const peer = this.peerOf(ws);
-    if (!peer) return;
+    if (!peer || peer.replaced) return;
 
     if (message instanceof ArrayBuffer) {
       if (peer.role !== 'host') return;
@@ -133,38 +181,88 @@ export class Room extends DurableObject<Env> {
 
     const m = accept(peer.role, message);
     if (!m) return;
-    if (m.type === 'check') {
-      const checks = (await this.ctx.storage.get<Checks>('checks')) ?? NO_CHECKS;
-      const next = applyCheck(checks, m.day, m.key, m.on);
-      if (!next) return;
-      await this.ctx.storage.put('checks', next);
-      this.broadcast(m, () => true, ws);
-    } else if (m.type === 'checks') {
-      await this.ctx.storage.put('checks', { day: m.day, checked: m.checked });
-      this.broadcast(m, (p) => p.role === 'guest', ws);
-    } else if (m.type === 'app') {
-      await this.ctx.storage.put('app', m.live);
-      this.broadcast(m, (p) => p.role === 'guest', ws);
+    switch (m.type) {
+      case 'cur':
+        // Only to the people on the same page; never stored.
+        if (peer.route) this.broadcast({ ...m, clientId: peer.clientId }, (p) => p.route === peer.route, ws);
+        return;
+      case 'route':
+        ws.serializeAttachment({ ...peer, route: m.route });
+        this.broadcast({ type: 'route', clientId: peer.clientId, route: m.route }, () => true, ws);
+        return;
+      case 'check': {
+        const checks = (await this.ctx.storage.get<Checks>('checks')) ?? NO_CHECKS;
+        const next = applyCheck(checks, m.day, m.key, m.on);
+        if (!next) return;
+        await this.ctx.storage.put('checks', next);
+        this.broadcast(m, () => true, ws);
+        return;
+      }
+      case 'checks':
+        await this.ctx.storage.put('checks', { day: m.day, checked: m.checked });
+        this.broadcast(m, (p) => p.role === 'guest', ws);
+        return;
+      case 'app':
+        await this.ctx.storage.put('app', m.live);
+        this.broadcast(m, (p) => p.role === 'guest', ws);
+        return;
+      case 'kick':
+      case 'ban': {
+        const target = this.live().find((e) => e.peer.clientId === m.clientId && e.peer.role === 'guest');
+        if (!target) return;
+        if (m.type === 'ban' && target.peer.browser) {
+          const bans = ((await this.ctx.storage.get<Ban[]>('bans')) ?? []).filter((b) => b.browser !== target.peer.browser);
+          bans.push({ browser: target.peer.browser, nick: target.peer.nick });
+          await this.ctx.storage.put('bans', bans);
+          this.send(ws, { type: 'bans', bans });
+        }
+        // Leaves like anyone else (the others see them go), but told why.
+        target.ws.close(CLOSE_REMOVED, m.type === 'ban' ? 'banned' : 'kicked');
+        return;
+      }
+      case 'unban': {
+        const bans = ((await this.ctx.storage.get<Ban[]>('bans')) ?? []).filter((b) => b.browser !== m.browser);
+        await this.ctx.storage.put('bans', bans);
+        this.send(ws, { type: 'bans', bans });
+        return;
+      }
+      case 'lock':
+        await this.ctx.storage.put('locked', m.locked);
+        this.send(ws, { type: 'lock', locked: m.locked });
+        return;
+      case 'close':
+        // "Stop sharing": the room closes for everyone right away.
+        ws.serializeAttachment({ ...peer, replaced: true });
+        await this.closeRoom();
+        ws.close(1000, 'closed');
+        await this.ctx.storage.setAlarm(Date.now() + ROOM_TTL_MS);
+        return;
     }
   }
 
   private async gone(ws: WebSocket) {
-    const peer = this.peerOf(ws) as (Peer & { replaced?: boolean }) | null;
+    const peer = this.peerOf(ws);
     try {
       ws.close(1000, 'bye');
     } catch {
       // Already closed.
     }
-    const rest = this.sockets(ws);
+    const rest = this.live(ws);
     if (peer && !peer.replaced) {
-      this.broadcast({ type: 'peer', peer: { clientId: peer.clientId, nick: peer.nick, role: peer.role }, online: false }, () => true, ws);
-      if (peer.role === 'host' && !rest.some((s) => this.peerOf(s)?.role === 'host')) {
+      this.broadcast({ type: 'peer', peer: publicPeer(peer), online: false }, () => true, ws);
+      if (peer.role === 'host' && !rest.some((e) => e.peer.role === 'host')) {
         await this.ctx.storage.put('app', false);
         this.broadcast({ type: 'host', online: false }, (p) => p.role === 'guest', ws);
+        if (rest.length > 0) {
+          // Maybe just a reload: the farmhands wait a little before the room closes.
+          await this.ctx.storage.put('hostGoneAt', Date.now());
+          await this.ctx.storage.setAlarm(Date.now() + HOST_GRACE_MS);
+          return;
+        }
       }
     }
-    // Nobody left: the room is forgotten in a day unless someone comes back.
-    if (rest.length === 0) await this.ctx.storage.setAlarm(Date.now() + ROOM_TTL_MS);
+    // Nobody left: the room is forgotten in a day unless the host comes back.
+    if (rest.length === 0 && (await this.ctx.storage.get('hostGoneAt')) === undefined) await this.ctx.storage.setAlarm(Date.now() + ROOM_TTL_MS);
   }
 
   async webSocketClose(ws: WebSocket) {
@@ -176,6 +274,14 @@ export class Room extends DurableObject<Env> {
   }
 
   async alarm() {
+    const hostGoneAt = await this.ctx.storage.get<number>('hostGoneAt');
+    if (hostGoneAt !== undefined) {
+      if (this.live().some((e) => e.peer.role === 'host')) return;
+      // The host didn't come back.
+      await this.closeRoom();
+      await this.ctx.storage.setAlarm(Date.now() + ROOM_TTL_MS);
+      return;
+    }
     if (this.ctx.getWebSockets().length === 0) await this.ctx.storage.deleteAll();
   }
 }

@@ -10,6 +10,7 @@ import { RequireSave } from '@/features/saves/RequireSave';
 import { NpcHead, SeasonIcon, Tooltip } from '@/ui';
 import { SEASONS, seasonDays } from './calendar';
 import './calendar.css';
+import { PresenceDots } from '@/features/share/Presence';
 
 const WEEKDAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const;
 
@@ -40,6 +41,7 @@ export function CalendarPage() {
         {TABS.map((id) => (
           <NavLink key={id} to={`/calendar/${id}`} className={({ isActive }) => (isActive ? 'button button--primary' : 'button')}>
             {t(`calendar.tab.${id}`)}
+            <PresenceDots to={`/calendar/${id}`} exact />
           </NavLink>
         ))}
       </nav>

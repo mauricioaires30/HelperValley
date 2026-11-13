@@ -10,6 +10,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { ShareChip } from '@/features/share/SharePanel';
 import { LiveBadge } from '@/features/share/LiveBadge';
 import { useShareStore } from '@/features/share/room';
+import { CursorLayer, PresenceDots, PresenceSync } from '@/features/share/Presence';
 import { useSaveStore } from '@/store/saveStore';
 import './shell.css';
 
@@ -86,6 +87,7 @@ export function AppShell() {
                   <NavLink to={item.to} end={item.to === '/'} className="side-tab">
                     <NavIconView icon={item.icon} />
                     <span>{t(`nav.${item.key}`)}</span>
+                    <PresenceDots to={item.to} />
                   </NavLink>
                 </li>
               ))}
@@ -120,6 +122,8 @@ export function AppShell() {
         </main>
       </div>
       <SaveUpdatedToast />
+      <PresenceSync />
+      <CursorLayer />
     </div>
   );
 }

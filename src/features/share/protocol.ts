@@ -18,27 +18,72 @@ export interface Peer {
   clientId: string;
   nick: string;
   role: Role;
+  /** The page they're on, like "/map". */
+  route?: string;
+  /** Their color in the room (squares on the tabs, cursor): white for the host. */
+  color?: string;
 }
+
+/** A banned browser, as the host sees it. */
+export interface Ban {
+  browser: string;
+  nick: string;
+}
+
+/** Stardew Valley 1.6 has up to 8 players: the host and 7 farmhands. */
+export const MAX_GUESTS = 7;
+export const HOST_COLOR = '#ffffff';
+/** Farmhand colors, all easy to tell apart and readable on the brown menus. */
+export const GUEST_COLORS = ['#e5484d', '#3e8ef7', '#30a46c', '#f5c518', '#9b5de5', '#f76b15', '#12a5b8', '#e93d82'];
 
 export type Checks = { day: string | null; checked: Record<string, true> };
 
-/** Why the server refused or ended a connection (sent as the close reason). */
-export type Refusal = 'nick-taken' | 'nick-invalid' | 'room-taken' | 'no-room' | 'bad-request' | 'origin';
+/**
+ * Why the server refused or ended a connection (sent as the close reason, code 4000).
+ * "host-left" (code 4002) closes the room for the farmhands once the host is gone.
+ */
+export type Refusal = 'nick-taken' | 'nick-invalid' | 'room-taken' | 'no-room' | 'bad-request' | 'origin' | 'host-left' | 'room-full' | 'locked' | 'banned' | 'kicked';
+export const CLOSE_REFUSED = 4000;
+export const CLOSE_REPLACED = 4001;
+export const CLOSE_HOST_LEFT = 4002;
+/** The host sent this farmhand away (reason "kicked" or "banned"). */
+export const CLOSE_REMOVED = 4003;
+/** A host who drops without "stop sharing" (reload, network) has this long to come back before the room closes. */
+export const HOST_GRACE_MS = 45_000;
+
+/** A mouse position: `a` is what it's relative to (the page, or a part of it like the map), x/y are fractions. */
+export type Cursor = { a: string; x: number; y: number };
 
 /** Server → client. */
 export type ServerMessage =
-  | { type: 'welcome'; you: Peer; peers: Peer[]; hostOnline: boolean; checks: Checks; app: boolean }
+  | { type: 'welcome'; you: Peer; peers: Peer[]; hostOnline: boolean; checks: Checks; app: boolean; locked: boolean; bans: Ban[] }
+  | { type: 'lock'; locked: boolean }
+  | { type: 'bans'; bans: Ban[] }
   | { type: 'peer'; peer: Peer; online: boolean }
   | { type: 'host'; online: boolean }
   | { type: 'check'; day: string; key: string; on: boolean }
   | { type: 'checks'; day: string | null; checked: Record<string, true> }
-  | { type: 'app'; live: boolean };
+  | { type: 'app'; live: boolean }
+  | { type: 'route'; clientId: string; route: string }
+  | ({ type: 'cur'; clientId: string } & (Cursor | { hide: true }));
 
-/** Client → server. Only the host may send checks (the whole list) and app. */
+/** Client → server. Only the host may send checks (the whole list), app, close and the moderation messages. */
 export type ClientMessage =
   | { type: 'check'; day: string; key: string; on: boolean }
   | { type: 'checks'; day: string | null; checked: Record<string, true> }
-  | { type: 'app'; live: boolean };
+  | { type: 'app'; live: boolean }
+  | { type: 'route'; route: string }
+  | ({ type: 'cur' } & (Cursor | { hide: true }))
+  | { type: 'close' }
+  | { type: 'kick'; clientId: string }
+  | { type: 'ban'; clientId: string }
+  | { type: 'unban'; browser: string }
+  | { type: 'lock'; locked: boolean };
+
+/** Cursors go out at most this often (12 per second). */
+export const CURSOR_MS = 1000 / 12;
+/** A cursor that hasn't moved for this long is hidden. */
+export const CURSOR_IDLE_MS = 6000;
 
 const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 

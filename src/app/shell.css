@@ -397,6 +397,17 @@ html[data-theme='night'] body::before {
   animation: live-pulse 1.6s ease-in-out infinite;
 }
 
+.live-badge--off {
+  color: var(--text);
+  opacity: 0.75;
+  cursor: help;
+}
+
+.live-badge--off .live-badge__dot {
+  background: #8a8a8a;
+  animation: none;
+}
+
 @keyframes live-pulse {
   50% {
     opacity: 0.35;

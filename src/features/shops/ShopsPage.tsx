@@ -12,6 +12,7 @@ import { groupStock } from './groups';
 import { Constructions, ShopAnimals, ToolUpgrades } from './Constructions';
 import { shopStock, type ShopDay, type ShopsData, type StockEntry } from './stock';
 import './shops.css';
+import { PresenceDots } from '@/features/share/Presence';
 
 /** Data/Shops currency: 0 gold, 1 star tokens, 2 Qi coins, 4 Qi gems. */
 const CURRENCY_ICON: Record<number, string | undefined> = {
@@ -153,6 +154,7 @@ function Shops({ save, player }: { save: SaveData; player: Player }) {
                     <ShopIcon info={s} scale={1} />
                     {t(`shops.name.${s.id}`)}
                     {matches && <em>({matches[s.id]})</em>}
+                    <PresenceDots to={`/shops/${s.id}`} exact />
                   </button>
                 ))}
               </div>

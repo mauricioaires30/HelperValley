@@ -6,6 +6,7 @@ import { StardropsTab } from './StardropsTab';
 import { PerfectionTab } from './Perfection';
 import { GameCollectionTab, LettersTab, NotesTab, type GameTab } from './GameCollections';
 import './collections.css';
+import { PresenceDots } from '@/features/share/Presence';
 
 /** Same tabs as the game's collections menu, then the bigger trackers. */
 const GAME_TABS = ['shipped', 'fish', 'artifacts', 'minerals', 'cooking', 'crafting', 'achievements', 'letters', 'notes'] as const;
@@ -23,6 +24,7 @@ export function CollectionsPage() {
   const link = (id: string) => (
     <NavLink key={id} to={`/collections/${id}`} className={({ isActive }) => (isActive ? 'button button--primary' : 'button')}>
       {t(`collections.tab.${id}`)}
+      <PresenceDots to={`/collections/${id}`} exact />
     </NavLink>
   );
 
