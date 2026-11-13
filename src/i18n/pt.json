@@ -1268,7 +1268,7 @@
     },
     "view": "Visualizar",
     "viewOpt": { "compare": "Comparar com o plano", "plan": "Ver o plano", "farm": "Ver a fazenda agora" },
-    "buildingsApprox": "Construções aparecem com tamanho aproximado.",
+    "artNote": "Objetos, móveis e construções usam a arte do jogo. Plantações, árvores, pisos e cercas mostram o ícone do item (colheita, semente, muda); o que não tem arte aparece como quadrado colorido.",
     "viewOnly": "Só o anfitrião da sala pode carregar ou trocar o plano. Aqui você vê o plano que ele compartilhou.",
     "noPlanShared": "O anfitrião ainda não compartilhou um plano.",
     "linkPlaceholder": "Link do plano: https://stardew.info/planner/...",

@@ -241,7 +241,7 @@ export function comparePlan(plan: PlannerPlan, layout: LayoutState | undefined, 
 }
 
 /** Planner floors and paths named differently from their items. */
-const TYPE_ITEM: Record<string, string> = {
+export const TYPE_ITEM: Record<string, string> = {
   cobblestone: '(O)411',
   'steppingstone-path': '(O)415',
   'wooden-floor': '(O)328',
