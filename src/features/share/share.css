@@ -209,7 +209,7 @@
   position: absolute;
   /* Entirely above the edge, so it never covers the label. */
   top: -11px;
-  right: 10px;
+  left: 10px;
   z-index: 2;
   display: flex;
   gap: 2px;
