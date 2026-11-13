@@ -20,8 +20,18 @@ export interface SaveSource {
 
 export const supportsDirectoryAccess = () => typeof window !== 'undefined' && 'showDirectoryPicker' in window;
 
-/** A save folder holds "SaveGameInfo" plus a main file named after the folder. */
-const isSaveFolder = (names: Set<string>, folder: string) => names.has('SaveGameInfo') && names.has(folder);
+/**
+ * The main file of a save folder: the one named after the folder, as the game writes it, or else the one
+ * file that looks like a save ("Name_123456789"), which is what a folder duplicated in Windows ("… - Copia")
+ * keeps. Null when the folder isn't a save.
+ */
+export function mainFileName(names: Set<string>, folder: string): string | null {
+  if (!names.has('SaveGameInfo')) return null;
+  if (names.has(folder)) return folder;
+  const candidates = [...names].filter((n) => /^.+_\d+$/.test(n) && !n.startsWith('SaveGameInfo') && !n.startsWith('.'));
+  return candidates.length === 1 ? candidates[0] : null;
+}
+const isSaveFolder = (names: Set<string>, folder: string) => mainFileName(names, folder) !== null;
 
 async function childNames(dir: FileSystemDirectoryHandle): Promise<Set<string>> {
   const names = new Set<string>();
@@ -31,6 +41,7 @@ async function childNames(dir: FileSystemDirectoryHandle): Promise<Set<string>> 
 
 class DirectorySource implements SaveSource {
   private folders = new Map<string, FileSystemDirectoryHandle>();
+  private mains = new Map<string, string>();
 
   constructor(private root: FileSystemDirectoryHandle) {}
 
@@ -48,16 +59,23 @@ class DirectorySource implements SaveSource {
   /** Accepts the StardewValley folder, its Saves folder, or a single save folder. */
   async listSaves(): Promise<SaveSummary[]> {
     this.folders.clear();
+    this.mains.clear();
     let root = this.root;
     const names = await childNames(root);
-    if (isSaveFolder(names, root.name)) {
+    const own = mainFileName(names, root.name);
+    if (own) {
       this.folders.set(root.name, root);
+      this.mains.set(root.name, own);
     } else {
       if (names.has('Saves')) root = await root.getDirectoryHandle('Saves');
       for await (const entry of root.values()) {
         if (entry.kind !== 'directory') continue;
         const dir = entry as FileSystemDirectoryHandle;
-        if (isSaveFolder(await childNames(dir), dir.name)) this.folders.set(dir.name, dir);
+        const main = mainFileName(await childNames(dir), dir.name);
+        if (main) {
+          this.folders.set(dir.name, dir);
+          this.mains.set(dir.name, main);
+        }
       }
     }
 
@@ -88,7 +106,7 @@ class DirectorySource implements SaveSource {
   private async mainFile(folder: string): Promise<File> {
     const dir = this.folders.get(folder);
     if (!dir) throw new Error(`Save not found: ${folder}`);
-    return (await dir.getFileHandle(folder)).getFile();
+    return (await dir.getFileHandle(this.mains.get(folder) ?? folder)).getFile();
   }
 
   async readSave(folder: string) {

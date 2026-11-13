@@ -41,9 +41,21 @@ pub struct Report {
 }
 
 /// A save folder holds "SaveGameInfo" plus a main file named after the folder.
+/// A save folder: SaveGameInfo plus the main file, named after the folder as the game writes it, or else
+/// the one file that looks like a save ("Name_123456789"), as in a folder duplicated in Windows ("… - Copia").
 fn is_save_folder(dir: &Path) -> bool {
     let Some(name) = dir.file_name() else { return false };
-    dir.join("SaveGameInfo").is_file() && dir.join(name).is_file()
+    if !dir.join("SaveGameInfo").is_file() {
+        return false;
+    }
+    if dir.join(name).is_file() {
+        return true;
+    }
+    let Ok(entries) = fs::read_dir(dir) else { return false };
+    let looks_like_save = |n: &str| {
+        !n.starts_with('.') && !n.starts_with("SaveGameInfo") && n.rsplit_once('_').is_some_and(|(head, digits)| !head.is_empty() && !digits.is_empty() && digits.bytes().all(|b| b.is_ascii_digit()))
+    };
+    entries.flatten().filter(|e| e.file_type().is_ok_and(|t| t.is_file()) && looks_like_save(&e.file_name().to_string_lossy())).count() == 1
 }
 
 /// Temporary files of the game or of this app.
@@ -411,6 +423,23 @@ mod tests {
         let report = sync(&[game], &copy).unwrap();
         assert_eq!(report.removed, 0);
         assert!(elsewhere.join("Farm_9/Farm_9").is_file());
+    }
+
+    #[test]
+    fn copies_a_save_duplicated_in_windows() {
+        let tmp = tempfile::tempdir().unwrap();
+        let (game, copy) = (tmp.path().join("game"), tmp.path().join("copy"));
+        save(&game, "Farm_1", "a");
+        // Windows' "duplicate": a new folder name, the files inside keep the old one.
+        let dup = game.join("Farm_1 - Copia");
+        fs::create_dir_all(&dup).unwrap();
+        for file in ["SaveGameInfo", "Farm_1"] {
+            fs::copy(game.join("Farm_1").join(file), dup.join(file)).unwrap();
+        }
+        settle();
+        let report = sync(&[game], &copy).unwrap();
+        assert_eq!(report.saves, 2);
+        assert!(copy.join("Farm_1 - Copia/Farm_1").is_file());
     }
 
     #[test]

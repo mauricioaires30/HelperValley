@@ -1,6 +1,6 @@
 [package]
 name = "helpervalley"
-version = "0.1.2"
+version = "0.1.3"
 description = "Copies your Stardew Valley saves where the HelperValley website can read them"
 authors = ["mauricioaires30"]
 edition = "2021"
