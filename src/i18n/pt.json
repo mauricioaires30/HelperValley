@@ -1266,6 +1266,9 @@
       "farm": "Fazenda",
       "island": "Ilha (fazenda da ilha)"
     },
+    "view": "Visualizar",
+    "viewOpt": { "compare": "Comparar com o plano", "plan": "Ver o plano", "farm": "Ver a fazenda agora" },
+    "buildingsApprox": "Construções aparecem com tamanho aproximado.",
     "linkPlaceholder": "Link do plano: https://stardew.info/planner/...",
     "load": "Carregar plano",
     "remove": "Remover",
@@ -1275,6 +1278,7 @@
     "buildings": "Construções ({{count}})",
     "count": "{{have}}/{{planned}}",
     "names": {
+      "tilled-soil": "Terra arada",
       "house": "Casa",
       "greenhouse-repaired": "Estufa",
       "grass": "Grama",
@@ -1294,6 +1298,8 @@
     "bookmarkHint": "Arraste para os favoritos e clique nele em um plano do stardew.info.",
     "ignore": "Ignorar:",
     "cat": {
+      "soil": "Terra arada",
+      "buildings": "Construções",
       "crops": "Plantações",
       "fences": "Cercas",
       "grass": "Grama",
