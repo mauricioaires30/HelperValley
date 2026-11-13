@@ -135,6 +135,8 @@ let unsubscribeSave: (() => void) | null = null;
 let assembler = new ChunkAssembler();
 /** The page this tab shows, like "/map". */
 let route = '/';
+/** This tab's last mouse position, sent again to whoever arrives on the same page. */
+let lastCursor: Cursor | null = null;
 
 // The Today list follows the save on screen, and a mark made here goes to the room.
 const followDay = (save: SaveData | null) => {
@@ -228,6 +230,8 @@ export const useShareStore = create<ShareState>((set, get) => {
     } else if (m.type === 'route') {
       set({ people: get().people.map((p) => (p.clientId === m.clientId ? { ...p, route: m.route } : p)) });
       if (m.route !== route) forget(m.clientId);
+      // Someone just arrived on this page: show them where this mouse already is.
+      else if (lastCursor) send({ type: 'cur', ...lastCursor });
     } else if (m.type === 'cur') {
       const who = get().people.find((p) => p.clientId === m.clientId);
       if ('hide' in m || !who) forget(m.clientId);
@@ -377,12 +381,14 @@ export const useShareStore = create<ShareState>((set, get) => {
     setRoute(next) {
       if (next === route) return;
       route = next;
+      lastCursor = null;
       useCursors.getState().clear();
       const me = get().people[0];
       if (me) set({ people: [{ ...me, route }, ...get().people.slice(1)] });
       send({ type: 'route', route });
     },
     sendCursor(cursor) {
+      lastCursor = cursor;
       // Only worth sending when someone else is on this page.
       if (!get().people.slice(1).some((p) => p.route === route)) return;
       send(cursor ? { type: 'cur', ...cursor } : { type: 'cur', hide: true });

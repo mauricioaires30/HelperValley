@@ -17,6 +17,7 @@
         "width": 440,
         "height": 600,
         "resizable": false,
+        "maximizable": false,
         "center": true
       }
     ],
