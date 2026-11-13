@@ -38,6 +38,13 @@ export const GUEST_COLORS = ['#e5484d', '#3e8ef7', '#30a46c', '#f5c518', '#9b5de
 
 export type Checks = { day: string | null; checked: Record<string, true> };
 
+/** A farm or island plan the host shares: the Stardew Planner data (JSON text) and the link it came from. */
+export type PlanSlot = 'farm' | 'island';
+export interface SharedPlan {
+  data: string;
+  link: string;
+}
+
 /**
  * Why the server refused or ended a connection (sent as the close reason, code 4000).
  * "host-left" (code 4002) closes the room for the farmhands once the host is gone.
@@ -56,18 +63,19 @@ export type Cursor = { a: string; x: number; y: number };
 
 /** Server → client. */
 export type ServerMessage =
-  | { type: 'welcome'; you: Peer; peers: Peer[]; hostOnline: boolean; checks: Checks; app: boolean; locked: boolean; bans: Ban[] }
+  | { type: 'welcome'; you: Peer; peers: Peer[]; hostOnline: boolean; checks: Checks; plans: Partial<Record<PlanSlot, SharedPlan>>; app: boolean; locked: boolean; bans: Ban[] }
   | { type: 'lock'; locked: boolean }
   | { type: 'bans'; bans: Ban[] }
   | { type: 'peer'; peer: Peer; online: boolean }
   | { type: 'host'; online: boolean }
   | { type: 'check'; day: string; key: string; on: boolean }
   | { type: 'checks'; day: string | null; checked: Record<string, true> }
+  | { type: 'plan'; slot: PlanSlot; data: string | null; link: string }
   | { type: 'app'; live: boolean }
   | { type: 'route'; clientId: string; route: string }
   | ({ type: 'cur'; clientId: string } & (Cursor | { hide: true }));
 
-/** Client → server. Only the host may send checks (the whole list), app, close and the moderation messages. */
+/** Client → server. Only the host may send checks (the whole list), plans, app, close and the moderation messages. */
 export type ClientMessage =
   | { type: 'check'; day: string; key: string; on: boolean }
   | { type: 'checks'; day: string | null; checked: Record<string, true> }
@@ -78,7 +86,8 @@ export type ClientMessage =
   | { type: 'kick'; clientId: string }
   | { type: 'ban'; clientId: string }
   | { type: 'unban'; browser: string }
-  | { type: 'lock'; locked: boolean };
+  | { type: 'lock'; locked: boolean }
+  | { type: 'plan'; slot: PlanSlot; data: string | null; link: string };
 
 /** Cursors go out at most this often (12 per second). */
 export const CURSOR_MS = 1000 / 12;

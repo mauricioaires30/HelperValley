@@ -269,3 +269,55 @@ export function plannerName(type: string, name: (n: [string, string] | undefined
   if (b) return name(b.n);
   return type.replace(/-/g, ' ');
 }
+
+/** One thing on a map: a tile, or a building's top-left tile (building: true). */
+export interface MapEntry {
+  x: number;
+  y: number;
+  /** Planner-style names, for the tooltip. */
+  names: string[];
+  /** A Category, or 'soil' (tilled ground) / 'buildings'. */
+  category: string;
+  building?: boolean;
+}
+
+/** Category per name, looked up once per name (the lookup scans every item). */
+function categoryMemo() {
+  const memo = new Map<string, string>();
+  return (name: string) => {
+    let c = memo.get(name);
+    if (c === undefined) {
+      c = categoryOf(name);
+      memo.set(name, c);
+    }
+    return c;
+  };
+}
+
+/** Everything in a planner layout, as it is drawn (no comparison with the save). */
+export function planEntries(plan: PlannerPlan): MapEntry[] {
+  const category = categoryMemo();
+  const out: MapEntry[] = [];
+  for (const t of [...plan.tiles, ...plan.flooring]) {
+    const type = canon(t.type);
+    out.push({ x: Math.round(t.x / 16), y: Math.round(t.y / 16), names: [type], category: category(type) });
+  }
+  for (const b of plan.buildings) out.push({ x: Math.round(b.x / 16), y: Math.round(b.y / 16), names: [b.type], category: 'buildings', building: true });
+  return out;
+}
+
+/** Everything in the save's layout, as it is drawn. */
+export function farmEntries(layout: LayoutState | undefined): MapEntry[] {
+  const category = categoryMemo();
+  const out: MapEntry[] = [];
+  for (const [x, y, key] of layout?.tiles ?? []) {
+    if (key === 'hoedirt') {
+      out.push({ x, y, names: ['tilled-soil'], category: 'soil' });
+      continue;
+    }
+    const names = saveKeys(key);
+    out.push({ x, y, names: names.length ? names : [key], category: names.length ? category(names[0]) : 'machines' });
+  }
+  for (const [x, y, type] of layout?.buildings ?? []) out.push({ x, y, names: [type], category: 'buildings', building: true });
+  return out;
+}

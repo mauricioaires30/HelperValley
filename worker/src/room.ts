@@ -10,8 +10,10 @@ import {
   PONG,
   type Ban,
   type Checks,
+  type PlanSlot,
   type Peer,
   type ServerMessage,
+  type SharedPlan,
 } from '../../src/features/share/protocol';
 import { accept, admit, applyCheck, ROOM_TTL_MS } from '../../src/features/share/roomRules';
 
@@ -86,7 +88,7 @@ export class Room extends DurableObject<Env> {
       ws.close(CLOSE_HOST_LEFT, 'host-left');
     }
     const meta = await this.ctx.storage.get<SaveMeta>('save');
-    const keys = ['save', 'checks', 'app', 'hostGoneAt', 'locked', ...Array.from({ length: meta?.total ?? 0 }, (_, i) => `chunk:${i}`)];
+    const keys = ['save', 'checks', 'plans', 'app', 'hostGoneAt', 'locked', ...Array.from({ length: meta?.total ?? 0 }, (_, i) => `chunk:${i}`)];
     await this.ctx.storage.delete(keys);
   }
 
@@ -137,8 +139,9 @@ export class Room extends DurableObject<Env> {
     const others = this.live(server).map((e) => publicPeer(e.peer));
     const checks = (await this.ctx.storage.get<Checks>('checks')) ?? NO_CHECKS;
     const app = (await this.ctx.storage.get<boolean>('app')) ?? false;
+    const plans = (await this.ctx.storage.get<Partial<Record<PlanSlot, SharedPlan>>>('plans')) ?? {};
     const hostOnline = peer.role === 'host' || others.some((p) => p.role === 'host');
-    this.send(server, { type: 'welcome', you: peer, peers: others, hostOnline, checks, app: hostOnline && app, locked, bans: peer.role === 'host' ? bans : [] });
+    this.send(server, { type: 'welcome', you: peer, peers: others, hostOnline, checks, plans, app: hostOnline && app, locked, bans: peer.role === 'host' ? bans : [] });
 
     if (peer.role === 'guest') {
       // The last save the host sent, for whoever joins late.
@@ -202,6 +205,14 @@ export class Room extends DurableObject<Env> {
         await this.ctx.storage.put('checks', { day: m.day, checked: m.checked });
         this.broadcast(m, (p) => p.role === 'guest', ws);
         return;
+      case 'plan': {
+        const plans = (await this.ctx.storage.get<Partial<Record<PlanSlot, SharedPlan>>>('plans')) ?? {};
+        if (m.data === null) delete plans[m.slot];
+        else plans[m.slot] = { data: m.data, link: m.link };
+        await this.ctx.storage.put('plans', plans);
+        this.broadcast(m, (p) => p.role === 'guest', ws);
+        return;
+      }
       case 'app':
         await this.ctx.storage.put('app', m.live);
         this.broadcast(m, (p) => p.role === 'guest', ws);
