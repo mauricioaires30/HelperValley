@@ -279,6 +279,8 @@ export interface MapEntry {
   /** A Category, or 'soil' (tilled ground) / 'buildings'. */
   category: string;
   building?: boolean;
+  /** Which picture of several to draw (the farmhouse's upgrade level). */
+  variant?: number;
 }
 
 /** Category per name, looked up once per name (the lookup scans every item). */
@@ -295,14 +297,14 @@ function categoryMemo() {
 }
 
 /** Everything in a planner layout, as it is drawn (no comparison with the save). */
-export function planEntries(plan: PlannerPlan, offset: [number, number] = [0, 0]): MapEntry[] {
+export function planEntries(plan: PlannerPlan, offset: [number, number] = [0, 0], houseLevel = 0): MapEntry[] {
   const category = categoryMemo();
   const out: MapEntry[] = [];
   for (const t of [...plan.tiles, ...plan.flooring]) {
     const type = canon(t.type);
     out.push({ x: Math.round(t.x / 16) + offset[0], y: Math.round(t.y / 16) + offset[1], names: [type], category: category(type) });
   }
-  for (const b of plan.buildings) out.push({ x: Math.round(b.x / 16) + offset[0], y: Math.round(b.y / 16) + offset[1], names: [b.type], category: 'buildings', building: true });
+  for (const b of plan.buildings) out.push({ x: Math.round(b.x / 16) + offset[0], y: Math.round(b.y / 16) + offset[1], names: [b.type], category: 'buildings', building: true, variant: houseLevel });
   return out;
 }
 
@@ -313,7 +315,7 @@ export function missingEntries(result: Comparison): MapEntry[] {
 }
 
 /** Everything in the save's layout, as it is drawn. */
-export function farmEntries(layout: LayoutState | undefined): MapEntry[] {
+export function farmEntries(layout: LayoutState | undefined, houseLevel = 0): MapEntry[] {
   const category = categoryMemo();
   const out: MapEntry[] = [];
   for (const [x, y, key] of layout?.tiles ?? []) {
@@ -324,6 +326,6 @@ export function farmEntries(layout: LayoutState | undefined): MapEntry[] {
     const names = saveKeys(key);
     out.push({ x, y, names: names.length ? names : [key], category: names.length ? category(names[0]) : 'machines' });
   }
-  for (const [x, y, type] of layout?.buildings ?? []) out.push({ x, y, names: [type], category: 'buildings', building: true });
+  for (const [x, y, type] of layout?.buildings ?? []) out.push({ x, y, names: [type], category: 'buildings', building: true, variant: houseLevel });
   return out;
 }

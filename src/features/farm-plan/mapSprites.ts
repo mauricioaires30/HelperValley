@@ -16,6 +16,10 @@ export interface SpriteRef {
   foot: [number, number];
   /** "bottom": stands on its footprint and grows upward (objects, buildings). "top": drawn from the tile's top-left corner (furniture). */
   anchor: 'bottom' | 'top';
+  /** Pixels the picture sits left (negative) or right of its footprint. */
+  dx?: number;
+  /** Water behind the picture, as x, y, w, h inside it (a fish pond's ring is open in the middle). */
+  water?: [number, number, number, number];
 }
 
 const slug = (name: string) => name.trim().toLowerCase().replace(/\s+/g, '-');
@@ -97,38 +101,61 @@ function objectSprite(name: string, category: string): SpriteRef | null {
   return id ? itemSprite(id) : null;
 }
 
-/** Tiles wide and high of the buildings whose sheet is a single picture (the others stay squares). */
-const BUILDINGS: Record<string, [number, number]> = {
-  Barn: [7, 4],
-  'Big Barn': [7, 4],
-  'Deluxe Barn': [7, 4],
-  Coop: [6, 3],
-  'Big Coop': [6, 3],
-  'Deluxe Coop': [6, 3],
-  Shed: [7, 3],
-  'Big Shed': [7, 3],
-  Silo: [3, 3],
-  Stable: [4, 2],
-  Well: [3, 2],
-  'Shipping Bin': [2, 1],
-  'Stone Cabin': [5, 3],
-  'Earth Obelisk': [3, 2],
-  'Water Obelisk': [3, 2],
-  'Desert Obelisk': [3, 2],
-  'Island Obelisk': [3, 2],
-  'Gold Clock': [3, 2],
-};
+/** A building's picture: the sheet, the frame in it, and the tiles it stands on. */
+interface BuildingArt {
+  sheet: string;
+  rect: [number, number, number, number];
+  foot: [number, number];
+  dx?: number;
+  water?: [number, number, number, number];
+}
 
-function buildingSprite(name: string): SpriteRef | null {
-  const title = name
+const titleOf = (name: string) =>
+  name
     .split('-')
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ');
-  const size = BUILDINGS[title];
-  const sheet = `Buildings/${title}`;
-  const dims = gameData().sheets[sheet];
-  if (!size || !dims) return null;
-  return { sheet, x: 0, y: 0, w: size[0] * TILE, h: dims[1], foot: size, anchor: 'bottom' };
+
+const CABINS = ['stone', 'log', 'plank', 'rustic', 'beach', 'trailer', 'neighbor'];
+
+/** Buildings the shops don't list, or whose sheet holds more than the building: the frames are the game's own. */
+function fixedArt(name: string, variant: number): BuildingArt | null {
+  // The farmhouse: 9x5 tiles, drawn from a 160x144 picture one tile wider to the left; three pictures for its upgrades.
+  if (name === 'house') return { sheet: 'Buildings/houses', rect: [0, 144 * Math.min(2, variant), 160, 144], foot: [9, 5], dx: -TILE };
+  // The greenhouse sheet has the broken one on top and the repaired one below.
+  if (name === 'greenhouse-repaired') return { sheet: 'Buildings/Greenhouse', rect: [0, 160, 112, 160], foot: [7, 6] };
+  if (name === 'greenhouse') return { sheet: 'Buildings/Greenhouse', rect: [0, 0, 112, 160], foot: [7, 6] };
+  // The pond is a stone ring, open in the middle: the water is drawn by the game, here a flat blue.
+  if (name === 'fish-pond') return { sheet: 'Buildings/Fish Pond', rect: [0, 0, 80, 80], foot: [5, 5], water: [16, 16, 48, 48] };
+  // Cabins: three skins side by side, 80x112 each.
+  if (name.endsWith('-cabin') && CABINS.includes(name.slice(0, -'-cabin'.length))) return { sheet: `Buildings/${titleOf(name)}`, rect: [0, 0, 80, 112], foot: [5, 3] };
+  if (name === 'hay-pet-bowl' || name === 'stone-pet-bowl') return { sheet: `Buildings/${titleOf(name)}`, rect: [32, 0, 32, 32], foot: [2, 2] };
+  return null;
+}
+
+interface ShopBuilding {
+  id: string;
+  texture: string;
+  rect: [number, number, number, number] | null;
+  size: [number, number];
+}
+
+/** Buildings the shops list, with the texture, frame and size from the game's Data/Buildings. */
+function shopArt(name: string): BuildingArt | null {
+  const buildings = (gameData().shops as unknown as { buildings: ShopBuilding[] }).buildings;
+  const info = buildings.find((b) => slug(b.id) === name);
+  if (!info) return null;
+  const dims = gameData().sheets[info.texture];
+  // Without a frame the game uses the sheet; a sheet with several colors (Junimo Hut) shows its first, as wide as the building.
+  const rect = info.rect ?? (dims ? ([0, 0, Math.min(dims[0], info.size[0] * TILE), dims[1]] as [number, number, number, number]) : null);
+  return rect ? { sheet: info.texture, rect, foot: info.size } : null;
+}
+
+function buildingSprite(name: string, variant: number): SpriteRef | null {
+  const art = fixedArt(name, variant) ?? shopArt(name);
+  if (!art) return null;
+  const [x, y, w, h] = art.rect;
+  return { sheet: art.sheet, x, y, w, h, foot: art.foot, anchor: 'bottom', dx: art.dx, water: art.water };
 }
 
 const cache = new Map<string, SpriteRef | null>();
@@ -136,15 +163,15 @@ const cache = new Map<string, SpriteRef | null>();
 /** The game's own art for a map entry, or null when there is none (it is drawn as a colored square then). */
 export function spriteFor(entry: MapEntry): SpriteRef | null {
   if (entry.category === 'grass' || entry.category === 'soil') return null;
-  const key = `${entry.building ? 'building' : entry.category}:${entry.names[0]}`;
-  if (!cache.has(key)) cache.set(key, entry.building ? buildingSprite(entry.names[0]) : objectSprite(entry.names[0], entry.category));
+  const key = `${entry.building ? 'building' : entry.category}:${entry.names[0]}:${entry.variant ?? 0}`;
+  if (!cache.has(key)) cache.set(key, entry.building ? buildingSprite(entry.names[0], entry.variant ?? 0) : objectSprite(entry.names[0], entry.category));
   return cache.get(key) ?? null;
 }
 
 /** Where a sprite is drawn, in pixels of the map. */
 export function spriteBox(entry: MapEntry, ref: SpriteRef) {
   return {
-    x: entry.x * TILE,
+    x: entry.x * TILE + (ref.dx ?? 0),
     y: ref.anchor === 'top' ? entry.y * TILE : (entry.y + ref.foot[1]) * TILE - ref.h,
     w: ref.w,
     h: ref.h,
