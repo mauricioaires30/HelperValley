@@ -22,7 +22,7 @@ export function useAppLive(): boolean {
 
 /**
  * "AO VIVO" at the top while the saves on screen are kept up to date by the app (yours, or the host's in a room),
- * and "NÃO AO VIVO" when a save is open but the app is closed, so nobody mistakes an old copy for the current day.
+ * and the same badge dimmed, still, when a save is open but the app is closed, so nobody mistakes an old copy for the current day.
  */
 export function LiveBadge() {
   const { t } = useTranslation();
@@ -42,7 +42,7 @@ export function LiveBadge() {
   return (
     <span className="live-badge live-badge--off box" role="status" title={t(guest ? 'share.notLiveGuestHint' : 'share.notLiveHint')}>
       <span className="live-badge__dot" aria-hidden="true" />
-      {t('share.notLive')}
+      {t('share.live')}
     </span>
   );
 }

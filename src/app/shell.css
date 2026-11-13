@@ -397,14 +397,14 @@ html[data-theme='night'] body::before {
   animation: live-pulse 1.6s ease-in-out infinite;
 }
 
+/* App closed: the same AO VIVO, dark and faded, not blinking. */
 .live-badge--off {
   color: var(--text);
-  opacity: 0.75;
-  cursor: help;
+  opacity: 0.4;
 }
 
 .live-badge--off .live-badge__dot {
-  background: #8a8a8a;
+  background: var(--text);
   animation: none;
 }
 
