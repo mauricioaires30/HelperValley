@@ -14,6 +14,8 @@ export interface SaveSource {
   modified(folder: string): Promise<number>;
   /** The HelperValley app's status file, when the folder is its copy. */
   appStatus(): Promise<{ status: AppStatus; modified: number } | null>;
+  /** The save folders there right now, sorted: cheap enough to check every few seconds. */
+  saveNames(): Promise<string[]>;
 }
 
 export const supportsDirectoryAccess = () => typeof window !== 'undefined' && 'showDirectoryPicker' in window;
@@ -31,6 +33,17 @@ class DirectorySource implements SaveSource {
   private folders = new Map<string, FileSystemDirectoryHandle>();
 
   constructor(private root: FileSystemDirectoryHandle) {}
+
+  async saveNames(): Promise<string[]> {
+    const names = await childNames(this.root);
+    if (isSaveFolder(names, this.root.name)) return [this.root.name];
+    const root = names.has('Saves') ? await this.root.getDirectoryHandle('Saves') : this.root;
+    const saves: string[] = [];
+    for await (const entry of root.values()) {
+      if (entry.kind === 'directory' && isSaveFolder(await childNames(entry as FileSystemDirectoryHandle), entry.name)) saves.push(entry.name);
+    }
+    return saves.sort();
+  }
 
   /** Accepts the StardewValley folder, its Saves folder, or a single save folder. */
   async listSaves(): Promise<SaveSummary[]> {

@@ -68,6 +68,8 @@ interface SaveState {
 
 let pollTimer: number | undefined;
 let lastModified = 0;
+/** The save folders seen on the last check (null: not looked yet). */
+let lastNames: string | null = null;
 let reconnecting: Promise<void> | null = null;
 
 export const useSaveStore = create<SaveState>((setState, getState) => {
@@ -83,10 +85,30 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
   };
 
   async function check() {
-    const { source, folder } = getState();
-    if (!source || !folder) return;
+    const { source } = getState();
+    if (!source || getState().folder === 'shared') return;
     void source.appStatus().then((app) => getState().source === source && setState({ app }));
     try {
+      // A save created, copied or deleted (by the game or the app): the list follows without a reload.
+      const names = (await source.saveNames()).join('/');
+      if (names !== lastNames) {
+        const first = lastNames === null;
+        lastNames = names;
+        if (!first) {
+          const summaries = await source.listSaves();
+          if (getState().source !== source) return;
+          setState({ summaries });
+          const { folder } = getState();
+          if (!folder || !summaries.some((s) => s.folder === folder)) {
+            // The open save is gone (or there was none): open the newest one, if any.
+            if (summaries[0]) await load(summaries[0].folder);
+            else setState({ save: null, folder: null, status: 'idle' });
+            return;
+          }
+        }
+      }
+      const folder = getState().folder;
+      if (!folder) return;
       const modified = await source.modified(folder);
       if (modified > lastModified) await load(folder, true);
     } catch {
@@ -101,8 +123,8 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
 
   const startPolling = () => {
     stopPolling();
-    const { source, folder } = getState();
-    if (!source || !folder) return;
+    // Also with no save yet: the first one the game writes shows up on its own.
+    if (!getState().source) return;
     pollTimer = window.setInterval(() => void check(), POLL_MS);
     document.addEventListener('visibilitychange', checkNow);
   };
@@ -159,10 +181,10 @@ export const useSaveStore = create<SaveState>((setState, getState) => {
     // Known before the list shows, so "not the app's folder" doesn't flash.
     const app = await source.appStatus();
     setState({ summaries, app, status: 'idle' });
+    lastNames = null;
     const remembered = storage.get(SELECTED_KEY);
     const folder = summaries.find((s) => s.folder === remembered)?.folder ?? summaries[0]?.folder ?? null;
-    if (!folder) return;
-    await load(folder);
+    if (folder) await load(folder);
     startPolling();
   }
 
@@ -274,3 +296,4 @@ export function useCurrentSave(): { save: SaveData | null; player: Player | null
   const player = save?.players.find((p) => p.id === playerId) ?? save?.players[0] ?? null;
   return { save, player };
 }
+
