@@ -47,9 +47,8 @@ function Weather({ kind }: { kind: 'sunny' | 'rainy' }) {
 }
 
 /** Where and when a fish bites, one labeled row each, plus whether it bites at `now` (on the map). */
-export function FishWhere({ id, now, hideWhere = false }: { id: string; now?: FishMoment; /** On the map the pin already shows where. */ hideWhere?: boolean }) {
+export function FishWhere({ id, now }: { id: string; now?: FishMoment }) {
   const { t } = useTranslation();
-  const place = useLocationName();
   const fish = gameData().fish[id];
   if (!fish) return null;
   if (fish.trap) return <span>{t(`fish.trap.${fish.trap}`)}</span>;
@@ -99,17 +98,12 @@ export function FishWhere({ id, now, hideWhere = false }: { id: string; now?: Fi
           )}
         </span>
       </span>
-      {!hideWhere && (
-      <span className="fish-where__row">
-        <span className="fish-where__label">{t('fish.cond.where')}</span>
-        <span>
-          {fish.locations.length
-            ? fish.locations
-                .map((l) => `${place(l.location)}${l.seasons && l.seasons.length < 4 ? ` (${l.seasons.map((s) => t(`common.seasons.${s}`)).join(', ')})` : ''}`)
-                .join(' · ')
-            : t(`fish.special.${id}`, { defaultValue: t('fish.special.default') })}
+      {/* Where is on the map (mark the fish to see its spots); only fish with no spot to mark say it here. */}
+      {fish.locations.length === 0 && (
+        <span className="fish-where__row">
+          <span className="fish-where__label">{t('fish.cond.where')}</span>
+          <span>{t(`fish.special.${id}`, { defaultValue: t('fish.special.default') })}</span>
         </span>
-      </span>
       )}
       {fish.level ? (
         <span className="fish-where__row">
