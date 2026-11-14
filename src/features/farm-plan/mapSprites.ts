@@ -2,6 +2,8 @@ import { gameData, getItem, spriteUrl, type ItemData } from '@/data/gameData';
 import { gridRect } from '@/ui/Sprite';
 import { TYPE_ITEM, type MapEntry } from './planner';
 
+const SEASONS = ['spring', 'summer', 'fall', 'winter'];
+
 /** Pixels per tile in the game's sprite sheets. */
 export const TILE = 16;
 
@@ -18,6 +20,10 @@ export interface SpriteRef {
   anchor: 'bottom' | 'top';
   /** Pixels the picture sits left (negative) or right of its footprint. */
   dx?: number;
+  /** A picture made of pieces of the sheet (a full tree: trunk and crown): source x, y, w, h, then where it goes from the tile's top-left corner. */
+  layers?: Array<[number, number, number, number, number, number]>;
+  /** With layers: the whole picture's box from the tile's top-left corner, x, y, w, h. */
+  box?: [number, number, number, number];
   /** Water behind the picture, as x, y, w, h inside it (a fish pond's ring is open in the middle). */
   water?: [number, number, number, number];
 }
@@ -84,7 +90,68 @@ const WILD_TREE_ITEM: Record<string, string> = {
   'mushroom-tree': 'mushroom-tree-seed',
 };
 
-function objectSprite(name: string, category: string): SpriteRef | null {
+/** Wild trees by the planner's name; winter and some trees have a sheet of their own. */
+function wildTreeSheet(name: string, season: number): string | null {
+  const s = SEASONS[season] ?? 'spring';
+  switch (name) {
+    case 'oak-tree':
+      return `TerrainFeatures/tree1_${s}`;
+    case 'maple-tree':
+      return `TerrainFeatures/tree2_${s}`;
+    // The game has no summer pine picture: it uses the spring one.
+    case 'pine-tree':
+      return `TerrainFeatures/tree3_${s === 'summer' ? 'spring' : s}`;
+    case 'mahogany-tree':
+      return `TerrainFeatures/tree8_${s}`;
+    case 'palm-tree':
+      return 'TerrainFeatures/tree_palm';
+    case 'mushroom-tree':
+      return 'TerrainFeatures/mushroom_tree';
+    default:
+      return null;
+  }
+}
+
+/** A wild tree: small pictures while it grows, then the trunk and the crown (as Tree.draw puts them). */
+function wildTreeSprite(name: string, stage: number | undefined, season: number): SpriteRef | null {
+  const sheet = wildTreeSheet(name, season);
+  if (!sheet) return null;
+  if (stage !== undefined && stage < 5) {
+    const [x, y, w, h] = stage <= 0 ? [32, 128, 16, 16] : stage === 1 ? [0, 128, 16, 16] : stage === 2 ? [16, 128, 16, 16] : [0, 96, 16, 32];
+    return { sheet, x, y, w, h, foot: [1, 1], anchor: 'bottom' };
+  }
+  return {
+    sheet,
+    x: 0,
+    y: 0,
+    w: 48,
+    h: 96,
+    foot: [1, 1],
+    anchor: 'bottom',
+    layers: [
+      [32, 96, 16, 32, 0, -16],
+      [0, 0, 48, 96, -16, -80],
+    ],
+    box: [-16, -80, 48, 96],
+  };
+}
+
+/** The row of each fruit tree (by sapling) in the fruit trees sheet: 48x80 pictures, four growth stages then spring to winter. */
+const FRUIT_ROW: Record<string, number> = { '(O)628': 0, '(O)629': 1, '(O)630': 2, '(O)631': 3, '(O)632': 4, '(O)633': 5, '(O)69': 7, '(O)835': 8 };
+
+function fruitTreeSprite(name: string, stage: number | undefined, season: number): SpriteRef | null {
+  const sapling = name.endsWith('-tree') ? itemBySlug(name.replace(/-tree$/, '-sapling')) : undefined;
+  const row = sapling ? FRUIT_ROW[sapling] : undefined;
+  if (row === undefined) return null;
+  const column = stage !== undefined && stage < 4 ? Math.max(0, stage) : 4 + (season % 4);
+  return { sheet: 'TileSheets/fruitTrees', x: column * 48, y: row * 80, w: 48, h: 80, foot: [1, 1], anchor: 'bottom', dx: -TILE };
+}
+
+function objectSprite(name: string, category: string, entry: MapEntry): SpriteRef | null {
+  if (category === 'trees') {
+    const tree = wildTreeSprite(name, entry.stage, entry.variant ?? 0) ?? fruitTreeSprite(name, entry.stage, entry.variant ?? 0);
+    if (tree) return tree;
+  }
   if (category === 'crops') {
     // A crop shows what it gives; a seed name stands for its crop.
     const id = itemBySlug(name);
@@ -163,13 +230,14 @@ const cache = new Map<string, SpriteRef | null>();
 /** The game's own art for a map entry, or null when there is none (it is drawn as a colored square then). */
 export function spriteFor(entry: MapEntry): SpriteRef | null {
   if (entry.category === 'grass' || entry.category === 'soil') return null;
-  const key = `${entry.building ? 'building' : entry.category}:${entry.names[0]}:${entry.variant ?? 0}`;
-  if (!cache.has(key)) cache.set(key, entry.building ? buildingSprite(entry.names[0], entry.variant ?? 0) : objectSprite(entry.names[0], entry.category));
+  const key = `${entry.building ? 'building' : entry.category}:${entry.names[0]}:${entry.variant ?? 0}:${entry.stage ?? ''}`;
+  if (!cache.has(key)) cache.set(key, entry.building ? buildingSprite(entry.names[0], entry.variant ?? 0) : objectSprite(entry.names[0], entry.category, entry));
   return cache.get(key) ?? null;
 }
 
 /** Where a sprite is drawn, in pixels of the map. */
 export function spriteBox(entry: MapEntry, ref: SpriteRef) {
+  if (ref.box) return { x: entry.x * TILE + ref.box[0], y: entry.y * TILE + ref.box[1], w: ref.box[2], h: ref.box[3] };
   return {
     x: entry.x * TILE + (ref.dx ?? 0),
     y: ref.anchor === 'top' ? entry.y * TILE : (entry.y + ref.foot[1]) * TILE - ref.h,
@@ -255,3 +323,16 @@ const FARM_MAP_FILES = ['Farm', 'Farm_Fishing', 'Farm_Foraging', 'Farm_Mining', 
  * into public/sprites/FarmMaps; until it has, the file isn't there and the map simply has no background.
  */
 export const backgroundFor = (slot: 'farm' | 'island', farmType: number) => `FarmMaps/${slot === 'island' ? 'IslandWest' : (FARM_MAP_FILES[farmType] ?? 'Farm')}`;
+
+/**
+ * The planner gives a building's bottom row (its y) and its left column; the map draws from the top row.
+ * A farmhouse 5 tiles tall at y=16 in the plan stands on rows 12 to 16.
+ */
+export function planBuildingsToTopLeft(entries: MapEntry[]): MapEntry[] {
+  return entries.map((e) => {
+    if (!e.building || !e.bottomRow) return e;
+    const sprite = spriteFor(e);
+    const rows = sprite ? sprite.foot[1] : BUILDING_SPAN;
+    return { ...e, y: e.y - (rows - 1), bottomRow: false };
+  });
+}

@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadTestGameData } from '@/test/gameData';
-import { backgroundFor, mapBounds, minTiles, spriteBox, spriteFor } from '../mapSprites';
-import type { MapEntry } from '../planner';
+import { backgroundFor, mapBounds, minTiles, planBuildingsToTopLeft, spriteBox, spriteFor } from '../mapSprites';
+import { farmEntries, type MapEntry } from '../planner';
 
 beforeAll(loadTestGameData);
 
@@ -88,5 +88,45 @@ describe('building pictures', () => {
 
   it('draws cabins from their first skin', () => {
     expect(spriteFor(building('log-cabin'))).toMatchObject({ sheet: 'Buildings/Log Cabin', w: 80, h: 112, foot: [5, 3] });
+  });
+});
+
+describe('trees', () => {
+  const tree = (name: string, season = 0, stage?: number): MapEntry => ({ ...entry([name], 'trees'), variant: season, stage });
+
+  it('draws a full wild tree as trunk and crown, in the season of the save', () => {
+    const oak = spriteFor(tree('oak-tree', 1))!;
+    expect(oak.sheet).toBe('TerrainFeatures/tree1_summer');
+    expect(oak.layers).toHaveLength(2);
+    // Tile (10, 20): the crown is 48x96, one tile to the left and five above the tile.
+    expect(spriteBox(tree('oak-tree', 1), oak)).toEqual({ x: 10 * 16 - 16, y: 20 * 16 - 80, w: 48, h: 96 });
+    expect(spriteFor(tree('pine-tree', 1))?.sheet).toBe('TerrainFeatures/tree3_spring');
+    expect(spriteFor(tree('maple-tree', 3))?.sheet).toBe('TerrainFeatures/tree2_winter');
+  });
+
+  it('draws a young wild tree from its small pictures', () => {
+    expect(spriteFor(tree('oak-tree', 0, 1))).toMatchObject({ x: 0, y: 128, w: 16, h: 16 });
+    expect(spriteFor(tree('oak-tree', 0, 3))).toMatchObject({ x: 0, y: 96, w: 16, h: 32 });
+  });
+
+  it('draws fruit trees from their row: growth stages first, then the season', () => {
+    expect(spriteFor(tree('apple-tree', 2))).toMatchObject({ sheet: 'TileSheets/fruitTrees', x: (4 + 2) * 48, y: 5 * 80, w: 48, h: 80, dx: -16 });
+    expect(spriteFor(tree('apple-tree', 2, 1))).toMatchObject({ x: 48, y: 5 * 80 });
+  });
+
+  it('reads how grown a saved tree is', () => {
+    const entries = farmEntries({ tiles: [[1, 2, 'tree:1:3'], [3, 4, 'fruit:633:4'], [5, 6, 'tree:2']], buildings: [] }, { houseLevel: 0, season: 2 });
+    expect(entries.map((e) => [e.names[0], e.stage, e.variant])).toEqual([['oak-tree', 3, 2], ['apple-tree', 4, 2], ['maple-tree', undefined, 2]]);
+  });
+});
+
+describe('plan buildings', () => {
+  it('moves a plan building from its bottom row to its top row', () => {
+    const at = (name: string, y: number): MapEntry => ({ x: 59, y, names: [name], category: 'buildings', building: true, bottomRow: true });
+    // The planner puts a 9x5 farmhouse at y=16, which is rows 12 to 16; a 2x1 shipping bin stays where it is.
+    const [house, bin] = planBuildingsToTopLeft([at('house', 16), at('shipping-bin', 14)]);
+    expect(house.y).toBe(12);
+    expect(bin.y).toBe(14);
+    expect(planBuildingsToTopLeft([house])[0]).toBe(house);
   });
 });
