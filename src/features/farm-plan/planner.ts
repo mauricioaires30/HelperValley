@@ -40,7 +40,7 @@ export async function fetchPlan(id: string): Promise<PlannerPlan> {
 
 /** Wild tree types (Tree.treeType) and flooring ids (Data/FloorsAndPaths) in the planner's words. */
 const TREE: Record<string, string> = { '1': 'oak-tree', '2': 'maple-tree', '3': 'pine-tree', '6': 'palm-tree', '9': 'palm-tree', '7': 'mushroom-tree', '8': 'mahogany-tree' };
-const FLOOR: Record<string, string> = {
+export const FLOOR: Record<string, string> = {
   '0': 'wooden-floor',
   '1': 'stone-floor',
   '2': 'weathered-floor',
@@ -67,6 +67,12 @@ export function saveKeys(key: string): string[] {
   switch (kind) {
     case 'tree':
       return TREE[a] ? [TREE[a]] : [];
+    case 'grass':
+      return ['grass'];
+    case 'clump': {
+      const item = getItem(`(O)${a}`);
+      return [item ? slug(item.n[0]) : 'resource-clump'];
+    }
     case 'floor':
       return FLOOR[a] ? [FLOOR[a]] : [];
     case 'fruit': {
@@ -227,7 +233,7 @@ export function comparePlan(plan: PlannerPlan, layout: LayoutState | undefined, 
     byType.set(p.type, r);
   }
   const extra = (layout?.tiles ?? [])
-    .filter(([x, y, key]) => key !== 'grass' && key !== 'hoedirt' && !plannedSpots.has(`${x},${y}`))
+    .filter(([x, y, key]) => !key.startsWith('grass') && key !== 'hoedirt' && !key.startsWith('clump:') && !plannedSpots.has(`${x},${y}`))
     .map(([x, y, key]) => [x, y, saveKeys(key)] as [number, number, string[]]);
 
   const builtCounts = new Map<string, number>();
@@ -276,13 +282,19 @@ export interface MapEntry {
   y: number;
   /** Planner-style names, for the tooltip. */
   names: string[];
-  /** A Category, or 'soil' (tilled ground) / 'buildings'. */
+  /** A Category, or 'soil' (tilled ground), 'terrain' (big stumps and boulders) or 'buildings'. */
   category: string;
   building?: boolean;
-  /** Which picture of several to draw: the farmhouse's upgrade level, or a tree's season (0 spring - 3 winter). */
+  /**
+   * Which picture of several to draw: the farmhouse's upgrade level, a tree's season (0 spring - 3 winter),
+   * the season times 16 plus the joined sides for soil and floors, a crop's row in its sheet, a boulder's sprite index,
+   * or a grass tuft's row (pixels) in its sheet.
+   */
   variant?: number;
-  /** How grown a tree is (0 seed - 5 full; fruit trees 0-4). Missing means full grown. */
+  /** How grown a tree is (0 seed - 5 full; fruit trees 0-4), a crop's growth phase (-1 dead), or how many tufts a grass tile has. Missing means full grown. */
   stage?: number;
+  /** Boulders and stumps: tiles wide and high. */
+  size?: [number, number];
   /** The planner gives a building's bottom row, the map draws from the top: see planBuildingsToTopLeft. */
   bottomRow?: boolean;
 }
@@ -308,6 +320,27 @@ function categoryMemo() {
   };
 }
 
+/**
+ * Soil and floors are drawn from a 4x4 set of pieces, one per way they join their neighbors. This finds the sides
+ * (north 1, east 2, south 4, west 8) each piece joins with a piece of the same kind, and keeps them in `variant`
+ * with the season (season * 16 + sides).
+ */
+export function joinNeighbors(entries: MapEntry[], season: number): MapEntry[] {
+  const group = (e: MapEntry) => (e.category === 'soil' ? 'soil' : e.category === 'floors' ? e.names[0] : null);
+  const at = new Set<string>();
+  for (const e of entries) {
+    const g = group(e);
+    if (g) at.add(`${g}:${e.x},${e.y}`);
+  }
+  return entries.map((e) => {
+    const g = group(e);
+    if (!g) return e;
+    const has = (dx: number, dy: number) => at.has(`${g}:${e.x + dx},${e.y + dy}`);
+    const sides = (has(0, -1) ? 1 : 0) | (has(1, 0) ? 2 : 0) | (has(0, 1) ? 4 : 0) | (has(-1, 0) ? 8 : 0);
+    return { ...e, variant: season * 16 + sides };
+  });
+}
+
 /** Everything in a planner layout, as it is drawn (no comparison with the save). */
 export function planEntries(plan: PlannerPlan, offset: [number, number] = [0, 0], art: ArtContext = NO_ART): MapEntry[] {
   const category = categoryMemo();
@@ -315,39 +348,49 @@ export function planEntries(plan: PlannerPlan, offset: [number, number] = [0, 0]
   for (const t of [...plan.tiles, ...plan.flooring]) {
     const type = canon(t.type);
     const kind = category(type);
-    out.push({ x: Math.round(t.x / 16) + offset[0], y: Math.round(t.y / 16) + offset[1], names: [type], category: kind, variant: kind === 'trees' ? art.season : undefined });
+    const x = Math.round(t.x / 16) + offset[0];
+    const y = Math.round(t.y / 16) + offset[1];
+    // Crops stand on tilled soil.
+    if (kind === 'crops') out.push({ x, y, names: ['tilled-soil'], category: 'soil' });
+    out.push({ x, y, names: [type], category: kind, variant: kind === 'trees' ? art.season : kind === 'grass' ? art.season * 20 : undefined, stage: kind === 'grass' ? 4 : undefined });
   }
   for (const b of plan.buildings) out.push({ x: Math.round(b.x / 16) + offset[0], y: Math.round(b.y / 16) + offset[1], names: [b.type], category: 'buildings', building: true, variant: art.houseLevel, bottomRow: true });
-  return out;
-}
-
-/** The planned things that aren't there yet, where the plan puts them in the save (shown faded on the farm). */
-export function missingEntries(result: Comparison, art: ArtContext = NO_ART): MapEntry[] {
-  const category = categoryMemo();
-  return result.cells
-    .filter((c) => !c.done)
-    .map((c) => {
-      const kind = category(c.type);
-      return { x: c.x, y: c.y, names: [c.type], category: kind, variant: kind === 'trees' ? art.season : undefined };
-    });
+  return joinNeighbors(out, art.season);
 }
 
 /** Everything in the save's layout, as it is drawn. */
 export function farmEntries(layout: LayoutState | undefined, art: ArtContext = NO_ART): MapEntry[] {
   const category = categoryMemo();
   const out: MapEntry[] = [];
+  const number = (v: string | undefined) => (v !== undefined && v !== '' && Number.isFinite(Number(v)) ? Number(v) : undefined);
   for (const [x, y, key] of layout?.tiles ?? []) {
     if (key === 'hoedirt') {
       out.push({ x, y, names: ['tilled-soil'], category: 'soil' });
       continue;
     }
+    // Keys carry what the picture needs: "tree:1:3" (type, growth), "crop:seed:harvest:row:phase:dead", "grass:tufts:row", "clump:sprite:w:h".
+    const [type, a, b, c, d, e] = key.split(':');
     const names = saveKeys(key);
+    if (type === 'clump') {
+      out.push({ x, y, names, category: 'terrain', variant: number(a), size: [number(b) ?? 2, number(c) ?? 2] });
+      continue;
+    }
+    if (type === 'grass') {
+      out.push({ x, y, names, category: 'grass', stage: number(a) ?? 4, variant: number(b) ?? art.season * 20 });
+      continue;
+    }
     const kind = names.length ? category(names[0]) : 'machines';
-    // Trees carry how grown they are: "tree:1:3", "fruit:633:4".
-    const [type, , grown] = key.split(':');
-    const stage = (type === 'tree' || type === 'fruit') && grown !== undefined && grown !== '' ? Number(grown) : undefined;
-    out.push({ x, y, names: names.length ? names : [key], category: kind, variant: kind === 'trees' ? art.season : undefined, stage: Number.isFinite(stage) ? stage : undefined });
+    if (type === 'crop') {
+      // The crop stands on tilled soil. Older saves have no row or phase: they show the harvest's icon.
+      out.push({ x, y, names: ['tilled-soil'], category: 'soil' });
+      const row = number(c);
+      const phase = number(d);
+      const known = row !== undefined && phase !== undefined;
+      out.push({ x, y, names, category: kind, variant: known ? row : undefined, stage: known ? (e === '1' ? -1 : phase) : undefined });
+      continue;
+    }
+    out.push({ x, y, names: names.length ? names : [key], category: kind, variant: kind === 'trees' ? art.season : undefined, stage: type === 'tree' || type === 'fruit' ? number(b) : undefined });
   }
   for (const [x, y, type] of layout?.buildings ?? []) out.push({ x, y, names: [type], category: 'buildings', building: true, variant: art.houseLevel });
-  return out;
+  return joinNeighbors(out, art.season);
 }

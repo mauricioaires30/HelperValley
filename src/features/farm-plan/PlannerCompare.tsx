@@ -7,7 +7,7 @@ import type { SaveData } from '@/save/model';
 import { Progress } from '@/ui';
 import { usePanZoom } from '@/ui/usePanZoom';
 import { backgroundFor, BUILDING_SPAN, loadSheet, mapBounds, minTiles, planBuildingsToTopLeft, sheetImage, spriteBox, spriteFor, TILE, type Bounds, type SpriteRef } from './mapSprites';
-import { CATEGORIES, comparePlan, farmEntries, fetchPlan, missingEntries, parsePlanJson, planApiUrl, planEntries, planId, plannerName, type ArtContext, type Category, type Comparison, type MapEntry, type PlannerPlan } from './planner';
+import { CATEGORIES, comparePlan, farmEntries, fetchPlan, parsePlanJson, planApiUrl, planEntries, planId, plannerName, type ArtContext, type Category, type Comparison, type MapEntry, type PlannerPlan } from './planner';
 import '@/features/map/map.css';
 
 /** The two maps a plan can be for: the farm and the island farm. */
@@ -144,6 +144,7 @@ const FULL_COLORS: Record<string, string> = {
   floors: '#c9b79c',
   fences: '#8d6e63',
   crops: '#f0b429',
+  terrain: '#7d7d7d',
   trees: '#2e7d32',
   decor: '#c678dd',
   machines: '#2f80ed',
@@ -151,7 +152,6 @@ const FULL_COLORS: Record<string, string> = {
 };
 /** Drawn in this order, so buildings and machines sit on top of the ground. */
 const FULL_ORDER = Object.keys(FULL_COLORS);
-const MISSING_COLOR = '#e0283c';
 const WATER_COLOR = '#3f93b8';
 
 /** One entry placed on the map: its art (if any), where it is drawn, and the tiles it covers. */
@@ -178,7 +178,6 @@ const byLayer = (a: MapEntry, b: MapEntry) => FULL_ORDER.indexOf(a.category) - F
 /** Every object of a layout drawn with the game's own art, over the game's own ground when it is there. Zoom and drag like the other maps. */
 function FullMap({
   entries,
-  ghosts,
   ignore,
   bounds,
   background,
@@ -186,8 +185,6 @@ function FullMap({
   label,
 }: {
   entries: MapEntry[];
-  /** Planned things that are still missing: drawn faded, in place, with a red frame. */
-  ghosts?: MapEntry[];
   ignore: Set<string>;
   bounds: Bounds;
   /** The game's map picture (ground, water, cliffs), when tools/extract has made it. */
@@ -202,7 +199,6 @@ function FullMap({
   const [loaded, setLoaded] = useState(0);
   const { minX, minY, w, h } = bounds;
   const placed = useMemo(() => entries.filter((e) => !ignore.has(e.category)).sort(byLayer).map(place), [entries, ignore]);
-  const faded = useMemo(() => (ghosts ?? []).filter((e) => !ignore.has(e.category)).sort(byLayer).map(place), [ghosts, ignore]);
   const counts = useMemo(() => {
     const m = new Map<string, number>();
     for (const p of placed) m.set(p.entry.category, (m.get(p.entry.category) ?? 0) + 1);
@@ -212,7 +208,7 @@ function FullMap({
   // Sprite sheets and the map picture load once; the map redraws when they are in.
   useEffect(() => {
     let alive = true;
-    const sheets = new Set([...placed, ...faded].flatMap((p) => (p.ref ? [p.ref.sheet] : [])));
+    const sheets = new Set(placed.flatMap((p) => (p.ref ? [p.ref.sheet] : [])));
     if (background) sheets.add(background);
     void Promise.all([...sheets].map(loadSheet)).then(() => {
       if (alive) setLoaded((n) => n + 1);
@@ -220,7 +216,7 @@ function FullMap({
     return () => {
       alive = false;
     };
-  }, [placed, faded, background]);
+  }, [placed, background]);
 
   useEffect(() => {
     const ctx = ref.current?.getContext('2d');
@@ -260,13 +256,7 @@ function FullMap({
       ctx.globalAlpha = 1;
     };
     for (const p of placed) draw(p, 1);
-    for (const p of faded) {
-      draw(p, 0.55);
-      ctx.strokeStyle = MISSING_COLOR;
-      ctx.lineWidth = 1;
-      ctx.strokeRect(p.entry.x * TILE - ox + 0.5, p.entry.y * TILE - oy + 0.5, p.foot[0] * TILE - 1, p.foot[1] * TILE - 1);
-    }
-  }, [placed, faded, background, w, h, minX, minY, loaded]);
+  }, [placed, background, w, h, minX, minY, loaded]);
 
   const onMove = (e: MouseEvent<HTMLCanvasElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -276,9 +266,9 @@ function FullMap({
     setHover({ x, y, px: e.clientX - (box?.left ?? 0), py: e.clientY - (box?.top ?? 0), vw: box?.width ?? 0, vh: box?.height ?? 0 });
   };
   const covers = (p: Placed) => !!hover && hover.x >= p.entry.x && hover.x < p.entry.x + p.foot[0] && hover.y >= p.entry.y && hover.y < p.entry.y + p.foot[1];
-  // Ground under everything (grass) is left out of the tooltip.
-  const here = hover ? placed.filter((p) => p.entry.category !== 'grass' && covers(p)) : [];
-  const hereMissing = hover ? faded.filter(covers) : [];
+  // Grass is left out of the tooltip, and soil too when something stands on it.
+  const under = hover ? placed.filter((p) => p.entry.category !== 'grass' && covers(p)) : [];
+  const here = under.some((p) => p.entry.category !== 'soil') ? under.filter((p) => p.entry.category !== 'soil') : under;
 
   return (
     <div className="planner-full">
@@ -308,7 +298,7 @@ function FullMap({
               onMouseLeave={() => setHover(null)}
             />
           </div>
-          {hover && (here.length > 0 || hereMissing.length > 0) && (
+          {hover && here.length > 0 && (
             <span className="plan-tip box" style={tipPosition(hover)}>
               <strong>
                 ({hover.x}, {hover.y})
@@ -317,9 +307,6 @@ function FullMap({
                 <span key={i}>
                   {label(p.entry.category)}: {describe(p.entry.names)}
                 </span>
-              ))}
-              {hereMissing.map((p, i) => (
-                <span key={`missing-${i}`}>{t('planner.tipMissing', { name: describe(p.entry.names) })}</span>
               ))}
             </span>
           )}
@@ -332,12 +319,6 @@ function FullMap({
             {label(c)} · {n}
           </li>
         ))}
-        {faded.length > 0 && (
-          <li style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: 2, border: `1px solid ${MISSING_COLOR}`, opacity: 0.7 }} />
-            {t('planner.ghostLegend', { count: faded.length })}
-          </li>
-        )}
       </ul>
       <p className="cc-summary__hint">{t('planner.artNote')}</p>
     </div>
@@ -362,7 +343,6 @@ function SlotView({ slot, saveData, stored, setStored, options, setOptions, read
   const [status, setStatus] = useState<'idle' | 'loading' | 'needsCopy' | 'error'>('idle');
   const [pasted, setPasted] = useState('');
   const [view, setView] = useState<ViewId>('compare');
-  const [ghosts, setGhosts] = useState(true);
   const id = planId(input);
 
   const keep = (plan: PlannerPlan, link: string) => {
@@ -409,11 +389,10 @@ function SlotView({ slot, saveData, stored, setStored, options, setOptions, read
   const art = useMemo<ArtContext>(() => ({ houseLevel, season }), [houseLevel, season]);
   const planMap = useMemo(() => (stored ? planBuildingsToTopLeft(planEntries(stored.plan, result?.offset, art)) : []), [stored, result, art]);
   const farmMap = useMemo(() => farmEntries(saveData.layouts[slot.location], art), [saveData, slot.location, art]);
-  const missingMap = useMemo(() => (result ? missingEntries(result, art) : []), [result, art]);
   // One window for every view, so the map keeps its size when the view changes.
   const bounds = useMemo(
-    () => mapBounds([...farmMap, ...planMap, ...missingMap], result?.cells.map((c) => [c.x, c.y] as [number, number]) ?? [], minTiles(slot.id, saveData.farmType)),
-    [farmMap, planMap, missingMap, result, slot.id],
+    () => mapBounds([...farmMap, ...planMap], result?.cells.map((c) => [c.x, c.y] as [number, number]) ?? [], minTiles(slot.id, saveData.farmType)),
+    [farmMap, planMap, result, slot.id],
   );
   const background = backgroundFor(slot.id, saveData.farmType);
   const ignoreSet = useMemo(() => new Set<string>(options.ignore), [options.ignore]);
@@ -505,14 +484,6 @@ function SlotView({ slot, saveData, stored, setStored, options, setOptions, read
               ))}
             </div>
           )}
-          {shownView === 'farm' && (
-            <div className="planner-options">
-              <label className="cc__filter">
-                <input type="checkbox" checked={ghosts} onChange={(e) => setGhosts(e.target.checked)} />
-                {t('planner.showMissingOnMap')}
-              </label>
-            </div>
-          )}
           {shownView !== 'plan' && (
             <>
               <p className="planner-summary">{t('planner.summary', { done: result.done, total: result.total, pct: result.total ? Math.round((result.done / result.total) * 100) : 0 })}</p>
@@ -526,7 +497,6 @@ function SlotView({ slot, saveData, stored, setStored, options, setOptions, read
             ) : (
               <FullMap
                 entries={shownView === 'farm' ? farmMap : planMap}
-                ghosts={shownView === 'farm' && ghosts ? missingMap : undefined}
                 ignore={ignoreSet}
                 bounds={bounds}
                 background={background}

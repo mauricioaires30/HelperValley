@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadTestGameData } from '@/test/gameData';
 import { backgroundFor, mapBounds, minTiles, planBuildingsToTopLeft, spriteBox, spriteFor } from '../mapSprites';
-import { farmEntries, type MapEntry } from '../planner';
+import { farmEntries, joinNeighbors, type MapEntry } from '../planner';
 
 beforeAll(loadTestGameData);
 
@@ -34,9 +34,7 @@ describe('map sprites', () => {
     expect(spriteBox(barn, sprite!)).toMatchObject({ x: 160, y: (20 + 4) * 16 - sprite!.h, w: 112 });
   });
 
-  it('leaves grass, tilled soil and unknown things without art', () => {
-    expect(spriteFor(entry(['grass'], 'grass'))).toBeNull();
-    expect(spriteFor(entry(['tilled-soil'], 'soil'))).toBeNull();
+  it('leaves unknown things without art', () => {
     expect(spriteFor(entry(['no-such-thing'], 'machines'))).toBeNull();
     expect(spriteFor(entry(['no-such-building'], 'buildings', true))).toBeNull();
   });
@@ -128,5 +126,72 @@ describe('plan buildings', () => {
     expect(house.y).toBe(12);
     expect(bin.y).toBe(14);
     expect(planBuildingsToTopLeft([house])[0]).toBe(house);
+  });
+});
+
+describe('ground, grass, crops and boulders', () => {
+  const piece = (names: string[], category: string, extra: Partial<MapEntry> = {}): MapEntry => ({ ...entry(names, category), ...extra });
+
+  it('picks the soil piece by the sides it joins, and the snowy set in winter', () => {
+    // Sides: north 1, east 2, south 4, west 8. All four: the middle of the big block.
+    expect(spriteFor(piece(['tilled-soil'], 'soil', { variant: 15 }))).toMatchObject({ sheet: 'TerrainFeatures/hoeDirt', x: 32, y: 16, w: 16, h: 16, anchor: 'top' });
+    expect(spriteFor(piece(['tilled-soil'], 'soil', { variant: 0 }))).toMatchObject({ x: 0, y: 0 });
+    // South only: the top end of the vertical strip. East and south: the block's top-left corner.
+    expect(spriteFor(piece(['tilled-soil'], 'soil', { variant: 4 }))).toMatchObject({ x: 0, y: 16 });
+    expect(spriteFor(piece(['tilled-soil'], 'soil', { variant: 6 }))).toMatchObject({ x: 16, y: 0 });
+    expect(spriteFor(piece(['tilled-soil'], 'soil', { variant: 3 * 16 + 15 }))?.sheet).toBe('TerrainFeatures/hoeDirtSnow');
+  });
+
+  it('finds which sides a piece of soil or floor joins', () => {
+    const soil = (x: number, y: number): MapEntry => ({ x, y, names: ['tilled-soil'], category: 'soil' });
+    const joined = joinNeighbors([soil(1, 1), soil(2, 1), soil(2, 2)], 1);
+    expect(joined.map((e) => e.variant! & 15)).toEqual([2, 12, 1]);
+    expect(joined.map((e) => e.variant! >> 4)).toEqual([1, 1, 1]);
+    // A floor only joins floors of its own kind.
+    const floor = (x: number, y: number, name: string): MapEntry => ({ x, y, names: [name], category: 'floors' });
+    expect(joinNeighbors([floor(0, 0, 'wooden-floor'), floor(1, 0, 'stone-floor')], 0).map((e) => e.variant! & 15)).toEqual([0, 0]);
+  });
+
+  it('draws floors from their set in the floors sheet', () => {
+    // The wooden floor is set 0 and the gravel path set 5 (second row, second column of sets).
+    expect(spriteFor(piece(['wooden-floor'], 'floors', { variant: 15 }))).toMatchObject({ sheet: 'TerrainFeatures/Flooring', x: 32, y: 16 });
+    expect(spriteFor(piece(['gravel-path'], 'floors', { variant: 0 }))).toMatchObject({ x: 64, y: 64 });
+    expect(spriteFor(piece(['wooden-floor'], 'floors', { variant: 3 * 16 }))?.sheet).toBe('TerrainFeatures/Flooring_winter');
+  });
+
+  it('draws grass as tufts from the season row the save gives', () => {
+    const grass = spriteFor(piece(['grass'], 'grass', { stage: 3, variant: 20 }))!;
+    expect(grass.sheet).toBe('TerrainFeatures/grass');
+    expect(grass.layers).toHaveLength(3);
+    expect(grass.layers!.every((layer) => layer[1] === 20 && layer[2] === 15 && layer[3] === 20)).toBe(true);
+  });
+
+  it('draws a crop by its row and growth phase, and a dead one from the dead pictures', () => {
+    // Row 24 is on the left half, 12th pair of rows; phase 2 is the 4th picture.
+    expect(spriteFor(piece(['ancient-seeds'], 'crops', { variant: 24, stage: 2 }))).toMatchObject({ sheet: 'TileSheets/crops', x: 48, y: 384, w: 16, h: 32 });
+    // An odd row is on the right half.
+    expect(spriteFor(piece(['ancient-seeds'], 'crops', { variant: 25, stage: 0 }))).toMatchObject({ x: 128 + 16, y: 384 });
+    expect(spriteFor(piece(['ancient-seeds'], 'crops', { variant: 24, stage: -1 }))).toMatchObject({ x: 192, y: 384 });
+    // Without a row and phase (an older save, or a plan) the harvest's icon stays.
+    expect(spriteFor(piece(['parsnip'], 'crops'))?.sheet).toBe('Maps/springobjects');
+  });
+
+  it('draws boulders and stumps as a block of the objects sheet', () => {
+    const stump = spriteFor(piece(['large-stump'], 'terrain', { variant: 600, size: [2, 2] }))!;
+    expect(stump).toMatchObject({ sheet: 'Maps/springobjects', x: 0, y: 400, w: 32, h: 32, foot: [2, 2], anchor: 'top' });
+  });
+
+  it('reads crops, grass and boulders from the save keys', () => {
+    const entries = farmEntries(
+      { tiles: [[1, 1, 'crop:499:454:24:2:0'], [2, 1, 'hoedirt'], [3, 3, 'grass:2:40'], [5, 5, 'clump:600:2:2'], [7, 7, 'crop:499:454']], buildings: [] },
+      { houseLevel: 0, season: 0 },
+    );
+    const crop = entries.find((e) => e.category === 'crops' && e.x === 1)!;
+    expect([crop.variant, crop.stage]).toEqual([24, 2]);
+    expect(entries.find((e) => e.category === 'grass')).toMatchObject({ stage: 2, variant: 40 });
+    expect(entries.find((e) => e.category === 'terrain')).toMatchObject({ variant: 600, size: [2, 2] });
+    // A crop stands on soil, and an older key (no row or phase) has no growth to draw.
+    expect(entries.filter((e) => e.category === 'soil' && e.x === 1)).toHaveLength(1);
+    expect(entries.find((e) => e.category === 'crops' && e.x === 7)?.stage).toBeUndefined();
   });
 });
