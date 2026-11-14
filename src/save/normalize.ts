@@ -393,13 +393,19 @@ function readLayouts(locations: XmlValue[]): Record<string, LayoutState> {
       const type = xsiType(tf);
       if (type === 'Tree') tiles.push([...at(key), `tree:${text(tf?.treeType) ?? ''}:${num(tf?.growthStage, 5)}`]);
       else if (type === 'FruitTree') tiles.push([...at(key), `fruit:${text(tf?.treeId) ?? ''}:${num(tf?.growthStage, 4)}`]);
-      else if (type === 'Grass') tiles.push([...at(key), 'grass']);
+      else if (type === 'Grass') tiles.push([...at(key), `grass:${num(tf?.numberOfWeeds, 4)}:${num(tf?.grassSourceOffset, 0)}`]);
       else if (type === 'Flooring') tiles.push([...at(key), `floor:${text(tf?.whichFloor) ?? ''}`]);
       else if (type === 'HoeDirt') {
         const crop = node(tf?.crop);
-        if (crop) tiles.push([...at(key), `crop:${text(crop.netSeedIndex) ?? text(crop.seedIndex) ?? ''}:${text(crop.indexOfHarvest) ?? ''}`]);
+        if (crop) tiles.push([...at(key), `crop:${text(crop.netSeedIndex) ?? text(crop.seedIndex) ?? ''}:${text(crop.indexOfHarvest) ?? ''}:${num(crop.rowInSpriteSheet)}:${num(crop.currentPhase)}:${bool(crop.dead) ? 1 : 0}`]);
         else tiles.push([...at(key), 'hoedirt']);
       }
+    }
+    // Big stumps, logs and boulders: the sprite index in Maps/springobjects and how many tiles wide and high.
+    for (const c of arr(node(location.resourceClumps)?.ResourceClump)) {
+      const clump = node(c);
+      const tile = node(clump?.tile);
+      if (clump) tiles.push([num(tile?.X), num(tile?.Y), `clump:${num(clump.parentSheetIndex)}:${num(clump.width, 2)}:${num(clump.height, 2)}`]);
     }
     // Furniture placed outdoors (tubs of flowers, seasonal plants...).
     for (const f of arr(node(location.furniture)?.Furniture)) {

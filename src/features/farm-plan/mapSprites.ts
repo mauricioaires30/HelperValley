@@ -1,6 +1,6 @@
 import { gameData, getItem, spriteUrl, type ItemData } from '@/data/gameData';
 import { gridRect } from '@/ui/Sprite';
-import { TYPE_ITEM, type MapEntry } from './planner';
+import { FLOOR, TYPE_ITEM, type MapEntry } from './planner';
 
 const SEASONS = ['spring', 'summer', 'fall', 'winter'];
 
@@ -225,13 +225,116 @@ function buildingSprite(name: string, variant: number): SpriteRef | null {
   return { sheet: art.sheet, x, y, w, h, foot: art.foot, anchor: 'bottom', dx: art.dx, water: art.water };
 }
 
+/**
+ * Soil and floors come as a 4x4 set of 16px pieces, one for each way a piece joins its neighbors.
+ * Sides: north 1, east 2, south 4, west 8. The value is the piece's column and row in the set.
+ */
+const JOINED: Record<number, [number, number]> = {
+  0: [0, 0],
+  4: [0, 1],
+  5: [0, 2],
+  1: [0, 3],
+  2: [1, 3],
+  10: [2, 3],
+  8: [3, 3],
+  6: [1, 0],
+  14: [2, 0],
+  12: [3, 0],
+  7: [1, 1],
+  15: [2, 1],
+  13: [3, 1],
+  3: [1, 2],
+  11: [2, 2],
+  9: [3, 2],
+};
+
+/** A piece of a joined set; `variant` is the season times 16 plus the joined sides (see joinNeighbors). */
+function joinedPiece(sheet: string, originX: number, originY: number, variant: number): SpriteRef {
+  const [col, row] = JOINED[variant & 15] ?? [2, 1];
+  return { sheet, x: originX + col * TILE, y: originY + row * TILE, w: TILE, h: TILE, foot: [1, 1], anchor: 'top' };
+}
+
+const isWinter = (variant: number) => variant >> 4 === 3;
+
+const soilSprite = (variant: number) => joinedPiece(isWinter(variant) ? 'TerrainFeatures/hoeDirtSnow' : 'TerrainFeatures/hoeDirt', 0, 0, variant);
+
+/** The floors sheet holds 4x4 sets of pieces, four sets to a row, in the order of the game's floor numbers. */
+function floorSprite(name: string, variant: number): SpriteRef | null {
+  const number = Object.entries(FLOOR).find(([, floor]) => floor === name)?.[0];
+  if (number === undefined) return null;
+  const n = Number(number);
+  return joinedPiece(isWinter(variant) ? 'TerrainFeatures/Flooring_winter' : 'TerrainFeatures/Flooring', (n % 4) * 4 * TILE, Math.floor(n / 4) * 4 * TILE, variant);
+}
+
+/** Where each grass tuft stands on its tile (the tuft is 15x20, so most reach above the tile). */
+const TUFTS: Array<[number, number]> = [
+  [-4, -8],
+  [5, -8],
+  [-5, -3],
+  [6, -3],
+];
+
+/** Grass: up to four tufts. `row` is the pixel row of the season's tufts in the grass sheet. */
+function grassSprite(tufts: number, row: number): SpriteRef {
+  const count = Math.max(1, Math.min(4, tufts));
+  return {
+    sheet: 'TerrainFeatures/grass',
+    x: 0,
+    y: row,
+    w: 15,
+    h: 20,
+    foot: [1, 1],
+    anchor: 'bottom',
+    layers: TUFTS.slice(0, count).map(([dx, dy], i) => [(i % 3) * 15, row, 15, 20, dx, dy]),
+    box: [-5, -8, 26, 25],
+  };
+}
+
+/**
+ * A growing crop. The crops sheet has two columns of eight 16x32 pictures (even rows on the left, odd on the right),
+ * one picture per growth phase, and a few dead ones at the bottom.
+ */
+function cropSprite(entry: MapEntry): SpriteRef | null {
+  if (entry.stage === undefined || entry.variant === undefined) return null;
+  const row = entry.variant;
+  const dead = entry.stage < 0;
+  const x = dead ? 192 + (row % 4) * 16 : Math.min(7, entry.stage + 1) * 16 + (row % 2 ? 128 : 0);
+  const y = dead ? 384 : Math.floor(row / 2) * 32;
+  return { sheet: 'TileSheets/crops', x, y, w: 16, h: 32, foot: [1, 1], anchor: 'bottom' };
+}
+
+/** Big stumps, logs and boulders: a block of the objects sheet, drawn from the tile's top-left corner. */
+function clumpSprite(entry: MapEntry): SpriteRef | null {
+  if (entry.variant === undefined) return null;
+  const [w, h] = entry.size ?? [2, 2];
+  const { x, y } = gridRect('Maps/springobjects', entry.variant, TILE, TILE);
+  return { sheet: 'Maps/springobjects', x, y, w: w * TILE, h: h * TILE, foot: [w, h], anchor: 'top' };
+}
+
+function pictureFor(entry: MapEntry): SpriteRef | null {
+  if (entry.building) return buildingSprite(entry.names[0], entry.variant ?? 0);
+  switch (entry.category) {
+    case 'soil':
+      return soilSprite(entry.variant ?? 0);
+    case 'grass':
+      return grassSprite(entry.stage ?? 4, entry.variant ?? 0);
+    case 'terrain':
+      return clumpSprite(entry);
+    case 'floors':
+      return floorSprite(entry.names[0], entry.variant ?? 0) ?? objectSprite(entry.names[0], entry.category, entry);
+    case 'crops':
+      return cropSprite(entry) ?? objectSprite(entry.names[0], entry.category, entry);
+    default:
+      return objectSprite(entry.names[0], entry.category, entry);
+  }
+}
+
 const cache = new Map<string, SpriteRef | null>();
 
 /** The game's own art for a map entry, or null when there is none (it is drawn as a colored square then). */
 export function spriteFor(entry: MapEntry): SpriteRef | null {
-  if (entry.category === 'grass' || entry.category === 'soil') return null;
-  const key = `${entry.building ? 'building' : entry.category}:${entry.names[0]}:${entry.variant ?? 0}:${entry.stage ?? ''}`;
-  if (!cache.has(key)) cache.set(key, entry.building ? buildingSprite(entry.names[0], entry.variant ?? 0) : objectSprite(entry.names[0], entry.category, entry));
+  const key = `${entry.building ? 'building' : entry.category}:${entry.names[0]}:${entry.variant ?? 0}:${entry.stage ?? ''}:${entry.size?.join('x') ?? ''}`;
+  if (!cache.has(key)) cache.set(key, pictureFor(entry));
   return cache.get(key) ?? null;
 }
 

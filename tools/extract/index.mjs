@@ -92,6 +92,9 @@ for (const name of ['Greenhouse', 'Log Cabin', 'Plank Cabin', 'Rustic Cabin', 'B
 for (const n of [1, 2, 3, 8]) for (const season of ['spring', 'summer', 'fall', 'winter']) textures.add(`TerrainFeatures/tree${n}_${season}`);
 for (const name of ['tree_palm', 'tree_palm2', 'mushroom_tree']) textures.add(`TerrainFeatures/${name}`);
 textures.add('TileSheets/fruitTrees');
+// Ground, grass, crops and floors the planner draws.
+for (const name of ['grass', 'hoeDirt', 'hoeDirtSnow', 'Flooring', 'Flooring_winter']) textures.add(`TerrainFeatures/${name}`);
+textures.add('TileSheets/crops');
 
 await rm(SPRITES_OUT, { recursive: true, force: true });
 const { written, missing, sizes } = await exportTextures(gameDir, textures);
